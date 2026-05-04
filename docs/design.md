@@ -5,13 +5,13 @@
 Recetarium tiene el frontend en React y el backend en Express. El frontend no guarda nada en localStorage — todo viene de la API. El backend es la única fuente de verdad.
 
 ```
-Usuario → React (UI) → src/api/client.ts → Express (/api/v1) → datos en memoria
+Usuario → React (UI) → src/api/client.ts → Express (/api/v1) → datos en fichero (recetas.json)
 ```
 
 El flujo de vuelta:
 
 ```
-Datos en memoria → Express (JSON) → React → actualiza Context → re-renderiza UI
+recetas.json → Express (JSON) → React → actualiza Context → re-renderiza UI
 ```
 
 ## Frontend
@@ -88,7 +88,7 @@ Una receta tiene esta forma:
 {
   "id": "string",
   "nombre": "string",
-  "categoria": "italiana | mexicana | española | asiática | americana | mediterránea | otra",
+  "categoria": "string",
   "sabor": "salado | dulce | amargo | umami",
   "tiempoPreparacion": 30,
   "favorita": false,
@@ -104,7 +104,7 @@ Una receta tiene esta forma:
 }
 ```
 
-`categoria` y `sabor` son enums cerrados — el formulario los ofrece como opciones, no como campo libre.
+`categoria` es texto libre. El formulario normaliza a minúsculas al salir del campo y sugiere categorías ya existentes. `sabor` sigue siendo enum cerrado: `salado | dulce | amargo | umami`.
 
 ## Qué vive dónde
 
