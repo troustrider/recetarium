@@ -1,9 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import type { Receta } from '../types/receta'
+import {
+  getRecetas,
+  createReceta,
+  updateReceta,
+  deleteReceta,
+  toggleFavorita,
+} from '../api/client'
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
-
-const API = 'http://localhost:3001/api/v1/recetas'
 
 interface State {
   recetas: Receta[]
@@ -17,9 +22,7 @@ function useRecetas() {
   const cargar = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true, error: null }))
     try {
-      const res = await fetch(API)
-      if (!res.ok) throw new Error('Error al cargar las recetas')
-      const data: Receta[] = await res.json()
+      const data = await getRecetas()
       setState({ recetas: data, loading: false, error: null })
     } catch (e) {
       setState((prev) => ({ ...prev, loading: false, error: (e as Error).message }))
@@ -30,13 +33,7 @@ function useRecetas() {
 
   async function crear(data: RecetaFormData): Promise<Receta | null> {
     try {
-      const res = await fetch(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) throw new Error('Error al crear la receta')
-      const nueva: Receta = await res.json()
+      const nueva = await createReceta(data)
       setState((prev) => ({ ...prev, recetas: [...prev.recetas, nueva] }))
       return nueva
     } catch {
@@ -46,13 +43,7 @@ function useRecetas() {
 
   async function actualizar(id: string, data: RecetaFormData): Promise<boolean> {
     try {
-      const res = await fetch(`${API}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      if (!res.ok) throw new Error('Error al actualizar la receta')
-      const actualizada: Receta = await res.json()
+      const actualizada = await updateReceta(id, data)
       setState((prev) => ({
         ...prev,
         recetas: prev.recetas.map((r) => (r.id === id ? actualizada : r)),
@@ -65,8 +56,7 @@ function useRecetas() {
 
   async function eliminar(id: string): Promise<boolean> {
     try {
-      const res = await fetch(`${API}/${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Error al eliminar la receta')
+      await deleteReceta(id)
       setState((prev) => ({
         ...prev,
         recetas: prev.recetas.filter((r) => r.id !== id),
@@ -77,11 +67,9 @@ function useRecetas() {
     }
   }
 
-  async function toggleFavorita(id: string): Promise<boolean> {
+  async function alternarFavorita(id: string): Promise<boolean> {
     try {
-      const res = await fetch(`${API}/${id}/favorita`, { method: 'PATCH' })
-      if (!res.ok) throw new Error('Error al actualizar favorita')
-      const actualizada: Receta = await res.json()
+      const actualizada = await toggleFavorita(id)
       setState((prev) => ({
         ...prev,
         recetas: prev.recetas.map((r) => (r.id === id ? actualizada : r)),
@@ -92,7 +80,7 @@ function useRecetas() {
     }
   }
 
-  return { ...state, cargar, crear, actualizar, eliminar, toggleFavorita }
+  return { ...state, cargar, crear, actualizar, eliminar, toggleFavorita: alternarFavorita }
 }
 
 export default useRecetas
