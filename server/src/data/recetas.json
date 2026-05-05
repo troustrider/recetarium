@@ -1,21 +1,534 @@
 [
   {
-    "id": "b39f440d-0e8d-4023-ab77-e1b43db5d7f6",
-    "favorita": true,
-    "nombre": "a",
-    "categoria": "a",
+    "id": "a1b2c3d4-0001-4000-8000-000000000001",
+    "nombre": "Paella valenciana",
+    "categoria": "arroces",
     "sabor": "salado",
-    "tiempoPreparacion": 30,
+    "tiempoPreparacion": 60,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=800&q=80&crop=entropy",
     "ingredientes": [
-      {
-        "nombre": "a",
-        "cantidad": 1,
-        "unidad": "a",
-        "familia": "a"
-      }
+      { "nombre": "arroz bomba", "cantidad": 400, "unidad": "g", "familia": "cereales" },
+      { "nombre": "pollo", "cantidad": 500, "unidad": "g", "familia": "carnes" },
+      { "nombre": "conejo", "cantidad": 400, "unidad": "g", "familia": "carnes" },
+      { "nombre": "judía verde plana", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+      { "nombre": "garrofón", "cantidad": 100, "unidad": "g", "familia": "legumbres" },
+      { "nombre": "tomate triturado", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+      { "nombre": "pimentón dulce", "cantidad": 1, "unidad": "cdta", "familia": "especias" },
+      { "nombre": "azafrán", "cantidad": 1, "unidad": "pizca", "familia": "especias" },
+      { "nombre": "caldo de pollo", "cantidad": 1200, "unidad": "ml", "familia": "caldos" },
+      { "nombre": "aceite de oliva", "cantidad": 60, "unidad": "ml", "familia": "aceites" }
     ],
     "pasos": [
-      "a"
+      "Calienta el aceite en la paellera y sofríe el pollo y el conejo troceados hasta dorarlos bien.",
+      "Añade las judías verdes y el garrofón, sofríe 5 minutos.",
+      "Incorpora el tomate triturado y el pimentón, remueve rápido para que no se queme.",
+      "Vierte el caldo caliente con el azafrán disuelto y lleva a ebullición.",
+      "Añade el arroz en forma de cruz y repártelo sin remover.",
+      "Cocina a fuego fuerte 8 minutos, luego baja el fuego y cocina 10 minutos más.",
+      "Deja reposar 5 minutos tapado antes de servir."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0002-4000-8000-000000000002",
+    "nombre": "Tortilla española",
+    "categoria": "huevos",
+    "sabor": "salado",
+    "tiempoPreparacion": 35,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1591299177062-5b2eef1c0f62?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "huevos", "cantidad": 6, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "patata", "cantidad": 600, "unidad": "g", "familia": "verduras" },
+      { "nombre": "cebolla", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "aceite de oliva", "cantidad": 200, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "sal", "cantidad": 1, "unidad": "cdta", "familia": "especias" }
+    ],
+    "pasos": [
+      "Pela y corta las patatas en láminas finas. Pica la cebolla en juliana.",
+      "Confita las patatas y la cebolla en abundante aceite a fuego suave durante 20 minutos.",
+      "Escurre bien el aceite y mezcla con los huevos batidos y sal.",
+      "Cuaja en una sartén antiadherente a fuego medio, con cuidado al darle la vuelta.",
+      "Termina de cuajar al gusto: jugosa por dentro o bien cuajada."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0003-4000-8000-000000000003",
+    "nombre": "Croquetas de jamón",
+    "categoria": "tapas",
+    "sabor": "salado",
+    "tiempoPreparacion": 90,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1541529086526-db283c563270?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "jamón serrano", "cantidad": 150, "unidad": "g", "familia": "carnes" },
+      { "nombre": "harina", "cantidad": 100, "unidad": "g", "familia": "cereales" },
+      { "nombre": "mantequilla", "cantidad": 80, "unidad": "g", "familia": "lácteos" },
+      { "nombre": "leche entera", "cantidad": 700, "unidad": "ml", "familia": "lácteos" },
+      { "nombre": "nuez moscada", "cantidad": 1, "unidad": "pizca", "familia": "especias" },
+      { "nombre": "huevo", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "pan rallado", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+      { "nombre": "aceite de girasol", "cantidad": 500, "unidad": "ml", "familia": "aceites" }
+    ],
+    "pasos": [
+      "Derrite la mantequilla y sofríe el jamón picado fino durante 2 minutos.",
+      "Añade la harina y cocina 3 minutos removiendo para que no sepa a crudo.",
+      "Incorpora la leche caliente poco a poco sin dejar de remover hasta obtener una bechamel espesa.",
+      "Sazona con sal y nuez moscada, vierte en una fuente y deja enfriar en la nevera al menos 2 horas.",
+      "Forma las croquetas, pásalas por huevo batido y pan rallado.",
+      "Fríe en aceite bien caliente hasta que estén doradas."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0004-4000-8000-000000000004",
+    "nombre": "Gazpacho andaluz",
+    "categoria": "sopas frías",
+    "sabor": "acido",
+    "tiempoPreparacion": 15,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "tomate maduro", "cantidad": 1000, "unidad": "g", "familia": "verduras" },
+      { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+      { "nombre": "pan del día anterior", "cantidad": 80, "unidad": "g", "familia": "cereales" },
+      { "nombre": "vinagre de jerez", "cantidad": 30, "unidad": "ml", "familia": "ácidos" },
+      { "nombre": "aceite de oliva virgen extra", "cantidad": 80, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "sal", "cantidad": 1, "unidad": "cdta", "familia": "especias" }
+    ],
+    "pasos": [
+      "Remoja el pan en agua fría durante 10 minutos.",
+      "Trocea los tomates, pepino, pimiento y ajo, y ponlos en la batidora.",
+      "Añade el pan escurrido, el vinagre, el aceite y la sal.",
+      "Tritura a máxima potencia durante 2 minutos.",
+      "Cuela por un chino y ajusta de sal y vinagre.",
+      "Refrigera al menos 1 hora antes de servir bien frío."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0005-4000-8000-000000000005",
+    "nombre": "Tiramisú",
+    "categoria": "postres",
+    "sabor": "amargo",
+    "tiempoPreparacion": 30,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "mascarpone", "cantidad": 500, "unidad": "g", "familia": "lácteos" },
+      { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "azúcar", "cantidad": 100, "unidad": "g", "familia": "dulces" },
+      { "nombre": "bizcochos savoiardi", "cantidad": 24, "unidad": "ud", "familia": "cereales" },
+      { "nombre": "café expreso", "cantidad": 300, "unidad": "ml", "familia": "bebidas" },
+      { "nombre": "cacao en polvo", "cantidad": 30, "unidad": "g", "familia": "dulces" },
+      { "nombre": "amaretto", "cantidad": 30, "unidad": "ml", "familia": "bebidas" }
+    ],
+    "pasos": [
+      "Prepara el café y déjalo enfriar con el amaretto.",
+      "Separa las yemas de las claras. Bate las yemas con el azúcar hasta que blanqueen.",
+      "Incorpora el mascarpone a las yemas con movimientos envolventes.",
+      "Monta las claras a punto de nieve e incorpóralas a la mezcla.",
+      "Moja los bizcochos rápidamente en el café y colócalos en la base del molde.",
+      "Extiende la mitad de la crema, otra capa de bizcochos y termina con crema.",
+      "Refrigera mínimo 4 horas y espolvorea cacao antes de servir."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0006-4000-8000-000000000006",
+    "nombre": "Ramen de pollo",
+    "categoria": "sopas",
+    "sabor": "umami",
+    "tiempoPreparacion": 50,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "fideos ramen", "cantidad": 200, "unidad": "g", "familia": "cereales" },
+      { "nombre": "caldo de pollo", "cantidad": 1000, "unidad": "ml", "familia": "caldos" },
+      { "nombre": "pechuga de pollo", "cantidad": 300, "unidad": "g", "familia": "carnes" },
+      { "nombre": "salsa de soja", "cantidad": 40, "unidad": "ml", "familia": "salsas" },
+      { "nombre": "miso blanco", "cantidad": 2, "unidad": "cda", "familia": "salsas" },
+      { "nombre": "huevo", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "alga nori", "cantidad": 2, "unidad": "hoja", "familia": "otros" },
+      { "nombre": "maíz dulce", "cantidad": 100, "unidad": "g", "familia": "verduras" },
+      { "nombre": "jengibre fresco", "cantidad": 20, "unidad": "g", "familia": "especias" }
+    ],
+    "pasos": [
+      "Cuece los huevos 7 minutos para que queden cremosos, pela y reserva.",
+      "Calienta el caldo con el jengibre rallado, la soja y el miso.",
+      "Pocha el pollo en el caldo a fuego suave durante 15 minutos, luego desmenuza.",
+      "Cuece los fideos según el paquete y escúrrelos.",
+      "Sirve los fideos en el caldo caliente y coloca encima el pollo, el huevo partido, el maíz, la cebolleta picada y el nori."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0007-4000-8000-000000000007",
+    "nombre": "Tarta de Santiago",
+    "categoria": "postres",
+    "sabor": "dulce",
+    "tiempoPreparacion": 50,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "almendra molida", "cantidad": 250, "unidad": "g", "familia": "frutos secos" },
+      { "nombre": "azúcar", "cantidad": 250, "unidad": "g", "familia": "dulces" },
+      { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "ralladura de limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+      { "nombre": "canela molida", "cantidad": 1, "unidad": "cdta", "familia": "especias" },
+      { "nombre": "azúcar glas", "cantidad": 30, "unidad": "g", "familia": "dulces" }
+    ],
+    "pasos": [
+      "Precalienta el horno a 180°C.",
+      "Bate los huevos con el azúcar hasta obtener una mezcla espumosa.",
+      "Añade la almendra, la ralladura de limón y la canela, mezcla bien.",
+      "Vierte en un molde redondo engrasado de 24 cm.",
+      "Hornea 35 minutos. Deja enfriar completamente.",
+      "Coloca una plantilla de la Cruz de Santiago y espolvorea azúcar glas."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0008-4000-8000-000000000008",
+    "nombre": "Risotto de setas",
+    "categoria": "arroces",
+    "sabor": "umami",
+    "tiempoPreparacion": 40,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "arroz arborio", "cantidad": 320, "unidad": "g", "familia": "cereales" },
+      { "nombre": "setas variadas", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+      { "nombre": "cebolla", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "ajo", "cantidad": 2, "unidad": "dientes", "familia": "verduras" },
+      { "nombre": "vino blanco seco", "cantidad": 120, "unidad": "ml", "familia": "bebidas" },
+      { "nombre": "caldo de verduras", "cantidad": 1200, "unidad": "ml", "familia": "caldos" },
+      { "nombre": "parmesano rallado", "cantidad": 80, "unidad": "g", "familia": "lácteos" },
+      { "nombre": "mantequilla", "cantidad": 40, "unidad": "g", "familia": "lácteos" },
+      { "nombre": "aceite de oliva", "cantidad": 30, "unidad": "ml", "familia": "aceites" }
+    ],
+    "pasos": [
+      "Sofríe la cebolla y el ajo picados en aceite a fuego suave hasta que estén transparentes.",
+      "Añade las setas y saltea a fuego fuerte hasta que evapore el agua.",
+      "Incorpora el arroz y tuéstalo 2 minutos.",
+      "Vierte el vino y remueve hasta que se absorba.",
+      "Añade el caldo caliente cazo a cazo, removiendo constantemente y esperando que se absorba antes de añadir más.",
+      "Fuera del fuego, añade la mantequilla y el parmesano. Remueve con energía y sirve inmediatamente."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0009-4000-8000-000000000009",
+    "nombre": "Ceviche peruano",
+    "categoria": "pescados",
+    "sabor": "acido",
+    "tiempoPreparacion": 20,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1535400255456-984b6d810685?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "corvina fresca", "cantidad": 500, "unidad": "g", "familia": "pescados" },
+      { "nombre": "lima", "cantidad": 8, "unidad": "ud", "familia": "frutas" },
+      { "nombre": "cebolla roja", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "ají amarillo", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "cilantro fresco", "cantidad": 20, "unidad": "g", "familia": "hierbas" },
+      { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+      { "nombre": "sal", "cantidad": 1, "unidad": "cdta", "familia": "especias" }
+    ],
+    "pasos": [
+      "Corta el pescado en dados de 2 cm y sala ligeramente.",
+      "Exprime las limas y cuela el zumo.",
+      "Mezcla el pescado con el zumo de lima, el ajo machacado y el ají sin semillas picado fino.",
+      "Deja marinar en la nevera 10 minutos — el pescado debe quedar blanco por fuera pero crudo por dentro.",
+      "Añade la cebolla en juliana fina (previamente lavada en agua fría) y el cilantro picado.",
+      "Sirve inmediatamente con maíz choclo y camote."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0010-4000-8000-000000000010",
+    "nombre": "Mousse de chocolate negro",
+    "categoria": "postres",
+    "sabor": "amargo",
+    "tiempoPreparacion": 25,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1511381939415-e44015466834?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "chocolate negro 70%", "cantidad": 200, "unidad": "g", "familia": "dulces" },
+      { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "azúcar", "cantidad": 60, "unidad": "g", "familia": "dulces" },
+      { "nombre": "mantequilla", "cantidad": 30, "unidad": "g", "familia": "lácteos" },
+      { "nombre": "nata para montar", "cantidad": 200, "unidad": "ml", "familia": "lácteos" },
+      { "nombre": "sal", "cantidad": 1, "unidad": "pizca", "familia": "especias" }
+    ],
+    "pasos": [
+      "Funde el chocolate con la mantequilla al baño maría y deja templar.",
+      "Separa yemas y claras. Bate las yemas con la mitad del azúcar hasta blanquear e incorpora al chocolate.",
+      "Monta la nata y resérala en la nevera.",
+      "Monta las claras con el resto del azúcar y una pizca de sal a punto de nieve firme.",
+      "Incorpora la nata al chocolate con movimientos envolventes, luego las claras en tres veces.",
+      "Reparte en copas y refrigera mínimo 3 horas."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0011-4000-8000-000000000011",
+    "nombre": "Fabada asturiana",
+    "categoria": "legumbres",
+    "sabor": "salado",
+    "tiempoPreparacion": 120,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "fabes asturianas", "cantidad": 500, "unidad": "g", "familia": "legumbres" },
+      { "nombre": "chorizo asturiano", "cantidad": 200, "unidad": "g", "familia": "carnes" },
+      { "nombre": "morcilla asturiana", "cantidad": 200, "unidad": "g", "familia": "carnes" },
+      { "nombre": "lacón", "cantidad": 200, "unidad": "g", "familia": "carnes" },
+      { "nombre": "panceta curada", "cantidad": 150, "unidad": "g", "familia": "carnes" },
+      { "nombre": "azafrán", "cantidad": 1, "unidad": "pizca", "familia": "especias" },
+      { "nombre": "pimentón", "cantidad": 1, "unidad": "cdta", "familia": "especias" }
+    ],
+    "pasos": [
+      "Pon las fabes a remojo en agua fría la noche anterior.",
+      "Escurre y cubre con agua fría. Añade todas las carnes y lleva a ebullición.",
+      "Espuma bien y baja el fuego. Cuece a fuego muy suave durante 2 horas.",
+      "A mitad de cocción añade el azafrán disuelto en un poco de caldo caliente.",
+      "Comprueba la sazón al final — las carnes ya aportan sal.",
+      "Sirve en cazuela de barro con las carnes en rodajas."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0012-4000-8000-000000000012",
+    "nombre": "Gyozas de cerdo y col",
+    "categoria": "asiática",
+    "sabor": "umami",
+    "tiempoPreparacion": 45,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "obleas de gyoza", "cantidad": 24, "unidad": "ud", "familia": "cereales" },
+      { "nombre": "carne picada de cerdo", "cantidad": 300, "unidad": "g", "familia": "carnes" },
+      { "nombre": "col china", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+      { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "jengibre fresco", "cantidad": 15, "unidad": "g", "familia": "especias" },
+      { "nombre": "salsa de soja", "cantidad": 20, "unidad": "ml", "familia": "salsas" },
+      { "nombre": "aceite de sésamo", "cantidad": 10, "unidad": "ml", "familia": "aceites" }
+    ],
+    "pasos": [
+      "Pica fina la col, sala y deja 10 minutos. Escurre bien apretando con las manos.",
+      "Mezcla la carne con la col, la cebolleta, el jengibre rallado, la soja y el aceite de sésamo.",
+      "Coloca una cucharada del relleno en el centro de cada oblea. Moja el borde con agua y cierra formando pliegues.",
+      "Calienta aceite en una sartén antiadherente y dora las gyozas por la base 2 minutos.",
+      "Añade 60 ml de agua, tapa y cocina al vapor 5 minutos.",
+      "Destapa y deja que evapore el agua hasta que la base vuelva a crujir.",
+      "Sirve con salsa de soja y vinagre de arroz."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0013-4000-8000-000000000013",
+    "nombre": "Crema catalana",
+    "categoria": "postres",
+    "sabor": "dulce",
+    "tiempoPreparacion": 30,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "leche entera", "cantidad": 500, "unidad": "ml", "familia": "lácteos" },
+      { "nombre": "yemas de huevo", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "azúcar", "cantidad": 100, "unidad": "g", "familia": "dulces" },
+      { "nombre": "maicena", "cantidad": 20, "unidad": "g", "familia": "cereales" },
+      { "nombre": "canela en rama", "cantidad": 1, "unidad": "ud", "familia": "especias" },
+      { "nombre": "piel de limón", "cantidad": 1, "unidad": "tira", "familia": "frutas" },
+      { "nombre": "azúcar para quemar", "cantidad": 40, "unidad": "g", "familia": "dulces" }
+    ],
+    "pasos": [
+      "Infusiona la leche con la canela y la piel de limón a fuego suave 10 minutos. Cuela.",
+      "Bate las yemas con el azúcar y la maicena hasta obtener una pasta homogénea.",
+      "Vierte la leche caliente sobre las yemas poco a poco sin dejar de remover.",
+      "Cuece a fuego suave removiendo constantemente hasta que espese.",
+      "Reparte en cazuelitas y deja enfriar. Refrigera mínimo 2 horas.",
+      "Justo antes de servir, espolvorea azúcar y quema con soplete hasta formar una capa crujiente."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0014-4000-8000-000000000014",
+    "nombre": "Pad Thai de gambas",
+    "categoria": "asiática",
+    "sabor": "acido",
+    "tiempoPreparacion": 25,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "fideos de arroz planos", "cantidad": 200, "unidad": "g", "familia": "cereales" },
+      { "nombre": "gambas peladas", "cantidad": 250, "unidad": "g", "familia": "pescados" },
+      { "nombre": "huevo", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "brotes de soja", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+      { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "salsa de tamarindo", "cantidad": 40, "unidad": "ml", "familia": "salsas" },
+      { "nombre": "salsa de pescado", "cantidad": 30, "unidad": "ml", "familia": "salsas" },
+      { "nombre": "azúcar de palma", "cantidad": 20, "unidad": "g", "familia": "dulces" },
+      { "nombre": "cacahuetes tostados", "cantidad": 50, "unidad": "g", "familia": "frutos secos" },
+      { "nombre": "lima", "cantidad": 1, "unidad": "ud", "familia": "frutas" }
+    ],
+    "pasos": [
+      "Remoja los fideos en agua fría 30 minutos.",
+      "Mezcla el tamarindo, la salsa de pescado y el azúcar para la salsa.",
+      "Saltea las gambas en wok a fuego muy fuerte hasta que estén rosadas, retira.",
+      "En el mismo wok, cuaja los huevos rápidamente y rómpelos.",
+      "Añade los fideos escurridos y la salsa, saltea 2 minutos.",
+      "Incorpora las gambas, los brotes de soja y la cebolleta.",
+      "Sirve con cacahuetes picados y lima para exprimir."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0015-4000-8000-000000000015",
+    "nombre": "Pollo al ajillo",
+    "categoria": "carnes",
+    "sabor": "salado",
+    "tiempoPreparacion": 35,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1598103442097-8b74394b95c8?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "muslos de pollo", "cantidad": 800, "unidad": "g", "familia": "carnes" },
+      { "nombre": "ajo", "cantidad": 10, "unidad": "dientes", "familia": "verduras" },
+      { "nombre": "vino blanco", "cantidad": 150, "unidad": "ml", "familia": "bebidas" },
+      { "nombre": "aceite de oliva", "cantidad": 60, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "romero fresco", "cantidad": 2, "unidad": "ramitas", "familia": "hierbas" },
+      { "nombre": "guindilla", "cantidad": 1, "unidad": "ud", "familia": "especias" },
+      { "nombre": "sal y pimienta", "cantidad": 1, "unidad": "al gusto", "familia": "especias" }
+    ],
+    "pasos": [
+      "Salpimienta el pollo y dóralo en aceite caliente por todos los lados hasta que esté bien dorado.",
+      "Añade los ajos con piel aplastados y la guindilla, cocina 2 minutos.",
+      "Incorpora el vino blanco y el romero. Deja reducir a fuego fuerte 3 minutos.",
+      "Baja el fuego, tapa y cocina 20 minutos.",
+      "Destapa los últimos 5 minutos para que la salsa se concentre."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0016-4000-8000-000000000016",
+    "nombre": "Sopa de miso con tofu",
+    "categoria": "sopas",
+    "sabor": "umami",
+    "tiempoPreparacion": 15,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "pasta de miso blanco", "cantidad": 3, "unidad": "cda", "familia": "salsas" },
+      { "nombre": "tofu sedoso", "cantidad": 200, "unidad": "g", "familia": "proteínas" },
+      { "nombre": "alga wakame seca", "cantidad": 10, "unidad": "g", "familia": "otros" },
+      { "nombre": "caldo dashi", "cantidad": 800, "unidad": "ml", "familia": "caldos" },
+      { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "salsa de soja", "cantidad": 10, "unidad": "ml", "familia": "salsas" }
+    ],
+    "pasos": [
+      "Hidrata el alga wakame en agua fría 5 minutos, escurre.",
+      "Calienta el dashi a fuego suave sin que llegue a hervir.",
+      "Disuelve el miso en un poco de caldo caliente y añádelo al resto.",
+      "Incorpora el tofu cortado en dados pequeños y el wakame.",
+      "Calienta 2 minutos sin hervir para que no se destruyan los probióticos del miso.",
+      "Sirve con la cebolleta picada por encima."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0017-4000-8000-000000000017",
+    "nombre": "Churros con chocolate",
+    "categoria": "desayunos",
+    "sabor": "dulce",
+    "tiempoPreparacion": 30,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "harina", "cantidad": 250, "unidad": "g", "familia": "cereales" },
+      { "nombre": "agua", "cantidad": 300, "unidad": "ml", "familia": "otros" },
+      { "nombre": "sal", "cantidad": 1, "unidad": "pizca", "familia": "especias" },
+      { "nombre": "aceite de girasol para freír", "cantidad": 500, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "azúcar para rebozar", "cantidad": 50, "unidad": "g", "familia": "dulces" },
+      { "nombre": "chocolate negro", "cantidad": 200, "unidad": "g", "familia": "dulces" },
+      { "nombre": "leche entera", "cantidad": 300, "unidad": "ml", "familia": "lácteos" },
+      { "nombre": "maicena", "cantidad": 15, "unidad": "g", "familia": "cereales" }
+    ],
+    "pasos": [
+      "Lleva el agua con sal a ebullición y vierte de golpe sobre la harina. Mezcla hasta obtener una masa sin grumos.",
+      "Calienta el aceite a 180°C. Introduce la masa en una churrera o manga pastelera con boquilla de estrella.",
+      "Fríe los churros hasta que estén dorados y crujientes. Escurre en papel absorbente.",
+      "Reboza en azúcar.",
+      "Para el chocolate: disuelve la maicena en un poco de leche fría, calienta el resto con el chocolate troceado y añade la mezcla de maicena. Remueve hasta espesar."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0018-4000-8000-000000000018",
+    "nombre": "Ensalada griega",
+    "categoria": "ensaladas",
+    "sabor": "acido",
+    "tiempoPreparacion": 10,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "cebolla roja", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "queso feta", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+      { "nombre": "aceitunas kalamata", "cantidad": 100, "unidad": "g", "familia": "otros" },
+      { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+      { "nombre": "aceite de oliva virgen extra", "cantidad": 50, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "orégano seco", "cantidad": 1, "unidad": "cdta", "familia": "especias" },
+      { "nombre": "vinagre de vino tinto", "cantidad": 20, "unidad": "ml", "familia": "ácidos" }
+    ],
+    "pasos": [
+      "Corta los tomates en gajos gruesos y el pepino en medias lunas.",
+      "Trocea la cebolla en aros finos y el pimiento en tiras.",
+      "Coloca todo en una fuente. Añade las aceitunas y el feta en un bloque encima.",
+      "Aliña con aceite de oliva, vinagre, orégano y sal.",
+      "Sirve inmediatamente sin remover demasiado para que el feta se mantenga entero."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0019-4000-8000-000000000019",
+    "nombre": "Leche frita",
+    "categoria": "postres",
+    "sabor": "dulce",
+    "tiempoPreparacion": 40,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "leche entera", "cantidad": 600, "unidad": "ml", "familia": "lácteos" },
+      { "nombre": "harina", "cantidad": 80, "unidad": "g", "familia": "cereales" },
+      { "nombre": "maicena", "cantidad": 40, "unidad": "g", "familia": "cereales" },
+      { "nombre": "azúcar", "cantidad": 120, "unidad": "g", "familia": "dulces" },
+      { "nombre": "canela en rama", "cantidad": 1, "unidad": "ud", "familia": "especias" },
+      { "nombre": "piel de limón", "cantidad": 1, "unidad": "tira", "familia": "frutas" },
+      { "nombre": "huevo", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+      { "nombre": "aceite de girasol", "cantidad": 300, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "canela molida y azúcar para rebozar", "cantidad": 50, "unidad": "g", "familia": "dulces" }
+    ],
+    "pasos": [
+      "Infusiona la leche con la canela en rama y la piel de limón. Retira y cuela.",
+      "Mezcla la harina, maicena y azúcar con un poco de leche fría hasta disolver.",
+      "Añade el resto de la leche caliente poco a poco y cuece a fuego suave removiendo hasta que espese mucho.",
+      "Vierte en una bandeja engrasada de 2 cm de grosor. Refrigera 3 horas.",
+      "Corta en rectángulos, pasa por huevo batido y fríe hasta dorar.",
+      "Reboza en azúcar con canela molida y sirve caliente."
+    ]
+  },
+  {
+    "id": "a1b2c3d4-0020-4000-8000-000000000020",
+    "nombre": "Hummus casero",
+    "categoria": "aperitivos",
+    "sabor": "umami",
+    "tiempoPreparacion": 15,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1637018163019-e6b7da03cba5?w=800&q=80&crop=entropy",
+    "ingredientes": [
+      { "nombre": "garbanzos cocidos", "cantidad": 400, "unidad": "g", "familia": "legumbres" },
+      { "nombre": "tahini", "cantidad": 60, "unidad": "g", "familia": "otros" },
+      { "nombre": "zumo de limón", "cantidad": 40, "unidad": "ml", "familia": "frutas" },
+      { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+      { "nombre": "aceite de oliva virgen extra", "cantidad": 40, "unidad": "ml", "familia": "aceites" },
+      { "nombre": "comino molido", "cantidad": 1, "unidad": "cdta", "familia": "especias" },
+      { "nombre": "pimentón ahumado", "cantidad": 1, "unidad": "pizca", "familia": "especias" },
+      { "nombre": "sal", "cantidad": 1, "unidad": "cdta", "familia": "especias" }
+    ],
+    "pasos": [
+      "Reserva el líquido de los garbanzos (aquafaba). Escurre y pela los garbanzos — quitarles la piel da un hummus más cremoso.",
+      "Tritura el tahini con el zumo de limón y el ajo hasta obtener una pasta.",
+      "Añade los garbanzos y tritura a máxima potencia.",
+      "Incorpora el aceite poco a poco. Si queda muy espeso, añade aquafaba cucharada a cucharada.",
+      "Sazona con sal y comino. Sirve con un hilo de aceite y pimentón ahumado por encima."
     ]
   }
 ]
