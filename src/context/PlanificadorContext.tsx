@@ -13,7 +13,7 @@ export interface EntradaPlan {
 
 type Plan = Record<Dia, EntradaPlan[]>
 
-const PLAN_VACIO: Plan = Object.fromEntries(DIAS.map((d) => [d, []])) as Plan
+const PLAN_VACIO: Plan = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
 
 interface PlanificadorCtx {
   plan: Plan

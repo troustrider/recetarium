@@ -51,7 +51,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     const fam = normalizar(familia) || 'otros'
     if (!norm || despensa.some((i) => i.nombre === norm)) return
     setDespensa((prev) =>
-      [...prev, { nombre: norm, familia: fam, estado: 'lleno' }].sort((a, b) =>
+      [...prev, { nombre: norm, familia: fam, estado: 'lleno' as EstadoDespensa }].sort((a, b) =>
         a.familia.localeCompare(b.familia) || a.nombre.localeCompare(b.nombre)
       )
     )
