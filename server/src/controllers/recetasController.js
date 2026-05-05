@@ -1,6 +1,6 @@
 const recetasService = require('../services/recetasService')
 
-const SABORES_VALIDOS = ['salado', 'dulce', 'amargo', 'umami']
+const SABORES_VALIDOS = ['salado', 'dulce', 'amargo', 'umami', 'acido']
 
 function validar(data) {
   const errores = []

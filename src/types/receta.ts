@@ -1,6 +1,6 @@
 export type Categoria = string
 
-export type Sabor = 'salado' | 'dulce' | 'amargo' | 'umami'
+export type Sabor = 'salado' | 'dulce' | 'amargo' | 'umami' | 'acido'
 
 export interface Ingrediente {
   nombre: string
@@ -16,6 +16,7 @@ export interface Receta {
   sabor: Sabor
   tiempoPreparacion: number
   favorita: boolean
+  imagen?: string
   ingredientes: Ingrediente[]
   pasos: string[]
 }

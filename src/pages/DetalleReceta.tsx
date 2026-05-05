@@ -13,6 +13,7 @@ const SABOR_BG: Record<Sabor, string> = {
   dulce:  '#2d0412',  // cereza macerada
   amargo: '#180d00',  // fondo de taza
   umami:  '#100820',  // tierra de trufas
+  acido:  '#0c1a00',  // lima nocturna
 }
 
 const BASE_COMENSALES = 2
