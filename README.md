@@ -4,6 +4,8 @@ Gestor de recetas personal. Centraliza tus recetas y genera listas de la compra 
 
 Frontend en React + TypeScript + Vite + Tailwind CSS. Backend en Node.js + Express. Desplegado en Vercel.
 
+**Demo en producción:** [recetarium-one.vercel.app](https://recetarium-one.vercel.app)
+
 **Tablero Kanban:** [Recetarium en Trello](https://trello.com/b/saQXnsUb/recetarium)
 
 ---
