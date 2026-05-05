@@ -5,19 +5,33 @@ export interface IngredienteAgrupado extends Ingrediente {
   recetas: string[]
 }
 
+export interface EntradaLista {
+  receta: Receta
+  raciones: number
+}
+
+const MAX_RACIONES = 4
+
 function useListaCompra() {
-  const [seleccionadas, setSeleccionadas] = useState<Receta[]>([])
+  const [seleccionadas, setSeleccionadas] = useState<EntradaLista[]>([])
 
   function toggleReceta(receta: Receta) {
     setSeleccionadas((prev) =>
-      prev.some((r) => r.id === receta.id)
-        ? prev.filter((r) => r.id !== receta.id)
-        : [...prev, receta]
+      prev.some((e) => e.receta.id === receta.id)
+        ? prev.filter((e) => e.receta.id !== receta.id)
+        : [...prev, { receta, raciones: 1 }]
+    )
+  }
+
+  function setRaciones(id: string, raciones: number) {
+    const clamped = Math.max(1, Math.min(MAX_RACIONES, raciones))
+    setSeleccionadas((prev) =>
+      prev.map((e) => (e.receta.id === id ? { ...e, raciones: clamped } : e))
     )
   }
 
   function estaSeleccionada(id: string) {
-    return seleccionadas.some((r) => r.id === id)
+    return seleccionadas.some((e) => e.receta.id === id)
   }
 
   function vaciar() {
@@ -27,15 +41,17 @@ function useListaCompra() {
   const listaCompra = useMemo<IngredienteAgrupado[]>(() => {
     const mapa = new Map<string, IngredienteAgrupado>()
 
-    for (const receta of seleccionadas) {
+    for (const { receta, raciones } of seleccionadas) {
       for (const ing of receta.ingredientes) {
         const clave = `${ing.nombre}__${ing.unidad}`
         const existente = mapa.get(clave)
         if (existente) {
-          existente.cantidad += ing.cantidad
-          existente.recetas.push(receta.nombre)
+          existente.cantidad += ing.cantidad * raciones
+          if (!existente.recetas.includes(receta.nombre)) {
+            existente.recetas.push(receta.nombre)
+          }
         } else {
-          mapa.set(clave, { ...ing, recetas: [receta.nombre] })
+          mapa.set(clave, { ...ing, cantidad: ing.cantidad * raciones, recetas: [receta.nombre] })
         }
       }
     }
@@ -45,7 +61,7 @@ function useListaCompra() {
     )
   }, [seleccionadas])
 
-  return { seleccionadas, listaCompra, toggleReceta, estaSeleccionada, vaciar }
+  return { seleccionadas, listaCompra, toggleReceta, setRaciones, estaSeleccionada, vaciar }
 }
 
 export default useListaCompra

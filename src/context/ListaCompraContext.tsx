@@ -1,11 +1,12 @@
 import { createContext, useContext, type ReactNode } from 'react'
-import useListaCompra, { type IngredienteAgrupado } from '../hooks/useListaCompra'
+import useListaCompra, { type IngredienteAgrupado, type EntradaLista } from '../hooks/useListaCompra'
 import type { Receta } from '../types/receta'
 
 interface ListaCompraContextValue {
-  seleccionadas: Receta[]
+  seleccionadas: EntradaLista[]
   listaCompra: IngredienteAgrupado[]
   toggleReceta: (receta: Receta) => void
+  setRaciones: (id: string, raciones: number) => void
   estaSeleccionada: (id: string) => boolean
   vaciar: () => void
 }

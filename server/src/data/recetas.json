@@ -1,1 +1,1210 @@
-[]
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "nombre": "Pasta carbonara",
+    "categoria": "italiana",
+    "sabor": "salado",
+    "tiempoPreparacion": 25,
+    "favorita": true,
+    "imagen": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "espaguetis",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "panceta",
+        "cantidad": 100,
+        "unidad": "g",
+        "familia": "carnes"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "queso pecorino",
+        "cantidad": 50,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "pimienta negra",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Cocer los espaguetis en agua con sal hasta que estén al dente.",
+      "Dorar la panceta en una sartén sin aceite a fuego medio.",
+      "Batir los huevos con el queso rallado y pimienta negra abundante.",
+      "Fuera del fuego, mezclar la pasta escurrida con la panceta.",
+      "Añadir la mezcla de huevo y queso removiendo rápido para que no cuaje.",
+      "Servir de inmediato con más queso y pimienta por encima."
+    ]
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "nombre": "Gazpacho andaluz",
+    "categoria": "española",
+    "sabor": "salado",
+    "tiempoPreparacion": 15,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "tomate maduro",
+        "cantidad": 500,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "pepino",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "pimiento verde",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "ajo",
+        "cantidad": 1,
+        "unidad": "diente",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "aceite de oliva",
+        "cantidad": 50,
+        "unidad": "ml",
+        "familia": "aceites"
+      },
+      {
+        "nombre": "vinagre de jerez",
+        "cantidad": 20,
+        "unidad": "ml",
+        "familia": "aceites"
+      },
+      {
+        "nombre": "pan del día anterior",
+        "cantidad": 50,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "sal",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Trocear todas las verduras y ponerlas en el vaso de la batidora.",
+      "Añadir el pan remojado, el aceite, el vinagre y la sal.",
+      "Triturar hasta obtener una textura fina y homogénea.",
+      "Colar si se quiere una textura más fina.",
+      "Refrigerar al menos 2 horas antes de servir."
+    ]
+  },
+  {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "nombre": "Pad thai",
+    "categoria": "tailandesa",
+    "sabor": "umami",
+    "tiempoPreparacion": 30,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "noodles de arroz",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "gambas",
+        "cantidad": 150,
+        "unidad": "g",
+        "familia": "pescados"
+      },
+      {
+        "nombre": "tofu firme",
+        "cantidad": 100,
+        "unidad": "g",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "brotes de soja",
+        "cantidad": 80,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "cacahuetes",
+        "cantidad": 30,
+        "unidad": "g",
+        "familia": "frutos secos"
+      },
+      {
+        "nombre": "salsa de pescado",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "salsas"
+      },
+      {
+        "nombre": "lima",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "frutas"
+      }
+    ],
+    "pasos": [
+      "Remojar los noodles en agua tibia durante 20 minutos y escurrir.",
+      "Mezclar la salsa de pescado y el zumo de media lima.",
+      "Saltear las gambas y el tofu en dados a fuego alto.",
+      "Apartar y en el mismo wok hacer los huevos revueltos.",
+      "Añadir los noodles y la salsa, mezclar bien durante 2 minutos.",
+      "Incorporar las gambas, el tofu y los brotes de soja.",
+      "Servir con cacahuetes picados y rodajas de lima."
+    ]
+  },
+  {
+    "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+    "nombre": "Tarta de manzana",
+    "categoria": "repostería",
+    "sabor": "dulce",
+    "tiempoPreparacion": 60,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "manzana golden",
+        "cantidad": 4,
+        "unidad": "unidades",
+        "familia": "frutas"
+      },
+      {
+        "nombre": "masa quebrada",
+        "cantidad": 1,
+        "unidad": "lámina",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 80,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "mantequilla",
+        "cantidad": 40,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "canela",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "proteínas"
+      }
+    ],
+    "pasos": [
+      "Precalentar el horno a 180°C.",
+      "Extender la masa quebrada en un molde engrasado.",
+      "Pelar y laminar las manzanas finamente.",
+      "Colocar las láminas en espiral sobre la masa.",
+      "Espolvorear con azúcar y canela, repartir trocitos de mantequilla.",
+      "Pintar el borde con huevo batido.",
+      "Hornear 35-40 minutos hasta que esté dorada."
+    ]
+  },
+  {
+    "id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+    "nombre": "Ensalada César",
+    "categoria": "americana",
+    "sabor": "salado",
+    "tiempoPreparacion": 20,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "lechuga romana",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "pechuga de pollo",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "carnes"
+      },
+      {
+        "nombre": "pan de molde",
+        "cantidad": 2,
+        "unidad": "rebanadas",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "parmesano",
+        "cantidad": 40,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "anchoas",
+        "cantidad": 4,
+        "unidad": "filetes",
+        "familia": "pescados"
+      },
+      {
+        "nombre": "aceite de oliva",
+        "cantidad": 60,
+        "unidad": "ml",
+        "familia": "aceites"
+      }
+    ],
+    "pasos": [
+      "Cortar el pan en dados y tostarlos con aceite y ajo.",
+      "Cocinar la pechuga a la plancha, luego cortar en tiras.",
+      "Preparar la salsa machacando las anchoas con aceite y limón.",
+      "Trocear la lechuga y mezclar con la salsa.",
+      "Añadir el pollo, los crutones y láminas de parmesano.",
+      "Servir inmediatamente."
+    ]
+  },
+  {
+    "id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
+    "nombre": "Matcha latte",
+    "categoria": "bebidas",
+    "sabor": "amargo",
+    "tiempoPreparacion": 5,
+    "favorita": true,
+    "imagen": "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "matcha en polvo",
+        "cantidad": 2,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "agua caliente",
+        "cantidad": 30,
+        "unidad": "ml",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "leche de avena",
+        "cantidad": 200,
+        "unidad": "ml",
+        "familia": "lácteos"
+      }
+    ],
+    "pasos": [
+      "Tamizar el matcha en un bol para evitar grumos.",
+      "Añadir el agua caliente (80°C) y batir con un chasen hasta que haga espuma.",
+      "Calentar y espumar la leche de avena.",
+      "Verter la leche sobre el matcha y servir."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111107",
+    "nombre": "Ramen tonkotsu",
+    "categoria": "japonesa",
+    "sabor": "umami",
+    "tiempoPreparacion": 60,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "noodles de ramen",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "caldo de cerdo",
+        "cantidad": 500,
+        "unidad": "ml",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "panceta de cerdo",
+        "cantidad": 150,
+        "unidad": "g",
+        "familia": "carnes"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "nori",
+        "cantidad": 2,
+        "unidad": "láminas",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "cebolleta",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "salsa de soja",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "salsas"
+      },
+      {
+        "nombre": "aceite de sésamo",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "aceites"
+      }
+    ],
+    "pasos": [
+      "Marinar la panceta en soja, mirin y azúcar durante 2 horas.",
+      "Cocer la panceta a fuego lento 45 minutos hasta que esté tierna.",
+      "Cocer los huevos 6 minutos, enfriar y marinar en soja diluida.",
+      "Calentar el caldo con la pasta de miso y el aceite de sésamo.",
+      "Cocer los noodles según indicaciones y escurrir.",
+      "Montar el bol con el caldo, noodles, panceta laminada, huevo y cebolleta."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111108",
+    "nombre": "Tiramisú",
+    "categoria": "italiana",
+    "sabor": "dulce",
+    "tiempoPreparacion": 30,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "bizcochos de soletilla",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "mascarpone",
+        "cantidad": 250,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 3,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 80,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "café espresso",
+        "cantidad": 200,
+        "unidad": "ml",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "cacao en polvo",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "especias"
+      },
+      {
+        "nombre": "amaretto",
+        "cantidad": 30,
+        "unidad": "ml",
+        "familia": "líquidos"
+      }
+    ],
+    "pasos": [
+      "Separar las yemas de las claras. Batir las yemas con el azúcar hasta blanquear.",
+      "Añadir el mascarpone a las yemas y mezclar hasta conseguir una crema homogénea.",
+      "Montar las claras a punto de nieve e incorporar con movimientos envolventes.",
+      "Mezclar el café frío con el amaretto.",
+      "Mojar brevemente los bizcochos en el café y disponer una capa en el molde.",
+      "Cubrir con la crema de mascarpone. Repetir las capas.",
+      "Refrigerar mínimo 4 horas. Espolvorear cacao antes de servir."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111109",
+    "nombre": "Tacos de pollo",
+    "categoria": "mexicana",
+    "sabor": "salado",
+    "tiempoPreparacion": 25,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "tortillas de maíz",
+        "cantidad": 8,
+        "unidad": "unidades",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "pechuga de pollo",
+        "cantidad": 400,
+        "unidad": "g",
+        "familia": "carnes"
+      },
+      {
+        "nombre": "cebolla morada",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "cilantro",
+        "cantidad": 1,
+        "unidad": "manojo",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "aguacate",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "frutas"
+      },
+      {
+        "nombre": "lima",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "frutas"
+      },
+      {
+        "nombre": "chile chipotle",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      },
+      {
+        "nombre": "comino",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Marinar el pollo con chipotle, comino, ajo y zumo de lima 30 minutos.",
+      "Cocinar el pollo a la plancha a fuego alto hasta que esté hecho.",
+      "Dejar reposar y desmenuzar con dos tenedores.",
+      "Preparar el guacamole aplastando el aguacate con lima y sal.",
+      "Calentar las tortillas en sartén seca.",
+      "Montar los tacos con el pollo, guacamole, cebolla y cilantro fresco."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111110",
+    "nombre": "Salmón teriyaki",
+    "categoria": "japonesa",
+    "sabor": "umami",
+    "tiempoPreparacion": 20,
+    "favorita": true,
+    "imagen": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "lomo de salmón",
+        "cantidad": 400,
+        "unidad": "g",
+        "familia": "pescados"
+      },
+      {
+        "nombre": "salsa de soja",
+        "cantidad": 3,
+        "unidad": "cucharadas",
+        "familia": "salsas"
+      },
+      {
+        "nombre": "mirin",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "sake",
+        "cantidad": 1,
+        "unidad": "cucharada",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 1,
+        "unidad": "cucharada",
+        "familia": "especias"
+      },
+      {
+        "nombre": "jengibre fresco",
+        "cantidad": 1,
+        "unidad": "cm",
+        "familia": "especias"
+      },
+      {
+        "nombre": "arroz japonés",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      }
+    ],
+    "pasos": [
+      "Mezclar la soja, el mirin, el sake y el azúcar para hacer la salsa teriyaki.",
+      "Marinar el salmón en la salsa durante 15 minutos.",
+      "Cocer el arroz según instrucciones.",
+      "Dorar el salmón en sartén 3 minutos por cada lado.",
+      "Añadir el resto de la marinada y reducir hasta que glasee.",
+      "Servir sobre el arroz con semillas de sésamo."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "nombre": "Tortilla española",
+    "categoria": "española",
+    "sabor": "salado",
+    "tiempoPreparacion": 40,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "patatas",
+        "cantidad": 500,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 6,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "cebolla",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "aceite de oliva",
+        "cantidad": 200,
+        "unidad": "ml",
+        "familia": "aceites"
+      },
+      {
+        "nombre": "sal",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Pelar y cortar las patatas en láminas finas junto con la cebolla.",
+      "Confitar las patatas y la cebolla en aceite a fuego medio-bajo 20 minutos.",
+      "Escurrir el aceite y mezclar las patatas con los huevos batidos y sal.",
+      "Cuajar en sartén antiadherente a fuego medio con un poco de aceite.",
+      "Dar la vuelta con un plato cuando la base esté firme.",
+      "Terminar de cuajar por el otro lado y servir templada."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111112",
+    "nombre": "Curry de garbanzos",
+    "categoria": "india",
+    "sabor": "amargo",
+    "tiempoPreparacion": 35,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "garbanzos cocidos",
+        "cantidad": 400,
+        "unidad": "g",
+        "familia": "legumbres"
+      },
+      {
+        "nombre": "tomate triturado",
+        "cantidad": 400,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "cebolla",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "ajo",
+        "cantidad": 3,
+        "unidad": "dientes",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "jengibre fresco",
+        "cantidad": 2,
+        "unidad": "cm",
+        "familia": "especias"
+      },
+      {
+        "nombre": "curry en polvo",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "especias"
+      },
+      {
+        "nombre": "leche de coco",
+        "cantidad": 200,
+        "unidad": "ml",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "espinacas",
+        "cantidad": 100,
+        "unidad": "g",
+        "familia": "verduras"
+      }
+    ],
+    "pasos": [
+      "Sofreír la cebolla picada hasta dorar.",
+      "Añadir el ajo y el jengibre rallado, cocinar 2 minutos.",
+      "Incorporar el curry y tostar 1 minuto.",
+      "Agregar el tomate y cocinar 10 minutos.",
+      "Añadir los garbanzos y la leche de coco, cocinar 10 minutos más.",
+      "Incorporar las espinacas al final y servir con arroz basmati."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111113",
+    "nombre": "Cheesecake de frutos rojos",
+    "categoria": "repostería",
+    "sabor": "dulce",
+    "tiempoPreparacion": 60,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "queso crema",
+        "cantidad": 500,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "galletas digestive",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "mantequilla",
+        "cantidad": 80,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 120,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 3,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "nata",
+        "cantidad": 100,
+        "unidad": "ml",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "frutos rojos",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "frutas"
+      }
+    ],
+    "pasos": [
+      "Triturar las galletas y mezclar con la mantequilla derretida.",
+      "Presionar la mezcla en la base del molde y refrigerar 30 minutos.",
+      "Batir el queso crema con el azúcar hasta que sea suave.",
+      "Añadir los huevos uno a uno y la nata.",
+      "Verter sobre la base y hornear a 160°C durante 50 minutos.",
+      "Enfriar completamente y cubrir con los frutos rojos."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111114",
+    "nombre": "Risotto de setas",
+    "categoria": "italiana",
+    "sabor": "umami",
+    "tiempoPreparacion": 35,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "arroz arborio",
+        "cantidad": 300,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "setas variadas",
+        "cantidad": 300,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "caldo de verduras",
+        "cantidad": 1,
+        "unidad": "litro",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "cebolla",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "vino blanco",
+        "cantidad": 100,
+        "unidad": "ml",
+        "familia": "líquidos"
+      },
+      {
+        "nombre": "parmesano",
+        "cantidad": 60,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "mantequilla",
+        "cantidad": 40,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "tomillo fresco",
+        "cantidad": 2,
+        "unidad": "ramitas",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Saltear las setas con mantequilla y tomillo hasta que estén doradas.",
+      "En la misma sartén, sofreír la cebolla picada fina.",
+      "Añadir el arroz y tostar 2 minutos.",
+      "Verter el vino y dejar evaporar.",
+      "Añadir el caldo caliente cazo a cazo, removiendo constantemente.",
+      "Cuando el arroz esté al dente, añadir el parmesano y la mantequilla restante."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111115",
+    "nombre": "Ceviche peruano",
+    "categoria": "peruana",
+    "sabor": "salado",
+    "tiempoPreparacion": 20,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1535400255456-984b9f625756?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "corvina o merluza",
+        "cantidad": 400,
+        "unidad": "g",
+        "familia": "pescados"
+      },
+      {
+        "nombre": "lima",
+        "cantidad": 8,
+        "unidad": "unidades",
+        "familia": "frutas"
+      },
+      {
+        "nombre": "cebolla morada",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "ají amarillo",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "cilantro",
+        "cantidad": 1,
+        "unidad": "manojo",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "ajo",
+        "cantidad": 1,
+        "unidad": "diente",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "sal",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Cortar el pescado en dados de 2 cm y salpimentar.",
+      "Exprimir las limas y mezclar con el ajo machacado.",
+      "Marinar el pescado en el zumo de lima 10 minutos.",
+      "Cortar la cebolla en juliana fina y el ají en tiras.",
+      "Mezclar todo con el cilantro picado.",
+      "Servir inmediatamente con maíz tostado y camote."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111116",
+    "nombre": "Crema catalana",
+    "categoria": "española",
+    "sabor": "dulce",
+    "tiempoPreparacion": 30,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1470324161839-ce2bb6fa6bc3?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "leche entera",
+        "cantidad": 500,
+        "unidad": "ml",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "yema de huevo",
+        "cantidad": 4,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 100,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "maizena",
+        "cantidad": 20,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "piel de limón",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "frutas"
+      },
+      {
+        "nombre": "canela en rama",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "especias"
+      },
+      {
+        "nombre": "azúcar para quemar",
+        "cantidad": 4,
+        "unidad": "cucharadas",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Infusionar la leche con la piel de limón y la canela a fuego suave.",
+      "Batir las yemas con el azúcar y la maizena.",
+      "Añadir la leche caliente poco a poco a la mezcla de yemas.",
+      "Cocer a fuego suave removiendo hasta que espese.",
+      "Verter en cazuelitas individuales y enfriar varias horas.",
+      "Espolvorear azúcar y quemar con soplete justo antes de servir."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111117",
+    "nombre": "Bibimbap",
+    "categoria": "coreana",
+    "sabor": "umami",
+    "tiempoPreparacion": 40,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "arroz de grano corto",
+        "cantidad": 300,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "ternera picada",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "carnes"
+      },
+      {
+        "nombre": "espinacas",
+        "cantidad": 100,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "zanahoria",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "setas shiitake",
+        "cantidad": 100,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 2,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "pasta de chile gochujang",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "salsas"
+      },
+      {
+        "nombre": "aceite de sésamo",
+        "cantidad": 2,
+        "unidad": "cucharaditas",
+        "familia": "aceites"
+      }
+    ],
+    "pasos": [
+      "Cocer el arroz y mantener caliente.",
+      "Saltear por separado las espinacas, la zanahoria y las setas con soja y sésamo.",
+      "Marinar la ternera con soja, azúcar y aceite de sésamo, saltear.",
+      "Freír los huevos con la yema blanda.",
+      "Montar el bol con el arroz de base y los ingredientes por encima en grupos.",
+      "Coronar con el huevo frito y la pasta gochujang. Mezclar al servir."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111118",
+    "nombre": "Croissant de mantequilla",
+    "categoria": "francesa",
+    "sabor": "dulce",
+    "tiempoPreparacion": 60,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "harina de fuerza",
+        "cantidad": 500,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "mantequilla en bloque",
+        "cantidad": 250,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "leche",
+        "cantidad": 150,
+        "unidad": "ml",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "levadura seca",
+        "cantidad": 7,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 50,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "sal",
+        "cantidad": 10,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "proteínas"
+      }
+    ],
+    "pasos": [
+      "Mezclar harina, levadura, azúcar, sal y leche templada. Amasar 10 minutos.",
+      "Reposar la masa 1 hora en frío.",
+      "Laminar la mantequilla fría y envolver con la masa en pliegues sucesivos.",
+      "Realizar 3 pliegues con reposos de 30 minutos en frío entre cada uno.",
+      "Estirar, cortar triángulos y enrollar desde la base.",
+      "Pintar con huevo batido y hornear a 200°C durante 15-18 minutos."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111119",
+    "nombre": "Shakshuka",
+    "categoria": "árabe",
+    "sabor": "salado",
+    "tiempoPreparacion": 25,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1590412200988-a436970781fa?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "tomate triturado",
+        "cantidad": 400,
+        "unidad": "g",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "pimiento rojo",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "cebolla",
+        "cantidad": 1,
+        "unidad": "unidad",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "ajo",
+        "cantidad": 3,
+        "unidad": "dientes",
+        "familia": "verduras"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 4,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "comino",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      },
+      {
+        "nombre": "pimentón picante",
+        "cantidad": 1,
+        "unidad": "cucharadita",
+        "familia": "especias"
+      },
+      {
+        "nombre": "feta",
+        "cantidad": 80,
+        "unidad": "g",
+        "familia": "lácteos"
+      }
+    ],
+    "pasos": [
+      "Sofreír la cebolla y el pimiento en aceite hasta que estén blandos.",
+      "Añadir el ajo, el comino y el pimentón, cocinar 1 minuto.",
+      "Incorporar el tomate y cocinar 10 minutos hasta que espese.",
+      "Hacer huecos en la salsa y cascar los huevos dentro.",
+      "Tapar y cocinar a fuego suave hasta que las claras estén cuajadas.",
+      "Terminar con feta desmenuzado y pan pita para mojar."
+    ]
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111120",
+    "nombre": "Brownie de chocolate",
+    "categoria": "repostería",
+    "sabor": "dulce",
+    "tiempoPreparacion": 35,
+    "favorita": false,
+    "imagen": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800&q=80&auto=format&fit=crop&crop=entropy",
+    "ingredientes": [
+      {
+        "nombre": "chocolate negro 70%",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "mantequilla",
+        "cantidad": 120,
+        "unidad": "g",
+        "familia": "lácteos"
+      },
+      {
+        "nombre": "azúcar",
+        "cantidad": 200,
+        "unidad": "g",
+        "familia": "especias"
+      },
+      {
+        "nombre": "huevo",
+        "cantidad": 3,
+        "unidad": "unidades",
+        "familia": "proteínas"
+      },
+      {
+        "nombre": "harina",
+        "cantidad": 80,
+        "unidad": "g",
+        "familia": "pasta y cereales"
+      },
+      {
+        "nombre": "cacao en polvo",
+        "cantidad": 2,
+        "unidad": "cucharadas",
+        "familia": "especias"
+      },
+      {
+        "nombre": "sal",
+        "cantidad": 1,
+        "unidad": "pizca",
+        "familia": "especias"
+      }
+    ],
+    "pasos": [
+      "Precalentar el horno a 175°C.",
+      "Derretir el chocolate con la mantequilla al baño maría.",
+      "Mezclar el azúcar con los huevos hasta que blanqueen.",
+      "Incorporar el chocolate derretido a la mezcla de huevos.",
+      "Añadir la harina tamizada, el cacao y la sal, mezclar justo hasta integrar.",
+      "Verter en molde engrasado y hornear 20-22 minutos. Debe quedar húmedo en el centro."
+    ]
+  }
+]
