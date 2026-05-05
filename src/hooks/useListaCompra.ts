@@ -10,8 +10,6 @@ export interface EntradaLista {
   raciones: number
 }
 
-const MAX_RACIONES = 4
-
 function useListaCompra() {
   const [seleccionadas, setSeleccionadas] = useState<EntradaLista[]>([])
 
@@ -24,7 +22,7 @@ function useListaCompra() {
   }
 
   function setRaciones(id: string, raciones: number) {
-    const clamped = Math.max(1, Math.min(MAX_RACIONES, raciones))
+    const clamped = Math.max(1, raciones)
     setSeleccionadas((prev) =>
       prev.map((e) => (e.receta.id === id ? { ...e, raciones: clamped } : e))
     )
