@@ -7,8 +7,8 @@ import type { Receta, Sabor } from '../../types/receta'
 const SABOR_BG: Record<Sabor, string> = {
   salado: '#041524',  // abismo oceánico
   dulce:  '#2d0412',  // cereza macerada
-  amargo: '#180d00',  // fondo de taza
-  umami:  '#100820',  // tierra de trufas
+  amargo: '#1a1000',  // espresso oscuro
+  umami:  '#130c1a',  // berenjena fermentada
   acido:  '#0c1a00',  // lima nocturna
 }
 

@@ -8,8 +8,8 @@ import type { Filtros } from '../../hooks/useFiltros'
 const SABORES: { valor: Sabor; label: string; gradient: string; dot: string }[] = [
   { valor: 'salado', label: 'Salado',  gradient: 'linear-gradient(135deg,#041524 0%,#0c3553 55%,#1e6fa1 100%)', dot: '#38bdf8' },
   { valor: 'dulce',  label: 'Dulce',   gradient: 'linear-gradient(135deg,#2d0412 0%,#7f1d45 55%,#e11d60 100%)', dot: '#fb7185' },
-  { valor: 'amargo', label: 'Amargo',  gradient: 'linear-gradient(135deg,#180d00 0%,#3d2200 55%,#b45309 100%)', dot: '#fb923c' },
-  { valor: 'umami',  label: 'Umami',   gradient: 'linear-gradient(135deg,#100820 0%,#2e1065 55%,#7c3aed 100%)', dot: '#a78bfa' },
+  { valor: 'amargo', label: 'Amargo',  gradient: 'linear-gradient(135deg,#1a1000 0%,#4a3000 55%,#ca8a04 100%)', dot: '#fbbf24' },
+  { valor: 'umami',  label: 'Umami',   gradient: 'linear-gradient(135deg,#130c1a 0%,#3b1a5a 55%,#9333ea 100%)', dot: '#c084fc' },
   { valor: 'acido',  label: 'Ácido',   gradient: 'linear-gradient(135deg,#0c1a00 0%,#2a4a00 55%,#65a30d 100%)', dot: '#a3e635' },
 ]
 const NEUTRAL_BG = 'linear-gradient(135deg,#111827 0%,#1f2937 55%,#374151 100%)'
