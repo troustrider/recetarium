@@ -3,7 +3,7 @@ import type { Receta } from '../types/receta'
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 type Filtros = { categoria?: string; sabor?: string }
 
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3001/api/v1'
+const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 const URL_RECETAS = `${BASE}/recetas`
 
 async function manejarRespuesta<T>(res: Response): Promise<T> {
