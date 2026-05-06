@@ -4,8 +4,13 @@ const path = require('path')
 const DATA_PATH = path.join(__dirname, '../data/recetas.json')
 
 async function readData() {
-  const content = await fs.readFile(DATA_PATH, 'utf-8')
-  return JSON.parse(content)
+  try {
+    const content = await fs.readFile(DATA_PATH, 'utf-8')
+    return JSON.parse(content)
+  } catch {
+    // static require so bundlers (Vercel) always include the file
+    return require('../data/recetas.json')
+  }
 }
 
 async function writeData(data) {
