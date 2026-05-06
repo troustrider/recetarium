@@ -14,7 +14,11 @@ async function readData() {
 }
 
 async function writeData(data) {
-  await fs.writeFile(DATA_PATH, JSON.stringify(data, null, 2))
+  try {
+    await fs.writeFile(DATA_PATH, JSON.stringify(data, null, 2))
+  } catch {
+    // read-only filesystem in production (Vercel) — state lives in memory only
+  }
 }
 
 async function getAll({ categoria, sabor } = {}) {
