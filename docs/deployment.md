@@ -10,19 +10,20 @@ El despliegue es automático: cada push a `main` lanza un nuevo build.
 
 El proyecto es un monorepo con frontend (Vite) y backend (Express). Vercel lo gestiona con un solo `vercel.json` en la raíz:
 
-- Las rutas `/api/*` se redirigen a `server/src/index.js`, que actúa como función serverless.
+- Las rutas `/api/*` se redirigen a `api/index.js`, que actúa como función serverless.
+- `api/index.js` es un wrapper ESM que importa el servidor Express desde `server/src/index.js`.
+- `includeFiles: "server/src/**"` bundlea el código del servidor y el JSON de datos junto con la función.
 - El resto de rutas devuelven `index.html` para que React Router funcione en cliente.
-- La config `functions.includeFiles` asegura que el JSON de datos se bundlea junto con la función.
 
 ```json
 {
   "functions": {
-    "server/src/index.js": {
-      "includeFiles": "server/src/data/**"
+    "api/index.js": {
+      "includeFiles": "server/src/**"
     }
   },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/server/src/index.js" },
+    { "source": "/api/:path*", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
@@ -30,11 +31,11 @@ El proyecto es un monorepo con frontend (Vite) y backend (Express). Vercel lo ge
 
 ## Variables de entorno
 
-| Variable | Valor en producción | Dónde se configura |
-|---|---|---|
-| `VITE_API_URL` | `https://recetarium-one.vercel.app/api/v1` | Vercel → Settings → Environment Variables |
+No se requieren variables de entorno para el despliegue básico. El frontend usa `/api/v1` como base URL por defecto (URL relativa), lo que funciona directamente en Vercel al compartir dominio con la función serverless.
 
-Sin esta variable el frontend cae al default `http://localhost:3001/api/v1` y no carga datos en producción.
+| Variable | Uso | Cuándo configurarla |
+|---|---|---|
+| `VITE_API_URL` | Sobreescribe la URL base de la API | Solo si se despliega el frontend y el backend en dominios distintos |
 
 ## Limitación actual
 
@@ -46,5 +47,4 @@ La solución prevista para fases posteriores es migrar a una base de datos exter
 
 1. Importar el repositorio en Vercel (o conectarlo si ya existe).
 2. El framework se detecta automáticamente como Vite.
-3. Añadir la variable `VITE_API_URL` en Settings → Environment Variables.
-4. Hacer push a `main` — Vercel despliega solo.
+3. Hacer push a `main` — Vercel despliega solo.
