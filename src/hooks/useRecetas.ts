@@ -68,14 +68,18 @@ function useRecetas() {
   }
 
   async function alternarFavorita(id: string): Promise<boolean> {
+    setState((prev) => ({
+      ...prev,
+      recetas: prev.recetas.map((r) => (r.id === id ? { ...r, favorita: !r.favorita } : r)),
+    }))
     try {
-      const actualizada = await toggleFavorita(id)
-      setState((prev) => ({
-        ...prev,
-        recetas: prev.recetas.map((r) => (r.id === id ? actualizada : r)),
-      }))
+      await toggleFavorita(id)
       return true
     } catch {
+      setState((prev) => ({
+        ...prev,
+        recetas: prev.recetas.map((r) => (r.id === id ? { ...r, favorita: !r.favorita } : r)),
+      }))
       return false
     }
   }
