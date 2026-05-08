@@ -4,7 +4,7 @@ Gestor de recetas personal. Centraliza tus recetas y genera listas de la compra 
 
 Frontend en React + TypeScript + Vite + Tailwind CSS. Backend en Node.js + Express. Desplegado en Vercel.
 
-Proyecto de fin de estudios desarrollado por **Karim Abatouy Ábalos** para [Corner Estudios SL](https://corner-estudios.com).
+Proyecto desarrollado por **Karim Abatouy Ábalos** para [Corner Estudios SL](https://corner-estudios.com).
 
 **Demo en producción:** [recetarium-one.vercel.app](https://recetarium-one.vercel.app)
 
