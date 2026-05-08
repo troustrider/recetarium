@@ -1,35 +1,26 @@
 # Metodologías de desarrollo
 
-## ¿Qué es Agile?
+## Agile
 
-Agile es una filosofía sobre organización del trabajo. Su idea central es que, en vez de planificar todo al principio y seguir un plan estricto, se trabaja en ciclos cortos, con entregas pequeñas pero funcionales con frecuencia, ajustando según lo que se va aprendiendo en el camino.
+Agile es una forma de organizar el trabajo que apuesta por hacer entregas pequeñas y frecuentes en lugar de planificar todo al principio y esperar al final para ver si funcionó. La idea es que los requisitos cambian, y es mejor adaptarse que seguir un plan que ya no tiene sentido.
 
-## ¿Qué es Scrum?
+## Scrum
 
-Scrum es un método de trabajo basado en la filosofía Agile que organiza el trabajo en ciclos de tiempo fijo llamados sprints.
+Scrum aplica esa idea dividiéndolo en ciclos cortos llamados sprints, normalmente de una o dos semanas. Al final de cada sprint tienes algo que funciona y puedes enseñar.
 
-Sus conceptos principales son:
+Los roles principales son:
+- **Product Owner** — decide qué se construye y en qué orden. Es la persona que conoce lo que necesita el cliente.
+- **Scrum Master** — se asegura de que el equipo trabaje bien y elimina los obstáculos.
+- **Equipo de desarrollo** — los que construyen el producto.
 
-- **Product Backlog**: la lista completa de todo lo que hay que hacer en el proyecto.
-- **Sprint Backlog**: las tareas concretas elegidas para cada sprint.
-- **Daily Standup**: una reunión diaria de 15 minutos donde cada miembro del equipo pone al día a sus compañeros sobre qué hizo, qué hará y qué le bloquea.
-- **Sprint Review**: al final del sprint, se enseña todo lo que se ha hecho.
+Las reuniones clave son la planificación del sprint (qué hacemos esta semana), el daily standup (qué hice ayer, qué hago hoy, qué me bloquea) y la revisión al final del sprint.
 
-Scrum define tres roles:
+## Kanban
 
-- **Product Owner**: decide qué se construye y en qué orden de prioridad. Es la voz del cliente.
-- **Scrum Master**: se asegura de que el equipo siga el proceso Scrum correctamente y elimina obstáculos.
-- **Equipo de desarrollo**: los que construyen el producto.
+Kanban no trabaja con ciclos fijos. Hay un tablero con columnas (Backlog, En progreso, Hecho...) y las tareas van avanzando por ellas. La regla importante es limitar cuántas tareas puedes tener a la vez en "En progreso", para terminar cosas antes de empezar nuevas.
 
-## ¿Qué es Kanban?
+## Por qué elegí Kanban para este proyecto
 
-Kanban es un método de organización de trabajo basado en Agile, originado en las fábricas de Toyota. Tiene menos ceremonias que Scrum. Usa un tablero visual con columnas para organizar las tareas pendientes, en las que estás trabajando y qué has terminado. Una regla clave es limitar cuántas tareas puedes tener en progreso a la vez, lo que obliga a terminar cosas antes de empezar nuevas.
+Scrum está pensado para equipos. Tiene sentido cuando hay varias personas que necesitan coordinarse, reuniones donde ponerse al día y roles distintos. Para un proyecto individual como Recetarium, montar esa estructura no aporta nada.
 
-## Diferencias entre Scrum y Kanban
-
-La diferencia principal es que Scrum organiza el trabajo en sprints (ciclos de tiempo fijo), mientras que Kanban es un flujo continuo donde las tareas van moviéndose por las columnas sin ciclos definidos. Scrum tiene más estructura y ceremonias (roles, reuniones, revisiones), mientras que Kanban es más flexible.
-
-## ¿Cuándo usar cada uno?
-
-- **Scrum** lo usaría para organizar el desarrollo de una app en equipo, o para proyectos muy extensos donde hace falta estructura y planificación por fases.
-- **Kanban** lo usaría en contextos donde no hay un objetivo cerrado como tal, sino una serie de tareas que implican cierta ciclicidad o recurrencia, como mantenimiento de sistemas o proyectos individuales.
+Kanban me dio visibilidad sobre en qué estaba sin añadir ceremonia innecesaria. Podía ver de un vistazo qué estaba pendiente, en qué me había atascado y qué tenía terminado. Eso es lo que necesitaba.
