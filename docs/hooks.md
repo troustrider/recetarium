@@ -70,18 +70,19 @@ El filtrado se recalcula solo cuando cambian `recetas` o `filtros` (usa `useMemo
 
 ## useListaCompra
 
-Gestiona las recetas seleccionadas para la compra y calcula la lista de ingredientes fusionada. No hace llamadas a la API.
+Gestiona las recetas seleccionadas para la compra (con raciones por receta) y calcula la lista de ingredientes fusionada. No hace llamadas a la API.
 
 ```ts
-const { seleccionadas, listaCompra, toggleReceta, estaSeleccionada, vaciar } = useListaCompra()
+const { seleccionadas, listaCompra, toggleReceta, setRaciones, estaSeleccionada, vaciar } = useListaCompra()
 ```
 
 | Retorno | Tipo | Descripción |
 |---------|------|-------------|
-| `seleccionadas` | `Receta[]` | Recetas marcadas para la compra |
+| `seleccionadas` | `EntradaLista[]` | Recetas marcadas para la compra, cada una con su número de raciones |
 | `listaCompra` | `IngredienteAgrupado[]` | Ingredientes fusionados, ordenados por familia y nombre |
-| `toggleReceta` | `(receta: Receta) => void` | Añade o quita una receta de la selección |
+| `toggleReceta` | `(receta: Receta) => void` | Añade la receta con 1 ración, o la quita si ya estaba |
+| `setRaciones` | `(id: string, n: number) => void` | Cambia las raciones de una receta seleccionada (mín. 1) |
 | `estaSeleccionada` | `(id: string) => boolean` | Comprueba si una receta está seleccionada |
 | `vaciar` | `() => void` | Limpia toda la selección |
 
-Cuando el mismo ingrediente aparece en varias recetas con la misma unidad, las cantidades se suman. La fusión se recalcula solo cuando cambia `seleccionadas` (usa `useMemo`).
+Cuando el mismo ingrediente aparece en varias recetas con la misma unidad, las cantidades se suman multiplicadas por las raciones de cada receta. La fusión se recalcula solo cuando cambia `seleccionadas` (usa `useMemo`).

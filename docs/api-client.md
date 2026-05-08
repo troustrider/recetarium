@@ -12,14 +12,14 @@ Hook (useRecetas, useReceta)
 
 ## URL base
 
-La URL base sale de la variable de entorno `VITE_API_URL`. Si no existe, cae a `http://localhost:3001/api/v1`.
+La URL base sale de la variable de entorno `VITE_API_URL`. Si no existe, cae a `/api/v1` (ruta relativa), que funciona directamente en Vercel al compartir dominio con la función serverless.
 
 ```
 # .env (no se sube al repo)
 VITE_API_URL=http://localhost:3001/api/v1
 ```
 
-En producción (Vercel), se configura como variable de entorno en el panel del proyecto.
+`VITE_API_URL` solo hace falta si el frontend y el backend están en dominios distintos.
 
 ## Funciones del cliente
 

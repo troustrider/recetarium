@@ -97,7 +97,7 @@ Elimina una receta.
 La validación se aplica en los endpoints POST y PUT. Los campos obligatorios son:
 
 - `nombre` — string no vacío
-- `sabor` — uno de: `salado`, `dulce`, `amargo`, `umami`
+- `sabor` — uno de: `salado`, `dulce`, `amargo`, `umami`, `acido`
 - `tiempoPreparacion` — número mayor que 0
 - `ingredientes` — array con al menos un elemento; cada ingrediente necesita `nombre`, `cantidad` (número > 0), `unidad` y `familia`
 - `pasos` — array con al menos un string no vacío
