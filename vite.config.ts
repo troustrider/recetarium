@@ -12,4 +12,14 @@ export default defineConfig({
       '/api': 'http://localhost:3001',
     },
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/tests/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: ['src/hooks/**', 'src/components/**'],
+    },
+  },
 })

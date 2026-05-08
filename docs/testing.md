@@ -1,34 +1,66 @@
 # Testing
 
-## Cómo lo hice
+## Tests automáticos
 
-Fui probando cada cosa en el navegador según la iba desarrollando, con el frontend y el backend corriendo en local. No hay tests automáticos, todo fue manual y a ojo.
+Stack: **Vitest** + **React Testing Library** + **jsdom**.
 
-## Qué probé
+```
+npm test            # watch mode
+npm run test:coverage  # cobertura en html
+```
 
-**CRUD de recetas.** Crear, editar y borrar funciona. El formulario no deja guardar si falta el nombre, algún ingrediente o algún paso. La categoría se guarda siempre en minúsculas y sugiere las que ya existen. Al guardar, va directo al detalle de la receta. Todo persiste al recargar la página.
+### Archivos de test
 
-**Catálogo y filtros.** Los filtros de categoría se generan solos a partir de las recetas que hay. El de sabor cubre los cinco tipos. Se pueden usar los dos filtros a la vez. El corazón de favorita responde bien desde la tarjeta.
+| Archivo | Qué cubre |
+|---|---|
+| `src/tests/RecetaCard.test.tsx` | Componente visual de tarjeta |
+| `src/tests/useFiltros.test.ts` | Hook de filtrado de recetas |
 
-**Favoritas.** Las tarjetas se ven igual que en el catálogo, con imágenes incluidas. Había un bug donde salían gradientes de color en lugar de las imágenes porque la página usaba sus propias tarjetas en vez del componente que ya existía. Se arregló.
+### RecetaCard (6 tests)
 
-**Planificador.** Se pueden poner varias recetas el mismo día. Los botones +/− de raciones funcionan por receta (entre 1 y 4). Se puede arrastrar una receta de un día a otro. Al añadir una receta al planificador, aparece sola en la lista de la compra. Si la misma receta está en varios días, las raciones se suman.
+- Renderiza el nombre en el heading
+- Renderiza el tiempo de preparación
+- Llama a `onClick` al pulsar la tarjeta
+- Llama a `onToggleFavorita` sin propagar el click al artículo (stopPropagation)
+- Muestra `aria-label="Quitar de favoritas"` cuando `favorita: true`
+- Muestra la categoría si existe
 
-**Despensa.** Se añaden ingredientes con su categoría. Se agrupan por tipo. Haciendo clic en un ingrediente cambia entre "lleno" y "poco". Hay un botón para importar todo lo que hay en la lista de la compra de golpe. Los filtros por estado funcionan. Se guarda en el navegador y no se pierde al recargar.
+### useFiltros (5 tests)
 
-**Lista de la compra.** Los ingredientes de distintas recetas se juntan correctamente, sumando cantidades. Las raciones multiplican bien.
+- Sin filtros devuelve todas las recetas
+- Filtro por sabor devuelve solo las recetas del sabor elegido
+- Filtro por categoría devuelve solo las recetas de esa categoría
+- Filtro por tiempoMax excluye las recetas más lentas
+- `resetFiltros` restaura el catálogo completo
 
-**Modo oscuro.** El toggle funciona y recuerda la preferencia. Si no hay preferencia guardada, usa la del sistema. El cambio entre modos tiene una transición suave.
+---
 
-**Estados de carga y error.** Se probó cortando el servidor para ver qué pasa. Aparece el mensaje de error y el botón de reintentar funciona al volver a levantarlo.
+## Pruebas manuales
+
+Fui probando cada cosa en el navegador según la iba desarrollando, con el frontend y el backend corriendo en local.
+
+**CRUD de recetas.** Crear, editar y borrar funciona. El formulario no deja guardar si falta el nombre, algún ingrediente o algún paso. Al guardar, va directo al detalle de la receta. Todo persiste al recargar la página.
+
+**Catálogo y filtros.** Los filtros de categoría se generan solos a partir de las recetas que hay. El de sabor cubre los cinco tipos. Se pueden usar los dos filtros a la vez.
+
+**Favoritas.** Las tarjetas se ven igual que en el catálogo, con imágenes incluidas.
+
+**Planificador.** Se pueden poner varias recetas el mismo día. Los botones +/− de raciones funcionan por receta (1 a 4). Se puede arrastrar una receta de un día a otro.
+
+**Despensa.** Se añaden ingredientes con su categoría. Clic cambia entre "lleno" y "poco". Hay un botón para importar todo desde la lista de la compra.
+
+**Lista de la compra.** Los ingredientes de distintas recetas se juntan sumando cantidades. Las raciones multiplican bien.
+
+**Modo oscuro.** El toggle funciona y recuerda la preferencia. Si no hay preferencia guardada, usa la del sistema.
+
+**Estados de carga y error.** Probado cortando el servidor. Aparece el mensaje de error y el botón de reintentar funciona al levantarlo de nuevo.
 
 ## Responsive
 
-Probado en móvil, tablet y escritorio. El catálogo pasa de una columna a dos. La navegación colapsa en móvil. El resto se ve bien en todos los tamaños.
+Probado en móvil, tablet y escritorio. El catálogo pasa de una columna a dos. La navegación colapsa en móvil.
 
-## Bugs encontrados
+## Bugs encontrados y corregidos
 
-Dos cosas que se corrigieron durante el proceso:
-
-- **Favoritas sin imágenes.** La página tenía sus propias tarjetas con gradientes de color en lugar de usar el componente `RecetaCard`. Se reemplazó y ya muestra las imágenes.
-- **Raciones que se cortaban.** Al sincronizar el planificador con la lista de la compra, las raciones se limitaban a 4 aunque la suma de varios días fuera mayor. Se quitó ese límite.
+- **Favoritas sin imágenes.** La página tenía sus propias tarjetas con gradientes en lugar de usar `RecetaCard`. Se reemplazó.
+- **Raciones cortadas.** Al sincronizar el planificador con la lista de la compra, las raciones se limitaban a 4 aunque la suma de varios días fuera mayor. Se quitó el límite.
+- **Toggle de favorita no revertía.** En producción (Vercel) el filesystem es de solo lectura, así que cada llamada a `PATCH /favorita` leía siempre `favorita: false` del JSON original y devolvía `true`. Se corrigió con optimistic update en el frontend.
