@@ -2,7 +2,7 @@
 
 ## ¿Qué problema resuelve?
 
-Alguien que cocina en casa a diario tiene recetas repartidas por todos lados: notas del móvil, papeles en la cocina, links guardados, mensajes... Recetarium es un sitio centralizado donde guardar, organizar y encontrar tus recetas, y además ayuda a planificar la compra de la semana para no comprar de más ni de menos.
+Alguien que cocina en casa a diario tiene recetas repartidas por todos lados: notas del móvil, papeles en la cocina, links guardados, mensajes... Recetarium es donde tenerlas todas juntas: guardar, organizar y encontrar tus recetas, y planificar la compra de la semana sin comprar de más ni de menos.
 
 ## Usuario objetivo
 

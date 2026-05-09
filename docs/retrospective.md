@@ -2,11 +2,11 @@
 
 ## Qué aprendí conectando frontend, backend y API
 
-Lo más importante fue entender que React no es "la app" sino solo la capa visual. Hasta esta fase construía interfaces que funcionaban, pero los datos venían de localStorage y todo vivía en el navegador. Conectar eso a un servidor real cambió cómo pienso en el flujo de datos: lo que muestra la UI es temporal, lo que importa es lo que devuelve la API.
+React no es "la app", es solo la capa visual. Hasta esta fase no lo tenía del todo claro porque mis proyectos anteriores vivían en localStorage: frontend y datos en el mismo sitio, sin servidor. Conectar a un backend real lo hizo evidente: lo que muestra la UI es temporal, lo que persiste está en la API.
 
-También aprendí a distinguir cuándo un problema está en el cliente (estado, renders, tipos) y cuándo está en la red (CORS, status codes, formato del body). Antes los confundía bastante.
+Ahora sé distinguir si el bug está en el cliente (estado, renders, tipos) o en la red (CORS, status codes, formato del body). Antes no sabía ni por dónde empezar a buscar.
 
-En TypeScript empecé a ver el valor de tener los tipos definidos en un solo sitio. Que `Receta` sea el mismo tipo en el cliente API y en el formulario elimina una categoría entera de errores que antes ni veía.
+Con TypeScript entendí por qué vale la pena definir los tipos en un solo sitio. Si `Receta` es el mismo tipo en el cliente API y en el formulario, TypeScript te avisa cuando uno se desactualiza.
 
 ## Principales problemas encontrados
 
@@ -20,6 +20,6 @@ En TypeScript empecé a ver el valor de tener los tipos definidos en un solo sit
 
 La usé bastante. Para código repetitivo que entendía pero que escribir a mano habría sido lento (los tipos de TypeScript, el cliente de API, los tests), fue útil. También para generar las recetas del JSON de ejemplo y para escribir la documentación.
 
-Donde me fue menos bien fue en los bugs de integración. Cuando algo fallaba entre el frontend, el servidor y Vercel, darle solo el mensaje de error no servía de mucho. Necesitaba darle el stack trace completo, mostrarle qué devolvía la API exactamente y explicar qué había cambiado. Con ese contexto sí ayudaba a diagnosticar, pero la parte de entender qué estaba pasando la tuve que hacer yo.
+En los bugs de integración me ayudó menos. Cuando algo fallaba entre el frontend, el servidor y Vercel, darle solo el mensaje de error no servía de mucho. Necesitaba darle el stack trace completo, mostrarle qué devolvía la API exactamente y explicar qué había cambiado. Con ese contexto sí ayudaba a diagnosticar, pero la parte de entender qué estaba pasando la tuve que hacer yo.
 
-Lo que me llevo: la IA es buena generando cosas, no tan buena depurando sistemas donde hay varias capas interactuando. Y si no entiendes lo que genera, tarde o temprano te lo encuentras como un bug que no sabes explicar.
+La IA genera bien. Depurar cuando el bug está repartido entre el frontend, el servidor y Vercel es otra historia. Y si no entiendes lo que te genera, tarde o temprano se convierte en un bug que no sabes ni explicar.

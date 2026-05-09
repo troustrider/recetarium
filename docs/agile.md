@@ -6,7 +6,7 @@ Agile es una forma de organizar el trabajo que apuesta por hacer entregas peque�
 
 ## Scrum
 
-Scrum aplica esa idea dividiéndolo en ciclos cortos llamados sprints, normalmente de una o dos semanas. Al final de cada sprint tienes algo que funciona y puedes enseñar.
+Scrum lo hace con ciclos cortos llamados sprints, normalmente de una o dos semanas. Al final de cada sprint tienes algo que funciona y puedes enseñar.
 
 Los roles principales son:
 - **Product Owner** — decide qué se construye y en qué orden. Es la persona que conoce lo que necesita el cliente.
