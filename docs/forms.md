@@ -22,7 +22,7 @@ Cada input tiene su `value` enlazado al estado y su `onChange` actualiza ese est
 
 ## Validación
 
-La validación ocurre en dos momentos distintos.
+La validación pasa en dos sitios.
 
 Al intentar añadir un ingrediente, se comprueba que todos sus campos están rellenos y que la cantidad es mayor que cero. Si algo falta, aparece un mensaje bajo el botón de añadir.
 
@@ -43,4 +43,4 @@ Además, si ya hay recetas con categorías asignadas, el campo muestra sugerenci
 
 ## Confirmación
 
-No hay un mensaje de confirmación explícito. Cuando la receta se guarda correctamente, la página navega directamente al detalle de la receta creada o editada. La redirección actúa como confirmación implícita.
+No hay un mensaje de confirmación explícito. Cuando la receta se guarda correctamente, la página navega directamente al detalle de la receta creada o editada. La redirección hace de confirmación.
