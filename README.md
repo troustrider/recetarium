@@ -8,6 +8,8 @@ Proyecto desarrollado por **Karim Abatouy Ábalos** para [Corner Estudios SL](ht
 
 **Demo en producción:** [recetarium-one.vercel.app](https://recetarium-one.vercel.app)
 
+**API Docs (Swagger UI):** [Ver documentación interactiva](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/troustrider/recetarium/main/docs/swagger.json)
+
 **Tablero Kanban:** [Recetarium en Trello](https://trello.com/b/saQXnsUb/recetarium)
 
 ---
