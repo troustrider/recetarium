@@ -1,5 +1,5 @@
-const { Router } = require('express')
-const c = require('../controllers/recetasController')
+import { Router } from 'express'
+import * as c from '../controllers/recetasController.js'
 
 const router = Router()
 
@@ -174,4 +174,4 @@ router.patch('/:id/favorita', c.toggleFavorita)
  */
 router.delete('/:id', c.remove)
 
-module.exports = router
+export default router
