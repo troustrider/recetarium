@@ -1,5 +1,8 @@
 const { Router } = require('express')
 const sql = require('../lib/db')
+const db = require('../lib/drizzle')
+const { recetas: recetasTable, categories } = require('../lib/schema')
+const { eq } = require('drizzle-orm')
 
 const router = Router()
 
@@ -26,6 +29,15 @@ router.post('/recetas', async (req, res, next) => {
       RETURNING *
     `
     res.status(201).json(receta)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/categories', async (req, res, next) => {
+  try {
+    const result = await db.select().from(categories).orderBy(categories.name)
+    res.json(result)
   } catch (err) {
     next(err)
   }
