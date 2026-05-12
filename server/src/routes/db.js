@@ -1,7 +1,5 @@
 import { Router } from 'express'
 import sql from '../lib/db.js'
-import db from '../lib/drizzle.js'
-import { categories } from '../lib/schema.js'
 
 const router = Router()
 
@@ -35,7 +33,7 @@ router.post('/recetas', async (req, res, next) => {
 
 router.get('/categories', async (req, res, next) => {
   try {
-    const result = await db.select().from(categories).orderBy(categories.name)
+    const result = await sql`SELECT id, name, description FROM categories ORDER BY name`
     res.json(result)
   } catch (err) {
     next(err)
