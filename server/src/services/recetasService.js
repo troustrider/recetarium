@@ -1,71 +1,115 @@
-const fs = require('fs/promises')
-const path = require('path')
-
-const DATA_PATH = path.join(__dirname, '../data/recetas.json')
-
-async function readData() {
-  try {
-    const content = await fs.readFile(DATA_PATH, 'utf-8')
-    return JSON.parse(content)
-  } catch {
-    // static require so bundlers (Vercel) always include the file
-    return require('../data/recetas.json')
-  }
-}
-
-async function writeData(data) {
-  try {
-    await fs.writeFile(DATA_PATH, JSON.stringify(data, null, 2))
-  } catch {
-    // read-only filesystem in production (Vercel) — state lives in memory only
-  }
-}
+const sql = require('../lib/db')
 
 async function getAll({ categoria, sabor } = {}) {
-  let recetas = await readData()
-  if (categoria) recetas = recetas.filter((r) => r.categoria === categoria)
-  if (sabor) recetas = recetas.filter((r) => r.sabor === sabor)
-  return recetas
+  if (categoria && sabor) {
+    return sql`
+      SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
+             r.tiempo_preparacion AS "tiempoPreparacion",
+             r.favorita, r.imagen, r.ingredientes, r.pasos,
+             r.precio_por_porcion, r.porciones
+      FROM recetas r INNER JOIN categories c ON r.category_id = c.id
+      WHERE r.categoria = ${categoria} AND c.name = ${sabor}
+      ORDER BY r.nombre
+    `
+  }
+  if (categoria) {
+    return sql`
+      SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
+             r.tiempo_preparacion AS "tiempoPreparacion",
+             r.favorita, r.imagen, r.ingredientes, r.pasos,
+             r.precio_por_porcion, r.porciones
+      FROM recetas r INNER JOIN categories c ON r.category_id = c.id
+      WHERE r.categoria = ${categoria}
+      ORDER BY r.nombre
+    `
+  }
+  if (sabor) {
+    return sql`
+      SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
+             r.tiempo_preparacion AS "tiempoPreparacion",
+             r.favorita, r.imagen, r.ingredientes, r.pasos,
+             r.precio_por_porcion, r.porciones
+      FROM recetas r INNER JOIN categories c ON r.category_id = c.id
+      WHERE c.name = ${sabor}
+      ORDER BY r.nombre
+    `
+  }
+  return sql`
+    SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
+           r.tiempo_preparacion AS "tiempoPreparacion",
+           r.favorita, r.imagen, r.ingredientes, r.pasos,
+           r.precio_por_porcion, r.porciones
+    FROM recetas r INNER JOIN categories c ON r.category_id = c.id
+    ORDER BY r.nombre
+  `
 }
 
 async function getById(id) {
-  const recetas = await readData()
-  return recetas.find((r) => r.id === id) ?? null
+  const [row] = await sql`
+    SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
+           r.tiempo_preparacion AS "tiempoPreparacion",
+           r.favorita, r.imagen, r.ingredientes, r.pasos,
+           r.precio_por_porcion, r.porciones
+    FROM recetas r INNER JOIN categories c ON r.category_id = c.id
+    WHERE r.id = ${id}
+  `
+  return row ?? null
+}
+
+async function getCategoryId(sabor) {
+  const [cat] = await sql`SELECT id FROM categories WHERE name = ${sabor}`
+  if (!cat) throw new Error(`Sabor desconocido: ${sabor}`)
+  return cat.id
 }
 
 async function create(data) {
-  const recetas = await readData()
-  const nueva = { id: crypto.randomUUID(), favorita: false, ...data }
-  recetas.push(nueva)
-  await writeData(recetas)
-  return nueva
+  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos } = data
+  const categoryId = await getCategoryId(sabor)
+  const [row] = await sql`
+    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, imagen, ingredientes, pasos, precio_por_porcion, porciones, category_id)
+    VALUES (
+      ${nombre}, ${categoria ?? null}, ${tiempoPreparacion}, ${favorita ?? false},
+      ${imagen ?? null}, ${JSON.stringify(ingredientes)}, ${JSON.stringify(pasos)},
+      0, 1, ${categoryId}
+    )
+    RETURNING id
+  `
+  return getById(row.id)
 }
 
 async function update(id, data) {
-  const recetas = await readData()
-  const index = recetas.findIndex((r) => r.id === id)
-  if (index === -1) return null
-  recetas[index] = { ...recetas[index], ...data, id }
-  await writeData(recetas)
-  return recetas[index]
+  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos } = data
+  const categoryId = await getCategoryId(sabor)
+  const result = await sql`
+    UPDATE recetas SET
+      nombre = ${nombre},
+      categoria = ${categoria ?? null},
+      tiempo_preparacion = ${tiempoPreparacion},
+      favorita = ${favorita ?? false},
+      imagen = ${imagen ?? null},
+      ingredientes = ${JSON.stringify(ingredientes)},
+      pasos = ${JSON.stringify(pasos)},
+      category_id = ${categoryId}
+    WHERE id = ${id}
+    RETURNING id
+  `
+  if (result.length === 0) return null
+  return getById(id)
 }
 
 async function toggleFavorita(id) {
-  const recetas = await readData()
-  const index = recetas.findIndex((r) => r.id === id)
-  if (index === -1) return null
-  recetas[index].favorita = !recetas[index].favorita
-  await writeData(recetas)
-  return recetas[index]
+  const result = await sql`
+    UPDATE recetas SET favorita = NOT favorita
+    WHERE id = ${id}
+    RETURNING id
+  `
+  if (result.length === 0) return null
+  return getById(id)
 }
 
 async function remove(id) {
-  const recetas = await readData()
-  const index = recetas.findIndex((r) => r.id === id)
-  if (index === -1) return false
-  recetas.splice(index, 1)
-  await writeData(recetas)
-  return true
+  const result = await sql`DELETE FROM recetas WHERE id = ${id} RETURNING id`
+  return result.length > 0
 }
 
 module.exports = { getAll, getById, create, update, toggleFavorita, remove }
