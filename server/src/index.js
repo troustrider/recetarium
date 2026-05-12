@@ -3,6 +3,7 @@ const cors = require('cors')
 const swaggerUi = require('swagger-ui-express')
 const swaggerSpec = require('./config/swagger')
 const recetasRouter = require('./routes/recetas')
+const dbRouter = require('./routes/db')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -12,6 +13,7 @@ app.use(express.json())
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use('/api/v1/recetas', recetasRouter)
+app.use('/api/v1/db', dbRouter)
 
 app.use((err, req, res, next) => {
   console.error(err)
