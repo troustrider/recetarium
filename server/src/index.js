@@ -1,9 +1,9 @@
-const express = require('express')
-const cors = require('cors')
-const swaggerUi = require('swagger-ui-express')
-const swaggerSpec = require('./config/swagger')
-const recetasRouter = require('./routes/recetas')
-const dbRouter = require('./routes/db')
+import express from 'express'
+import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from './config/swagger.js'
+import recetasRouter from './routes/recetas.js'
+import dbRouter from './routes/db.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -20,11 +20,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Error interno del servidor' })
 })
 
-if (require.main === module) {
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)
     console.log(`Swagger UI disponible en http://localhost:${PORT}/api/docs`)
   })
 }
 
-module.exports = app
+export default app

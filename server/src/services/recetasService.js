@@ -1,6 +1,6 @@
-const sql = require('../lib/db')
+import sql from '../lib/db.js'
 
-async function getAll({ categoria, sabor } = {}) {
+export async function getAll({ categoria, sabor } = {}) {
   if (categoria && sabor) {
     return sql`
       SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
@@ -44,7 +44,7 @@ async function getAll({ categoria, sabor } = {}) {
   `
 }
 
-async function getById(id) {
+export async function getById(id) {
   const [row] = await sql`
     SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
            r.tiempo_preparacion AS "tiempoPreparacion",
@@ -62,7 +62,7 @@ async function getCategoryId(sabor) {
   return cat.id
 }
 
-async function create(data) {
+export async function create(data) {
   const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos } = data
   const categoryId = await getCategoryId(sabor)
   const [row] = await sql`
@@ -77,7 +77,7 @@ async function create(data) {
   return getById(row.id)
 }
 
-async function update(id, data) {
+export async function update(id, data) {
   const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos } = data
   const categoryId = await getCategoryId(sabor)
   const result = await sql`
@@ -97,7 +97,7 @@ async function update(id, data) {
   return getById(id)
 }
 
-async function toggleFavorita(id) {
+export async function toggleFavorita(id) {
   const result = await sql`
     UPDATE recetas SET favorita = NOT favorita
     WHERE id = ${id}
@@ -107,9 +107,7 @@ async function toggleFavorita(id) {
   return getById(id)
 }
 
-async function remove(id) {
+export async function remove(id) {
   const result = await sql`DELETE FROM recetas WHERE id = ${id} RETURNING id`
   return result.length > 0
 }
-
-module.exports = { getAll, getById, create, update, toggleFavorita, remove }

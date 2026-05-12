@@ -1,7 +1,7 @@
-const { Router } = require('express')
-const sql = require('../lib/db')
-const db = require('../lib/drizzle')
-const { categories } = require('../lib/schema')
+import { Router } from 'express'
+import sql from '../lib/db.js'
+import db from '../lib/drizzle.js'
+import { categories } from '../lib/schema.js'
 
 const router = Router()
 
@@ -42,4 +42,4 @@ router.get('/categories', async (req, res, next) => {
   }
 })
 
-module.exports = router
+export default router

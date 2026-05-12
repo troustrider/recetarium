@@ -1,4 +1,4 @@
-const recetasService = require('../services/recetasService')
+import * as recetasService from '../services/recetasService.js'
 
 const SABORES_VALIDOS = ['salado', 'dulce', 'amargo', 'umami', 'acido']
 
@@ -27,25 +27,25 @@ function validar(data) {
   return errores
 }
 
-async function getAll(req, res) {
+export async function getAll(req, res) {
   const recetas = await recetasService.getAll(req.query)
   res.json(recetas)
 }
 
-async function getById(req, res) {
+export async function getById(req, res) {
   const receta = await recetasService.getById(req.params.id)
   if (!receta) return res.status(404).json({ error: 'Receta no encontrada' })
   res.json(receta)
 }
 
-async function create(req, res) {
+export async function create(req, res) {
   const errores = validar(req.body)
   if (errores.length > 0) return res.status(400).json({ errores })
   const nueva = await recetasService.create(req.body)
   res.status(201).json(nueva)
 }
 
-async function update(req, res) {
+export async function update(req, res) {
   const errores = validar(req.body)
   if (errores.length > 0) return res.status(400).json({ errores })
   const actualizada = await recetasService.update(req.params.id, req.body)
@@ -53,16 +53,14 @@ async function update(req, res) {
   res.json(actualizada)
 }
 
-async function toggleFavorita(req, res) {
+export async function toggleFavorita(req, res) {
   const receta = await recetasService.toggleFavorita(req.params.id)
   if (!receta) return res.status(404).json({ error: 'Receta no encontrada' })
   res.json(receta)
 }
 
-async function remove(req, res) {
+export async function remove(req, res) {
   const ok = await recetasService.remove(req.params.id)
   if (!ok) return res.status(404).json({ error: 'Receta no encontrada' })
   res.status(204).send()
 }
-
-module.exports = { getAll, getById, create, update, toggleFavorita, remove }
