@@ -31,20 +31,16 @@ El proyecto es un monorepo con frontend (Vite) y backend (Express). Vercel lo ge
 
 ## Variables de entorno
 
-No se requieren variables de entorno para el despliegue básico. El frontend usa `/api/v1` como base URL por defecto (URL relativa), lo que funciona directamente en Vercel al compartir dominio con la función serverless.
-
 | Variable | Uso | Cuándo configurarla |
 |---|---|---|
-| `VITE_API_URL` | Sobreescribe la URL base de la API | Solo si se despliega el frontend y el backend en dominios distintos |
+| `DATABASE_URL` | Connection string de Neon (PostgreSQL) | Obligatoria en producción y local con BD |
+| `VITE_API_URL` | Sobreescribe la URL base de la API | Solo si el frontend y el backend están en dominios distintos |
 
-## Limitación actual
-
-El backend usa un fichero JSON como base de datos (`server/src/data/recetas.json`). En Vercel el sistema de ficheros es de solo lectura en runtime, así que las escrituras (crear, editar, borrar recetas) no persisten entre invocaciones. Las lecturas sí funcionan porque el fichero se bundlea en el despliegue.
-
-La solución prevista para fases posteriores es migrar a una base de datos externa (MongoDB Atlas o similar).
+`DATABASE_URL` se configura en el panel de Vercel (Settings → Environment Variables). Nunca se commitea al repositorio.
 
 ## Pasos para redesplegar desde cero
 
 1. Importar el repositorio en Vercel (o conectarlo si ya existe).
 2. El framework se detecta automáticamente como Vite.
-3. Hacer push a `main` — Vercel despliega solo.
+3. Añadir `DATABASE_URL` en Settings → Environment Variables con la connection string de Neon.
+4. Hacer push a `main` — Vercel despliega solo.

@@ -82,6 +82,7 @@ recetarium/
 │   └── src/
 │       ├── config/       # Variables de entorno
 │       ├── controllers/  # Validación y orquestación HTTP
+│       ├── lib/          # Clientes de BD (Neon, Drizzle, schema)
 │       ├── routes/       # Mapeo verbos HTTP → controladores
 │       └── services/     # Lógica de negocio pura
 └── docs/             # Documentación del proyecto

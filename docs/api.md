@@ -108,4 +108,4 @@ La validación se aplica en los endpoints POST y PUT. Los campos obligatorios so
 
 ## Persistencia
 
-Los datos se guardan en `server/src/data/recetas.json`. La capa de servicio es la única que conoce este detalle. En Fase 6, cuando se implemente la base de datos, solo habrá que reemplazar las funciones del servicio sin tocar rutas ni controladores.
+Los datos se almacenan en PostgreSQL (Neon). La capa de servicio (`recetasService.js`) es la única que conoce este detalle: rutas y controladores son agnósticos a la fuente de datos.
