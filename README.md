@@ -1,68 +1,54 @@
-# Recetarium
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=FFF)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-Gestor de recetas personal. Centraliza tus recetas y genera listas de la compra unificadas.
+# 🍳 Recetarium
+> Gestor de recetas personal con lista de la compra unificada
 
-Frontend en React + TypeScript + Vite + Tailwind CSS. Backend en Node.js + Express. Desplegado en Vercel.
+App web fullstack para centralizar recetas y generar listas de la compra. Frontend en React + TypeScript + Vite. Backend en Node.js + Express con PostgreSQL en Neon serverless.
 
-Proyecto desarrollado por **Karim Abatouy Ábalos** para [Corner Estudios SL](https://corner-estudios.com).
-
-**Demo en producción:** [recetarium-one.vercel.app](https://recetarium-one.vercel.app)
-
-**API Docs (Swagger UI):** [Ver documentación interactiva](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/troustrider/recetarium/main/docs/swagger.json)
-
-**Tablero Kanban:** [Recetarium en Trello](https://trello.com/b/saQXnsUb/recetarium)
-
----
-
-## Stack
-
-**Frontend:** React, TypeScript, Vite, Tailwind CSS, React Router
-
-**Backend:** Node.js, Express, cors, dotenv, @neondatabase/serverless, Drizzle ORM
-
-**Base de datos:** PostgreSQL en Neon (serverless)
-
-## ORM tipado con Drizzle
-
-El schema de la base de datos está definido en TypeScript con Drizzle ORM. Esto significa que los errores de columnas inexistentes o tipos incorrectos se detectan en tiempo de compilación, no en runtime.
-
-Por ejemplo, si se renombra la columna `nombre` en la tabla `recetas`, el compilador avisa en todos los sitios donde se usa:
-
-```ts
-// El compilador detecta el error antes de que llegue a producción
-await db.select({ nombre: recetas.nombre }).from(recetas)
-```
-
-Con SQL en strings planos ese mismo error pasaría el build y solo fallaría en producción. Drizzle aplica las ventajas del tipado fuerte de TypeScript a las queries SQL.
+| Despliegue | URL |
+|------------|-----|
+| Frontend | [recetarium-one.vercel.app](https://recetarium-one.vercel.app) |
+| API Docs | [Swagger UI](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/troustrider/recetarium/main/docs/swagger.json) |
 
 ---
 
-## Instalación y ejecución local
+## Características
 
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/troustrider/recetarium.git
-cd recetarium
+- Gestión completa de recetas (crear, editar, eliminar)
+- Generación de lista de la compra unificada desde varias recetas
+- Base de datos PostgreSQL en Neon con Drizzle ORM
+- API REST documentada con Swagger UI
+- Schema de BD definido en TypeScript — los errores de tipo se detectan en compilación, no en runtime
 
-# 2. Instalar dependencias del frontend
-npm install
+---
 
-# 3. Instalar dependencias del backend
-cd server
-npm install
+## Tecnologías
 
-# 4. Crear archivo de variables de entorno
-echo "PORT=3001" > .env
+| Frontend | Uso |
+|----------|-----|
+| React | UI declarativa con componentes |
+| TypeScript | Tipado estático |
+| Vite | Bundler y servidor de desarrollo |
+| Tailwind CSS | Estilos utility-first |
+| React Router | Navegación entre páginas |
 
-# 5. Arrancar el backend (desde server/)
-npm run dev
+| Backend | Uso |
+|---------|-----|
+| Node.js + Express | Servidor HTTP y API REST |
+| @neondatabase/serverless | Driver de PostgreSQL compatible con entornos serverless |
+| Drizzle ORM | Schema tipado y migraciones en TypeScript |
 
-# 6. En otra terminal, arrancar el frontend (desde la raíz)
-cd ..
-npm run dev
-```
-
-Frontend en `http://localhost:5173`. Backend en `http://localhost:3001`.
+| Auxiliares | Uso |
+|------------|-----|
+| Neon | PostgreSQL serverless con branching |
+| Vercel | Despliegue de frontend y backend |
 
 ---
 
@@ -85,5 +71,46 @@ recetarium/
 │       ├── lib/          # Clientes de BD (Neon, Drizzle, schema)
 │       ├── routes/       # Mapeo verbos HTTP → controladores
 │       └── services/     # Lógica de negocio pura
-└── docs/             # Documentación del proyecto
+└── docs/
 ```
+
+---
+
+## Descargar y ejecutar
+
+```bash
+git clone https://github.com/troustrider/recetarium.git
+cd recetarium
+npm install
+cd server && npm install
+
+# Crear .env en server/
+echo "PORT=3001" > .env
+
+# Arrancar backend (desde server/)
+npm run dev
+
+# En otra terminal, arrancar frontend (desde raíz)
+cd .. && npm run dev
+```
+
+Frontend en `http://localhost:5173`. Backend en `http://localhost:3001`.
+
+---
+
+## Desplegar en Vercel
+
+### Frontend
+
+1. Conectar el repositorio en Vercel
+2. Framework preset: Vite
+3. Build command: `npm run build`
+
+### Backend
+
+1. Añadir `DATABASE_URL` en Vercel → Settings → Environment Variables
+2. El backend se despliega automáticamente como Serverless Function en cada push
+
+---
+
+*Desarrollado durante las prácticas en [Corner Estudios](https://www.corner-estudios.com) — Karim Abatouy — 2026*
