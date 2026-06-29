@@ -4,26 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { useListaCompraContext, useCompradosContext, useDespensa } from '../context'
 import type { IngredienteAgrupado } from '../hooks/useListaCompra'
 import ResumenIngrediente from '../components/lista-compra/ResumenIngrediente'
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
+import { compartirLista } from '../utils/compartirLista'
 
 function claveDe(ing: IngredienteAgrupado) {
   return `${ing.nombre}__${ing.unidad}`
-}
-
-function textoLista(items: IngredienteAgrupado[]): string {
-  const lineas = ['🛒 Lista de compra', '']
-  const familias = [...new Set(items.map((i) => i.familia))]
-  for (const familia of familias) {
-    lineas.push(familia.toUpperCase())
-    for (const i of items.filter((x) => x.familia === familia)) {
-      lineas.push(`- ${capitalize(i.nombre)}: ${i.cantidad} ${i.unidad}`)
-    }
-    lineas.push('')
-  }
-  return lineas.join('\n').trim()
 }
 
 function ListaCompra() {
@@ -74,15 +58,9 @@ function ListaCompra() {
   const familias = [...new Set(visibles.map((i) => i.familia))]
   const totalComprados = visibles.filter((i) => comprados.has(claveDe(i))).length
 
-  async function compartir() {
+  function compartir() {
     const pendientes = visibles.filter((i) => !comprados.has(claveDe(i)))
-    const texto = textoLista(pendientes.length > 0 ? pendientes : visibles)
-    if (navigator.share) {
-      try { await navigator.share({ text: texto }) } catch { /* cancelado */ }
-    } else {
-      await navigator.clipboard.writeText(texto)
-      alert('Lista copiada al portapapeles')
-    }
+    return compartirLista(pendientes.length > 0 ? pendientes : visibles)
   }
 
   return (

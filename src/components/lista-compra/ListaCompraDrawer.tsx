@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Minus, Plus } from 'lucide-react'
+import { X, Minus, Plus, Share2 } from 'lucide-react'
 import { useListaCompraContext, useCompradosContext } from '../../context'
 import ResumenIngrediente from './ResumenIngrediente'
+import { compartirLista } from '../../utils/compartirLista'
 
 interface Props {
   open: boolean
@@ -139,7 +140,15 @@ function ListaCompraDrawer({ open, onClose }: Props) {
             </div>
 
             {seleccionadas.length > 0 && (
-              <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800">
+              <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+                <motion.button
+                  onClick={() => compartirLista(listaCompra.filter((i) => !comprados.has(`${i.nombre}__${i.unidad}`)))}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-orange-500 rounded-xl hover:bg-orange-600 transition-colors"
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Share2 className="w-4 h-4" />
+                  Compartir lista
+                </motion.button>
                 <motion.button
                   onClick={vaciar}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-500 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
