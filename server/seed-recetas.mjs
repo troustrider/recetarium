@@ -686,6 +686,179 @@ const NUEVAS = [
       'Sirve sobre el arroz con soja y cebolleta.',
     ],
   },
+
+  // ----- Tanda extra 2: simples y baratas, incluyendo LatAm, África y Medio Oriente -----
+  {
+    nombre: 'Ensalada de garbanzos y atún', categoria: 'mediterranea', sabor: 'acido', tiempoPreparacion: 10,
+    precioPorPorcion: 1.2, porciones: 2, calorias: 380, proteinas: 32, carbohidratos: 34, grasas: 14,
+    ingredientes: [
+      ing('garbanzos cocidos de bote', 400, 'g', 'legumbres'), ing('atún en lata al natural', 150, 'g', 'pescados'),
+      ing('tomate', 1, 'ud', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('aceite de oliva', 1, 'cucharada', 'condimentos'), ing('limón', 0.5, 'ud', 'frutas'),
+    ],
+    pasos: [
+      'Escurre los garbanzos y el atún.',
+      'Pica el tomate y la cebolla.',
+      'Mezcla todo con aceite y limón.',
+    ],
+  },
+  {
+    nombre: 'Poke bowl de atún', categoria: 'fusion', sabor: 'umami', tiempoPreparacion: 15,
+    precioPorPorcion: 1.9, porciones: 1, calorias: 500, proteinas: 31, carbohidratos: 52, grasas: 18,
+    ingredientes: [
+      ing('atún en lata al natural', 130, 'g', 'pescados'), ing('arroz', 100, 'g', 'cereales'),
+      ing('aguacate', 0.5, 'ud', 'frutas'), ing('salsa de soja', 1, 'cucharada', 'salsas'),
+      ing('cebolleta', 1, 'ud', 'verduras'),
+    ],
+    pasos: [
+      'Cuece el arroz y deja templar.',
+      'Escurre el atún y alíñalo con soja.',
+      'Monta el bol con arroz, atún, aguacate y cebolleta.',
+    ],
+  },
+  {
+    nombre: 'Pollo al ajillo con arroz', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 20,
+    precioPorPorcion: 1.6, porciones: 2, calorias: 530, proteinas: 44, carbohidratos: 56, grasas: 14,
+    ingredientes: [
+      ing('pechuga de pollo', 350, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
+      ing('ajo', 4, 'diente', 'verduras'), ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
+      ing('perejil', 1, 'puñado', 'verduras'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Dora el pollo en dados con el ajo laminado.',
+      'Remata con perejil y sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Tortilla de atún', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 10,
+    precioPorPorcion: 1.1, porciones: 1, calorias: 380, proteinas: 34, carbohidratos: 2, grasas: 24,
+    ingredientes: [
+      ing('huevos', 3, 'ud', 'huevos'), ing('atún en lata al natural', 80, 'g', 'pescados'),
+      ing('cebolleta', 1, 'ud', 'verduras'), ing('aceite de oliva', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Bate los huevos con el atún escurrido y la cebolleta.',
+      'Cuaja la tortilla por ambos lados.',
+    ],
+  },
+  {
+    nombre: 'Pollo agridulce rápido', categoria: 'china', sabor: 'acido', tiempoPreparacion: 20,
+    precioPorPorcion: 1.8, porciones: 2, calorias: 540, proteinas: 40, carbohidratos: 60, grasas: 14,
+    ingredientes: [
+      ing('pechuga de pollo', 350, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
+      ing('pimiento', 1, 'ud', 'verduras'), ing('kétchup', 2, 'cucharada', 'salsas'),
+      ing('vinagre', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Saltea el pollo en dados con el pimiento.',
+      'Añade kétchup y vinagre; glasea 3 min.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Picadillo de ternera con arroz', categoria: 'cubana', sabor: 'salado', tiempoPreparacion: 20,
+    precioPorPorcion: 1.7, porciones: 2, calorias: 520, proteinas: 34, carbohidratos: 52, grasas: 18,
+    ingredientes: [
+      ing('carne picada de ternera', 300, 'g', 'carnes'), ing('tomate triturado', 200, 'g', 'verduras'),
+      ing('arroz', 150, 'g', 'cereales'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('comino', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Sofríe la cebolla y la carne.',
+      'Añade el tomate y el comino; cuece 8 min.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Lomo saltado', categoria: 'peruana', sabor: 'umami', tiempoPreparacion: 20,
+    precioPorPorcion: 2.2, porciones: 2, calorias: 560, proteinas: 38, carbohidratos: 58, grasas: 18,
+    ingredientes: [
+      ing('ternera en tiras', 300, 'g', 'carnes'), ing('cebolla', 1, 'ud', 'verduras'),
+      ing('tomate', 1, 'ud', 'verduras'), ing('salsa de soja', 2, 'cucharada', 'salsas'),
+      ing('arroz', 150, 'g', 'cereales'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Saltea la ternera a fuego fuerte y reserva.',
+      'Saltea cebolla y tomate en gajos; vuelve la carne con la soja.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Pollo desmechado con arroz', categoria: 'latina', sabor: 'salado', tiempoPreparacion: 25,
+    precioPorPorcion: 1.7, porciones: 2, calorias: 500, proteinas: 42, carbohidratos: 50, grasas: 14,
+    ingredientes: [
+      ing('pechuga de pollo', 350, 'g', 'carnes'), ing('tomate triturado', 200, 'g', 'verduras'),
+      ing('cebolla', 0.5, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('arroz', 150, 'g', 'cereales'),
+    ],
+    pasos: [
+      'Cuece el pollo en agua 15 min y desméchalo.',
+      'Sofríe cebolla, tomate y pimentón; añade el pollo.',
+      'Sirve con arroz blanco.',
+    ],
+  },
+  {
+    nombre: 'Pollo shawarma rápido', categoria: 'mediooriente', sabor: 'salado', tiempoPreparacion: 20,
+    precioPorPorcion: 2.0, porciones: 2, calorias: 560, proteinas: 46, carbohidratos: 42, grasas: 22,
+    ingredientes: [
+      ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('yogur griego', 100, 'g', 'lacteos'),
+      ing('pan de pita', 2, 'ud', 'cereales'), ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('pimentón', 1, 'cucharadita', 'condimentos'), ing('ajo', 2, 'diente', 'verduras'),
+    ],
+    pasos: [
+      'Marina el pollo con especias y ajo.',
+      'Saltea a fuego fuerte hasta dorar y corta en tiras.',
+      'Rellena las pitas con pollo y yogur.',
+    ],
+  },
+  {
+    nombre: 'Maafe de pollo (estofado de cacahuete)', categoria: 'africana', sabor: 'salado', tiempoPreparacion: 30,
+    precioPorPorcion: 1.9, porciones: 2, calorias: 600, proteinas: 40, carbohidratos: 56, grasas: 24,
+    ingredientes: [
+      ing('contramuslos de pollo', 350, 'g', 'carnes'), ing('crema de cacahuete (pindakaas)', 3, 'cucharada', 'condimentos'),
+      ing('tomate triturado', 200, 'g', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('arroz', 150, 'g', 'cereales'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Dora el pollo y la cebolla.',
+      'Añade tomate, crema de cacahuete y un vaso de agua.',
+      'Cuece 15 min hasta espesar y sirve con arroz.',
+    ],
+  },
+  {
+    nombre: 'Yassa de pollo', categoria: 'senegalesa', sabor: 'acido', tiempoPreparacion: 30,
+    precioPorPorcion: 1.9, porciones: 2, calorias: 540, proteinas: 44, carbohidratos: 56, grasas: 14,
+    ingredientes: [
+      ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('cebolla', 2, 'ud', 'verduras'),
+      ing('limón', 1, 'ud', 'frutas'), ing('mostaza', 1, 'cucharada', 'salsas'),
+      ing('arroz', 150, 'g', 'cereales'),
+    ],
+    pasos: [
+      'Marina el pollo con limón y mostaza.',
+      'Dora el pollo y reserva.',
+      'Pocha mucha cebolla; vuelve el pollo y cuece 15 min.',
+      'Sirve con arroz.',
+    ],
+  },
+  {
+    nombre: 'Chili con carne rápido', categoria: 'mexicana', sabor: 'salado', tiempoPreparacion: 25,
+    precioPorPorcion: 1.7, porciones: 2, calorias: 470, proteinas: 34, carbohidratos: 44, grasas: 16,
+    ingredientes: [
+      ing('carne picada de ternera', 300, 'g', 'carnes'), ing('alubias rojas de bote', 400, 'g', 'legumbres'),
+      ing('tomate triturado', 200, 'g', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('comino', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Sofríe la cebolla y la carne.',
+      'Añade tomate, alubias escurridas y comino.',
+      'Cuece 12 min y sirve.',
+    ],
+  },
 ]
 
 async function run() {
