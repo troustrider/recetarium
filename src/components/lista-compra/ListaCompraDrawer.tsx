@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, Share2 } from 'lucide-react'
 import { useListaCompraContext, useCompradosContext } from '../../context'
 import ResumenIngrediente from './ResumenIngrediente'
+import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
 
 interface Props {
@@ -10,9 +11,10 @@ interface Props {
 }
 
 function ListaCompraDrawer({ open, onClose }: Props) {
-  const { seleccionadas, listaCompra, toggleReceta, setRaciones, vaciar } = useListaCompraContext()
-  const { comprados, toggle } = useCompradosContext()
+  const { seleccionadas, listaCompra, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra } = useListaCompraContext()
+  const { comprados, toggle, limpiar } = useCompradosContext()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
+  const vacia = listaCompra.length === 0
 
   return (
     <AnimatePresence>
@@ -35,9 +37,10 @@ function ListaCompraDrawer({ open, onClose }: Props) {
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
               <div>
                 <h2 className="font-display font-bold text-gray-900 dark:text-gray-100 text-lg">Lista de compra</h2>
-                {seleccionadas.length > 0 && (
+                {!vacia && (
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'} · {seleccionadas.length} {seleccionadas.length === 1 ? 'receta' : 'recetas'}
+                    {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'}
+                    {coste > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {coste.toFixed(2)} €</span></>}
                   </p>
                 )}
               </div>
@@ -50,96 +53,85 @@ function ListaCompraDrawer({ open, onClose }: Props) {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 py-5">
-              {seleccionadas.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center pb-16">
-                  <div className="relative w-20 h-20 mb-6">
-                    <div className="absolute inset-0 bg-orange-100 rounded-3xl rotate-6" />
-                    <div className="absolute inset-0 bg-orange-50 rounded-3xl -rotate-3 flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="text-orange-300" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-                        <rect x="9" y="3" width="6" height="4" rx="1" />
-                        <line x1="9" y1="12" x2="15" y2="12" />
-                        <line x1="9" y1="16" x2="13" y2="16" />
-                      </svg>
-                    </div>
-                  </div>
-                  <h3 className="font-display text-base font-bold text-gray-700 dark:text-gray-300 mb-2">La lista está vacía</h3>
-                  <p className="text-sm text-gray-400 max-w-[200px]">
-                    Añade recetas desde el catálogo para generar ingredientes.
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-5">
-                  {/* Recetas con stepper de raciones */}
-                  <div className="flex flex-col gap-2">
-                    {seleccionadas.map(({ receta, raciones }) => (
-                      <div
-                        key={receta.id}
-                        className="flex items-center justify-between gap-3 px-3 py-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl"
-                      >
-                        <span className="text-xs font-bold text-orange-700 dark:text-orange-400 truncate flex-1 min-w-0">
-                          {receta.nombre}
-                        </span>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <motion.button
-                            onClick={() => {
-                              if (raciones === 1) toggleReceta(receta)
-                              else setRaciones(receta.id, raciones - 1)
-                            }}
-                            className="w-6 h-6 flex items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800/60 transition-colors"
-                            whileTap={{ scale: 0.85 }}
-                            aria-label="Reducir raciones"
-                          >
-                            {raciones === 1
-                              ? <X className="w-3 h-3" />
-                              : <Minus className="w-3 h-3" />
-                            }
-                          </motion.button>
-                          <span className="text-xs font-bold text-orange-700 dark:text-orange-300 w-5 text-center tabular-nums">
-                            {raciones}
-                          </span>
-                          <motion.button
-                            onClick={() => setRaciones(receta.id, raciones + 1)}
-                            disabled={raciones >= 4}
-                            className="w-6 h-6 flex items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                            whileTap={{ scale: 0.85 }}
-                            aria-label="Aumentar raciones"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </motion.button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-5">
+              {vacia && (
+                <p className="text-sm text-gray-400 text-center pt-6 pb-2">
+                  Añade recetas desde el catálogo o ítems a mano aquí abajo.
+                </p>
+              )}
 
-                  {familias.map((familia) => (
-                    <section key={familia} className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
-                      <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
-                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">{familia}</h3>
+              {seleccionadas.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  {seleccionadas.map(({ receta, raciones }) => (
+                    <div
+                      key={receta.id}
+                      className="flex items-center justify-between gap-3 px-3 py-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl"
+                    >
+                      <span className="text-xs font-bold text-orange-700 dark:text-orange-400 truncate flex-1 min-w-0">
+                        {receta.nombre}
+                      </span>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <motion.button
+                          onClick={() => {
+                            if (raciones === 1) toggleReceta(receta)
+                            else setRaciones(receta.id, raciones - 1)
+                          }}
+                          className="w-6 h-6 flex items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800/60 transition-colors"
+                          whileTap={{ scale: 0.85 }}
+                          aria-label="Reducir raciones"
+                        >
+                          {raciones === 1
+                            ? <X className="w-3 h-3" />
+                            : <Minus className="w-3 h-3" />
+                          }
+                        </motion.button>
+                        <span className="text-xs font-bold text-orange-700 dark:text-orange-300 w-5 text-center tabular-nums">
+                          {raciones}
+                        </span>
+                        <motion.button
+                          onClick={() => setRaciones(receta.id, raciones + 1)}
+                          disabled={raciones >= 4}
+                          className="w-6 h-6 flex items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-800/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          whileTap={{ scale: 0.85 }}
+                          aria-label="Aumentar raciones"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </motion.button>
                       </div>
-                      <ul className="px-4">
-                        {listaCompra
-                          .filter((i) => i.familia === familia)
-                          .map((ing, i) => {
-                            const clave = `${ing.nombre}__${ing.unidad}`
-                            return (
-                              <ResumenIngrediente
-                                key={i}
-                                ingrediente={ing}
-                                checked={comprados.has(clave)}
-                                onToggle={() => toggle(clave)}
-                              />
-                            )
-                          })}
-                      </ul>
-                    </section>
+                    </div>
                   ))}
                 </div>
               )}
+
+              {familias.map((familia) => (
+                <section key={familia} className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
+                  <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
+                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">{familia}</h3>
+                  </div>
+                  <ul className="px-4">
+                    {listaCompra
+                      .filter((i) => i.familia === familia)
+                      .sort((a, b) => Number(comprados.has(`${a.nombre}__${a.unidad}`)) - Number(comprados.has(`${b.nombre}__${b.unidad}`)))
+                      .map((ing) => {
+                        const clave = `${ing.nombre}__${ing.unidad}`
+                        return (
+                          <ResumenIngrediente
+                            key={clave}
+                            ingrediente={ing}
+                            checked={comprados.has(clave)}
+                            onToggle={() => toggle(clave)}
+                            onRemove={ing.esExtra ? () => removeExtra(clave) : undefined}
+                          />
+                        )
+                      })}
+                  </ul>
+                </section>
+              ))}
+
+              <AnadirManual onAdd={addExtra} />
             </div>
 
-            {seleccionadas.length > 0 && (
+            {!vacia && (
               <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
                 <motion.button
                   onClick={() => compartirLista(listaCompra.filter((i) => !comprados.has(`${i.nombre}__${i.unidad}`)))}
@@ -150,7 +142,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                   Compartir lista
                 </motion.button>
                 <motion.button
-                  onClick={vaciar}
+                  onClick={() => { vaciar(); limpiar() }}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-500 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
                   whileTap={{ scale: 0.97 }}
                 >

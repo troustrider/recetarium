@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useListaCompraContext, useCompradosContext, useDespensa } from '../context'
 import type { IngredienteAgrupado } from '../hooks/useListaCompra'
 import ResumenIngrediente from '../components/lista-compra/ResumenIngrediente'
+import AnadirManual from '../components/lista-compra/AnadirManual'
 import { compartirLista } from '../utils/compartirLista'
 
 function claveDe(ing: IngredienteAgrupado) {
@@ -11,17 +12,17 @@ function claveDe(ing: IngredienteAgrupado) {
 }
 
 function ListaCompra() {
-  const { seleccionadas, listaCompra, vaciar } = useListaCompraContext()
+  const { seleccionadas, listaCompra, coste, vaciar, addExtra, removeExtra } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
   const { despensa } = useDespensa()
   const [ocultarDespensa, setOcultarDespensa] = useState(false)
   const navigate = useNavigate()
 
-  if (seleccionadas.length === 0) {
+  if (listaCompra.length === 0) {
     return (
       <div className="flex flex-col gap-6">
-        <h1 className="font-display text-2xl font-bold text-gray-900">Lista de compra</h1>
-        <div className="text-center py-16">
+        <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-gray-100">Lista de compra</h1>
+        <div className="text-center py-12">
           <div className="relative w-20 h-20 mx-auto mb-6">
             <div className="absolute inset-0 bg-orange-100 rounded-3xl rotate-6" />
             <div className="absolute inset-0 bg-orange-50 rounded-3xl -rotate-3 flex items-center justify-center">
@@ -33,9 +34,9 @@ function ListaCompra() {
               </svg>
             </div>
           </div>
-          <h2 className="font-display text-lg font-bold text-gray-700 mb-1">La lista está vacía</h2>
+          <h2 className="font-display text-lg font-bold text-gray-700 dark:text-gray-300 mb-1">La lista está vacía</h2>
           <p className="text-sm text-gray-400 max-w-xs mx-auto mb-6">
-            Selecciona recetas desde el catálogo para generar tu lista de ingredientes.
+            Selecciona recetas desde el catálogo, o añade ítems a mano aquí abajo.
           </p>
           <motion.button
             onClick={() => navigate('/')}
@@ -45,6 +46,7 @@ function ListaCompra() {
             Ir al catálogo
           </motion.button>
         </div>
+        <AnadirManual onAdd={addExtra} />
       </div>
     )
   }
@@ -67,9 +69,10 @@ function ListaCompra() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold text-gray-900">Lista de compra</h1>
+          <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-gray-100">Lista de compra</h1>
           <p className="text-xs text-gray-400 mt-1">
-            {totalComprados}/{visibles.length} comprados · {seleccionadas.length} {seleccionadas.length === 1 ? 'receta' : 'recetas'}
+            {totalComprados}/{visibles.length} comprados
+            {coste > 0 && <> · <span className="font-bold text-gray-600 dark:text-gray-300">≈ {coste.toFixed(2)} €</span></>}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -96,18 +99,20 @@ function ListaCompra() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        {seleccionadas.map(({ receta, raciones }) => (
-          <span key={receta.id} className="flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-orange-50 text-orange-600 rounded-lg">
-            {receta.nombre}
-            {raciones > 1 && (
-              <span className="bg-orange-200 text-orange-700 rounded-full px-1.5 py-0.5 text-[10px] leading-none">
-                ×{raciones}
-              </span>
-            )}
-          </span>
-        ))}
-      </div>
+      {seleccionadas.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {seleccionadas.map(({ receta, raciones }) => (
+            <span key={receta.id} className="flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-orange-50 text-orange-600 rounded-lg">
+              {receta.nombre}
+              {raciones > 1 && (
+                <span className="bg-orange-200 text-orange-700 rounded-full px-1.5 py-0.5 text-[10px] leading-none">
+                  ×{raciones}
+                </span>
+              )}
+            </span>
+          ))}
+        </div>
+      )}
 
       {despensa.length > 0 && (
         <button
@@ -148,6 +153,7 @@ function ListaCompra() {
                       ingrediente={ing}
                       checked={comprados.has(clave)}
                       onToggle={() => toggle(clave)}
+                      onRemove={ing.esExtra ? () => removeExtra(clave) : undefined}
                     />
                   )
                 })}
@@ -155,6 +161,8 @@ function ListaCompra() {
           </section>
         ))}
       </div>
+
+      <AnadirManual onAdd={addExtra} />
     </div>
   )
 }

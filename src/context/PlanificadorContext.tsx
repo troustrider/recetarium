@@ -44,6 +44,7 @@ interface PlanificadorCtx {
   setRaciones: (dia: Dia, entradaId: string, raciones: number) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
+  autollenar: (recetas: Receta[], raciones: number) => void
 }
 
 const PlanificadorContext = createContext<PlanificadorCtx | null>(null)
@@ -156,8 +157,19 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     setPlan(PLAN_VACIO)
   }
 
+  // Rellena los 7 días con una receta al azar cada uno (mismas raciones).
+  function autollenar(recetas: Receta[], raciones: number) {
+    if (recetas.length === 0) return
+    const nuevo = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
+    for (const dia of DIAS) {
+      const receta = recetas[Math.floor(Math.random() * recetas.length)]
+      nuevo[dia] = [{ id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`, receta, raciones }]
+    }
+    setPlan(nuevo)
+  }
+
   return (
-    <PlanificadorContext.Provider value={{ plan, dias: DIAS, añadir, quitar, setRaciones, mover, limpiar }}>
+    <PlanificadorContext.Provider value={{ plan, dias: DIAS, añadir, quitar, setRaciones, mover, limpiar, autollenar }}>
       {children}
     </PlanificadorContext.Provider>
   )
