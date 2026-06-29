@@ -20,6 +20,8 @@
     proteinas           NUMERIC(5,1),
     carbohidratos       NUMERIC(5,1),
     grasas              NUMERIC(5,1),
+    -- Tipo de plato: principal | postre | desayuno | entrante
+    tipo                VARCHAR(30) NOT NULL DEFAULT 'principal',
     category_id         UUID NOT NULL,
     CONSTRAINT fk_category FOREIGN KEY (category_id)
       REFERENCES categories(id) ON DELETE RESTRICT

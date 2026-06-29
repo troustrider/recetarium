@@ -135,7 +135,7 @@ function Catalogo() {
 
               <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden">
                 <motion.button
-                  onClick={() => cargarAleatorias(resultados, 5, racionesAzar)}
+                  onClick={() => cargarAleatorias(resultados.filter((r) => (r.tipo ?? 'principal') === 'principal'), 5, racionesAzar)}
                   className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
                   whileTap={{ scale: 0.95 }}
                   title="Añade 5 recetas al azar a la lista"

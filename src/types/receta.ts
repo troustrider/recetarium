@@ -2,6 +2,8 @@ export type Categoria = string
 
 export type Sabor = 'salado' | 'dulce' | 'amargo' | 'umami' | 'acido'
 
+export type Tipo = 'principal' | 'postre' | 'desayuno' | 'entrante'
+
 export interface Ingrediente {
   nombre: string
   cantidad: number
@@ -25,4 +27,5 @@ export interface Receta {
   proteinas?: number
   carbohidratos?: number
   grasas?: number
+  tipo?: Tipo
 }

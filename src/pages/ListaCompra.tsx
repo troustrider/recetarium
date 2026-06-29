@@ -2,14 +2,9 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useListaCompraContext, useCompradosContext, useDespensa } from '../context'
-import type { IngredienteAgrupado } from '../hooks/useListaCompra'
 import ResumenIngrediente from '../components/lista-compra/ResumenIngrediente'
 import AnadirManual from '../components/lista-compra/AnadirManual'
 import { compartirLista } from '../utils/compartirLista'
-
-function claveDe(ing: IngredienteAgrupado) {
-  return `${ing.nombre}__${ing.unidad}`
-}
 
 function ListaCompra() {
   const { seleccionadas, listaCompra, coste, vaciar, addExtra, removeExtra } = useListaCompraContext()
@@ -58,10 +53,10 @@ function ListaCompra() {
   const ocultos = listaCompra.length - visibles.length
 
   const familias = [...new Set(visibles.map((i) => i.familia))]
-  const totalComprados = visibles.filter((i) => comprados.has(claveDe(i))).length
+  const totalComprados = visibles.filter((i) => comprados.has(i.clave)).length
 
   function compartir() {
-    const pendientes = visibles.filter((i) => !comprados.has(claveDe(i)))
+    const pendientes = visibles.filter((i) => !comprados.has(i.clave))
     return compartirLista(pendientes.length > 0 ? pendientes : visibles)
   }
 
@@ -144,19 +139,16 @@ function ListaCompra() {
             <ul className="px-5">
               {visibles
                 .filter((i) => i.familia === familia)
-                .sort((a, b) => Number(comprados.has(claveDe(a))) - Number(comprados.has(claveDe(b))))
-                .map((ing) => {
-                  const clave = claveDe(ing)
-                  return (
-                    <ResumenIngrediente
-                      key={clave}
-                      ingrediente={ing}
-                      checked={comprados.has(clave)}
-                      onToggle={() => toggle(clave)}
-                      onRemove={ing.esExtra ? () => removeExtra(clave) : undefined}
-                    />
-                  )
-                })}
+                .sort((a, b) => Number(comprados.has(a.clave)) - Number(comprados.has(b.clave)))
+                .map((ing) => (
+                  <ResumenIngrediente
+                    key={ing.clave}
+                    ingrediente={ing}
+                    checked={comprados.has(ing.clave)}
+                    onToggle={() => toggle(ing.clave)}
+                    onRemove={ing.esExtra ? () => removeExtra(ing.clave) : undefined}
+                  />
+                ))}
             </ul>
           </section>
         ))}

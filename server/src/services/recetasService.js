@@ -8,7 +8,7 @@ export async function getAll({ categoria, sabor } = {}) {
              r.favorita, r.imagen, r.ingredientes, r.pasos,
              r.precio_por_porcion, r.porciones,
              r.calorias, r.proteinas::float AS proteinas,
-             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas
+             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
       WHERE r.categoria = ${categoria} AND c.name = ${sabor}
       ORDER BY r.nombre
@@ -21,7 +21,7 @@ export async function getAll({ categoria, sabor } = {}) {
              r.favorita, r.imagen, r.ingredientes, r.pasos,
              r.precio_por_porcion, r.porciones,
              r.calorias, r.proteinas::float AS proteinas,
-             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas
+             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
       WHERE r.categoria = ${categoria}
       ORDER BY r.nombre
@@ -34,7 +34,7 @@ export async function getAll({ categoria, sabor } = {}) {
              r.favorita, r.imagen, r.ingredientes, r.pasos,
              r.precio_por_porcion, r.porciones,
              r.calorias, r.proteinas::float AS proteinas,
-             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas
+             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
       WHERE c.name = ${sabor}
       ORDER BY r.nombre
@@ -57,7 +57,7 @@ export async function getById(id) {
            r.favorita, r.imagen, r.ingredientes, r.pasos,
            r.precio_por_porcion, r.porciones,
            r.calorias, r.proteinas::float AS proteinas,
-           r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas
+           r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
     WHERE r.id = ${id}
   `
@@ -71,15 +71,15 @@ async function getCategoryId(sabor) {
 }
 
 export async function create(data) {
-  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas } = data
+  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
   const [row] = await sql`
-    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, imagen, ingredientes, pasos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas)
+    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, imagen, ingredientes, pasos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo)
     VALUES (
       ${nombre}, ${categoria ?? null}, ${tiempoPreparacion}, ${favorita ?? false},
       ${imagen ?? null}, ${JSON.stringify(ingredientes)}, ${JSON.stringify(pasos)},
       ${precioPorPorcion ?? 1}, ${porciones ?? 1}, ${categoryId},
-      ${calorias ?? null}, ${proteinas ?? null}, ${carbohidratos ?? null}, ${grasas ?? null}
+      ${calorias ?? null}, ${proteinas ?? null}, ${carbohidratos ?? null}, ${grasas ?? null}, ${tipo ?? 'principal'}
     )
     RETURNING id
   `
@@ -87,7 +87,7 @@ export async function create(data) {
 }
 
 export async function update(id, data) {
-  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas } = data
+  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
   const result = await sql`
     UPDATE recetas SET
@@ -104,7 +104,8 @@ export async function update(id, data) {
       calorias = ${calorias ?? null},
       proteinas = ${proteinas ?? null},
       carbohidratos = ${carbohidratos ?? null},
-      grasas = ${grasas ?? null}
+      grasas = ${grasas ?? null},
+      tipo = COALESCE(${tipo ?? null}, tipo)
     WHERE id = ${id}
     RETURNING id
   `

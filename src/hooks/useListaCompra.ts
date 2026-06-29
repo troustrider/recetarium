@@ -1,19 +1,17 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
+import { claveIngrediente, canonUnidad } from '../utils/ingredientes'
 
 export interface IngredienteAgrupado extends Ingrediente {
   recetas: string[]
   esExtra?: boolean
+  clave: string
 }
 
 export interface EntradaLista {
   receta: Receta
   raciones: number
-}
-
-function claveDe(nombre: string, unidad: string) {
-  return `${nombre.trim().toLowerCase()}__${unidad.trim().toLowerCase()}`
 }
 
 function useListaCompra() {
@@ -71,14 +69,14 @@ function useListaCompra() {
   }
 
   function addExtra(item: Ingrediente) {
-    const clave = claveDe(item.nombre, item.unidad)
+    const clave = claveIngrediente(item.nombre, item.unidad)
     setExtras((prev) =>
-      prev.some((e) => claveDe(e.nombre, e.unidad) === clave) ? prev : [...prev, item]
+      prev.some((e) => claveIngrediente(e.nombre, e.unidad) === clave) ? prev : [...prev, item]
     )
   }
 
   function removeExtra(clave: string) {
-    setExtras((prev) => prev.filter((e) => claveDe(e.nombre, e.unidad) !== clave))
+    setExtras((prev) => prev.filter((e) => claveIngrediente(e.nombre, e.unidad) !== clave))
   }
 
   // Coste estimado de la compra: precio/porción × porciones × raciones.
@@ -97,7 +95,7 @@ function useListaCompra() {
 
     for (const { receta, raciones } of seleccionadas) {
       for (const ing of receta.ingredientes) {
-        const clave = `${ing.nombre}__${ing.unidad}`
+        const clave = claveIngrediente(ing.nombre, ing.unidad)
         const existente = mapa.get(clave)
         if (existente) {
           existente.cantidad += ing.cantidad * raciones
@@ -105,13 +103,14 @@ function useListaCompra() {
             existente.recetas.push(receta.nombre)
           }
         } else {
-          mapa.set(clave, { ...ing, cantidad: ing.cantidad * raciones, recetas: [receta.nombre] })
+          mapa.set(clave, { ...ing, unidad: canonUnidad(ing.nombre, ing.unidad), cantidad: ing.cantidad * raciones, recetas: [receta.nombre], clave })
         }
       }
     }
 
     for (const ex of extras) {
-      mapa.set(`${ex.nombre}__${ex.unidad}`, { ...ex, recetas: [], esExtra: true })
+      const clave = claveIngrediente(ex.nombre, ex.unidad)
+      mapa.set(clave, { ...ex, unidad: canonUnidad(ex.nombre, ex.unidad), recetas: [], esExtra: true, clave })
     }
 
     return Array.from(mapa.values()).sort((a, b) =>

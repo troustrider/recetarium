@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { formatCantidad } from '../../utils/ingredientes'
 
 interface IngredienteAgrupado {
   nombre: string
@@ -42,7 +43,7 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
         {esExtra && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">manual</span>}
       </span>
       <span className="text-sm font-bold text-orange-600 tabular-nums shrink-0">
-        {cantidad} {unidad}
+        {formatCantidad(cantidad, unidad)}
       </span>
       {onRemove && (
         <button
