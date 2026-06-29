@@ -7,8 +7,28 @@
   CREATE TABLE recetas (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nombre              VARCHAR(150) NOT NULL,
+    categoria           VARCHAR(100),
+    tiempo_preparacion  INTEGER,
+    favorita            BOOLEAN NOT NULL DEFAULT false,
+    imagen              TEXT,
+    ingredientes        JSONB NOT NULL DEFAULT '[]'::jsonb,
+    pasos               JSONB NOT NULL DEFAULT '[]'::jsonb,
     precio_por_porcion  NUMERIC(10,2) NOT NULL CHECK (precio_por_porcion > 0),
     porciones           INTEGER NOT NULL DEFAULT 1,
+    -- Nutrición por porción (opcional)
+    calorias            INTEGER,
+    proteinas           NUMERIC(5,1),
+    carbohidratos       NUMERIC(5,1),
+    grasas              NUMERIC(5,1),
     category_id         UUID NOT NULL,
     CONSTRAINT fk_category FOREIGN KEY (category_id)
       REFERENCES categories(id) ON DELETE RESTRICT
+  );
+
+  -- Estado compartido de la app (fila única). Guarda el plan semanal
+  -- como [{dia, recetaId, raciones}]. Sin login: una sola fila id=1.
+  CREATE TABLE app_estado (
+    id         INTEGER PRIMARY KEY DEFAULT 1,
+    plan       JSONB NOT NULL DEFAULT '[]'::jsonb,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT app_estado_single_row CHECK (id = 1)

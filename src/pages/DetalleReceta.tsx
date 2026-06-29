@@ -133,6 +133,27 @@ function DetalleReceta() {
         </motion.button>
       </div>
 
+      {receta.calorias != null && (
+        <div className="grid grid-cols-4 gap-2">
+          {([
+            ['Kcal', receta.calorias, ''],
+            ['Prot', receta.proteinas, 'g'],
+            ['Carb', receta.carbohidratos, 'g'],
+            ['Grasa', receta.grasas, 'g'],
+          ] as const).map(([label, valor, unidad]) => (
+            <div key={label} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 px-2 py-3 text-center">
+              <p className="font-display text-lg font-bold text-gray-900 dark:text-gray-100 tabular-nums leading-none">
+                {valor ?? '—'}{unidad}
+              </p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mt-1">
+                {label}
+              </p>
+            </div>
+          ))}
+          <p className="col-span-4 text-[10px] text-gray-400 dark:text-gray-500 text-center -mt-1">por porción</p>
+        </div>
+      )}
+
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100">Ingredientes</h2>

@@ -19,7 +19,7 @@ interface Props {
 }
 
 function RecetaCard({ receta, onClick, onToggleFavorita }: Props) {
-  const { id, nombre, categoria, sabor, tiempoPreparacion, favorita, imagen } = receta
+  const { id, nombre, categoria, sabor, tiempoPreparacion, favorita, imagen, proteinas, calorias } = receta
 
   return (
     <motion.article
@@ -94,9 +94,17 @@ function RecetaCard({ receta, onClick, onToggleFavorita }: Props) {
         <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug line-clamp-2 min-h-[2.75rem] group-hover:text-orange-700 dark:group-hover:text-orange-400 transition-colors">
           {nombre}
         </h3>
-        <div className="mt-3 flex items-center gap-1 text-sm text-gray-400 dark:text-gray-500">
-          <Clock className="w-3.5 h-3.5" />
-          <span>{tiempoPreparacion} min</span>
+        <div className="mt-3 flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
+          <span className="flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5" />
+            {tiempoPreparacion} min
+          </span>
+          {proteinas != null && (
+            <span className="text-orange-600 dark:text-orange-400 font-semibold">· {proteinas}g prot</span>
+          )}
+          {calorias != null && (
+            <span className="text-gray-400 dark:text-gray-500">· {calorias} kcal</span>
+          )}
         </div>
       </div>
     </motion.article>

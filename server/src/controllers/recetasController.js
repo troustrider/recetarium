@@ -24,6 +24,10 @@ function validar(data) {
     errores.push('pasos debe ser un array con al menos un elemento')
   else if (data.pasos.some((p) => typeof p !== 'string' || !p.trim()))
     errores.push('cada paso debe ser un texto no vacío')
+  ;['calorias', 'proteinas', 'carbohidratos', 'grasas'].forEach((k) => {
+    if (data[k] != null && (typeof data[k] !== 'number' || data[k] < 0))
+      errores.push(`${k} debe ser un número >= 0`)
+  })
   return errores
 }
 
