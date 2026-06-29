@@ -111,19 +111,16 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                   <ul className="px-4">
                     {listaCompra
                       .filter((i) => i.familia === familia)
-                      .sort((a, b) => Number(comprados.has(`${a.nombre}__${a.unidad}`)) - Number(comprados.has(`${b.nombre}__${b.unidad}`)))
-                      .map((ing) => {
-                        const clave = `${ing.nombre}__${ing.unidad}`
-                        return (
-                          <ResumenIngrediente
-                            key={clave}
-                            ingrediente={ing}
-                            checked={comprados.has(clave)}
-                            onToggle={() => toggle(clave)}
-                            onRemove={ing.esExtra ? () => removeExtra(clave) : undefined}
-                          />
-                        )
-                      })}
+                      .sort((a, b) => Number(comprados.has(a.clave)) - Number(comprados.has(b.clave)))
+                      .map((ing) => (
+                        <ResumenIngrediente
+                          key={ing.clave}
+                          ingrediente={ing}
+                          checked={comprados.has(ing.clave)}
+                          onToggle={() => toggle(ing.clave)}
+                          onRemove={ing.esExtra ? () => removeExtra(ing.clave) : undefined}
+                        />
+                      ))}
                   </ul>
                 </section>
               ))}
@@ -134,7 +131,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
             {!vacia && (
               <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
                 <motion.button
-                  onClick={() => compartirLista(listaCompra.filter((i) => !comprados.has(`${i.nombre}__${i.unidad}`)))}
+                  onClick={() => compartirLista(listaCompra.filter((i) => !comprados.has(i.clave)))}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-orange-500 rounded-xl hover:bg-orange-600 transition-colors"
                   whileTap={{ scale: 0.97 }}
                 >

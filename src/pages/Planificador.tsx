@@ -300,7 +300,7 @@ function Planificador() {
         </div>
         <div className="flex items-center gap-3">
           <motion.button
-            onClick={() => autollenar(recetas, 2)}
+            onClick={() => autollenar(recetas.filter((r) => (r.tipo ?? 'principal') === 'principal'), 2)}
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}

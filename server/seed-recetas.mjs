@@ -859,6 +859,180 @@ const NUEVAS = [
       'Cuece 12 min y sirve.',
     ],
   },
+
+  // ----- Tanda extra 3: 100% asegurado en Lidl / Dirk / Jumbo / Albert Heijn -----
+  {
+    nombre: 'Boloñesa rápida con pasta', categoria: 'italiana', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 1.6, porciones: 2, calorias: 580, proteinas: 34, carbohidratos: 64, grasas: 18,
+    ingredientes: [
+      ing('pasta', 180, 'g', 'cereales'), ing('carne picada de ternera', 300, 'g', 'carnes'),
+      ing('tomate triturado', 300, 'g', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('ajo', 1, 'diente', 'verduras'), ing('queso rallado', 30, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Cuece la pasta.',
+      'Sofríe la cebolla y el ajo; añade la carne.',
+      'Incorpora el tomate y cuece 10 min.',
+      'Mezcla con la pasta y remata con queso.',
+    ],
+  },
+  {
+    nombre: 'Albóndigas en salsa de tomate con arroz', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 30, tipo: 'principal',
+    precioPorPorcion: 1.7, porciones: 2, calorias: 540, proteinas: 32, carbohidratos: 54, grasas: 20,
+    ingredientes: [
+      ing('carne picada de ternera', 300, 'g', 'carnes'), ing('huevo', 1, 'ud', 'huevos'),
+      ing('pan rallado', 30, 'g', 'cereales'), ing('tomate triturado', 300, 'g', 'verduras'),
+      ing('cebolla', 0.5, 'ud', 'verduras'), ing('arroz', 150, 'g', 'cereales'),
+    ],
+    pasos: [
+      'Mezcla carne, huevo y pan rallado; forma albóndigas.',
+      'Dóralas y reserva.',
+      'Sofríe la cebolla, añade el tomate y las albóndigas; cuece 12 min.',
+      'Sirve con arroz.',
+    ],
+  },
+  {
+    nombre: 'Pollo a la mostaza con arroz', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 1.7, porciones: 2, calorias: 520, proteinas: 44, carbohidratos: 52, grasas: 14,
+    ingredientes: [
+      ing('pechuga de pollo', 350, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
+      ing('mostaza', 1, 'cucharada', 'salsas'), ing('yogur griego', 100, 'g', 'lacteos'),
+      ing('cebolla', 0.5, 'ud', 'verduras'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Dora el pollo en dados con la cebolla.',
+      'Añade mostaza y yogur; cuece 4 min sin que hierva fuerte.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Pollo con champiñones y arroz', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.8, porciones: 2, calorias: 520, proteinas: 42, carbohidratos: 52, grasas: 14,
+    ingredientes: [
+      ing('pechuga de pollo', 350, 'g', 'carnes'), ing('champiñones', 200, 'g', 'verduras'),
+      ing('arroz', 150, 'g', 'cereales'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('yogur griego', 80, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Saltea el pollo en dados y reserva.',
+      'Saltea champiñones y cebolla; vuelve el pollo con el yogur.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Pasta con pollo y tomate', categoria: 'italiana', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 1.7, porciones: 2, calorias: 580, proteinas: 40, carbohidratos: 66, grasas: 14,
+    ingredientes: [
+      ing('pasta', 180, 'g', 'cereales'), ing('pechuga de pollo', 300, 'g', 'carnes'),
+      ing('tomate triturado', 300, 'g', 'verduras'), ing('ajo', 1, 'diente', 'verduras'),
+      ing('queso rallado', 30, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Cuece la pasta.',
+      'Saltea el pollo en dados con el ajo.',
+      'Añade el tomate y cuece 8 min.',
+      'Mezcla con la pasta y el queso.',
+    ],
+  },
+  {
+    nombre: 'Ensalada de pasta con pollo y maíz', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 1.8, porciones: 2, calorias: 560, proteinas: 34, carbohidratos: 64, grasas: 16,
+    ingredientes: [
+      ing('pasta', 180, 'g', 'cereales'), ing('pechuga de pollo', 300, 'g', 'carnes'),
+      ing('maíz dulce', 100, 'g', 'verduras'), ing('tomate cherry', 100, 'g', 'verduras'),
+      ing('mayonesa', 2, 'cucharada', 'salsas'),
+    ],
+    pasos: [
+      'Cuece la pasta y deja templar.',
+      'Saltea el pollo en dados.',
+      'Mezcla pasta, pollo, maíz y tomate con la mayonesa.',
+    ],
+  },
+  {
+    nombre: 'Tortilla de patata y atún', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.4, porciones: 2, calorias: 460, proteinas: 30, carbohidratos: 30, grasas: 24,
+    ingredientes: [
+      ing('huevos', 5, 'ud', 'huevos'), ing('patata', 250, 'g', 'verduras'),
+      ing('atún en lata al natural', 120, 'g', 'pescados'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Confita la patata y la cebolla en aceite.',
+      'Bate los huevos con el atún escurrido y la patata.',
+      'Cuaja la tortilla por ambos lados.',
+    ],
+  },
+  {
+    nombre: 'Huevos rellenos de atún', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20, tipo: 'entrante',
+    precioPorPorcion: 1.2, porciones: 2, calorias: 360, proteinas: 30, carbohidratos: 4, grasas: 24,
+    ingredientes: [
+      ing('huevos', 6, 'ud', 'huevos'), ing('atún en lata al natural', 150, 'g', 'pescados'),
+      ing('mayonesa', 2, 'cucharada', 'salsas'),
+    ],
+    pasos: [
+      'Cuece los huevos 10 min y pélalos.',
+      'Pártelos, mezcla las yemas con el atún y la mayonesa.',
+      'Rellena las claras.',
+    ],
+  },
+  {
+    nombre: 'Garbanzos con chorizo y huevo', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 1.5, porciones: 2, calorias: 480, proteinas: 30, carbohidratos: 38, grasas: 24,
+    ingredientes: [
+      ing('garbanzos cocidos de bote', 400, 'g', 'legumbres'), ing('chorizo', 100, 'g', 'carnes'),
+      ing('huevos', 2, 'ud', 'huevos'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('pimentón', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Sofríe la cebolla y el chorizo en rodajas.',
+      'Añade los garbanzos y el pimentón; saltea 5 min.',
+      'Haz un hueco y cuaja los huevos dentro.',
+    ],
+  },
+  {
+    nombre: 'Pollo al horno con patatas', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 40, tipo: 'principal',
+    precioPorPorcion: 1.6, porciones: 2, calorias: 540, proteinas: 40, carbohidratos: 40, grasas: 24,
+    ingredientes: [
+      ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('patata', 300, 'g', 'verduras'),
+      ing('ajo', 2, 'diente', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Trocea las patatas y colócalas con el pollo en una bandeja.',
+      'Aliña con ajo, pimentón y aceite.',
+      'Hornea a 200°C 30-35 min.',
+    ],
+  },
+  {
+    nombre: 'Sopa de lentejas con chorizo', categoria: 'espanola', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.4, porciones: 2, calorias: 460, proteinas: 30, carbohidratos: 44, grasas: 16,
+    ingredientes: [
+      ing('lentejas cocidas de bote', 400, 'g', 'legumbres'), ing('chorizo', 120, 'g', 'carnes'),
+      ing('zanahoria', 1, 'ud', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
+      ing('pimentón', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Sofríe la cebolla, la zanahoria y el chorizo en rodajas.',
+      'Añade el pimentón y las lentejas con un vaso de agua.',
+      'Cuece 12 min.',
+    ],
+  },
+  {
+    nombre: 'Pavo con puré y verduras', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.9, porciones: 2, calorias: 500, proteinas: 40, carbohidratos: 44, grasas: 16,
+    ingredientes: [
+      ing('filetes de pavo', 300, 'g', 'carnes'), ing('patata', 400, 'g', 'verduras'),
+      ing('verduras congeladas', 200, 'g', 'verduras'), ing('leche', 100, 'ml', 'lacteos'),
+      ing('mantequilla', 20, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Cuece las patatas y haz un puré con leche y mantequilla.',
+      'Saltea el pavo en tiras y las verduras.',
+      'Sirve el pavo y las verduras sobre el puré.',
+    ],
+  },
 ]
 
 async function run() {
@@ -883,11 +1057,11 @@ async function run() {
     const cid = catId[r.sabor]
     if (!cid) { console.warn(`Sabor desconocido en "${r.nombre}": ${r.sabor}`); continue }
     await sql`
-      INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, imagen, ingredientes, pasos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas)
+      INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, imagen, ingredientes, pasos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo)
       VALUES (${r.nombre}, ${r.categoria}, ${r.tiempoPreparacion}, false, null,
         ${JSON.stringify(r.ingredientes)}, ${JSON.stringify(r.pasos)},
         ${r.precioPorPorcion}, ${r.porciones}, ${cid},
-        ${r.calorias}, ${r.proteinas}, ${r.carbohidratos}, ${r.grasas})`
+        ${r.calorias}, ${r.proteinas}, ${r.carbohidratos}, ${r.grasas}, ${r.tipo ?? 'principal'})`
     inserted++
   }
   console.log(`Nuevas: ${inserted} insertadas, ${skipped} ya existían.`)

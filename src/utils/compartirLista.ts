@@ -1,4 +1,5 @@
 import type { IngredienteAgrupado } from '../hooks/useListaCompra'
+import { formatCantidad } from './ingredientes'
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
@@ -10,7 +11,7 @@ export function textoLista(items: IngredienteAgrupado[]): string {
   for (const familia of familias) {
     lineas.push(familia.toUpperCase())
     for (const i of items.filter((x) => x.familia === familia)) {
-      lineas.push(`- ${capitalize(i.nombre)}: ${i.cantidad} ${i.unidad}`)
+      lineas.push(`- ${capitalize(i.nombre)}: ${formatCantidad(i.cantidad, i.unidad)}`)
     }
     lineas.push('')
   }

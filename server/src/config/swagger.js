@@ -42,6 +42,7 @@ const options = {
             proteinas: { type: 'number', example: 38.5 },
             carbohidratos: { type: 'number', example: 45 },
             grasas: { type: 'number', example: 18 },
+            tipo: { type: 'string', enum: ['principal', 'postre', 'desayuno', 'entrante'], example: 'principal' },
           },
         },
         RecetaInput: {
@@ -61,6 +62,7 @@ const options = {
             proteinas: { type: 'number' },
             carbohidratos: { type: 'number' },
             grasas: { type: 'number' },
+            tipo: { type: 'string', enum: ['principal', 'postre', 'desayuno', 'entrante'] },
           },
         },
         Error: {
