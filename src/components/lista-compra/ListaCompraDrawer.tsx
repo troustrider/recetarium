@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus } from 'lucide-react'
-import { useListaCompraContext } from '../../context'
+import { useListaCompraContext, useCompradosContext } from '../../context'
 import ResumenIngrediente from './ResumenIngrediente'
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 
 function ListaCompraDrawer({ open, onClose }: Props) {
   const { seleccionadas, listaCompra, toggleReceta, setRaciones, vaciar } = useListaCompraContext()
+  const { comprados, toggle } = useCompradosContext()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
 
   return (
@@ -119,9 +120,17 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                       <ul className="px-4">
                         {listaCompra
                           .filter((i) => i.familia === familia)
-                          .map((ing, i) => (
-                            <ResumenIngrediente key={i} ingrediente={ing} />
-                          ))}
+                          .map((ing, i) => {
+                            const clave = `${ing.nombre}__${ing.unidad}`
+                            return (
+                              <ResumenIngrediente
+                                key={i}
+                                ingrediente={ing}
+                                checked={comprados.has(clave)}
+                                onToggle={() => toggle(clave)}
+                              />
+                            )
+                          })}
                       </ul>
                     </section>
                   ))}

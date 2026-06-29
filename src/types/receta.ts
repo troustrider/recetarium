@@ -19,4 +19,10 @@ export interface Receta {
   imagen?: string
   ingredientes: Ingrediente[]
   pasos: string[]
+  precioPorPorcion?: number
+  porciones?: number
+  calorias?: number
+  proteinas?: number
+  carbohidratos?: number
+  grasas?: number
 }

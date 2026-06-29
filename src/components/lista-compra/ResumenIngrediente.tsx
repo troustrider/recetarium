@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 
 interface IngredienteAgrupado {
@@ -10,20 +9,21 @@ interface IngredienteAgrupado {
 
 interface Props {
   ingrediente: IngredienteAgrupado
+  checked: boolean
+  onToggle: () => void
 }
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-function ResumenIngrediente({ ingrediente }: Props) {
+function ResumenIngrediente({ ingrediente, checked, onToggle }: Props) {
   const { nombre, cantidad, unidad } = ingrediente
-  const [checked, setChecked] = useState(false)
 
   return (
     <motion.li
       className={`flex items-center gap-3 py-3 border-b border-gray-100 last:border-0 cursor-pointer select-none transition-opacity ${checked ? 'opacity-40' : ''}`}
-      onClick={() => setChecked(!checked)}
+      onClick={onToggle}
       whileTap={{ scale: 0.99 }}
     >
       <span className={`shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${

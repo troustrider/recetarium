@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react'
 import type { Receta } from '../types/receta'
 import { useListaCompraContext } from './ListaCompraContext'
+import { useRecetasContext } from './RecetasContext'
+import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
 export type Dia = typeof DIAS[number]
@@ -14,6 +16,25 @@ export interface EntradaPlan {
 type Plan = Record<Dia, EntradaPlan[]>
 
 const PLAN_VACIO: Plan = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
+
+function serializar(plan: Plan): EntradaPlanDTO[] {
+  const out: EntradaPlanDTO[] = []
+  for (const dia of DIAS) {
+    for (const e of plan[dia]) out.push({ dia, recetaId: e.receta.id, raciones: e.raciones })
+  }
+  return out
+}
+
+function hidratar(dtos: EntradaPlanDTO[], recetas: Receta[]): Plan {
+  const byId = new Map(recetas.map((r) => [r.id, r]))
+  const result = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
+  for (const { dia, recetaId, raciones } of dtos) {
+    const receta = byId.get(recetaId)
+    if (!receta || !DIAS.includes(dia as Dia)) continue
+    result[dia as Dia].push({ id: `${dia}-${recetaId}-${Date.now()}-${Math.random()}`, receta, raciones })
+  }
+  return result
+}
 
 interface PlanificadorCtx {
   plan: Plan
@@ -29,7 +50,36 @@ const PlanificadorContext = createContext<PlanificadorCtx | null>(null)
 
 export function PlanificadorProvider({ children }: { children: ReactNode }) {
   const [plan, setPlan] = useState<Plan>(PLAN_VACIO)
+  const { recetas, loading } = useRecetasContext()
   const { seleccionadas, toggleReceta, setRaciones: setRacionesLista, estaSeleccionada } = useListaCompraContext()
+
+  // Carga inicial del plan compartido desde el backend (una sola vez,
+  // cuando el catálogo está disponible para rehidratar por id).
+  const hidratadoRef = useRef(false)
+  const saltarGuardadoRef = useRef(false)
+  useEffect(() => {
+    if (hidratadoRef.current || loading || recetas.length === 0) return
+    let cancelado = false
+    getPlan()
+      .then((dtos) => {
+        if (cancelado) return
+        saltarGuardadoRef.current = true
+        setPlan(hidratar(dtos, recetas))
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelado) hidratadoRef.current = true })
+    return () => { cancelado = true }
+  }, [loading, recetas])
+
+  // Guardado con debounce ante cambios del plan (tras la hidratación).
+  useEffect(() => {
+    if (!hidratadoRef.current) return
+    if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
+    const t = setTimeout(() => {
+      savePlan(serializar(plan)).catch(() => {})
+    }, 800)
+    return () => clearTimeout(t)
+  }, [plan])
 
   const seleccionadasRef = useRef(seleccionadas)
   const estaSeleccionadaRef = useRef(estaSeleccionada)

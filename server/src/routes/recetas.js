@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import * as c from '../controllers/recetasController.js'
+import { requireKey } from '../lib/auth.js'
 
 const router = Router()
 
@@ -83,7 +84,7 @@ router.get('/:id', c.getById)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', c.create)
+router.post('/', requireKey, c.create)
 
 /**
  * @swagger
@@ -122,7 +123,7 @@ router.post('/', c.create)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/:id', c.update)
+router.put('/:id', requireKey, c.update)
 
 /**
  * @swagger
@@ -149,7 +150,7 @@ router.put('/:id', c.update)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.patch('/:id/favorita', c.toggleFavorita)
+router.patch('/:id/favorita', requireKey, c.toggleFavorita)
 
 /**
  * @swagger
@@ -172,6 +173,6 @@ router.patch('/:id/favorita', c.toggleFavorita)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.delete('/:id', c.remove)
+router.delete('/:id', requireKey, c.remove)
 
 export default router

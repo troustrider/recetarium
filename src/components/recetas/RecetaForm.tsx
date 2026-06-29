@@ -187,6 +187,27 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         </div>
       </div>
 
+      {/* Coste y nutrición (opcional, por porción) */}
+      <div>
+        <h3 className={LABEL_CLASS}>Coste y nutrición <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional, por porción)</span></h3>
+        <div className="grid grid-cols-2 gap-2 mb-2">
+          <input type="number" min={0} step="0.01" placeholder="€ / porción" value={form.precioPorPorcion ?? ''}
+            onChange={(e) => handleChange('precioPorPorcion', e.target.value === '' ? undefined : Number(e.target.value))} className={INPUT_CLASS} />
+          <input type="number" min={1} placeholder="Porciones" value={form.porciones ?? ''}
+            onChange={(e) => handleChange('porciones', e.target.value === '' ? undefined : Number(e.target.value))} className={INPUT_CLASS} />
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          <input type="number" min={0} placeholder="Kcal" value={form.calorias ?? ''}
+            onChange={(e) => handleChange('calorias', e.target.value === '' ? undefined : Number(e.target.value))} className={INPUT_CLASS} />
+          <input type="number" min={0} step="0.1" placeholder="Prot. g" value={form.proteinas ?? ''}
+            onChange={(e) => handleChange('proteinas', e.target.value === '' ? undefined : Number(e.target.value))} className={INPUT_CLASS} />
+          <input type="number" min={0} step="0.1" placeholder="Carb. g" value={form.carbohidratos ?? ''}
+            onChange={(e) => handleChange('carbohidratos', e.target.value === '' ? undefined : Number(e.target.value))} className={INPUT_CLASS} />
+          <input type="number" min={0} step="0.1" placeholder="Grasa g" value={form.grasas ?? ''}
+            onChange={(e) => handleChange('grasas', e.target.value === '' ? undefined : Number(e.target.value))} className={INPUT_CLASS} />
+        </div>
+      </div>
+
       {/* Ingredientes */}
       <div>
         <h3 className={LABEL_CLASS}>Ingredientes</h3>

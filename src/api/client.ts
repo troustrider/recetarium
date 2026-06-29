@@ -1,4 +1,5 @@
 import type { Receta } from '../types/receta'
+import { authedFetch } from './auth'
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 type Filtros = { categoria?: string; sabor?: string }
@@ -29,7 +30,7 @@ export async function getReceta(id: string): Promise<Receta> {
 }
 
 export async function createReceta(data: RecetaFormData): Promise<Receta> {
-  const res = await fetch(URL_RECETAS, {
+  const res = await authedFetch(URL_RECETAS, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -38,7 +39,7 @@ export async function createReceta(data: RecetaFormData): Promise<Receta> {
 }
 
 export async function updateReceta(id: string, data: RecetaFormData): Promise<Receta> {
-  const res = await fetch(`${URL_RECETAS}/${id}`, {
+  const res = await authedFetch(`${URL_RECETAS}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -47,12 +48,12 @@ export async function updateReceta(id: string, data: RecetaFormData): Promise<Re
 }
 
 export async function toggleFavorita(id: string): Promise<Receta> {
-  const res = await fetch(`${URL_RECETAS}/${id}/favorita`, { method: 'PATCH' })
+  const res = await authedFetch(`${URL_RECETAS}/${id}/favorita`, { method: 'PATCH' })
   return manejarRespuesta<Receta>(res)
 }
 
 export async function deleteReceta(id: string): Promise<void> {
-  const res = await fetch(`${URL_RECETAS}/${id}`, { method: 'DELETE' })
+  const res = await authedFetch(`${URL_RECETAS}/${id}`, { method: 'DELETE' })
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
     throw new Error(body.error ?? `Error ${res.status}`)
