@@ -53,7 +53,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-5">
+            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
               {vacia && (
                 <p className="text-sm text-gray-400 text-center pt-6 pb-2">
                   Añade recetas desde el catálogo o ítems a mano aquí abajo.
