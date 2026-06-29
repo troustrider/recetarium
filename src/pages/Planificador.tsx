@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Dices } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,
@@ -241,7 +242,7 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
 
 // ——— Página principal ———
 function Planificador() {
-  const { plan, dias, añadir, quitar, setRaciones, mover, limpiar } = usePlanificador()
+  const { plan, dias, añadir, quitar, setRaciones, mover, limpiar, autollenar } = usePlanificador()
   const { recetas } = useRecetasContext()
   const [selectorDia, setSelectorDia] = useState<Dia | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
@@ -298,11 +299,16 @@ function Planificador() {
           <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-gray-100">Planificador</h1>
         </div>
         <div className="flex items-center gap-3">
-          {totalRecetas > 0 && (
-            <span className="text-xs font-semibold text-gray-400 dark:text-gray-500">
-              {totalRecetas} {totalRecetas === 1 ? 'receta' : 'recetas'}
-            </span>
-          )}
+          <motion.button
+            onClick={() => autollenar(recetas, 2)}
+            disabled={recetas.length === 0}
+            className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
+            whileTap={{ scale: 0.95 }}
+            title="Rellena la semana con recetas al azar"
+          >
+            <Dices className="w-3.5 h-3.5" />
+            Auto-semana
+          </motion.button>
           {totalRecetas > 0 && (
             <motion.button
               onClick={limpiar}

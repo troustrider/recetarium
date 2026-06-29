@@ -526,6 +526,166 @@ const NUEVAS = [
       'Monta el bol con arroz, pollo, tomate y tzatziki.',
     ],
   },
+
+  // ----- Tanda extra: lo más simple y barato (precios reales Lidl/Dirk) -----
+  {
+    nombre: 'Huevos revueltos con kwark', categoria: 'desayuno', sabor: 'salado', tiempoPreparacion: 10,
+    precioPorPorcion: 0.9, porciones: 1, calorias: 380, proteinas: 34, carbohidratos: 6, grasas: 24,
+    ingredientes: [
+      ing('huevos', 3, 'ud', 'huevos'), ing('kwark (quark)', 100, 'g', 'lacteos'),
+      ing('queso rallado', 20, 'g', 'lacteos'), ing('aceite de oliva', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Bate los huevos con el kwark.',
+      'Cuájalos a fuego medio removiendo.',
+      'Añade el queso al final y sirve.',
+    ],
+  },
+  {
+    nombre: 'Atún con arroz y maíz', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 10,
+    precioPorPorcion: 1.3, porciones: 1, calorias: 480, proteinas: 32, carbohidratos: 58, grasas: 10,
+    ingredientes: [
+      ing('atún en lata al natural', 120, 'g', 'pescados'), ing('arroz', 75, 'g', 'cereales'),
+      ing('maíz dulce', 80, 'g', 'verduras'), ing('mayonesa', 1, 'cucharada', 'salsas'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Escurre el atún y el maíz.',
+      'Mezcla todo con la mayonesa.',
+    ],
+  },
+  {
+    nombre: 'Pollo a la plancha con arroz', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20,
+    precioPorPorcion: 1.6, porciones: 2, calorias: 520, proteinas: 45, carbohidratos: 55, grasas: 10,
+    ingredientes: [
+      ing('pechuga de pollo', 300, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
+      ing('aceite de oliva', 1, 'cucharada', 'condimentos'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Salpimienta el pollo con pimentón.',
+      'Hazlo a la plancha 5-6 min por lado.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Lentejas de bote con verduras y huevo', categoria: 'legumbres', sabor: 'salado', tiempoPreparacion: 15,
+    precioPorPorcion: 1.2, porciones: 2, calorias: 430, proteinas: 28, carbohidratos: 44, grasas: 14,
+    ingredientes: [
+      ing('lentejas cocidas de bote', 400, 'g', 'legumbres'), ing('verduras congeladas', 200, 'g', 'verduras'),
+      ing('huevos', 2, 'ud', 'huevos'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Saltea las verduras congeladas.',
+      'Añade las lentejas escurridas y calienta.',
+      'Haz un huevo a la plancha por persona y sirve encima.',
+    ],
+  },
+  {
+    nombre: 'Skyr proteico con frutos rojos', categoria: 'desayuno', sabor: 'dulce', tiempoPreparacion: 5,
+    precioPorPorcion: 1.0, porciones: 1, calorias: 320, proteinas: 30, carbohidratos: 34, grasas: 6,
+    ingredientes: [
+      ing('skyr', 200, 'g', 'lacteos'), ing('frutos rojos congelados', 80, 'g', 'frutas'),
+      ing('copos de avena', 30, 'g', 'cereales'), ing('miel', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Mezcla el skyr con la avena.',
+      'Añade los frutos rojos y la miel.',
+    ],
+  },
+  {
+    nombre: 'Garbanzos salteados con espinacas y huevo', categoria: 'legumbres', sabor: 'salado', tiempoPreparacion: 15,
+    precioPorPorcion: 1.2, porciones: 2, calorias: 420, proteinas: 26, carbohidratos: 40, grasas: 16,
+    ingredientes: [
+      ing('garbanzos cocidos de bote', 400, 'g', 'legumbres'), ing('espinacas', 150, 'g', 'verduras'),
+      ing('huevos', 2, 'ud', 'huevos'), ing('ajo', 1, 'diente', 'verduras'),
+      ing('comino', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Sofríe el ajo y añade las espinacas.',
+      'Incorpora los garbanzos y el comino.',
+      'Haz un hueco y cuaja los huevos dentro.',
+    ],
+  },
+  {
+    nombre: 'Wrap de pollo y queso', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 15,
+    precioPorPorcion: 1.9, porciones: 2, calorias: 520, proteinas: 40, carbohidratos: 42, grasas: 20,
+    ingredientes: [
+      ing('tortillas de trigo (wrap)', 2, 'ud', 'cereales'), ing('pechuga de pollo', 250, 'g', 'carnes'),
+      ing('queso rallado', 60, 'g', 'lacteos'), ing('lechuga', 50, 'g', 'verduras'),
+    ],
+    pasos: [
+      'Saltea el pollo en tiras.',
+      'Rellena las tortillas con pollo, queso y lechuga.',
+      'Enrolla y dora 1 min por lado.',
+    ],
+  },
+  {
+    nombre: 'Revuelto de gambas y huevo', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 10,
+    precioPorPorcion: 1.8, porciones: 2, calorias: 360, proteinas: 34, carbohidratos: 4, grasas: 22,
+    ingredientes: [
+      ing('huevos', 4, 'ud', 'huevos'), ing('gambas congeladas', 200, 'g', 'pescados'),
+      ing('ajo', 1, 'diente', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Saltea el ajo y las gambas.',
+      'Añade los huevos batidos y revuelve hasta cuajar.',
+    ],
+  },
+  {
+    nombre: 'Pollo al curry rápido con yogur', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20,
+    precioPorPorcion: 1.9, porciones: 2, calorias: 520, proteinas: 42, carbohidratos: 50, grasas: 14,
+    ingredientes: [
+      ing('pechuga de pollo', 300, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
+      ing('yogur griego', 100, 'g', 'lacteos'), ing('curry en polvo', 1, 'cucharada', 'condimentos'),
+      ing('cebolla', 0.5, 'ud', 'verduras'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Sofríe la cebolla y el pollo en dados.',
+      'Añade el curry y el yogur; cuece 5 min.',
+      'Sirve con el arroz.',
+    ],
+  },
+  {
+    nombre: 'Pavo con cuscús y verduras', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 15,
+    precioPorPorcion: 2.0, porciones: 2, calorias: 500, proteinas: 40, carbohidratos: 52, grasas: 12,
+    ingredientes: [
+      ing('filetes de pavo', 300, 'g', 'carnes'), ing('cuscús', 150, 'g', 'cereales'),
+      ing('verduras congeladas', 150, 'g', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Hidrata el cuscús con agua hirviendo.',
+      'Saltea el pavo en tiras y las verduras.',
+      'Mezcla con el cuscús.',
+    ],
+  },
+  {
+    nombre: 'Tosta de huevo y queso fresco', categoria: 'desayuno', sabor: 'salado', tiempoPreparacion: 10,
+    precioPorPorcion: 1.1, porciones: 1, calorias: 380, proteinas: 28, carbohidratos: 30, grasas: 16,
+    ingredientes: [
+      ing('pan', 2, 'rebanada', 'cereales'), ing('huevos', 2, 'ud', 'huevos'),
+      ing('queso fresco batido (hüttenkäse)', 100, 'g', 'lacteos'), ing('tomate', 1, 'ud', 'verduras'),
+    ],
+    pasos: [
+      'Tuesta el pan.',
+      'Haz los huevos a la plancha.',
+      'Unta el queso fresco, pon tomate y los huevos encima.',
+    ],
+  },
+  {
+    nombre: 'Arroz con huevo y soja', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 10,
+    precioPorPorcion: 0.8, porciones: 1, calorias: 430, proteinas: 20, carbohidratos: 60, grasas: 12,
+    ingredientes: [
+      ing('arroz', 100, 'g', 'cereales'), ing('huevos', 2, 'ud', 'huevos'),
+      ing('salsa de soja', 1, 'cucharada', 'salsas'), ing('cebolleta', 1, 'ud', 'verduras'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Fríe los huevos.',
+      'Sirve sobre el arroz con soja y cebolleta.',
+    ],
+  },
 ]
 
 async function run() {

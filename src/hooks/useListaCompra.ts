@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
+import { getExtras, saveExtras } from '../api/estado'
 
 export interface IngredienteAgrupado extends Ingrediente {
   recetas: string[]
+  esExtra?: boolean
 }
 
 export interface EntradaLista {
@@ -10,8 +12,31 @@ export interface EntradaLista {
   raciones: number
 }
 
+function claveDe(nombre: string, unidad: string) {
+  return `${nombre.trim().toLowerCase()}__${unidad.trim().toLowerCase()}`
+}
+
 function useListaCompra() {
   const [seleccionadas, setSeleccionadas] = useState<EntradaLista[]>([])
+  const [extras, setExtras] = useState<Ingrediente[]>([])
+
+  // Ítems manuales: compartidos en backend (los ve también la pareja).
+  const hidratadoRef = useRef(false)
+  const saltarGuardadoRef = useRef(false)
+  useEffect(() => {
+    let cancelado = false
+    getExtras()
+      .then((e) => { if (!cancelado) { saltarGuardadoRef.current = true; setExtras(e) } })
+      .catch(() => {})
+      .finally(() => { if (!cancelado) hidratadoRef.current = true })
+    return () => { cancelado = true }
+  }, [])
+  useEffect(() => {
+    if (!hidratadoRef.current) return
+    if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
+    const t = setTimeout(() => { saveExtras(extras).catch(() => {}) }, 800)
+    return () => clearTimeout(t)
+  }, [extras])
 
   function toggleReceta(receta: Receta) {
     setSeleccionadas((prev) =>
@@ -36,6 +61,37 @@ function useListaCompra() {
     setSeleccionadas([])
   }
 
+  // Carga N recetas al azar (que no estén ya), todas con las mismas raciones.
+  function cargarAleatorias(recetas: Receta[], n: number, raciones: number) {
+    const yaIds = new Set(seleccionadas.map((e) => e.receta.id))
+    const candidatas = recetas.filter((r) => !yaIds.has(r.id))
+    const barajadas = [...candidatas].sort(() => Math.random() - 0.5).slice(0, n)
+    if (barajadas.length === 0) return
+    setSeleccionadas((prev) => [...prev, ...barajadas.map((receta) => ({ receta, raciones }))])
+  }
+
+  function addExtra(item: Ingrediente) {
+    const clave = claveDe(item.nombre, item.unidad)
+    setExtras((prev) =>
+      prev.some((e) => claveDe(e.nombre, e.unidad) === clave) ? prev : [...prev, item]
+    )
+  }
+
+  function removeExtra(clave: string) {
+    setExtras((prev) => prev.filter((e) => claveDe(e.nombre, e.unidad) !== clave))
+  }
+
+  // Coste estimado de la compra: precio/porción × porciones × raciones.
+  const coste = useMemo(
+    () =>
+      seleccionadas.reduce(
+        (acc, { receta, raciones }) =>
+          acc + (receta.precioPorPorcion ?? 0) * (receta.porciones ?? 1) * raciones,
+        0
+      ),
+    [seleccionadas]
+  )
+
   const listaCompra = useMemo<IngredienteAgrupado[]>(() => {
     const mapa = new Map<string, IngredienteAgrupado>()
 
@@ -54,12 +110,20 @@ function useListaCompra() {
       }
     }
 
+    for (const ex of extras) {
+      mapa.set(`${ex.nombre}__${ex.unidad}`, { ...ex, recetas: [], esExtra: true })
+    }
+
     return Array.from(mapa.values()).sort((a, b) =>
       a.familia.localeCompare(b.familia) || a.nombre.localeCompare(b.nombre)
     )
-  }, [seleccionadas])
+  }, [seleccionadas, extras])
 
-  return { seleccionadas, listaCompra, toggleReceta, setRaciones, estaSeleccionada, vaciar }
+  return {
+    seleccionadas, listaCompra, extras, coste,
+    toggleReceta, setRaciones, estaSeleccionada, vaciar,
+    cargarAleatorias, addExtra, removeExtra,
+  }
 }
 
 export default useListaCompra

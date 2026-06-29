@@ -1,9 +1,10 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import { useListaCompraContext } from '../context'
-import useFiltros from '../hooks/useFiltros'
+import useFiltros, { type Orden } from '../hooks/useFiltros'
 import RecetaCard from '../components/recetas/RecetaCard'
 import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
@@ -11,10 +12,18 @@ import ErrorMessage from '../components/shared/ErrorMessage'
 
 function Catalogo() {
   const { recetas, loading, error, cargar, toggleFavorita } = useRecetasContext()
-  const { toggleReceta, estaSeleccionada } = useListaCompraContext()
-  const { filtros, setFiltros, recetasFiltradas } = useFiltros(recetas)
+  const { toggleReceta, estaSeleccionada, cargarAleatorias } = useListaCompraContext()
+  const { filtros, setFiltros, orden, setOrden, recetasFiltradas } = useFiltros(recetas)
   const [searchParams] = useSearchParams()
+  const [racionesAzar, setRacionesAzar] = useState(2)
   const navigate = useNavigate()
+
+  const ORDENES: { valor: Orden; label: string }[] = [
+    { valor: 'nombre', label: 'Nombre' },
+    { valor: 'tiempo', label: 'Más rápidas' },
+    { valor: 'proteina', label: 'Más proteína' },
+    { valor: 'precio', label: 'Más baratas' },
+  ]
 
   const q = searchParams.get('q')?.toLowerCase().trim() ?? ''
   const categorias = useMemo(
@@ -109,7 +118,39 @@ function Catalogo() {
             </p>
           )}
 
-          <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <select
+                value={orden}
+                onChange={(e) => setOrden(e.target.value as Orden)}
+                className="px-3 py-2 text-sm font-semibold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl border-0 outline-none focus:ring-2 focus:ring-orange-400 cursor-pointer"
+                aria-label="Ordenar"
+              >
+                {ORDENES.map((o) => (
+                  <option key={o.valor} value={o.valor}>Ordenar: {o.label}</option>
+                ))}
+              </select>
+
+              <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden">
+                <motion.button
+                  onClick={() => cargarAleatorias(resultados, 5, racionesAzar)}
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+                  whileTap={{ scale: 0.95 }}
+                  title="Añade 5 recetas al azar a la lista"
+                >
+                  <Dices className="w-4 h-4" />
+                  Sorpréndeme
+                </motion.button>
+                <div className="flex items-center gap-1 px-2 border-l border-gray-200 dark:border-gray-700">
+                  <button onClick={() => setRacionesAzar((r) => Math.max(1, r - 1))} className="w-5 h-5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm leading-none" aria-label="Menos raciones">−</button>
+                  <span className="text-xs font-bold text-gray-600 dark:text-gray-300 w-8 text-center tabular-nums">{racionesAzar} rac.</span>
+                  <button onClick={() => setRacionesAzar((r) => Math.min(6, r + 1))} className="w-5 h-5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm leading-none" aria-label="Más raciones">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {resultados.length === 0 ? (
             <p className="text-sm text-gray-400 dark:text-gray-500 py-10 text-center">Sin resultados para estos filtros.</p>

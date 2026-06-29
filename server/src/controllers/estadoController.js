@@ -25,3 +25,28 @@ export async function putPlan(req, res) {
   const guardado = await estadoService.setPlan(req.body)
   res.json(guardado)
 }
+
+function validarExtras(extras) {
+  if (!Array.isArray(extras)) return 'extras debe ser un array'
+  for (let i = 0; i < extras.length; i++) {
+    const e = extras[i]
+    if (!e || typeof e !== 'object') return `extras[${i}] debe ser un objeto`
+    if (typeof e.nombre !== 'string' || !e.nombre.trim()) return `extras[${i}].nombre es obligatorio`
+    if (typeof e.cantidad !== 'number' || e.cantidad <= 0) return `extras[${i}].cantidad debe ser > 0`
+    if (typeof e.unidad !== 'string' || !e.unidad.trim()) return `extras[${i}].unidad es obligatorio`
+    if (typeof e.familia !== 'string' || !e.familia.trim()) return `extras[${i}].familia es obligatorio`
+  }
+  return null
+}
+
+export async function getExtras(req, res) {
+  const extras = await estadoService.getExtras()
+  res.json(extras)
+}
+
+export async function putExtras(req, res) {
+  const error = validarExtras(req.body)
+  if (error) return res.status(400).json({ error })
+  const guardado = await estadoService.setExtras(req.body)
+  res.json(guardado)
+}

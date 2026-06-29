@@ -4,6 +4,7 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './config/swagger.js'
 import recetasRouter from './routes/recetas.js'
 import estadoRouter from './routes/estado.js'
+import extrasRouter from './routes/extras.js'
 import dbRouter from './routes/db.js'
 
 const app = express()
@@ -15,6 +16,7 @@ app.use(express.json())
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use('/api/v1/recetas', recetasRouter)
 app.use('/api/v1/plan', estadoRouter)
+app.use('/api/v1/extras', extrasRouter)
 app.use('/api/v1/db', dbRouter)
 
 app.use((err, req, res, next) => {

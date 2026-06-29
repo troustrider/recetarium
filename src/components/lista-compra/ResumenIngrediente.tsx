@@ -5,20 +5,22 @@ interface IngredienteAgrupado {
   cantidad: number
   unidad: string
   familia: string
+  esExtra?: boolean
 }
 
 interface Props {
   ingrediente: IngredienteAgrupado
   checked: boolean
   onToggle: () => void
+  onRemove?: () => void
 }
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-function ResumenIngrediente({ ingrediente, checked, onToggle }: Props) {
-  const { nombre, cantidad, unidad } = ingrediente
+function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {
+  const { nombre, cantidad, unidad, esExtra } = ingrediente
 
   return (
     <motion.li
@@ -35,12 +37,22 @@ function ResumenIngrediente({ ingrediente, checked, onToggle }: Props) {
           </svg>
         )}
       </span>
-      <span className={`flex-1 font-medium text-gray-800 ${checked ? 'line-through' : ''}`}>
+      <span className={`flex-1 font-medium text-gray-800 dark:text-gray-200 ${checked ? 'line-through' : ''}`}>
         {capitalize(nombre)}
+        {esExtra && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">manual</span>}
       </span>
       <span className="text-sm font-bold text-orange-600 tabular-nums shrink-0">
         {cantidad} {unidad}
       </span>
+      {onRemove && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onRemove() }}
+          className="shrink-0 text-gray-300 hover:text-red-500 transition-colors text-lg leading-none"
+          aria-label="Quitar ítem"
+        >
+          ×
+        </button>
+      )}
     </motion.li>
   )
 }

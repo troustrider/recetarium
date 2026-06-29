@@ -14,3 +14,18 @@ export async function setPlan(plan) {
   `
   return row
 }
+
+export async function getExtras() {
+  const [row] = await sql`SELECT extras FROM app_estado WHERE id = 1`
+  return row?.extras ?? []
+}
+
+export async function setExtras(extras) {
+  const [row] = await sql`
+    INSERT INTO app_estado (id, extras, updated_at)
+    VALUES (1, ${JSON.stringify(extras)}, now())
+    ON CONFLICT (id) DO UPDATE SET extras = EXCLUDED.extras, updated_at = now()
+    RETURNING extras, updated_at AS "updatedAt"
+  `
+  return row
+}
