@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Reorder } from 'framer-motion'
-import type { Receta, Sabor, Ingrediente } from '../../types/receta'
+import type { Receta, Sabor, Tipo, Ingrediente } from '../../types/receta'
 import IngredienteItem from './IngredienteItem'
 
 const SABORES: Sabor[] = ['salado', 'dulce', 'amargo', 'umami', 'acido']
+const TIPOS: Tipo[] = ['principal', 'entrante', 'desayuno', 'postre']
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
@@ -18,6 +19,7 @@ const FORM_VACIO: RecetaFormData = {
   nombre: '',
   categoria: '',
   sabor: 'salado',
+  tipo: 'principal',
   tiempoPreparacion: 30,
   ingredientes: [],
   pasos: [],
@@ -164,6 +166,19 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
 
         <div className="grid grid-cols-2 gap-4">
           <div>
+            <label className={LABEL_CLASS}>Tipo de plato</label>
+            <select
+              value={form.tipo ?? 'principal'}
+              onChange={(e) => handleChange('tipo', e.target.value as Tipo)}
+              className={INPUT_CLASS}
+            >
+              {TIPOS.map((t) => (
+                <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
             <label className={LABEL_CLASS}>Tiempo de preparación (min)</label>
             <input
               type="number"
@@ -173,17 +188,17 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
               className={INPUT_CLASS}
             />
           </div>
+        </div>
 
-          <div>
-            <label className={LABEL_CLASS}>URL de imagen <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></label>
-            <input
-              type="url"
-              value={form.imagen ?? ''}
-              onChange={(e) => handleChange('imagen', e.target.value || undefined)}
-              className={INPUT_CLASS}
-              placeholder="https://..."
-            />
-          </div>
+        <div>
+          <label className={LABEL_CLASS}>URL de imagen <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></label>
+          <input
+            type="url"
+            value={form.imagen ?? ''}
+            onChange={(e) => handleChange('imagen', e.target.value || undefined)}
+            className={INPUT_CLASS}
+            placeholder="https://..."
+          />
         </div>
       </div>
 
