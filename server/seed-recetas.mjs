@@ -1033,6 +1033,290 @@ const NUEVAS = [
       'Sirve el pavo y las verduras sobre el puré.',
     ],
   },
+
+  // ----- 20 recetas Dirk (Rotterdam Noord): baratas, fáciles, 30-40+g proteína/porción -----
+  {
+    nombre: 'Wraps de shoarma de pollo con salsa de ajo', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 2.0, porciones: 2, calorias: 620, proteinas: 44, carbohidratos: 48, grasas: 24,
+    ingredientes: [
+      ing('shoarma de pollo', 400, 'g', 'carnes'), ing('tortillas de trigo', 4, 'ud', 'cereales'),
+      ing('lechuga iceberg', 100, 'g', 'verduras'), ing('yogur natural', 150, 'g', 'lacteos'),
+      ing('ajo', 1, 'diente', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Saltea el shoarma a fuego fuerte 8-10 min.',
+      'Mezcla el yogur con el ajo picado y una pizca de sal.',
+      'Rellena las tortillas con lechuga, shoarma y salsa de ajo.',
+    ],
+  },
+  {
+    nombre: 'Kapsalon casero al horno', categoria: 'holandesa', sabor: 'salado', tiempoPreparacion: 30, tipo: 'principal',
+    precioPorPorcion: 2.3, porciones: 2, calorias: 750, proteinas: 46, carbohidratos: 52, grasas: 38,
+    ingredientes: [
+      ing('patatas fritas de horno congeladas', 400, 'g', 'verduras'), ing('shoarma de pollo', 300, 'g', 'carnes'),
+      ing('queso rallado', 80, 'g', 'lacteos'), ing('lechuga iceberg', 80, 'g', 'verduras'),
+      ing('yogur natural', 100, 'g', 'lacteos'), ing('ajo', 1, 'diente', 'verduras'),
+    ],
+    pasos: [
+      'Hornea las patatas según el paquete y saltea el shoarma.',
+      'Pon las patatas en una fuente, el shoarma encima y cubre con el queso.',
+      'Gratina 5 min y termina con lechuga y salsa de yogur con ajo.',
+    ],
+  },
+  {
+    nombre: 'Stamppot de col rizada con rookworst', categoria: 'holandesa', sabor: 'salado', tiempoPreparacion: 30, tipo: 'principal',
+    precioPorPorcion: 1.8, porciones: 2, calorias: 640, proteinas: 32, carbohidratos: 58, grasas: 30,
+    ingredientes: [
+      ing('patata', 600, 'g', 'verduras'), ing('col rizada congelada', 300, 'g', 'verduras'),
+      ing('rookworst', 250, 'g', 'carnes'), ing('bacon en tiras', 100, 'g', 'carnes'),
+      ing('leche', 100, 'ml', 'lacteos'), ing('mantequilla', 20, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Cuece las patatas con la col rizada 20 min; calienta la rookworst en la misma olla los últimos 10.',
+      'Dora el bacon en una sartén.',
+      'Machaca patata y col con leche y mantequilla, mezcla el bacon y sirve con la rookworst en rodajas.',
+    ],
+  },
+  {
+    nombre: 'Uitsmijter de jamón y queso', categoria: 'holandesa', sabor: 'salado', tiempoPreparacion: 10, tipo: 'desayuno',
+    precioPorPorcion: 1.5, porciones: 2, calorias: 520, proteinas: 36, carbohidratos: 34, grasas: 26,
+    ingredientes: [
+      ing('pan de molde', 4, 'rebanada', 'cereales'), ing('jamón cocido', 100, 'g', 'carnes'),
+      ing('queso en lonchas', 60, 'g', 'lacteos'), ing('huevos', 4, 'ud', 'huevos'),
+      ing('mantequilla', 10, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Tuesta el pan y cúbrelo con jamón y queso.',
+      'Fríe los huevos en mantequilla sin cuajar la yema.',
+      'Coloca los huevos encima y sirve caliente.',
+    ],
+  },
+  {
+    nombre: 'Solomillo de cerdo con champiñones y arroz', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 2.3, porciones: 2, calorias: 580, proteinas: 42, carbohidratos: 56, grasas: 18,
+    ingredientes: [
+      ing('solomillo de cerdo', 300, 'g', 'carnes'), ing('champiñones', 250, 'g', 'verduras'),
+      ing('arroz', 160, 'g', 'cereales'), ing('nata para cocinar', 100, 'ml', 'lacteos'),
+      ing('cebolla', 0.5, 'ud', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Dora el solomillo en medallones y resérvalo.',
+      'Sofríe cebolla y champiñones, añade la nata y devuelve la carne 3 min.',
+    ],
+  },
+  {
+    nombre: 'Pescado blanco al horno con patatas y limón', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 30, tipo: 'principal',
+    precioPorPorcion: 2.4, porciones: 2, calorias: 480, proteinas: 40, carbohidratos: 42, grasas: 14,
+    ingredientes: [
+      ing('filetes de pescado blanco congelado', 400, 'g', 'pescados'), ing('patata', 400, 'g', 'verduras'),
+      ing('limón', 1, 'ud', 'verduras'), ing('ajo', 2, 'diente', 'verduras'),
+      ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Hornea las patatas en rodajas con aceite y ajo a 200°C 15 min.',
+      'Pon el pescado encima, riega con limón y aceite.',
+      'Hornea 12-15 min más.',
+    ],
+  },
+  {
+    nombre: 'Salmón al horno con brócoli y arroz', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 2.9, porciones: 2, calorias: 620, proteinas: 34, carbohidratos: 54, grasas: 26,
+    ingredientes: [
+      ing('salmón congelado', 250, 'g', 'pescados'), ing('brócoli congelado', 300, 'g', 'verduras'),
+      ing('arroz', 160, 'g', 'cereales'), ing('limón', 0.5, 'ud', 'verduras'),
+      ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece el arroz y el brócoli.',
+      'Hornea el salmón con aceite y limón a 200°C 12-14 min.',
+      'Sirve todo junto con una pizca de sal y pimienta.',
+    ],
+  },
+  {
+    nombre: 'Arroz salteado con gambas y guisantes', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 2.5, porciones: 2, calorias: 540, proteinas: 34, carbohidratos: 62, grasas: 14,
+    ingredientes: [
+      ing('gambas congeladas', 300, 'g', 'pescados'), ing('arroz', 160, 'g', 'cereales'),
+      ing('guisantes congelados', 150, 'g', 'verduras'), ing('huevos', 2, 'ud', 'huevos'),
+      ing('salsa de soja', 2, 'cucharada', 'salsas'), ing('ajo', 2, 'diente', 'verduras'),
+    ],
+    pasos: [
+      'Cuece el arroz y deja enfriar un poco.',
+      'Saltea el ajo y las gambas, añade huevo batido y revuelve.',
+      'Incorpora arroz, guisantes y soja; saltea 3 min a fuego fuerte.',
+    ],
+  },
+  {
+    nombre: 'Quesadillas de pollo y alubias rojas', categoria: 'mexicana', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 2.0, porciones: 2, calorias: 640, proteinas: 44, carbohidratos: 54, grasas: 24,
+    ingredientes: [
+      ing('pechuga de pollo', 250, 'g', 'carnes'), ing('alubias rojas de bote', 200, 'g', 'legumbres'),
+      ing('tortillas de trigo', 4, 'ud', 'cereales'), ing('queso rallado', 80, 'g', 'lacteos'),
+      ing('pimentón', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Saltea el pollo en dados con pimentón y mezcla con las alubias escurridas.',
+      'Rellena las tortillas con la mezcla y el queso.',
+      'Dora las quesadillas en la sartén 2-3 min por lado y corta en triángulos.',
+    ],
+  },
+  {
+    nombre: 'Fajitas de pollo con pimiento y cebolla', categoria: 'mexicana', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 2.0, porciones: 2, calorias: 560, proteinas: 40, carbohidratos: 50, grasas: 18,
+    ingredientes: [
+      ing('pechuga de pollo', 300, 'g', 'carnes'), ing('pimiento rojo', 1, 'ud', 'verduras'),
+      ing('cebolla', 1, 'ud', 'verduras'), ing('tortillas de trigo', 4, 'ud', 'cereales'),
+      ing('pimentón', 1, 'cucharadita', 'condimentos'), ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Saltea el pollo en tiras con las especias.',
+      'Añade pimiento y cebolla en tiras; saltea 6-7 min.',
+      'Sirve en las tortillas calientes.',
+    ],
+  },
+  {
+    nombre: 'Ensalada César de pollo', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 2.1, porciones: 2, calorias: 520, proteinas: 42, carbohidratos: 24, grasas: 28,
+    ingredientes: [
+      ing('pechuga de pollo', 300, 'g', 'carnes'), ing('lechuga romana', 1, 'ud', 'verduras'),
+      ing('huevos', 2, 'ud', 'huevos'), ing('queso rallado', 40, 'g', 'lacteos'),
+      ing('pan de molde', 2, 'rebanada', 'cereales'), ing('mayonesa', 2, 'cucharada', 'salsas'),
+      ing('ajo', 1, 'diente', 'verduras'),
+    ],
+    pasos: [
+      'Cuece los huevos y tuesta el pan en dados.',
+      'Haz el pollo a la plancha y córtalo en tiras.',
+      'Mezcla lechuga, pollo, huevo y picatostes con mayonesa aligerada con ajo y agua; termina con el queso.',
+    ],
+  },
+  {
+    nombre: 'Hamburguesas caseras con judías verdes y patatas', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.9, porciones: 2, calorias: 600, proteinas: 40, carbohidratos: 44, grasas: 28,
+    ingredientes: [
+      ing('carne picada', 400, 'g', 'carnes'), ing('huevos', 1, 'ud', 'huevos'),
+      ing('judías verdes congeladas', 300, 'g', 'verduras'), ing('patata', 400, 'g', 'verduras'),
+      ing('cebolla', 0.5, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Mezcla la carne con huevo, cebolla picada y pimentón; forma 4 hamburguesas.',
+      'Cuece las patatas y las judías.',
+      'Haz las hamburguesas a la plancha 3-4 min por lado.',
+    ],
+  },
+  {
+    nombre: 'Burrito de carne picada y alubias', categoria: 'mexicana', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.9, porciones: 2, calorias: 680, proteinas: 42, carbohidratos: 66, grasas: 24,
+    ingredientes: [
+      ing('carne picada', 300, 'g', 'carnes'), ing('alubias rojas de bote', 200, 'g', 'legumbres'),
+      ing('arroz', 100, 'g', 'cereales'), ing('tortillas de trigo', 4, 'ud', 'cereales'),
+      ing('tomate frito', 100, 'g', 'salsas'), ing('comino', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece el arroz.',
+      'Dora la carne con el comino, añade alubias y tomate frito; cocina 5 min.',
+      'Rellena las tortillas con arroz y la mezcla; enrolla y dora 1 min por lado.',
+    ],
+  },
+  {
+    nombre: 'Estofado de alubias blancas con rookworst', categoria: 'holandesa', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 1.6, porciones: 2, calorias: 560, proteinas: 32, carbohidratos: 48, grasas: 26,
+    ingredientes: [
+      ing('alubias blancas de bote', 400, 'g', 'legumbres'), ing('rookworst', 200, 'g', 'carnes'),
+      ing('zanahoria', 2, 'ud', 'verduras'), ing('cebolla', 1, 'ud', 'verduras'),
+      ing('tomate triturado', 200, 'g', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+    ],
+    pasos: [
+      'Sofríe cebolla y zanahoria en rodajas 5 min.',
+      'Añade tomate, pimentón, alubias escurridas y la rookworst en rodajas.',
+      'Cuece a fuego medio 12 min.',
+    ],
+  },
+  {
+    nombre: 'Macarrones con pollo y queso al horno', categoria: 'italiana', sabor: 'salado', tiempoPreparacion: 30, tipo: 'principal',
+    precioPorPorcion: 1.9, porciones: 2, calorias: 700, proteinas: 46, carbohidratos: 70, grasas: 22,
+    ingredientes: [
+      ing('pasta', 180, 'g', 'cereales'), ing('pechuga de pollo', 300, 'g', 'carnes'),
+      ing('tomate frito', 200, 'g', 'salsas'), ing('queso rallado', 80, 'g', 'lacteos'),
+      ing('ajo', 1, 'diente', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece la pasta y saltea el pollo en dados con el ajo.',
+      'Mezcla pasta, pollo y tomate frito en una fuente.',
+      'Cubre con queso y gratina 8-10 min.',
+    ],
+  },
+  {
+    nombre: 'Noodles salteados con pollo y verduras', categoria: 'fusion', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
+    precioPorPorcion: 1.9, porciones: 2, calorias: 580, proteinas: 38, carbohidratos: 60, grasas: 18,
+    ingredientes: [
+      ing('fideos de huevo (mie)', 200, 'g', 'cereales'), ing('contramuslos de pollo', 300, 'g', 'carnes'),
+      ing('verduras para wok congeladas', 300, 'g', 'verduras'), ing('salsa de soja', 3, 'cucharada', 'salsas'),
+      ing('ajo', 2, 'diente', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Cuece los fideos según el paquete.',
+      'Saltea el pollo en tiras con el ajo, añade las verduras 5 min.',
+      'Incorpora fideos y soja; saltea 2 min a fuego fuerte.',
+    ],
+  },
+  {
+    nombre: 'Caballa ahumada con patatas y huevo cocido', categoria: 'holandesa', sabor: 'salado', tiempoPreparacion: 25, tipo: 'principal',
+    precioPorPorcion: 2.2, porciones: 2, calorias: 560, proteinas: 36, carbohidratos: 38, grasas: 30,
+    ingredientes: [
+      ing('caballa ahumada', 200, 'g', 'pescados'), ing('patata', 400, 'g', 'verduras'),
+      ing('huevos', 2, 'ud', 'huevos'), ing('cebolla roja', 0.5, 'ud', 'verduras'),
+      ing('mayonesa', 1, 'cucharada', 'salsas'),
+    ],
+    pasos: [
+      'Cuece las patatas en dados y los huevos 10 min.',
+      'Desmiga la caballa quitando la piel y las espinas.',
+      'Mezcla todo con la cebolla picada y la mayonesa; sirve templado.',
+    ],
+  },
+  {
+    nombre: 'Omelette de jamón, queso y champiñones', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 15, tipo: 'principal',
+    precioPorPorcion: 1.4, porciones: 2, calorias: 480, proteinas: 38, carbohidratos: 6, grasas: 34,
+    ingredientes: [
+      ing('huevos', 6, 'ud', 'huevos'), ing('jamón cocido', 100, 'g', 'carnes'),
+      ing('queso rallado', 60, 'g', 'lacteos'), ing('champiñones', 150, 'g', 'verduras'),
+      ing('mantequilla', 10, 'g', 'lacteos'),
+    ],
+    pasos: [
+      'Saltea los champiñones hasta que pierdan el agua.',
+      'Bate los huevos y cuájalos en la sartén con mantequilla.',
+      'Añade jamón, queso y champiñones; dobla la omelette y sirve.',
+    ],
+  },
+  {
+    nombre: 'Batido de kwark, plátano y avena', categoria: 'desayuno', sabor: 'dulce', tiempoPreparacion: 5, tipo: 'desayuno',
+    precioPorPorcion: 1.1, porciones: 2, calorias: 420, proteinas: 32, carbohidratos: 56, grasas: 6,
+    ingredientes: [
+      ing('kwark desnatado', 500, 'g', 'lacteos'), ing('plátano', 2, 'ud', 'frutas'),
+      ing('copos de avena', 60, 'g', 'cereales'), ing('leche', 200, 'ml', 'lacteos'),
+      ing('miel', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Pon todos los ingredientes en la batidora.',
+      'Tritura 1 min hasta que quede cremoso.',
+      'Sirve frío.',
+    ],
+  },
+  {
+    nombre: 'Tortitas de avena con kwark y fruta', categoria: 'desayuno', sabor: 'dulce', tiempoPreparacion: 20, tipo: 'desayuno',
+    precioPorPorcion: 1.2, porciones: 2, calorias: 480, proteinas: 31, carbohidratos: 60, grasas: 12,
+    ingredientes: [
+      ing('copos de avena', 100, 'g', 'cereales'), ing('huevos', 3, 'ud', 'huevos'),
+      ing('plátano', 1, 'ud', 'frutas'), ing('kwark desnatado', 200, 'g', 'lacteos'),
+      ing('miel', 1, 'cucharada', 'condimentos'),
+    ],
+    pasos: [
+      'Tritura avena, huevos y plátano hasta tener una masa.',
+      'Haz tortitas pequeñas en sartén antiadherente, 2 min por lado.',
+      'Sirve con el kwark y un hilo de miel.',
+    ],
+  },
 ]
 
 async function run() {
