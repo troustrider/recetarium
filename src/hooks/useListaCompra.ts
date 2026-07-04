@@ -57,6 +57,7 @@ function useListaCompra() {
 
   function vaciar() {
     setSeleccionadas([])
+    setExtras([])
   }
 
   // Carga N recetas al azar (que no estén ya), todas con las mismas raciones.
