@@ -10,11 +10,15 @@ interface State {
 
 function useReceta(id: string) {
   const [state, setState] = useState<State>({ receta: null, loading: true, error: null })
+  const [prevId, setPrevId] = useState(id)
+
+  if (prevId !== id) {
+    setPrevId(id)
+    setState({ receta: null, loading: true, error: null })
+  }
 
   useEffect(() => {
     if (!id) return
-    setState({ receta: null, loading: true, error: null })
-
     getReceta(id)
       .then((data) => setState({ receta: data, loading: false, error: null }))
       .catch((e: Error) => setState({ receta: null, loading: false, error: e.message }))

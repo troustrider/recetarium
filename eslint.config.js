@@ -18,5 +18,18 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  {
+    // los contextos exportan provider + hook juntos; sin fast refresh ahí es asumible
+    files: ['src/context/**'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
   },
 ])
