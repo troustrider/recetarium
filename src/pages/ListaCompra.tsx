@@ -10,8 +10,9 @@ import { mismoIngrediente } from '../utils/despensa'
 function ListaCompra() {
   const { seleccionadas, listaCompra, coste, vaciar, addExtra, removeExtra } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
-  const { despensa } = useDespensa()
+  const { despensa, añadir } = useDespensa()
   const [ocultarDespensa, setOcultarDespensa] = useState(false)
+  const [guardado, setGuardado] = useState(0)
   const navigate = useNavigate()
 
   if (listaCompra.length === 0) {
@@ -61,6 +62,16 @@ function ListaCompra() {
     return compartirLista(pendientes.length > 0 ? pendientes : visibles)
   }
 
+  function guardarEnDespensa() {
+    const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
+    if (aGuardar.length === 0) return
+    aGuardar.forEach((i) => añadir(i.nombre, i.familia))
+    vaciar()
+    limpiar()
+    setGuardado(aGuardar.length)
+    setTimeout(() => setGuardado(0), 2500)
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
@@ -94,6 +105,26 @@ function ListaCompra() {
           </motion.button>
         </div>
       </div>
+
+      {(totalComprados > 0 || guardado > 0) && (
+        <motion.button
+          onClick={guardarEnDespensa}
+          disabled={totalComprados === 0}
+          className={`flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl transition-colors ${
+            guardado > 0
+              ? 'bg-emerald-100 text-emerald-700'
+              : 'bg-emerald-500 text-white hover:bg-emerald-600'
+          }`}
+          whileTap={{ scale: 0.98 }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+          </svg>
+          {guardado > 0
+            ? `Añadido a la despensa (${guardado})`
+            : `Añadir a la despensa lo comprado (${totalComprados})`}
+        </motion.button>
+      )}
 
       {seleccionadas.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">

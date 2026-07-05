@@ -7,7 +7,7 @@ import type { Receta } from '../types/receta'
 
 export const FAMILIAS = [
   'verduras', 'frutas', 'carnes', 'pescados', 'lácteos',
-  'cereales', 'legumbres', 'conservas', 'especias', 'bebidas', 'otros',
+  'cereales', 'legumbres', 'conservas', 'especias', 'salsas', 'bebidas', 'otros',
 ]
 
 function formas(nombre: string): string[] {
