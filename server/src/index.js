@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
@@ -5,6 +6,7 @@ import swaggerSpec from './config/swagger.js'
 import recetasRouter from './routes/recetas.js'
 import estadoRouter from './routes/estado.js'
 import extrasRouter from './routes/extras.js'
+import despensaRouter from './routes/despensa.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -16,6 +18,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use('/api/v1/recetas', recetasRouter)
 app.use('/api/v1/plan', estadoRouter)
 app.use('/api/v1/extras', extrasRouter)
+app.use('/api/v1/despensa', despensaRouter)
 
 app.use((err, req, res, next) => {
   console.error(err)

@@ -15,6 +15,21 @@ export async function setPlan(plan) {
   return row
 }
 
+export async function getDespensa() {
+  const [row] = await sql`SELECT despensa FROM app_estado WHERE id = 1`
+  return row?.despensa ?? []
+}
+
+export async function setDespensa(despensa) {
+  const [row] = await sql`
+    INSERT INTO app_estado (id, despensa, updated_at)
+    VALUES (1, ${JSON.stringify(despensa)}, now())
+    ON CONFLICT (id) DO UPDATE SET despensa = EXCLUDED.despensa, updated_at = now()
+    RETURNING despensa, updated_at AS "updatedAt"
+  `
+  return row
+}
+
 export async function getExtras() {
   const [row] = await sql`SELECT extras FROM app_estado WHERE id = 1`
   return row?.extras ?? []

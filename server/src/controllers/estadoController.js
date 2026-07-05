@@ -26,6 +26,33 @@ export async function putPlan(req, res) {
   res.json(guardado)
 }
 
+const ESTADOS_DESPENSA = ['lleno', 'poco']
+
+function validarDespensa(despensa) {
+  if (!Array.isArray(despensa)) return 'despensa debe ser un array'
+  for (let i = 0; i < despensa.length; i++) {
+    const d = despensa[i]
+    if (!d || typeof d !== 'object') return `despensa[${i}] debe ser un objeto`
+    if (typeof d.nombre !== 'string' || !d.nombre.trim()) return `despensa[${i}].nombre es obligatorio`
+    if (typeof d.familia !== 'string' || !d.familia.trim()) return `despensa[${i}].familia es obligatorio`
+    if (!ESTADOS_DESPENSA.includes(d.estado)) return `despensa[${i}].estado debe ser uno de: ${ESTADOS_DESPENSA.join(', ')}`
+    if (d.caducidad != null && !/^\d{4}-\d{2}-\d{2}$/.test(d.caducidad)) return `despensa[${i}].caducidad debe ser una fecha YYYY-MM-DD`
+  }
+  return null
+}
+
+export async function getDespensa(req, res) {
+  const despensa = await estadoService.getDespensa()
+  res.json(despensa)
+}
+
+export async function putDespensa(req, res) {
+  const error = validarDespensa(req.body)
+  if (error) return res.status(400).json({ error })
+  const guardado = await estadoService.setDespensa(req.body)
+  res.json(guardado)
+}
+
 function validarExtras(extras) {
   if (!Array.isArray(extras)) return 'extras debe ser un array'
   for (let i = 0; i < extras.length; i++) {
