@@ -11,6 +11,8 @@ import { normalizar } from '../utils/ingredientes'
 import { FAMILIAS, mismoIngrediente, estaEnDespensa, porAgotarse, faltantes } from '../utils/despensa'
 import TarjetaIngrediente from '../components/despensa/TarjetaIngrediente'
 import FichaIngrediente from '../components/despensa/FichaIngrediente'
+import AnadirIngrediente from '../components/despensa/AnadirIngrediente'
+import useIngredientesConocidos from '../hooks/useIngredientesConocidos'
 
 const ICONO_FAMILIA: Record<string, LucideIcon> = {
   verduras: Carrot, frutas: Apple, carnes: Beef, pescados: Fish, 'lácteos': Milk,
@@ -35,6 +37,7 @@ function Despensa() {
   const [soloAvisos, setSoloAvisos] = useState(searchParams.get('filtro') === 'aviso')
   const [selNombre, setSelNombre] = useState<string | null>(null)
   const [confirmarVaciar, setConfirmarVaciar] = useState(false)
+  const [mostrarAñadir, setMostrarAñadir] = useState(false)
 
   // La confirmación de vaciado caduca sola si no se remata.
   useEffect(() => {
@@ -76,18 +79,7 @@ function Despensa() {
     return grupos
   }, [visibles])
 
-  // Sugerencias desde los ingredientes de las recetas: nombre consistente
-  // con el recetario y familia autorrellenada.
-  const ingredientesConocidos = useMemo(() => {
-    const mapa = new Map<string, { nombre: string; familia: string }>()
-    for (const r of recetas) {
-      for (const ing of r.ingredientes) {
-        const k = normalizar(ing.nombre)
-        if (!mapa.has(k)) mapa.set(k, { nombre: ing.nombre.trim().toLowerCase(), familia: ing.familia || 'otros' })
-      }
-    }
-    return [...mapa.values()].sort((a, b) => a.nombre.localeCompare(b.nombre))
-  }, [recetas])
+  const ingredientesConocidos = useIngredientesConocidos()
 
   const sugerencias = useMemo(() => {
     const nq = normalizar(q)
@@ -148,16 +140,26 @@ function Despensa() {
                 : `${despensa.length} ${despensa.length === 1 ? 'ingrediente' : 'ingredientes'}${avisos.length > 0 ? ` · ${avisos.length} se ${avisos.length === 1 ? 'acaba' : 'acaban'}` : ' · todo en orden'}`}
             </p>
           </div>
-          {importables.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-end gap-2 shrink-0">
+            {importables.length > 0 && (
+              <motion.button
+                onClick={importarComprados}
+                className="px-4 py-2.5 text-xs font-bold bg-white/10 hover:bg-white/15 border border-white/20 text-white rounded-2xl transition-colors backdrop-blur-sm"
+                whileTap={{ scale: 0.97 }}
+                title="Añade a la despensa lo que ya marcasteis como comprado en la lista"
+              >
+                Importar comprados ({importables.length})
+              </motion.button>
+            )}
             <motion.button
-              onClick={importarComprados}
-              className="shrink-0 px-4 py-2.5 text-xs font-bold bg-white/10 hover:bg-white/15 border border-white/20 text-white rounded-2xl transition-colors backdrop-blur-sm"
+              onClick={() => setMostrarAñadir(true)}
+              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-orange-500 hover:bg-orange-600 text-white rounded-2xl transition-colors"
               whileTap={{ scale: 0.97 }}
-              title="Añade a la despensa lo que ya marcasteis como comprado en la lista"
             >
-              Importar comprados ({importables.length})
+              <Plus className="w-3.5 h-3.5" />
+              Añadir
             </motion.button>
-          )}
+          </div>
         </div>
       </div>
 
@@ -334,6 +336,8 @@ function Despensa() {
           )}
         </div>
       )}
+
+      <AnadirIngrediente abierto={mostrarAñadir} onClose={() => setMostrarAñadir(false)} />
 
       <FichaIngrediente
         item={seleccionado}
