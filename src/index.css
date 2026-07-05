@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Lora:wght@600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+/* Las fuentes se cargan desde index.html con preconnect (el @import bloquea el render). */
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Lora', Georgia, serif;
+  --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
 }
 
 @variant dark (&:where(.dark *));
@@ -44,10 +44,6 @@
 }
 
 @layer base {
-  main {
-    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
-  }
-
   /* Smooth color transitions when toggling dark mode */
   *, *::before, *::after {
     transition-property: background-color, border-color, color;
