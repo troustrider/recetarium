@@ -5,6 +5,7 @@ import { useListaCompraContext, useCompradosContext, useDespensa } from '../cont
 import ResumenIngrediente from '../components/lista-compra/ResumenIngrediente'
 import AnadirManual from '../components/lista-compra/AnadirManual'
 import { compartirLista } from '../utils/compartirLista'
+import { mismoIngrediente } from '../utils/despensa'
 
 function ListaCompra() {
   const { seleccionadas, listaCompra, coste, vaciar, addExtra, removeExtra } = useListaCompraContext()
@@ -47,7 +48,7 @@ function ListaCompra() {
   }
 
   const enDespensa = (nombre: string) =>
-    despensa.some((d) => d.nombre === nombre.trim().toLowerCase() && d.estado === 'lleno')
+    despensa.some((d) => d.estado === 'lleno' && mismoIngrediente(d.nombre, nombre))
 
   const visibles = ocultarDespensa ? listaCompra.filter((i) => !enDespensa(i.nombre)) : listaCompra
   const ocultos = listaCompra.length - visibles.length

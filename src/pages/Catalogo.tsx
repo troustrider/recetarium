@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
-import { useListaCompraContext } from '../context'
+import { useListaCompraContext, useDespensa } from '../context'
+import { faltantes } from '../utils/despensa'
 import useFiltros, { type Orden } from '../hooks/useFiltros'
 import RecetaCard from '../components/recetas/RecetaCard'
 import FiltroBar from '../components/shared/FiltroBar'
@@ -14,9 +15,17 @@ function Catalogo() {
   const { recetas, loading, error, cargar, toggleFavorita } = useRecetasContext()
   const { toggleReceta, estaSeleccionada, cargarAleatorias } = useListaCompraContext()
   const { filtros, setFiltros, orden, setOrden, recetasFiltradas } = useFiltros(recetas)
+  const { despensa } = useDespensa()
   const [searchParams] = useSearchParams()
   const [racionesAzar, setRacionesAzar] = useState(2)
+  const [soloDisponibles, setSoloDisponibles] = useState(() => searchParams.get('disponibles') === '1')
   const navigate = useNavigate()
+
+  const conDespensa = despensa.length > 0
+  const faltanPorReceta = useMemo(
+    () => (conDespensa ? new Map(recetas.map((r) => [r.id, faltantes(r, despensa).length])) : null),
+    [recetas, despensa, conDespensa]
+  )
 
   const ORDENES: { valor: Orden; label: string }[] = [
     { valor: 'nombre', label: 'Nombre' },
@@ -31,17 +40,18 @@ function Catalogo() {
     [recetas]
   )
 
-  const resultados = useMemo(
-    () =>
-      q
-        ? recetasFiltradas.filter((r) =>
-            r.nombre.toLowerCase().includes(q) ||
-            r.categoria?.toLowerCase().includes(q) ||
-            r.sabor.toLowerCase().includes(q)
-          )
-        : recetasFiltradas,
-    [recetasFiltradas, q]
-  )
+  const resultados = useMemo(() => {
+    const base = q
+      ? recetasFiltradas.filter((r) =>
+          r.nombre.toLowerCase().includes(q) ||
+          r.categoria?.toLowerCase().includes(q) ||
+          r.sabor.toLowerCase().includes(q)
+        )
+      : recetasFiltradas
+    return soloDisponibles && faltanPorReceta
+      ? base.filter((r) => faltanPorReceta.get(r.id) === 0)
+      : base
+  }, [recetasFiltradas, q, soloDisponibles, faltanPorReceta])
 
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} onRetry={cargar} />
@@ -119,7 +129,23 @@ function Catalogo() {
           )}
 
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+            <div className="flex items-center gap-2 flex-wrap">
+              <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+              {conDespensa && (
+                <button
+                  onClick={() => setSoloDisponibles((v) => !v)}
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl transition-colors ${
+                    soloDisponibles
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                  title="Solo recetas con todos los ingredientes en la despensa"
+                >
+                  <span className={`w-2 h-2 rounded-full ${soloDisponibles ? 'bg-white' : 'bg-emerald-500'}`} />
+                  Con lo que tenemos
+                </button>
+              )}
+            </div>
 
             <div className="flex items-center gap-2 flex-wrap">
               <select
@@ -162,6 +188,7 @@ function Catalogo() {
                     receta={receta}
                     onClick={(id) => navigate(`/recetas/${id}`)}
                     onToggleFavorita={toggleFavorita}
+                    faltan={faltanPorReceta?.get(receta.id)}
                   />
                   <motion.button
                     onClick={() => toggleReceta(receta)}

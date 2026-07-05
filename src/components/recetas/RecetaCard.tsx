@@ -16,9 +16,10 @@ interface Props {
   receta: Receta
   onClick: (id: string) => void
   onToggleFavorita: (id: string) => void
+  faltan?: number
 }
 
-function RecetaCard({ receta, onClick, onToggleFavorita }: Props) {
+function RecetaCard({ receta, onClick, onToggleFavorita, faltan }: Props) {
   const { id, nombre, categoria, sabor, tiempoPreparacion, favorita, imagen, proteinas, calorias } = receta
 
   return (
@@ -67,6 +68,19 @@ function RecetaCard({ receta, onClick, onToggleFavorita }: Props) {
         {categoria && (
           <span className="absolute top-3 left-3 flex items-center gap-1 bg-white/90 dark:bg-gray-900/85 backdrop-blur-sm text-gray-700 dark:text-gray-200 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
             {categoria}
+          </span>
+        )}
+
+        {/* Badge de despensa — esquina inferior izquierda */}
+        {faltan != null && (
+          <span
+            className={`absolute bottom-3 left-3 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${
+              faltan === 0
+                ? 'bg-emerald-500/90 text-white'
+                : 'bg-white/90 dark:bg-gray-900/85 text-gray-600 dark:text-gray-300'
+            }`}
+          >
+            {faltan === 0 ? '¡Lo tenéis todo!' : faltan === 1 ? 'Falta 1' : `Faltan ${faltan}`}
           </span>
         )}
 
