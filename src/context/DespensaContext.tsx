@@ -18,6 +18,7 @@ interface DespensaCtx {
   setEstado: (nombre: string, estado: EstadoDespensa) => void
   setCaducidad: (nombre: string, caducidad?: string) => void
   setFamilia: (nombre: string, familia: string) => void
+  vaciar: () => void
   tieneIngrediente: (nombre: string) => boolean
 }
 
@@ -121,12 +122,16 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     )
   }
 
+  function vaciar() {
+    setDespensa([])
+  }
+
   function tieneIngrediente(nombre: string) {
     return despensa.some((i) => mismoIngrediente(i.nombre, nombre))
   }
 
   return (
-    <DespensaContext.Provider value={{ despensa, añadir, quitar, setEstado, setCaducidad, setFamilia, tieneIngrediente }}>
+    <DespensaContext.Provider value={{ despensa, añadir, quitar, setEstado, setCaducidad, setFamilia, vaciar, tieneIngrediente }}>
       {children}
     </DespensaContext.Provider>
   )

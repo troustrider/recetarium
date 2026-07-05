@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Plus, AlertTriangle, ChefHat, Carrot, Apple, Beef, Fish, Milk,
-  Wheat, Bean, Package, Leaf, CupSoda, ShoppingBasket, type LucideIcon,
+  Wheat, Bean, Package, Leaf, CupSoda, ShoppingBasket, Trash2, type LucideIcon,
 } from 'lucide-react'
 import { useDespensa, type IngredienteDespensa } from '../context/DespensaContext'
 import { useListaCompraContext, useCompradosContext, useRecetasContext } from '../context'
@@ -23,7 +23,7 @@ function capitalize(s: string) {
 }
 
 function Despensa() {
-  const { despensa, añadir, quitar, setEstado, setCaducidad, setFamilia } = useDespensa()
+  const { despensa, añadir, quitar, setEstado, setCaducidad, setFamilia, vaciar } = useDespensa()
   const { listaCompra, addExtra } = useListaCompraContext()
   const { comprados } = useCompradosContext()
   const { recetas } = useRecetasContext()
@@ -34,6 +34,14 @@ function Despensa() {
   const [tab, setTab] = useState('todos')
   const [soloAvisos, setSoloAvisos] = useState(searchParams.get('filtro') === 'aviso')
   const [selNombre, setSelNombre] = useState<string | null>(null)
+  const [confirmarVaciar, setConfirmarVaciar] = useState(false)
+
+  // La confirmación de vaciado caduca sola si no se remata.
+  useEffect(() => {
+    if (!confirmarVaciar) return
+    const t = setTimeout(() => setConfirmarVaciar(false), 4000)
+    return () => clearTimeout(t)
+  }, [confirmarVaciar])
 
   const avisos = porAgotarse(despensa)
   const seleccionado = despensa.find((i) => i.nombre === selNombre) ?? null
@@ -300,6 +308,30 @@ function Despensa() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {despensa.length > 0 && (
+        <div className="flex justify-center pt-3 border-t border-gray-100 dark:border-gray-800">
+          {confirmarVaciar ? (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              onClick={() => { vaciar(); setConfirmarVaciar(false) }}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              ¿Seguro? Borrar los {despensa.length} ingredientes
+            </motion.button>
+          ) : (
+            <button
+              onClick={() => setConfirmarVaciar(true)}
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Vaciar despensa
+            </button>
+          )}
         </div>
       )}
 
