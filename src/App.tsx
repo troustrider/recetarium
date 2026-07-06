@@ -8,7 +8,6 @@ const Favoritas     = lazy(() => import('./pages/Favoritas'))
 const DetalleReceta = lazy(() => import('./pages/DetalleReceta'))
 const NuevaReceta   = lazy(() => import('./pages/NuevaReceta'))
 const EditarReceta  = lazy(() => import('./pages/EditarReceta'))
-const ListaCompra   = lazy(() => import('./pages/ListaCompra'))
 const Planificador  = lazy(() => import('./pages/Planificador'))
 const Despensa      = lazy(() => import('./pages/Despensa'))
 const NotFound      = lazy(() => import('./pages/NotFound'))
@@ -20,7 +19,6 @@ function App() {
         <Route element={<Layout />}>
           <Route index element={<Catalogo />} />
           <Route path="favoritas" element={<Favoritas />} />
-          <Route path="lista-compra" element={<ListaCompra />} />
           <Route path="planificador" element={<Planificador />} />
           <Route path="despensa" element={<Despensa />} />
           <Route path="recetas/nueva" element={<NuevaReceta />} />

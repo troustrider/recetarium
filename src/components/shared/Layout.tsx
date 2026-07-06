@@ -20,10 +20,11 @@ const LINKS_EXTRA = [
 const ALL_LINKS = [...LINKS_MAIN, ...LINKS_EXTRA]
 
 // Nav inferior móvil: las cuatro zonas de uso diario al alcance del pulgar.
+// "Lista" no es una ruta: abre el drawer de la lista de la compra.
 const LINKS_BOTTOM = [
   { to: '/', label: 'Catálogo', Icono: BookOpen },
   { to: '/despensa', label: 'Despensa', Icono: ShoppingBasket },
-  { to: '/lista-compra', label: 'Lista', Icono: ShoppingCart },
+  { action: 'lista' as const, label: 'Lista', Icono: ShoppingCart },
   { to: '/planificador', label: 'Semana', Icono: CalendarDays },
 ]
 
@@ -247,23 +248,45 @@ function Layout() {
       </main>
 
       <nav className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex pb-[env(safe-area-inset-bottom)]">
-        {LINKS_BOTTOM.map(({ to, label, Icono }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === '/'}
-            className={({ isActive }) =>
-              `flex-1 flex flex-col items-center gap-0.5 pt-2 pb-1.5 text-[10px] font-semibold transition-colors ${
-                isActive
-                  ? 'text-orange-500 dark:text-orange-400'
-                  : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
-              }`
-            }
-          >
-            <Icono className="w-5 h-5" strokeWidth={2} />
-            {label}
-          </NavLink>
-        ))}
+        {LINKS_BOTTOM.map((item) => {
+          const { label, Icono } = item
+          if ('action' in item) {
+            return (
+              <button
+                key={label}
+                onClick={() => setListaOpen(true)}
+                className="relative flex-1 flex flex-col items-center gap-0.5 pt-2 pb-1.5 text-[10px] font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <span className="relative">
+                  <Icono className="w-5 h-5" strokeWidth={2} />
+                  {seleccionadas.length > 0 && (
+                    <span className="absolute -top-1 -right-1.5 w-3.5 h-3.5 bg-orange-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                      {seleccionadas.length}
+                    </span>
+                  )}
+                </span>
+                {label}
+              </button>
+            )
+          }
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              className={({ isActive }) =>
+                `flex-1 flex flex-col items-center gap-0.5 pt-2 pb-1.5 text-[10px] font-semibold transition-colors ${
+                  isActive
+                    ? 'text-orange-500 dark:text-orange-400'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
+                }`
+              }
+            >
+              <Icono className="w-5 h-5" strokeWidth={2} />
+              {label}
+            </NavLink>
+          )
+        })}
       </nav>
 
       <ListaCompraDrawer open={listaOpen} onClose={() => setListaOpen(false)} />

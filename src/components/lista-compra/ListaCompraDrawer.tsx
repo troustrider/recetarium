@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Minus, Plus, Share2 } from 'lucide-react'
-import { useListaCompraContext, useCompradosContext } from '../../context'
+import { X, Minus, Plus, Share2, Check } from 'lucide-react'
+import { useListaCompraContext, useCompradosContext, useDespensa } from '../../context'
 import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
@@ -13,8 +13,18 @@ interface Props {
 function ListaCompraDrawer({ open, onClose }: Props) {
   const { seleccionadas, listaCompra, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
+  const { añadir } = useDespensa()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
   const vacia = listaCompra.length === 0
+  const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
+
+  function comprar() {
+    const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
+    if (aGuardar.length === 0) return
+    aGuardar.forEach((i) => añadir(i.nombre, i.familia))
+    vaciar()
+    limpiar()
+  }
 
   return (
     <AnimatePresence>
@@ -130,6 +140,16 @@ function ListaCompraDrawer({ open, onClose }: Props) {
 
             {!vacia && (
               <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+                {totalComprados > 0 && (
+                  <motion.button
+                    onClick={comprar}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-white bg-emerald-500 rounded-xl hover:bg-emerald-600 transition-colors"
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <Check className="w-4 h-4" />
+                    Añadir a la despensa lo comprado ({totalComprados})
+                  </motion.button>
+                )}
                 <motion.button
                   onClick={() => compartirLista(listaCompra.filter((i) => !comprados.has(i.clave)))}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-orange-500 rounded-xl hover:bg-orange-600 transition-colors"
