@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import { useListaCompraContext, useDespensa } from '../context'
 import { faltantes } from '../utils/despensa'
 import useFiltros, { type Orden } from '../hooks/useFiltros'
 import RecetaCard from '../components/recetas/RecetaCard'
+import AbanicoRecetas from '../components/recetas/AbanicoRecetas'
 import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
@@ -26,6 +27,10 @@ function Catalogo() {
     () => (conDespensa ? new Map(recetas.map((r) => [r.id, faltantes(r, despensa).length])) : null),
     [recetas, despensa, conDespensa]
   )
+  const cocinablesHoy = useMemo(
+    () => (faltanPorReceta ? [...faltanPorReceta.values()].filter((n) => n === 0).length : 0),
+    [faltanPorReceta]
+  )
 
   const ORDENES: { valor: Orden; label: string }[] = [
     { valor: 'nombre', label: 'Nombre' },
@@ -34,11 +39,42 @@ function Catalogo() {
     { valor: 'precio', label: 'Más baratas' },
   ]
 
+  function limpiarTodo() {
+    setFiltros({ categoria: '', sabor: '', tiempoMax: '' })
+    setSoloDisponibles(false)
+    if (searchParams.get('q')) navigate('/')
+  }
+
   const q = searchParams.get('q')?.toLowerCase().trim() ?? ''
   const categorias = useMemo(
     () => [...new Set(recetas.map((r) => r.categoria))].filter(Boolean).sort(),
     [recetas]
   )
+
+  const hayFiltrosActivos =
+    !!q || soloDisponibles || filtros.categoria !== '' || filtros.sabor !== '' || filtros.tiempoMax !== ''
+
+  // "Recetas de hoy" — cocinables primero (menos faltan), desempate por proteína
+  const hoy = useMemo(() => {
+    return [...recetas]
+      .sort((a, b) => {
+        if (faltanPorReceta) {
+          const fa = faltanPorReceta.get(a.id) ?? 99
+          const fb = faltanPorReceta.get(b.id) ?? 99
+          if (fa !== fb) return fa - fb
+        }
+        return (b.proteinas ?? 0) - (a.proteinas ?? 0)
+      })
+      .slice(0, 7)
+  }, [recetas, faltanPorReceta])
+
+  const mostrarAbanico = !hayFiltrosActivos && hoy.length >= 3
+  const tituloAbanico =
+    cocinablesHoy > 0
+      ? `Podéis cocinar ${cocinablesHoy} sin pisar el súper`
+      : conDespensa
+        ? 'Casi listas para hoy'
+        : 'Elegidas para hoy'
 
   const resultados = useMemo(() => {
     const base = q
@@ -80,49 +116,22 @@ function Catalogo() {
         </div>
       ) : (
         <>
-          {/* Hero banner */}
-          <div className="relative rounded-3xl overflow-hidden" style={{ backgroundColor: '#1c0f02' }}>
-            {/* Grain / noise — textura premium sin gradiente */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none select-none" style={{ opacity: 0.13 }} aria-hidden="true">
-              <filter id="hero-grain">
-                <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="4" stitchTiles="stitch" />
-                <feColorMatrix type="saturate" values="0" />
-              </filter>
-              <rect width="100%" height="100%" filter="url(#hero-grain)" />
-            </svg>
-            {/* Bloom naranja — foco de luz cálido en esquina superior derecha */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,rgba(234,88,12,0.28)_0%,transparent_55%)]" />
-            {/* Número como watermark tipográfico */}
-            <span
-              className="absolute font-display font-black text-white select-none pointer-events-none leading-none"
-              style={{ fontSize: '210px', opacity: 0.045, bottom: '-24px', right: '16px' }}
-              aria-hidden="true"
-            >
-              {recetas.length}
-            </span>
-            <div className="relative z-10 flex items-end justify-between gap-6 px-8 py-10">
-              <div>
-                <p className="text-[11px] font-bold text-orange-400/60 uppercase tracking-[0.22em] mb-2">Tu recetario</p>
-                <h1 className="font-display text-3xl font-bold text-white leading-tight">
-                  {recetas.length} {recetas.length === 1 ? 'receta' : 'recetas'}<br />a tu alcance
-                </h1>
-              </div>
-              <motion.button
-                onClick={() => navigate('/recetas/nueva')}
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold bg-white/10 hover:bg-white/15 border border-white/20 text-white rounded-2xl transition-colors backdrop-blur-sm shrink-0"
-                whileTap={{ scale: 0.97 }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                  <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                </svg>
-                Nueva receta
-              </motion.button>
-            </div>
-          </div>
+          {mostrarAbanico && (
+            <AbanicoRecetas
+              recetas={hoy}
+              faltanPorReceta={faltanPorReceta}
+              titulo={tituloAbanico}
+              onOpen={(id) => navigate(`/recetas/${id}`)}
+              onToggleFavorita={toggleFavorita}
+              onNueva={() => navigate('/recetas/nueva')}
+            />
+          )}
 
           {q && (
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Resultados para <span className="font-semibold text-gray-800 dark:text-gray-200">"{searchParams.get('q')}"</span>
+              <span className="font-semibold text-gray-800 dark:text-gray-200">{resultados.length}</span>
+              {resultados.length === 1 ? ' resultado' : ' resultados'} para{' '}
+              <span className="font-semibold text-gray-800 dark:text-gray-200">"{searchParams.get('q')}"</span>
               {' — '}
               <button onClick={() => navigate('/')} className="text-orange-700 dark:text-orange-400 hover:underline">limpiar</button>
             </p>
@@ -131,20 +140,6 @@ function Catalogo() {
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
-              {conDespensa && (
-                <button
-                  onClick={() => setSoloDisponibles((v) => !v)}
-                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl transition-colors ${
-                    soloDisponibles
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                  }`}
-                  title="Solo recetas con todos los ingredientes en la despensa"
-                >
-                  <span className={`w-2 h-2 rounded-full ${soloDisponibles ? 'bg-white' : 'bg-emerald-500'}`} />
-                  Con lo que tenemos
-                </button>
-              )}
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
@@ -179,37 +174,35 @@ function Catalogo() {
           </div>
 
           {resultados.length === 0 ? (
-            <p className="text-sm text-gray-400 dark:text-gray-500 py-10 text-center">Sin resultados para estos filtros.</p>
+            <div className="text-center py-14">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                {soloDisponibles
+                  ? 'Ninguna receta cuadra con lo que tenéis en la despensa ahora mismo.'
+                  : 'Sin resultados para estos filtros.'}
+              </p>
+              <button
+                onClick={limpiarTodo}
+                className="px-4 py-2 text-sm font-semibold text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 rounded-xl hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+              >
+                Quitar filtros
+              </button>
+            </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {resultados.map((receta) => (
-                <div key={receta.id} className="relative">
+              <AnimatePresence mode="popLayout">
+                {resultados.map((receta, i) => (
                   <RecetaCard
+                    key={receta.id}
                     receta={receta}
+                    index={i}
                     onClick={(id) => navigate(`/recetas/${id}`)}
                     onToggleFavorita={toggleFavorita}
                     faltan={faltanPorReceta?.get(receta.id)}
+                    onToggleLista={toggleReceta}
+                    enLista={estaSeleccionada(receta.id)}
                   />
-                  <motion.button
-                    onClick={() => toggleReceta(receta)}
-                    className={`absolute bottom-3 right-3 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-all ${
-                      estaSeleccionada(receta.id)
-                        ? 'bg-orange-700 text-white shadow-sm'
-                        : 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-orange-500 hover:text-orange-700 dark:hover:border-orange-600 dark:hover:text-orange-400'
-                    }`}
-                    whileTap={{ scale: 0.93 }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                      {estaSeleccionada(receta.id) ? (
-                        <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                      ) : (
-                        <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-                      )}
-                    </svg>
-                    {estaSeleccionada(receta.id) ? 'En lista' : 'Lista'}
-                  </motion.button>
-                </div>
-              ))}
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </>
