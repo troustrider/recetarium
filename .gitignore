@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Volcado local de recetas (export de la BD, no versionar)
+recetas_live.json
+
 # Environment variables
 .env
 .env.local
