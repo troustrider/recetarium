@@ -37,6 +37,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
   const [activeRaw, setActive] = useState(() => Math.floor(recetas.length / 2))
   const [w, setW] = useState(680)
   const ref = useRef<HTMLDivElement>(null)
+  const rectRef = useRef<{ left: number; width: number } | null>(null)
   const dragStart = useRef<number | null>(null)
   const hoverCapable = useRef(
     typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? true : true
@@ -45,10 +46,21 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
   // Índice efectivo, clampado por si la lista cambia de tamaño
   const active = Math.min(activeRaw, Math.max(0, recetas.length - 1))
 
+  function medirRect() {
+    const el = ref.current
+    if (el) {
+      const r = el.getBoundingClientRect()
+      rectRef.current = { left: r.left, width: r.width }
+    }
+  }
+
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const ro = new ResizeObserver(([entry]) => setW(entry.contentRect.width))
+    const ro = new ResizeObserver(([entry]) => {
+      setW(entry.contentRect.width)
+      medirRect()
+    })
     ro.observe(el)
     return () => ro.disconnect()
   }, [])
@@ -64,12 +76,12 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
   // aunque esté parcialmente tapada por sus vecinas.
   function onPointerMove(e: React.PointerEvent) {
     if (!hoverCapable.current) return
-    const el = ref.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
+    let rect = rectRef.current
+    if (!rect) { medirRect(); rect = rectRef.current }
+    if (!rect) return
     const cx = e.clientX - (rect.left + rect.width / 2)
-    const idx = Math.round(cx / spread + centerIndex)
-    setActive(Math.max(0, Math.min(recetas.length - 1, idx)))
+    const idx = Math.max(0, Math.min(recetas.length - 1, Math.round(cx / spread + centerIndex)))
+    if (idx !== active) setActive(idx)
   }
 
   function onPointerDown(e: React.PointerEvent) {
@@ -104,6 +116,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
         role="listbox"
         aria-label="Abanico de recetas"
         tabIndex={0}
+        onPointerEnter={medirRect}
         onPointerMove={onPointerMove}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
@@ -175,7 +188,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               {/* Badge estado despensa */}
               {faltan != null && (
                 <span
-                  className={`absolute top-2.5 left-2.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full backdrop-blur-sm ${
+                  className={`absolute top-2.5 left-2.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${
                     faltan === 0
                       ? 'bg-emerald-500/95 text-white'
                       : faltan <= 2
@@ -191,7 +204,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               {/* Favorito */}
               <button
                 onClick={(e) => { e.stopPropagation(); onToggleFavorita(receta.id) }}
-                className={`absolute top-2.5 right-2.5 p-1.5 rounded-full backdrop-blur-sm transition-colors ${
+                className={`absolute top-2.5 right-2.5 p-1.5 rounded-full transition-colors ${
                   receta.favorita ? 'bg-red-500 text-white' : 'bg-black/30 text-white/75 hover:text-red-400'
                 }`}
                 aria-label={receta.favorita ? 'Quitar de favoritas' : 'Añadir a favoritas'}
