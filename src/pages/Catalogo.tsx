@@ -140,6 +140,25 @@ function Catalogo() {
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
               <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+              {conDespensa && (
+                <button
+                  onClick={() => setSoloDisponibles((v) => !v)}
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl transition-colors ${
+                    soloDisponibles
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                  title="Solo recetas con todos los ingredientes en la despensa"
+                >
+                  <span className={`w-2 h-2 rounded-full ${soloDisponibles ? 'bg-white' : 'bg-emerald-500'}`} />
+                  Con lo que tenemos
+                  {cocinablesHoy > 0 && (
+                    <span className={`text-xs tabular-nums ${soloDisponibles ? 'text-white/80' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                      {cocinablesHoy}
+                    </span>
+                  )}
+                </button>
+              )}
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
