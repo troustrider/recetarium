@@ -1,17 +1,9 @@
 import { useState } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket } from 'lucide-react'
-import type { Receta, Sabor } from '../../types/receta'
-
-// Color plano por sabor — identidad sin imagen
-// El nombre de la receta se convierte en el visual (watermark tipográfico)
-const SABOR_BG: Record<Sabor, string> = {
-  salado: '#041524',  // abismo oceánico
-  dulce:  '#2d0412',  // cereza macerada
-  amargo: '#1a1000',  // espresso oscuro
-  umami:  '#130c1a',  // berenjena fermentada
-  acido:  '#0c1a00',  // lima nocturna
-}
+import type { Receta } from '../../types/receta'
+import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
+import { prefetchDetalleReceta } from '../../utils/prefetch'
 
 interface Props {
   receta: Receta
@@ -55,6 +47,7 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
     <motion.article
       className="cursor-pointer group"
       onClick={() => onClick(id)}
+      onMouseEnter={prefetchDetalleReceta}
       layout
       initial={{ opacity: 0, y: reduce ? 0 : 16 }}
       animate={{ opacity: 1, y: 0 }}
@@ -68,8 +61,8 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
         onPointerLeave={onTiltLeave}
         style={{ rotateX, rotateY, transformPerspective: 900 }}
       >
-        {/* Zona visual */}
-        <div className="relative h-36 overflow-hidden">
+        {/* Zona visual — origen del morph hacia la cabecera de la ficha */}
+        <motion.div layoutId={recetaVisualLayoutId(id)} className="relative h-36 overflow-hidden">
           {imagen ? (
             <img
               src={imagen}
@@ -143,7 +136,7 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
                 d="M11.998 21.5C11.998 21.5 3 15.5 3 9a5 5 0 0 1 8.998-3.002A5 5 0 0 1 21 9c0 6.5-9.002 12.5-9.002 12.5z" />
             </svg>
           </motion.button>
-        </div>
+        </motion.div>
 
         {/* Contenido */}
         <div className="p-4">

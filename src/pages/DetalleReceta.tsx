@@ -6,38 +6,48 @@ import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
-import type { Sabor } from '../types/receta'
-
-const SABOR_BG: Record<Sabor, string> = {
-  salado: '#041524',  // abismo oceánico
-  dulce:  '#2d0412',  // cereza macerada
-  amargo: '#1a1000',  // espresso oscuro
-  umami:  '#130c1a',  // berenjena fermentada
-  acido:  '#0c1a00',  // lima nocturna
-}
+import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
 
 const BASE_COMENSALES = 2
 
+function SkeletonLineas({ filas }: { filas: number }) {
+  return (
+    <div className="flex flex-col gap-3 animate-pulse">
+      {Array.from({ length: filas }).map((_, i) => (
+        <div key={i} className="h-4 rounded bg-gray-100 dark:bg-gray-800" style={{ width: `${90 - i * 8}%` }} />
+      ))}
+    </div>
+  )
+}
+
 function DetalleReceta() {
   const { id } = useParams<{ id: string }>()
-  const { eliminar, toggleFavorita } = useRecetasContext()
-  const { receta, loading, error } = useReceta(id!)
+  const { recetas, eliminar, toggleFavorita } = useRecetasContext()
+  const { receta: fetched, error } = useReceta(id!)
   const navigate = useNavigate()
   const [comensales, setComensales] = useState(BASE_COMENSALES)
 
+  // Cabecera al instante desde la lista ya cargada; el detalle completo llega por fetch.
+  const cached = useMemo(() => recetas.find((r) => r.id === id) ?? null, [recetas, id])
+  const receta = fetched ?? cached
+  const full = fetched ?? (cached && cached.ingredientes.length > 0 ? cached : null)
+  const detalleListo = !!fetched || (!!cached && cached.ingredientes.length > 0)
+
   const ingredientesPorFamilia = useMemo(() => {
-    if (!receta) return []
-    const mapa = new Map<string, typeof receta.ingredientes>()
-    for (const ing of receta.ingredientes) {
+    if (!full) return []
+    const mapa = new Map<string, typeof full.ingredientes>()
+    for (const ing of full.ingredientes) {
       const familia = ing.familia || 'Otros'
       if (!mapa.has(familia)) mapa.set(familia, [])
       mapa.get(familia)!.push(ing)
     }
     return [...mapa.entries()]
-  }, [receta])
+  }, [full])
 
-  if (loading) return <LoadingSpinner />
-  if (error || !receta) return <ErrorMessage message={error ?? 'Receta no encontrada'} />
+  if (!receta) {
+    if (error) return <ErrorMessage message={error} />
+    return <LoadingSpinner />
+  }
 
   async function handleEliminar() {
     if (!confirm(`¿Eliminar "${receta!.nombre}"?`)) return
@@ -51,7 +61,7 @@ function DetalleReceta() {
     <div className="flex flex-col gap-8">
       {/* Header con imagen opcional */}
       {receta.imagen ? (
-        <div className="relative h-56 rounded-2xl overflow-hidden">
+        <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-56 rounded-2xl overflow-hidden">
           <img
             src={receta.imagen}
             alt={receta.nombre}
@@ -64,11 +74,11 @@ function DetalleReceta() {
             </p>
             <h1 className="font-display text-3xl font-bold text-white leading-tight">{receta.nombre}</h1>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <div className="flex flex-col gap-5">
-          {/* Header visual sin imagen — mismo lenguaje que las cards */}
-          <div className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
+          {/* Header visual sin imagen — destino del morph desde la card */}
+          <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
             <span
               className="absolute top-1/2 -translate-y-1/2 left-5 font-display font-black leading-none select-none pointer-events-none whitespace-nowrap"
               style={{ fontSize: '96px', color: 'rgba(255,255,255,0.06)' }}
@@ -95,7 +105,7 @@ function DetalleReceta() {
                   d="M11.998 21.5C11.998 21.5 3 15.5 3 9a5 5 0 0 1 8.998-3.002A5 5 0 0 1 21 9c0 6.5-9.002 12.5-9.002 12.5z" />
               </svg>
             </motion.button>
-          </div>
+          </motion.div>
           {/* Metadatos + título */}
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-1">
@@ -184,35 +194,43 @@ function DetalleReceta() {
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 flex flex-col gap-4">
-          {ingredientesPorFamilia.map(([familia, ingredientes]) => (
-            <div key={familia}>
-              {ingredientesPorFamilia.length > 1 && (
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-2">
-                  {familia}
-                </p>
-              )}
-              <ul className="flex flex-col">
-                {ingredientes.map((ing, i) => (
-                  <IngredienteItem key={i} ingrediente={ing} multiplicador={multiplicador} />
-                ))}
-              </ul>
-            </div>
-          ))}
+          {detalleListo ? (
+            ingredientesPorFamilia.map(([familia, ingredientes]) => (
+              <div key={familia}>
+                {ingredientesPorFamilia.length > 1 && (
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-2">
+                    {familia}
+                  </p>
+                )}
+                <ul className="flex flex-col">
+                  {ingredientes.map((ing, i) => (
+                    <IngredienteItem key={i} ingrediente={ing} multiplicador={multiplicador} />
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <SkeletonLineas filas={5} />
+          )}
         </div>
       </section>
 
       <section>
         <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Pasos</h2>
-        <ol className="flex flex-col gap-4">
-          {receta.pasos.map((paso, i) => (
-            <li key={i} className="flex items-start gap-4 text-sm">
-              <span className="shrink-0 w-7 h-7 flex items-center justify-center bg-gradient-to-br from-orange-700 to-amber-600 text-white rounded-full text-xs font-bold shadow-sm">
-                {i + 1}
-              </span>
-              <span className="text-gray-700 dark:text-gray-300 leading-relaxed pt-1">{paso}</span>
-            </li>
-          ))}
-        </ol>
+        {detalleListo ? (
+          <ol className="flex flex-col gap-4">
+            {full!.pasos.map((paso, i) => (
+              <li key={i} className="flex items-start gap-4 text-sm">
+                <span className="shrink-0 w-7 h-7 flex items-center justify-center bg-gradient-to-br from-orange-700 to-amber-600 text-white rounded-full text-xs font-bold shadow-sm">
+                  {i + 1}
+                </span>
+                <span className="text-gray-700 dark:text-gray-300 leading-relaxed pt-1">{paso}</span>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <SkeletonLineas filas={4} />
+        )}
       </section>
     </div>
   )

@@ -1,16 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket, Plus, Heart } from 'lucide-react'
-import type { Receta, Sabor } from '../../types/receta'
-
-// Luz por sabor — mismo lenguaje que el hero: fondo profundo + bloom del color dot
-const LUZ: Record<Sabor, { bg: string; bloom: string; dot: string }> = {
-  salado: { bg: '#082A45', bloom: 'rgba(56,189,248,0.30)', dot: '#38bdf8' },
-  dulce:  { bg: '#3A0A1E', bloom: 'rgba(251,113,133,0.30)', dot: '#fb7185' },
-  amargo: { bg: '#2A1B02', bloom: 'rgba(251,191,36,0.24)', dot: '#fbbf24' },
-  umami:  { bg: '#1E1030', bloom: 'rgba(192,132,252,0.32)', dot: '#c084fc' },
-  acido:  { bg: '#14300E', bloom: 'rgba(163,230,53,0.26)', dot: '#a3e635' },
-}
+import type { Receta } from '../../types/receta'
+import { LUZ } from '../../utils/sabores'
+import { prefetchDetalleReceta } from '../../utils/prefetch'
 
 interface Geo {
   cardW: number
@@ -23,6 +16,10 @@ function geometria(w: number): Geo {
   if (w >= 440) return { cardW: 150, spread: 58, rot: 6 }
   return { cardW: 142, spread: 42, rot: 6 }
 }
+
+// Fondo neutro para las cards que no están a un solo ingrediente de poderse cocinar.
+// El color por sabor se reserva para señalar "falta 1" — así el color significa algo.
+const NEUTRAL_BG = '#15181e'
 
 interface Props {
   recetas: Receta[]
@@ -131,6 +128,9 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
         {recetas.map((receta, i) => {
           const luz = LUZ[receta.sabor]
           const faltan = faltanPorReceta?.get(receta.id)
+          const conColor = faltan === 1  // color por sabor solo cuando falta 1 ingrediente
+          const bg = conColor ? luz.bg : NEUTRAL_BG
+          const bloom = conColor ? luz.bloom : 'transparent'
           const slot = i - centerIndex   // posición fija en el abanico
           const d = i - active           // distancia a la card activa (solo estética)
           const ad = Math.abs(d)
@@ -147,12 +147,13 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               aria-selected={isA}
               aria-label={receta.nombre}
               onClick={() => onOpen(receta.id)}
+              onMouseEnter={prefetchDetalleReceta}
               className="absolute left-1/2 bottom-2 rounded-2xl overflow-hidden cursor-pointer"
               style={{
                 width: cardW,
                 height: 250,
                 marginLeft: -cardW / 2,
-                backgroundColor: luz.bg,
+                backgroundColor: bg,
                 transformOrigin: 'bottom center',
                 zIndex: isA ? 100 : 50 - ad,
                 boxShadow: isA ? '0 18px 44px rgba(0,0,0,0.45)' : 'none',
@@ -165,7 +166,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               {/* Bloom del sabor */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: `radial-gradient(ellipse at 82% 0%, ${luz.bloom} 0%, transparent 56%)` }}
+                style={{ background: `radial-gradient(ellipse at 82% 0%, ${bloom} 0%, transparent 56%)` }}
               />
               {/* Trama de puntos */}
               <div

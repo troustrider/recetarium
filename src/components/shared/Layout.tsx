@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useState, type ReactNode } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChefHat, ShoppingCart, Search, Menu, X, BookOpen, ShoppingBasket, CalendarDays } from 'lucide-react'
 import useDarkMode from '../../hooks/useDarkMode'
@@ -44,7 +44,7 @@ function MoonIcon() {
   )
 }
 
-function Layout() {
+function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { dark, toggle } = useDarkMode()
@@ -155,7 +155,7 @@ function Layout() {
             {/* Cart */}
             <motion.button
               onClick={() => setListaOpen(true)}
-              className="relative p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="relative hidden sm:block p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               aria-label="Lista de compra"
               whileTap={{ scale: 0.88 }}
             >
@@ -237,14 +237,7 @@ function Layout() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-24 sm:py-8">
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
-          <Outlet />
-        </motion.div>
+        {children}
       </main>
 
       <nav className="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex pb-[env(safe-area-inset-bottom)]">

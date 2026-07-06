@@ -1,5 +1,6 @@
-import { lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import Layout from './components/shared/Layout'
 import LoadingSpinner from './components/shared/LoadingSpinner'
 
@@ -13,21 +14,40 @@ const Despensa      = lazy(() => import('./pages/Despensa'))
 const NotFound      = lazy(() => import('./pages/NotFound'))
 
 function App() {
+  const location = useLocation()
+
+  // Con el shell persistente, el scroll no se reinicia solo entre rutas.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Catalogo />} />
-          <Route path="favoritas" element={<Favoritas />} />
-          <Route path="planificador" element={<Planificador />} />
-          <Route path="despensa" element={<Despensa />} />
-          <Route path="recetas/nueva" element={<NuevaReceta />} />
-          <Route path="recetas/:id" element={<DetalleReceta />} />
-          <Route path="recetas/:id/editar" element={<EditarReceta />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </Suspense>
+    <MotionConfig reducedMotion="user">
+      <Layout>
+        <Suspense fallback={<LoadingSpinner />}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+            >
+              <Routes location={location}>
+                <Route index element={<Catalogo />} />
+                <Route path="favoritas" element={<Favoritas />} />
+                <Route path="planificador" element={<Planificador />} />
+                <Route path="despensa" element={<Despensa />} />
+                <Route path="recetas/nueva" element={<NuevaReceta />} />
+                <Route path="recetas/:id" element={<DetalleReceta />} />
+                <Route path="recetas/:id/editar" element={<EditarReceta />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </motion.div>
+          </AnimatePresence>
+        </Suspense>
+      </Layout>
+    </MotionConfig>
   )
 }
 
