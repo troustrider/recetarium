@@ -131,6 +131,9 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
           const conColor = faltan === 1  // color por sabor solo cuando falta 1 ingrediente
           const bg = conColor ? luz.bg : NEUTRAL_BG
           const bloom = conColor ? luz.bloom : 'transparent'
+          // Halo en el color del sabor: señal inequívoca de "a un ingrediente" que
+          // sobrevive al atenuado de las laterales. Las neutras no lo llevan.
+          const glow = conColor ? `0 0 0 1px ${luz.dot}66, 0 0 20px -2px ${luz.dot}55` : ''
           const slot = i - centerIndex   // posición fija en el abanico
           const d = i - active           // distancia a la card activa (solo estética)
           const ad = Math.abs(d)
@@ -156,7 +159,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                 backgroundColor: bg,
                 transformOrigin: 'bottom center',
                 zIndex: isA ? 100 : 50 - ad,
-                boxShadow: isA ? '0 18px 44px rgba(0,0,0,0.45)' : 'none',
+                boxShadow: [isA && '0 18px 44px rgba(0,0,0,0.45)', glow].filter(Boolean).join(', ') || 'none',
                 outline: isA ? '1.5px solid rgba(251,146,60,0.55)' : 'none',
               }}
               animate={{ x, y, rotate, scale }}
@@ -166,7 +169,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               {/* Bloom del sabor */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ background: `radial-gradient(ellipse at 82% 0%, ${bloom} 0%, transparent 56%)` }}
+                style={{ background: `radial-gradient(ellipse 120% 85% at 80% -8%, ${bloom} 0%, transparent 68%)` }}
               />
               {/* Trama de puntos */}
               <div
