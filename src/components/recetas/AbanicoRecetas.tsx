@@ -166,26 +166,38 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               whileTap={{ scale: isA ? 1.1 : scale }}
             >
-              {/* Bloom del sabor */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ background: `radial-gradient(ellipse 120% 85% at 80% -8%, ${bloom} 0%, transparent 68%)` }}
-              />
-              {/* Trama de puntos */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
-                  backgroundSize: '18px 18px',
-                }}
-              />
-              {/* Watermark tipográfico */}
-              <span
-                className="absolute top-7 -left-0.5 font-display font-black leading-none whitespace-nowrap pointer-events-none"
-                style={{ fontSize: '52px', color: 'rgba(255,255,255,0.14)' }}
-              >
-                {receta.nombre.split(' ')[0]}
-              </span>
+              {/* Foto de la receta si la tiene; si no, watermark tipográfico */}
+              {receta.imagen ? (
+                <img
+                  src={receta.imagen}
+                  alt={receta.nombre}
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                  draggable={false}
+                />
+              ) : (
+                <>
+                  {/* Bloom del sabor */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: `radial-gradient(ellipse 120% 85% at 80% -8%, ${bloom} 0%, transparent 68%)` }}
+                  />
+                  {/* Trama de puntos */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
+                      backgroundSize: '18px 18px',
+                    }}
+                  />
+                  {/* Watermark tipográfico */}
+                  <span
+                    className="absolute top-7 -left-0.5 font-display font-black leading-none whitespace-nowrap pointer-events-none"
+                    style={{ fontSize: '52px', color: 'rgba(255,255,255,0.14)' }}
+                  >
+                    {receta.nombre.split(' ')[0]}
+                  </span>
+                </>
+              )}
               {/* Scrim inferior */}
               <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(6,8,10,0.9) 100%)' }} />
 
