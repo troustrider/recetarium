@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Plus, AlertTriangle, ChefHat, Carrot, Apple, Beef, Fish, Milk,
-  Wheat, Bean, Package, Leaf, CupSoda, ShoppingBasket, Trash2, type LucideIcon,
+  Wheat, Bean, Package, Leaf, BottleWine, CupSoda, ShoppingBasket, Trash2, type LucideIcon,
 } from 'lucide-react'
 import { useDespensa, type IngredienteDespensa } from '../context/DespensaContext'
 import { useListaCompraContext, useCompradosContext, useRecetasContext } from '../context'
@@ -17,7 +17,7 @@ import useIngredientesConocidos from '../hooks/useIngredientesConocidos'
 const ICONO_FAMILIA: Record<string, LucideIcon> = {
   verduras: Carrot, frutas: Apple, carnes: Beef, pescados: Fish, 'lácteos': Milk,
   cereales: Wheat, legumbres: Bean, conservas: Package, especias: Leaf,
-  bebidas: CupSoda, otros: ShoppingBasket,
+  salsas: BottleWine, bebidas: CupSoda, otros: ShoppingBasket,
 }
 
 function capitalize(s: string) {
