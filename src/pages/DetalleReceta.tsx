@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Flame } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
+import ModoCocina from '../components/cocina/ModoCocina'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
@@ -26,6 +28,7 @@ function DetalleReceta() {
   const { receta: fetched, error } = useReceta(id!)
   const navigate = useNavigate()
   const [comensales, setComensales] = useState(BASE_COMENSALES)
+  const [cocinaOpen, setCocinaOpen] = useState(false)
 
   // Cabecera al instante desde la lista ya cargada; el detalle completo llega por fetch.
   const cached = useMemo(() => recetas.find((r) => r.id === id) ?? null, [recetas, id])
@@ -143,6 +146,17 @@ function DetalleReceta() {
         </motion.button>
       </div>
 
+      {detalleListo && full && full.pasos.length > 0 && (
+        <motion.button
+          onClick={() => setCocinaOpen(true)}
+          className="flex items-center justify-center gap-2.5 w-full py-3.5 text-sm font-bold text-white rounded-2xl bg-gradient-to-br from-orange-600 to-amber-500 shadow-sm shadow-orange-500/20"
+          whileTap={{ scale: 0.98 }}
+        >
+          <Flame className="w-5 h-5" strokeWidth={2.2} />
+          Modo cocina
+        </motion.button>
+      )}
+
       {receta.calorias != null && (
         <div className="grid grid-cols-4 gap-2">
           {([
@@ -232,6 +246,12 @@ function DetalleReceta() {
           <SkeletonLineas filas={4} />
         )}
       </section>
+
+      <AnimatePresence>
+        {cocinaOpen && full && (
+          <ModoCocina receta={full} multiplicador={multiplicador} onClose={() => setCocinaOpen(false)} />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

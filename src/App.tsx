@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import Layout from './components/shared/Layout'
 import LoadingSpinner from './components/shared/LoadingSpinner'
+import InstallPrompt from './components/shared/InstallPrompt'
 
 const Catalogo      = lazy(() => import('./pages/Catalogo'))
 const Favoritas     = lazy(() => import('./pages/Favoritas'))
@@ -46,6 +47,7 @@ function App() {
             </motion.div>
           </AnimatePresence>
         </Suspense>
+        <InstallPrompt />
       </Layout>
     </MotionConfig>
   )
