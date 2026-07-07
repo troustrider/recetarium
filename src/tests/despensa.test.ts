@@ -30,6 +30,12 @@ describe('despensaCubre — falsos negativos que rompían la disponibilidad', ()
     expect(despensaCubre('patatas', 'patata')).toBe(true)
     expect(despensaCubre('gambas congeladas', 'gambas')).toBe(true)
   })
+
+  it('resuelve alias/variantes de escritura (tabla de alias)', () => {
+    expect(despensaCubre('ketjap mani', 'kecap manis')).toBe(true)
+    expect(despensaCubre('langostinos', 'gambas')).toBe(true)
+    expect(despensaCubre('culantro', 'cilantro')).toBe(true)
+  })
 })
 
 describe('despensaCubre — no debe inventar disponibilidad', () => {

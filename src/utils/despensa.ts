@@ -8,6 +8,7 @@
 // la receta y viceversa.
 
 import { normalizar, canonUnidad } from './ingredientes'
+import { aplicarAlias } from './alias'
 import type { Receta } from '../types/receta'
 
 export const FAMILIAS = [
@@ -41,7 +42,9 @@ function singular(t: string): string {
   return t
 }
 
-// Tokens significativos: normalizados, sin conectores, en singular.
+// Tokens significativos: normalizados, sin conectores, en singular y con los
+// alias resueltos ("ketjap" → "kecap") para que sinónimos y variantes de
+// escritura casen igual que el resto.
 function tokens(nombre: string): string[] {
   return normalizar(nombre)
     .replace(/[()]/g, ' ')
@@ -49,6 +52,7 @@ function tokens(nombre: string): string[] {
     .map((t) => t.trim())
     .filter((t) => t && !STOPWORDS.has(t))
     .map(singular)
+    .map(aplicarAlias)
 }
 
 // Núcleo: tokens sin descriptores. Es lo que define la identidad del
