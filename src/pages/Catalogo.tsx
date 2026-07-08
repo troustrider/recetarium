@@ -54,19 +54,36 @@ function Catalogo() {
   const hayFiltrosActivos =
     !!q || soloDisponibles || filtros.categoria !== '' || filtros.sabor !== '' || filtros.tiempoMax !== ''
 
-  // "Recetas de hoy" — cocinables primero (menos faltan), desempate por proteína
+  // Semilla fresca en cada montaje: al entrar a la página sale un conjunto distinto
+  const [seedAbanico] = useState(() => Math.random())
+
+  // "Recetas de hoy" — cocinables primero (0 faltan), luego falta 1, 2… pero el
+  // orden DENTRO de cada nivel es aleatorio en cada visita, no siempre las mismas.
   const hoy = useMemo(() => {
-    return [...recetas]
-      .sort((a, b) => {
-        if (faltanPorReceta) {
-          const fa = faltanPorReceta.get(a.id) ?? 99
-          const fb = faltanPorReceta.get(b.id) ?? 99
-          if (fa !== fb) return fa - fb
-        }
-        return (b.proteinas ?? 0) - (a.proteinas ?? 0)
-      })
+    const barajar = <T,>(arr: T[]): T[] => {
+      const a = [...arr]
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+      }
+      return a
+    }
+    if (!faltanPorReceta) return barajar(recetas).slice(0, 7)
+
+    const porNivel = new Map<number, Receta[]>()
+    for (const r of recetas) {
+      const f = faltanPorReceta.get(r.id) ?? 99
+      const grupo = porNivel.get(f)
+      if (grupo) grupo.push(r)
+      else porNivel.set(f, [r])
+    }
+    return [...porNivel.keys()]
+      .sort((a, b) => a - b)
+      .flatMap((nivel) => barajar(porNivel.get(nivel)!))
       .slice(0, 7)
-  }, [recetas, faltanPorReceta])
+    // seedAbanico fuerza un reparto nuevo por montaje; barajar() es intencionadamente impuro
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recetas, faltanPorReceta, seedAbanico])
 
   const mostrarAbanico = !hayFiltrosActivos && hoy.length >= 3
   const tituloAbanico =
