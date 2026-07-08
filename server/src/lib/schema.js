@@ -18,4 +18,5 @@ export const recetas = pgTable('recetas', {
   categoryId:        uuid('category_id').notNull().references(() => categories.id),
   ingredientes:      jsonb('ingredientes'),
   pasos:             jsonb('pasos'),
+  consejos:          jsonb('consejos'),
 })

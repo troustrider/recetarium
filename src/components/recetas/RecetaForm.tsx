@@ -23,6 +23,7 @@ const FORM_VACIO: RecetaFormData = {
   tiempoPreparacion: 30,
   ingredientes: [],
   pasos: [],
+  consejos: [],
 }
 
 interface Errores {
@@ -57,6 +58,7 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
     nombre: '', cantidad: 0, unidad: '', familia: '',
   })
   const [nuevoPaso, setNuevoPaso] = useState('')
+  const [nuevoConsejo, setNuevoConsejo] = useState('')
   const [errores, setErrores] = useState<Errores>({})
 
   const [pasos, setPasos] = useState<PasoItem[]>(
@@ -101,6 +103,16 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
 
   function removePaso(id: string) {
     syncPasos(pasos.filter((p) => p.id !== id))
+  }
+
+  function addConsejo() {
+    if (!nuevoConsejo.trim()) return
+    handleChange('consejos', [...(form.consejos ?? []), nuevoConsejo.trim()])
+    setNuevoConsejo('')
+  }
+
+  function removeConsejo(index: number) {
+    handleChange('consejos', (form.consejos ?? []).filter((_, i) => i !== index))
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -332,6 +344,48 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         </div>
         {errores.nuevoPaso && <p className="mt-1 text-xs text-red-500">{errores.nuevoPaso}</p>}
         {errores.pasos && <p className="mt-1 text-xs text-red-500">{errores.pasos}</p>}
+      </div>
+
+      {/* Consejos del chef (opcional) */}
+      <div>
+        <h3 className={LABEL_CLASS}>Consejos del chef <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></h3>
+        {(form.consejos ?? []).length > 0 && (
+          <ul className="mb-3 flex flex-col gap-1">
+            {(form.consejos ?? []).map((consejo, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-2 text-sm bg-amber-50 dark:bg-amber-900/15 border border-amber-100 dark:border-amber-900/30 rounded-lg px-3 py-2"
+              >
+                <span className="flex-1 text-gray-800 dark:text-gray-200">{consejo}</span>
+                <button
+                  type="button"
+                  onClick={() => removeConsejo(i)}
+                  className="text-gray-300 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition-colors text-lg leading-none"
+                  aria-label="Eliminar consejo"
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Tip para manejar ingredientes, seguridad..."
+            value={nuevoConsejo}
+            onChange={(e) => setNuevoConsejo(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addConsejo())}
+            className={`flex-1 ${INPUT_CLASS}`}
+          />
+          <button
+            type="button"
+            onClick={addConsejo}
+            className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
+            + Añadir
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">

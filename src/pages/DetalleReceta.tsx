@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame } from 'lucide-react'
+import { Flame, Lightbulb } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
@@ -246,6 +246,23 @@ function DetalleReceta() {
           <SkeletonLineas filas={4} />
         )}
       </section>
+
+      {detalleListo && full && full.consejos && full.consejos.length > 0 && (
+        <section>
+          <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Consejos del chef</h2>
+          <ul className="flex flex-col gap-3">
+            {full.consejos.map((consejo, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-3 text-sm bg-amber-50 dark:bg-amber-900/15 border border-amber-100 dark:border-amber-900/30 rounded-2xl px-4 py-3"
+              >
+                <Lightbulb className="shrink-0 w-4 h-4 mt-0.5 text-amber-500 dark:text-amber-400" strokeWidth={2.2} />
+                <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{consejo}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <AnimatePresence>
         {cocinaOpen && full && (

@@ -13,6 +13,7 @@
     imagen              TEXT,
     ingredientes        JSONB NOT NULL DEFAULT '[]'::jsonb,
     pasos               JSONB NOT NULL DEFAULT '[]'::jsonb,
+    consejos            JSONB NOT NULL DEFAULT '[]'::jsonb,
     precio_por_porcion  NUMERIC(10,2) NOT NULL CHECK (precio_por_porcion > 0),
     porciones           INTEGER NOT NULL DEFAULT 1,
     -- Nutrición por porción (opcional)
