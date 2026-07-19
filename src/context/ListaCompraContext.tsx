@@ -5,6 +5,7 @@ import type { Receta, Ingrediente } from '../types/receta'
 interface ListaCompraContextValue {
   seleccionadas: EntradaLista[]
   listaCompra: IngredienteAgrupado[]
+  enDespensa: IngredienteAgrupado[]
   extras: Ingrediente[]
   coste: number
   toggleReceta: (receta: Receta) => void
@@ -14,6 +15,7 @@ interface ListaCompraContextValue {
   cargarAleatorias: (recetas: Receta[], n: number, raciones: number) => void
   addExtra: (item: Ingrediente) => void
   removeExtra: (clave: string) => void
+  descartar: (clave: string) => void
 }
 
 const ListaCompraContext = createContext<ListaCompraContextValue | null>(null)

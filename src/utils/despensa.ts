@@ -104,6 +104,21 @@ export function faltantes(receta: Receta, despensa: { nombre: string }[]): strin
     .map((ing) => ing.nombre)
 }
 
+// Cobertura de un ingrediente de la lista de compra por la despensa. La
+// despensa no guarda cantidades, así que "nos falta cantidad" se traduce en
+// estado 'poco' o caducidad encima: se compra entero pero avisando de que
+// queda algo en casa.
+export type CoberturaDespensa = 'cubierto' | 'poco' | 'no'
+
+export function coberturaDespensa(
+  nombre: string,
+  despensa: { nombre: string; estado: string; caducidad?: string }[]
+): CoberturaDespensa {
+  const match = despensa.find((d) => despensaCubre(d.nombre, nombre))
+  if (!match) return 'no'
+  return match.estado === 'poco' || caducaPronto(match) ? 'poco' : 'cubierto'
+}
+
 export function diasHastaCaducidad(caducidad: string): number {
   const hoy = new Date()
   hoy.setHours(0, 0, 0, 0)

@@ -4,6 +4,7 @@ import { useListaCompraContext, useCompradosContext, useDespensa } from '../../c
 import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
+import { formatCantidad } from '../../utils/ingredientes'
 
 interface Props {
   open: boolean
@@ -11,11 +12,11 @@ interface Props {
 }
 
 function ListaCompraDrawer({ open, onClose }: Props) {
-  const { seleccionadas, listaCompra, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra } = useListaCompraContext()
+  const { seleccionadas, listaCompra, enDespensa, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
   const { añadir } = useDespensa()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
-  const vacia = listaCompra.length === 0
+  const vacia = listaCompra.length === 0 && enDespensa.length === 0
   const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
 
   function comprar() {
@@ -31,7 +32,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
       {open && (
         <>
           <motion.div
-            className="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/50 z-40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -128,12 +129,42 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                           ingrediente={ing}
                           checked={comprados.has(ing.clave)}
                           onToggle={() => toggle(ing.clave)}
-                          onRemove={ing.esExtra ? () => removeExtra(ing.clave) : undefined}
+                          onRemove={() => (ing.esExtra ? removeExtra(ing.clave) : descartar(ing.clave))}
                         />
                       ))}
                   </ul>
                 </section>
               ))}
+
+              {enDespensa.length > 0 && (
+                <section className="bg-emerald-50/60 dark:bg-emerald-900/10 rounded-2xl overflow-hidden">
+                  <div className="px-4 py-2.5 border-b border-emerald-100 dark:border-emerald-900/30">
+                    <h3 className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.15em]">
+                      Ya en la despensa ({enDespensa.length})
+                    </h3>
+                  </div>
+                  <ul className="px-4">
+                    {enDespensa.map((ing) => (
+                      <li key={ing.clave} className="flex items-center gap-3 py-2.5 border-b border-emerald-100/60 dark:border-emerald-900/20 last:border-0">
+                        <span className="flex-1 text-sm text-gray-500 dark:text-gray-400">
+                          {ing.nombre.charAt(0).toUpperCase() + ing.nombre.slice(1)}
+                        </span>
+                        <span className="text-xs text-gray-400 tabular-nums shrink-0">
+                          {formatCantidad(ing.cantidad, ing.unidad)}
+                        </span>
+                        <button
+                          onClick={() => addExtra(ing)}
+                          className="shrink-0 p-1 rounded-lg text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
+                          aria-label={`Comprar ${ing.nombre} igualmente`}
+                          title="Comprar igualmente"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
               <AnadirManual onAdd={addExtra} />
             </div>

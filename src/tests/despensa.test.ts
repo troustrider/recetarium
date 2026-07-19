@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes } from '../utils/despensa'
+import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes, coberturaDespensa } from '../utils/despensa'
 import type { Receta } from '../types/receta'
 
 // Estos tests fijan el matching despensa↔receta. Si vuelven a rojo, el
@@ -85,5 +85,35 @@ describe('faltantes / estaEnDespensa', () => {
   it('estaEnDespensa usa igualdad simétrica', () => {
     expect(estaEnDespensa('aceite de oliva', despensa)).toBe(true)
     expect(estaEnDespensa('pechuga de pollo', despensa)).toBe(false)
+  })
+})
+
+describe('coberturaDespensa — filtrado de la lista de la compra', () => {
+  const hoy = new Date()
+  const enDias = (n: number) => {
+    const d = new Date(hoy)
+    d.setDate(d.getDate() + n)
+    return d.toISOString().slice(0, 10)
+  }
+
+  it('lleno cubre (con matching de cocina), ausente no', () => {
+    const despensa = [{ nombre: 'pollo', estado: 'lleno' }]
+    expect(coberturaDespensa('pechuga de pollo', despensa)).toBe('cubierto')
+    expect(coberturaDespensa('salmón', despensa)).toBe('no')
+  })
+
+  it('estado poco se compra igualmente pero marcado', () => {
+    const despensa = [{ nombre: 'arroz', estado: 'poco' }]
+    expect(coberturaDespensa('arroz', despensa)).toBe('poco')
+  })
+
+  it('lo que caduca pronto cuenta como poco aunque esté lleno', () => {
+    const despensa = [{ nombre: 'leche', estado: 'lleno', caducidad: enDias(1) }]
+    expect(coberturaDespensa('leche', despensa)).toBe('poco')
+  })
+
+  it('caducidad lejana no penaliza', () => {
+    const despensa = [{ nombre: 'huevos', estado: 'lleno', caducidad: enDias(20) }]
+    expect(coberturaDespensa('huevo', despensa)).toBe('cubierto')
   })
 })

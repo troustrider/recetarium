@@ -15,15 +15,15 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <RecetasProvider>
-        <ListaCompraProvider>
-          <PlanificadorProvider>
-            <DespensaProvider>
+        <DespensaProvider>
+          <ListaCompraProvider>
+            <PlanificadorProvider>
               <CompradosProvider>
                 <App />
               </CompradosProvider>
-            </DespensaProvider>
-          </PlanificadorProvider>
-        </ListaCompraProvider>
+            </PlanificadorProvider>
+          </ListaCompraProvider>
+        </DespensaProvider>
       </RecetasProvider>
     </BrowserRouter>
   </StrictMode>,

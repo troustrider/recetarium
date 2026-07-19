@@ -7,6 +7,7 @@ interface IngredienteAgrupado {
   unidad: string
   familia: string
   esExtra?: boolean
+  quedaPoco?: boolean
 }
 
 interface Props {
@@ -21,7 +22,7 @@ function capitalize(s: string) {
 }
 
 function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {
-  const { nombre, cantidad, unidad, esExtra } = ingrediente
+  const { nombre, cantidad, unidad, esExtra, quedaPoco } = ingrediente
 
   return (
     <motion.li
@@ -41,6 +42,7 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
       <span className={`flex-1 font-medium text-gray-800 dark:text-gray-200 ${checked ? 'line-through' : ''}`}>
         {capitalize(nombre)}
         {esExtra && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">manual</span>}
+        {quedaPoco && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-amber-500">queda poco</span>}
       </span>
       <span className="text-sm font-bold text-orange-600 tabular-nums shrink-0">
         {formatCantidad(cantidad, unidad)}
@@ -48,7 +50,7 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
       {onRemove && (
         <button
           onClick={(e) => { e.stopPropagation(); onRemove() }}
-          className="shrink-0 text-gray-300 hover:text-red-500 transition-colors text-lg leading-none"
+          className="shrink-0 w-7 h-7 -mr-1 flex items-center justify-center rounded-full text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-lg leading-none"
           aria-label="Quitar ítem"
         >
           ×
