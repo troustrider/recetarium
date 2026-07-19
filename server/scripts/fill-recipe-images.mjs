@@ -49,6 +49,12 @@ const DISH = {
   maafe: 'peanut stew', sundubu: 'sundubu jjigae', lomo: 'lomo saltado', frittata: 'frittata',
   fajitas: 'fajitas', burrito: 'burrito', gratinado: 'gratin', gratinados: 'gratin',
   graten: 'gratin', tzatziki: 'tzatziki',
+  // Platos cuyo distintivo se perdía al traducir (leche->STOP, griega sin alias):
+  griega: 'greek salad', frita: 'fried custard',
+  // Tanda nueva (udon, indonesio y varios): el nombre propio es el término preciso.
+  udon: 'udon', rendang: 'rendang', gado: 'gado gado', soto: 'soto ayam',
+  mie: 'mie goreng', tikka: 'tikka masala', dal: 'dal', falafel: 'falafel',
+  harira: 'harira', char: 'char siu', chow: 'chow mein', ropa: 'ropa vieja',
 }
 // Ingredientes/formas ES -> EN. Marcan keywords secundarias y, si no hay plato
 // distintivo, el primero traducido es el PRIMARY.
@@ -57,7 +63,8 @@ const LEX = {
   salmon: 'salmon', pescado: 'fish', pavo: 'turkey', pollo: 'chicken', jamon: 'ham',
   huevo: 'egg', huevos: 'eggs', gambas: 'shrimp', ternera: 'beef', cerdo: 'pork',
   solomillo: 'pork', carne: 'meat', picadillo: 'beef', chorizo: 'chorizo',
-  rookworst: 'sausage', caballa: 'mackerel', tofu: 'tofu',
+  rookworst: 'sausage', caballa: 'mackerel', tofu: 'tofu', ayam: 'chicken',
+  berenjena: 'eggplant', berenjenas: 'eggplant', parmesana: 'parmesan',
   garbanzos: 'chickpeas', alubias: 'beans', judias: 'beans', lentejas: 'lentils',
   estofado: 'stew', guisado: 'stew', guiso: 'stew', sopa: 'soup', ensalada: 'salad',
   curry: 'curry', pasta: 'pasta', macarrones: 'macaroni', noodles: 'noodles',
@@ -69,7 +76,7 @@ const LEX = {
   pure: 'mashed potato', tomate: 'tomato', feta: 'feta', queso: 'cheese', champinones: 'mushrooms',
   champinon: 'mushroom', coco: 'coconut', maiz: 'corn', guisantes: 'peas', aguacate: 'avocado',
   avena: 'oatmeal', platano: 'banana', fruta: 'fruit', col: 'cabbage', verduras: 'vegetables',
-  ajo: 'garlic', limon: 'lemon', mostaza: 'mustard', albahaca: 'basil', kwark: 'yogurt',
+  ajo: 'garlic', ajillo: 'garlic', limon: 'lemon', mostaza: 'mustard', albahaca: 'basil', kwark: 'yogurt',
   soja: 'soy', cebolla: 'onion', pimiento: 'pepper', agridulce: 'sweet and sour',
   frito: 'fried', salteado: 'stir fry', saltado: 'stir fry', empanado: 'breaded',
   revueltos: 'scrambled', revuelto: 'scrambled', rellenos: 'stuffed', cesar: 'caesar',
@@ -133,14 +140,21 @@ for (const r of await sql`SELECT imagen FROM recetas WHERE imagen IS NOT NULL`) 
   if (m) used.add(m[0].replace('photo-', ''))
 }
 
-// Prioridad: primero las recetas disponibles con la despensa (faltan 0), luego
-// por nº de ingredientes que faltan, luego alfabético. Así se ilustran antes
-// las que Karim puede cocinar ya.
+// Prioridad: ids forzados al frente (--priority), luego disponibles con la
+// despensa (faltan 0), luego por nº de ingredientes que faltan, luego alfabético.
+// --only <ids> restringe a esos ids (para reprocesar recetas concretas).
+const arg = (flag) => { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : null }
+const onlyIds = arg('--only')?.split(',').map((s) => s.trim()).filter(Boolean) ?? null
+const priorityIds = new Set((arg('--priority')?.split(',').map((s) => s.trim()) ?? []).filter(Boolean))
+
 const [estado] = await sql`SELECT despensa FROM app_estado WHERE id = 1`
 const despensa = estado?.despensa ?? []
-const rows = (await sql`SELECT id, nombre, ingredientes FROM recetas WHERE imagen IS NULL`)
+let rows = (await sql`SELECT id, nombre, ingredientes FROM recetas WHERE imagen IS NULL`)
   .map((r) => ({ ...r, faltan: faltan(r, despensa) }))
-  .sort((a, b) => a.faltan - b.faltan || a.nombre.localeCompare(b.nombre))
+if (onlyIds) rows = rows.filter((r) => onlyIds.includes(r.id))
+rows.sort((a, b) =>
+  (priorityIds.has(b.id) ? 1 : 0) - (priorityIds.has(a.id) ? 1 : 0)
+  || a.faltan - b.faltan || a.nombre.localeCompare(b.nombre))
 console.log(`Pendientes: ${rows.length} | disponibles (faltan 0): ${rows.filter((r) => r.faltan === 0).length}`)
 
 if (process.argv.includes('--analyze')) {
