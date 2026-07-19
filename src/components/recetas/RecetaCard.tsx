@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket } from 'lucide-react'
 import type { Receta } from '../../types/receta'
@@ -185,4 +185,6 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
   )
 }
 
-export default RecetaCard
+// Memoizada: el catálogo tiene ~120 cards con animaciones; sin esto, cualquier
+// cambio en la lista de la compra las re-renderiza todas.
+export default memo(RecetaCard)

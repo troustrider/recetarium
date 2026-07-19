@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRecetasContext } from '../context'
@@ -13,6 +13,8 @@ function Favoritas() {
   const favoritas = recetas.filter((r) => r.favorita)
   const { filtros, setFiltros, recetasFiltradas } = useFiltros(favoritas)
   const navigate = useNavigate()
+
+  const abrirReceta = useCallback((id: string) => navigate(`/recetas/${id}`), [navigate])
 
   const categorias = useMemo(
     () => [...new Set(favoritas.map((r) => r.categoria))].filter(Boolean).sort(),
@@ -68,7 +70,7 @@ function Favoritas() {
                   <RecetaCard
                     key={receta.id}
                     receta={receta}
-                    onClick={(id) => navigate(`/recetas/${id}`)}
+                    onClick={abrirReceta}
                     onToggleFavorita={toggleFavorita}
                   />
                 ))}

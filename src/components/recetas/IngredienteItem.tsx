@@ -25,7 +25,7 @@ function IngredienteItem({ ingrediente, multiplicador = 1, onRemove }: Props) {
       {onRemove && (
         <button
           onClick={onRemove}
-          className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all text-lg leading-none ml-1"
+          className="shrink-0 self-center ml-1 w-7 h-7 flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors text-lg leading-none"
           aria-label={`Eliminar ${nombre}`}
         >
           ×

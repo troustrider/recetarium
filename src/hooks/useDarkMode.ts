@@ -12,7 +12,14 @@ function useDarkMode() {
     localStorage.setItem('dark-mode', String(dark))
   }, [dark])
 
-  return { dark, toggle: () => setDark((d) => !d) }
+  function toggle() {
+    const root = document.documentElement
+    root.classList.add('theme-anim')
+    window.setTimeout(() => root.classList.remove('theme-anim'), 250)
+    setDark((d) => !d)
+  }
+
+  return { dark, toggle }
 }
 
 export default useDarkMode

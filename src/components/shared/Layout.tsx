@@ -48,7 +48,7 @@ function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { dark, toggle } = useDarkMode()
-  const { seleccionadas } = useListaCompraContext()
+  const { listaCompra } = useListaCompraContext()
   const [menuOpen, setMenuOpen] = useState(false)      // Más dropdown (desktop)
   const [mobileOpen, setMobileOpen] = useState(false)  // Mobile menu
   const [listaOpen, setListaOpen] = useState(false)
@@ -160,9 +160,9 @@ function Layout({ children }: { children: ReactNode }) {
               whileTap={{ scale: 0.88 }}
             >
               <ShoppingCart className="w-5 h-5" />
-              {seleccionadas.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
-                  {seleccionadas.length}
+              {listaCompra.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none tabular-nums">
+                  {listaCompra.length}
                 </span>
               )}
             </motion.button>
@@ -252,9 +252,9 @@ function Layout({ children }: { children: ReactNode }) {
               >
                 <span className="relative">
                   <Icono className="w-5 h-5" strokeWidth={2} />
-                  {seleccionadas.length > 0 && (
-                    <span className="absolute -top-1 -right-1.5 w-3.5 h-3.5 bg-orange-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
-                      {seleccionadas.length}
+                  {listaCompra.length > 0 && (
+                    <span className="absolute -top-1 -right-1.5 min-w-3.5 h-3.5 px-[3px] bg-orange-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none tabular-nums">
+                      {listaCompra.length}
                     </span>
                   )}
                 </span>

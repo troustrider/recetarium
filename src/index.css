@@ -44,15 +44,17 @@
 }
 
 @layer base {
-  /* Smooth color transitions when toggling dark mode */
-  *, *::before, *::after {
+  /* Smooth color transitions only while toggling dark mode (.theme-anim is
+     added temporarily by useDarkMode). A permanent universal transition rule
+     makes every re-render/animation repaint for 150ms extra — jank on mobile. */
+  .theme-anim *, .theme-anim *::before, .theme-anim *::after {
     transition-property: background-color, border-color, color;
     transition-duration: 150ms;
     transition-timing-function: ease;
   }
 
   /* Disable transition on elements where it would cause flicker */
-  img, video, svg {
+  .theme-anim img, .theme-anim video, .theme-anim svg {
     transition: none;
   }
 }

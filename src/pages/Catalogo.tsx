@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Dices } from 'lucide-react'
@@ -22,6 +22,8 @@ function Catalogo() {
   const [racionesAzar, setRacionesAzar] = useState(2)
   const [soloDisponibles, setSoloDisponibles] = useState(() => searchParams.get('disponibles') === '1')
   const navigate = useNavigate()
+
+  const abrirReceta = useCallback((id: string) => navigate(`/recetas/${id}`), [navigate])
 
   const conDespensa = despensa.length > 0
   const faltanPorReceta = useMemo(
@@ -232,7 +234,7 @@ function Catalogo() {
                     key={receta.id}
                     receta={receta}
                     index={i}
-                    onClick={(id) => navigate(`/recetas/${id}`)}
+                    onClick={abrirReceta}
                     onToggleFavorita={toggleFavorita}
                     faltan={faltanPorReceta?.get(receta.id)}
                     onToggleLista={toggleReceta}
