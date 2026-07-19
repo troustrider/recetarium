@@ -1,65 +1,9 @@
 [
   {
-    "id": "7caae164-acf2-4df6-a095-2d4af110fe59",
-    "nombre": "Falafel al horno con salsa de yogur",
-    "query": "falafel food",
-    "primary": "falafel",
-    "imagen": "https://images.unsplash.com/photo-1632700081098-37dc1285cbfe?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwxfHxmYWxhZmVsJTIwZm9vZHxlbnwxfDB8fHwxNzg0NDU1NzQ2fDA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
     "id": "70ce4b75-cde9-46c6-a915-f0e677326a3a",
-    "nombre": "Arroz caldoso de pollo",
-    "query": "rice chicken food",
+    "nombre": "Arroz caldoso de gambas",
+    "query": "rice shrimp food",
     "primary": "rice",
-    "imagen": "https://images.unsplash.com/photo-1636401870585-a8852371e84a?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw0fHxyaWNlJTIwY2hpY2tlbiUyMGZvb2R8ZW58MXwwfHx8MTc4NDQ1NTc0OHww&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "59ce6eb5-cf49-45f1-9360-8c6614a4dc21",
-    "nombre": "Ayam goreng con sambal",
-    "query": "chicken food",
-    "primary": "chicken",
-    "imagen": "https://images.unsplash.com/photo-1606728035253-49e8a23146de?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwxfHxjaGlja2VuJTIwZm9vZHxlbnwxfDB8fHwxNzg0NDU1NzQ4fDA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "adfa70a3-f6a1-424f-8049-c7d983247672",
-    "nombre": "Dal tarka de lentejas rojas",
-    "query": "dal lentils food",
-    "primary": "dal",
-    "imagen": "https://images.unsplash.com/photo-1596560924090-8c5447de2d34?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw5fHxkYWwlMjBsZW50aWxzJTIwZm9vZHxlbnwxfDB8fHwxNzg0NDU1NzUwfDA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "f21e3393-3d4a-463d-bd7d-a7133d5af3b6",
-    "nombre": "Ensalada de lentejas con feta",
-    "query": "salad lentils feta food",
-    "primary": "salad",
-    "imagen": "https://images.unsplash.com/photo-1762631881783-b5e14423ef21?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw1fHxzYWxhZCUyMGxlbnRpbHMlMjBmZXRhJTIwZm9vZHxlbnwxfDB8fHwxNzg0NDU1NzUxfDA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "3ea55def-adfe-4d2b-9be8-ba7de68669a0",
-    "nombre": "Kake udon con huevo",
-    "query": "udon egg food",
-    "primary": "udon",
-    "imagen": "https://images.unsplash.com/photo-1589483924230-03e743a54c37?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwyfHx1ZG9uJTIwZWdnJTIwZm9vZHxlbnwxfDB8fHwxNzg0NDU1NzU0fDA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "3c74d6f1-219d-4567-9bd9-5f4f1b360f5d",
-    "nombre": "Salmon glaseado con miel y soja",
-    "query": "salmon soy food",
-    "primary": "salmon",
-    "imagen": "https://images.unsplash.com/photo-1559058789-672da06263d8?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwzfHxzYWxtb24lMjBzb3klMjBmb29kfGVufDF8MHx8fDE3ODQ0NTU3NTl8MA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "b7ddcf4b-3ef0-458b-9353-a7a0b8b9790e",
-    "nombre": "Chow mein de cerdo",
-    "query": "chow mein pork food",
-    "primary": "chow mein",
-    "imagen": "https://images.unsplash.com/photo-1609690963718-0b55905aef78?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw3fHxjaG93JTIwbWVpbiUyMHBvcmslMjBmb29kfGVufDF8MHx8fDE3ODQ0NTU3NjF8MA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
-  },
-  {
-    "id": "7ed1f6c3-a382-4f21-a353-a9c52e8012b2",
-    "nombre": "Yaki udon con pollo y verduras",
-    "query": "udon chicken vegetables food",
-    "primary": "udon",
-    "imagen": "https://images.unsplash.com/photo-1585809038158-6a04b351de51?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwzfHx1ZG9uJTIwY2hpY2tlbiUyMHZlZ2V0YWJsZXMlMjBmb29kfGVufDF8MHx8fDE3ODQ0NTU3NjN8MA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
+    "imagen": "https://images.unsplash.com/photo-1763469026654-c6db622f5ec0?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw5fHxyaWNlJTIwc2hyaW1wJTIwZm9vZHxlbnwxfDB8fHwxNzg0NDU2MDIwfDA&ixlib=rb-4.1.0&w=800&q=80&fit=crop&crop=entropy"
   }
 ]

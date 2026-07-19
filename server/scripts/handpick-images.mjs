@@ -42,6 +42,7 @@ const PICKS = {
   'Köfte turco': { q: 'turkish kofte kebab', terms: ['kof'] },
   'Lomo saltado': { q: 'lomo saltado peruvian', terms: ['lomo'] },
   'Chili con carne rápido': { q: 'chili con carne', terms: ['chili'] },
+  'Arroz caldoso de gambas': { q: 'seafood paella shrimp', terms: ['paella'] },
 }
 
 const used = new Set()
