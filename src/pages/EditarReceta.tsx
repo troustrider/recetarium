@@ -23,12 +23,12 @@ function EditarReceta() {
   if (loading) return <LoadingSpinner />
   if (error || !receta) return <ErrorMessage message={error ?? 'Receta no encontrada'} />
 
+  const { id: _id, favorita: _fav, ...inicial } = receta
+
   async function handleSubmit(data: RecetaFormData) {
-    const ok = await actualizar(receta!.id, data)
+    const ok = await actualizar(receta!.id, data, inicial)
     if (ok) navigate(`/recetas/${receta!.id}`)
   }
-
-  const { id: _id, favorita: _fav, ...inicial } = receta
 
   return (
     <div className="flex flex-col gap-6">

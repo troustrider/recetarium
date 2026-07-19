@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { Receta } from '../types/receta'
 import { getReceta } from '../api/client'
 
@@ -17,14 +17,16 @@ function useReceta(id: string) {
     setState({ receta: null, loading: true, error: null })
   }
 
-  useEffect(() => {
+  const recargar = useCallback(() => {
     if (!id) return
     getReceta(id)
       .then((data) => setState({ receta: data, loading: false, error: null }))
       .catch((e: Error) => setState({ receta: null, loading: false, error: e.message }))
   }, [id])
 
-  return state
+  useEffect(() => { recargar() }, [recargar])
+
+  return { ...state, recargar }
 }
 
 export default useReceta

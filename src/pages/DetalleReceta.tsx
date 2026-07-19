@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Lightbulb } from 'lucide-react'
+import { Flame, Lightbulb, Undo2, X } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
@@ -24,8 +24,8 @@ function SkeletonLineas({ filas }: { filas: number }) {
 
 function DetalleReceta() {
   const { id } = useParams<{ id: string }>()
-  const { recetas, eliminar, toggleFavorita } = useRecetasContext()
-  const { receta: fetched, error } = useReceta(id!)
+  const { recetas, eliminar, toggleFavorita, ultimaEdicion, deshacer, descartarDeshacer } = useRecetasContext()
+  const { receta: fetched, error, recargar } = useReceta(id!)
   const navigate = useNavigate()
   const [comensales, setComensales] = useState(BASE_COMENSALES)
   const [cocinaOpen, setCocinaOpen] = useState(false)
@@ -52,6 +52,11 @@ function DetalleReceta() {
     return <LoadingSpinner />
   }
 
+  async function handleDeshacer() {
+    const ok = await deshacer()
+    if (ok) recargar()
+  }
+
   async function handleEliminar() {
     if (!confirm(`¿Eliminar "${receta!.nombre}"?`)) return
     const ok = await eliminar(receta!.id)
@@ -62,6 +67,38 @@ function DetalleReceta() {
 
   return (
     <div className="flex flex-col gap-8">
+      {/* Aviso de edición reciente con opción de deshacer */}
+      <AnimatePresence>
+        {ultimaEdicion?.id === receta.id && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-900/40 rounded-2xl px-4 py-3"
+          >
+            <p className="flex-1 text-sm text-gray-700 dark:text-gray-300">
+              Receta editada. ¿Te has equivocado?
+            </p>
+            <motion.button
+              onClick={handleDeshacer}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg"
+              whileTap={{ scale: 0.95 }}
+            >
+              <Undo2 className="w-4 h-4" strokeWidth={2.2} />
+              Deshacer
+            </motion.button>
+            <motion.button
+              onClick={descartarDeshacer}
+              className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+              aria-label="Descartar aviso"
+              whileTap={{ scale: 0.85 }}
+            >
+              <X className="w-4 h-4" strokeWidth={2.2} />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header con imagen opcional */}
       {receta.imagen ? (
         <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-56 rounded-2xl overflow-hidden">

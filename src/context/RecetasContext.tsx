@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react'
-import useRecetas from '../hooks/useRecetas'
+import useRecetas, { type UltimaEdicion } from '../hooks/useRecetas'
 import type { Receta } from '../types/receta'
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
@@ -10,9 +10,12 @@ interface RecetasContextValue {
   error: string | null
   cargar: () => void
   crear: (data: RecetaFormData) => Promise<Receta | null>
-  actualizar: (id: string, data: RecetaFormData) => Promise<boolean>
+  actualizar: (id: string, data: RecetaFormData, anterior?: RecetaFormData) => Promise<boolean>
   eliminar: (id: string) => Promise<boolean>
   toggleFavorita: (id: string) => Promise<boolean>
+  ultimaEdicion: UltimaEdicion | null
+  deshacer: () => Promise<boolean>
+  descartarDeshacer: () => void
 }
 
 const RecetasContext = createContext<RecetasContextValue | null>(null)
