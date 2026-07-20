@@ -17,7 +17,11 @@ const recetas: Receta[] = [
   {
     id: '3', nombre: 'Tortilla', categoria: 'Española', sabor: 'salado',
     tiempoPreparacion: 30, favorita: true,
-    ingredientes: [], pasos: [],
+    ingredientes: [
+      { nombre: 'huevos', cantidad: 4, unidad: 'ud', familia: 'otros' },
+      { nombre: 'patata', cantidad: 500, unidad: 'g', familia: 'verduras' },
+    ],
+    pasos: [],
   },
 ]
 
@@ -45,6 +49,18 @@ describe('useFiltros', () => {
     const { result } = renderHook(() => useFiltros(recetas))
     act(() => { result.current.setFiltros((f) => ({ ...f, tiempoMax: 30 })) })
     expect(result.current.recetasFiltradas).toHaveLength(2)
+  })
+
+  it('filtra por ingrediente con matching parcial y por tokens', () => {
+    const { result } = renderHook(() => useFiltros(recetas))
+    act(() => { result.current.setFiltros((f) => ({ ...f, ingrediente: 'pata' })) })
+    expect(result.current.recetasFiltradas).toHaveLength(1)
+    expect(result.current.recetasFiltradas[0].nombre).toBe('Tortilla')
+    // singular casa con el plural de la receta vía tokens
+    act(() => { result.current.setFiltros((f) => ({ ...f, ingrediente: 'huevo' })) })
+    expect(result.current.recetasFiltradas).toHaveLength(1)
+    act(() => { result.current.setFiltros((f) => ({ ...f, ingrediente: 'salmón' })) })
+    expect(result.current.recetasFiltradas).toHaveLength(0)
   })
 
   it('resetFiltros devuelve todas las recetas', () => {

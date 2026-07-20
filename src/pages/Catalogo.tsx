@@ -43,7 +43,7 @@ function Catalogo() {
   ]
 
   function limpiarTodo() {
-    setFiltros({ categoria: '', sabor: '', tiempoMax: '' })
+    setFiltros({ categoria: '', sabor: '', tiempoMax: '', ingrediente: '' })
     setSoloDisponibles(false)
     if (searchParams.get('q')) navigate('/')
   }
@@ -55,7 +55,12 @@ function Catalogo() {
   )
 
   const hayFiltrosActivos =
-    !!q || soloDisponibles || filtros.categoria !== '' || filtros.sabor !== '' || filtros.tiempoMax !== ''
+    !!q || soloDisponibles || filtros.categoria !== '' || filtros.sabor !== '' || filtros.tiempoMax !== '' || filtros.ingrediente !== ''
+
+  const ingredientesUnicos = useMemo(
+    () => [...new Set(recetas.flatMap((r) => r.ingredientes.map((i) => i.nombre.toLowerCase())))].sort(),
+    [recetas]
+  )
 
   // Semilla fresca en cada montaje: al entrar a la página sale un conjunto distinto
   const [seedAbanico] = useState(() => Math.random())
@@ -159,7 +164,7 @@ function Catalogo() {
 
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-2 flex-wrap">
-              <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+              <FiltroBar filtros={filtros} categorias={categorias} ingredientes={ingredientesUnicos} onChange={setFiltros} />
               {conDespensa && (
                 <button
                   onClick={() => setSoloDisponibles((v) => !v)}

@@ -21,6 +21,11 @@ function Favoritas() {
     [favoritas]
   )
 
+  const ingredientesUnicos = useMemo(
+    () => [...new Set(favoritas.flatMap((r) => r.ingredientes.map((i) => i.nombre.toLowerCase())))].sort(),
+    [favoritas]
+  )
+
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} onRetry={cargar} />
 
@@ -60,7 +65,7 @@ function Favoritas() {
         </div>
       ) : (
         <>
-          <FiltroBar filtros={filtros} categorias={categorias} onChange={setFiltros} />
+          <FiltroBar filtros={filtros} categorias={categorias} ingredientes={ingredientesUnicos} onChange={setFiltros} />
           {recetasFiltradas.length === 0 ? (
             <p className="text-sm text-gray-400 py-10 text-center">Sin resultados para estos filtros.</p>
           ) : (

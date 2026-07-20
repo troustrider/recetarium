@@ -24,13 +24,14 @@ const TIEMPOS: { valor: 15 | 30 | 60 | ''; label: string }[] = [
 interface Props {
   filtros: Filtros
   categorias: string[]
+  ingredientes?: string[]
   onChange: (filtros: Filtros) => void
 }
 
-function FiltroBar({ filtros, categorias, onChange }: Props) {
+function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) {
   const [open, setOpen] = useState(false)
 
-  const activeCount = [filtros.categoria !== '', filtros.sabor !== '', filtros.tiempoMax !== ''].filter(Boolean).length
+  const activeCount = [filtros.categoria !== '', filtros.sabor !== '', filtros.tiempoMax !== '', filtros.ingrediente !== ''].filter(Boolean).length
   const saborActivo = SABORES.find((s) => s.valor === filtros.sabor)
   const panelBg = saborActivo?.gradient ?? NEUTRAL_BG
 
@@ -70,6 +71,13 @@ function FiltroBar({ filtros, categorias, onChange }: Props) {
               style={{ backgroundColor: saborActivo.dot }}
               initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.1 }}>
               {saborActivo.label}<X className="w-3 h-3 ml-0.5" />
+            </motion.button>
+          )}
+          {filtros.ingrediente !== '' && (
+            <motion.button key="i" type="button" onClick={() => onChange({ ...filtros, ingrediente: '' })}
+              className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold rounded-full capitalize"
+              initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.1 }}>
+              con {filtros.ingrediente}<X className="w-3 h-3 ml-0.5" />
             </motion.button>
           )}
           {filtros.tiempoMax !== '' && (
@@ -178,6 +186,24 @@ function FiltroBar({ filtros, categorias, onChange }: Props) {
                   </div>
                 )}
 
+                {/* Ingrediente — input glass con sugerencias */}
+                <div className="px-5 py-3.5 border-b border-white/10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-2">Con ingrediente</p>
+                  <input
+                    type="search"
+                    value={filtros.ingrediente}
+                    onChange={(e) => onChange({ ...filtros, ingrediente: e.target.value })}
+                    placeholder="tomate, pollo, arroz..."
+                    list="sugerencias-ingredientes"
+                    className="w-full px-3 py-2 rounded-xl text-sm bg-white/15 border border-white/20 text-white placeholder-white/40 outline-none focus:bg-white/20 focus:border-white/40 transition-colors"
+                  />
+                  {ingredientes.length > 0 && (
+                    <datalist id="sugerencias-ingredientes">
+                      {ingredientes.map((i) => <option key={i} value={i} />)}
+                    </datalist>
+                  )}
+                </div>
+
                 {/* Tiempo — glass segmented control */}
                 <div className="px-5 py-3.5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-2">Tiempo máx.</p>
@@ -204,7 +230,7 @@ function FiltroBar({ filtros, categorias, onChange }: Props) {
                   <div className="px-5 pb-4 flex justify-end">
                     <button
                       type="button"
-                      onClick={() => { onChange({ categoria: '', sabor: '', tiempoMax: '' }); setOpen(false) }}
+                      onClick={() => { onChange({ categoria: '', sabor: '', tiempoMax: '', ingrediente: '' }); setOpen(false) }}
                       className="text-[11px] text-white/50 hover:text-white/90 transition-colors underline underline-offset-2"
                     >
                       Limpiar todos
