@@ -35,7 +35,7 @@ function FichaIngrediente({ item, enLista, onEstado, onCaducidad, onFamilia, onA
             role="dialog"
             aria-modal="true"
             aria-label={`Ficha de ${item.nombre}`}
-            className="w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl px-5 pt-3 pb-8 sm:pb-6"
+            className="w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+2rem)] sm:pb-6"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}

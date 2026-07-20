@@ -39,7 +39,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
             onClick={onClose}
           />
           <motion.aside
-            className="fixed right-0 top-0 h-full w-full max-w-sm bg-white dark:bg-gray-900 z-50 flex flex-col shadow-2xl"
+            className="fixed right-0 top-0 h-dvh w-full max-w-sm bg-white dark:bg-gray-900 z-50 flex flex-col shadow-2xl pt-[env(safe-area-inset-top)]"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -170,7 +170,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
             </div>
 
             {!vacia && (
-              <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+              <div className="px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] border-t border-gray-100 dark:border-gray-800 flex flex-col gap-2">
                 {totalComprados > 0 && (
                   <motion.button
                     onClick={comprar}

@@ -62,8 +62,11 @@ function Layout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-gray-950 transition-colors duration-200">
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30 shadow-sm dark:shadow-none">
+    <div className="min-h-dvh bg-stone-50 dark:bg-gray-950 transition-colors duration-200">
+      {/* pt safe-area: en la PWA instalada desde Safari (black-translucent) el
+          contenido se dibuja bajo la barra de estado; sin esto el header queda
+          pisado por el reloj/notch. En navegador el inset es 0 y no cambia nada. */}
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30 shadow-sm dark:shadow-none pt-[env(safe-area-inset-top)]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
 
           {/* Brand */}
