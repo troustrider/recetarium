@@ -30,6 +30,21 @@ export async function setDespensa(despensa) {
   return row
 }
 
+export async function getPendientes() {
+  const [row] = await sql`SELECT pendientes FROM app_estado WHERE id = 1`
+  return row?.pendientes ?? []
+}
+
+export async function setPendientes(pendientes) {
+  const [row] = await sql`
+    INSERT INTO app_estado (id, pendientes, updated_at)
+    VALUES (1, ${JSON.stringify(pendientes)}, now())
+    ON CONFLICT (id) DO UPDATE SET pendientes = EXCLUDED.pendientes, updated_at = now()
+    RETURNING pendientes, updated_at AS "updatedAt"
+  `
+  return row
+}
+
 export async function getExtras() {
   const [row] = await sql`SELECT extras FROM app_estado WHERE id = 1`
   return row?.extras ?? []

@@ -29,9 +29,14 @@
   );
 
   -- Estado compartido de la app (fila única). Guarda el plan semanal
-  -- como [{dia, recetaId, raciones}]. Sin login: una sola fila id=1.
+  -- como [{dia, recetaId, raciones}], la despensa, los extras de la lista
+  -- y las recetas compradas pendientes de planificar como
+  -- [{recetaId, raciones}]. Sin login: una sola fila id=1.
   CREATE TABLE app_estado (
     id         INTEGER PRIMARY KEY DEFAULT 1,
     plan       JSONB NOT NULL DEFAULT '[]'::jsonb,
+    despensa   JSONB NOT NULL DEFAULT '[]'::jsonb,
+    extras     JSONB NOT NULL DEFAULT '[]'::jsonb,
+    pendientes JSONB NOT NULL DEFAULT '[]'::jsonb,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT app_estado_single_row CHECK (id = 1)

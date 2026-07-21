@@ -13,7 +13,8 @@ import {
   type DragStartEvent,
 } from '@dnd-kit/core'
 import { usePlanificador, type Dia, type EntradaPlan } from '../context/PlanificadorContext'
-import { useRecetasContext } from '../context'
+import { useRecetasContext, usePendientesPlan } from '../context'
+import type { PendientePlan } from '../context/PendientesPlanContext'
 import type { Receta, Sabor } from '../types/receta'
 
 const SABOR_STRIP: Record<Sabor, string> = {
@@ -108,6 +109,94 @@ function RecetaChip({ entrada, onQuitar, onRaciones, overlay = false }: ChipProp
         ×
       </button>
     </div>
+  )
+}
+
+// ——— Chip de receta comprada pendiente de planificar ———
+interface PendienteChipProps {
+  pendiente: PendientePlan
+  onElegirDia: () => void
+  onDescartar: () => void
+  overlay?: boolean
+}
+
+function PendienteChip({ pendiente, onElegirDia, onDescartar, overlay = false }: PendienteChipProps) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `pendiente:${pendiente.receta.id}`,
+  })
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
+      className={`flex items-center gap-2 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 rounded-xl px-3 py-2 select-none touch-none cursor-grab active:cursor-grabbing ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm'}`}
+    >
+      <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[pendiente.receta.sabor]}`} />
+      <button onClick={onElegirDia} className="min-w-0 flex-1 text-left" aria-label={`Planificar ${pendiente.receta.nombre}`}>
+        <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[140px]">
+          {pendiente.receta.nombre}
+        </p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500 dark:text-emerald-400">
+          {pendiente.raciones} {pendiente.raciones === 1 ? 'ración' : 'raciones'}
+        </p>
+      </button>
+      <button
+        onClick={onDescartar}
+        className="shrink-0 text-gray-300 dark:text-gray-600 hover:text-red-400 transition-colors text-base leading-none"
+        aria-label="Descartar pendiente"
+      >
+        ×
+      </button>
+    </div>
+  )
+}
+
+// ——— Modal para elegir día de una pendiente ———
+interface SelectorDiaProps {
+  pendiente: PendientePlan
+  dias: readonly Dia[]
+  onSeleccionar: (dia: Dia) => void
+  onCerrar: () => void
+}
+
+function SelectorDia({ pendiente, dias, onSeleccionar, onCerrar }: SelectorDiaProps) {
+  return (
+    <>
+      <motion.div
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onCerrar}
+      />
+      <motion.div
+        className="fixed inset-x-4 top-24 max-w-md mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 overflow-hidden"
+        initial={{ opacity: 0, y: -16, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -8, scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      >
+        <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+            ¿Qué día cocinas <span className="text-gray-700 dark:text-gray-200">{pendiente.receta.nombre}</span>?
+          </p>
+        </div>
+        <ul>
+          {dias.map((dia) => (
+            <motion.li key={dia} whileHover={{ backgroundColor: 'rgba(249,115,22,0.05)' }}>
+              <button
+                className="w-full px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100"
+                onClick={() => { onSeleccionar(dia); onCerrar() }}
+              >
+                {dia}
+              </button>
+            </motion.li>
+          ))}
+        </ul>
+      </motion.div>
+    </>
   )
 }
 
@@ -244,7 +333,9 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
 function Planificador() {
   const { plan, dias, añadir, quitar, setRaciones, mover, limpiar, autollenar } = usePlanificador()
   const { recetas } = useRecetasContext()
+  const { pendientes, quitarPendiente } = usePendientesPlan()
   const [selectorDia, setSelectorDia] = useState<Dia | null>(null)
+  const [pendienteActiva, setPendienteActiva] = useState<PendientePlan | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const [dragOverDia, setDragOverDia] = useState<Dia | null>(null)
 
@@ -254,8 +345,12 @@ function Planificador() {
 
   const totalRecetas = dias.reduce((acc, d) => acc + plan[d].length, 0)
 
+  const pendienteDrag = activeDragId?.startsWith('pendiente:')
+    ? pendientes.find((p) => `pendiente:${p.receta.id}` === activeDragId) ?? null
+    : null
+
   // Encontrar la entrada activa para el overlay
-  const entradaActiva = activeDragId
+  const entradaActiva = activeDragId && !pendienteDrag
     ? (() => {
         for (const dia of dias) {
           const e = plan[dia].find((e) => e.id === activeDragId)
@@ -282,6 +377,12 @@ function Planificador() {
     const entradaId = active.id as string
     const hastaDia = over.id as Dia
     if (!dias.includes(hastaDia)) return
+    // Pendiente de planificar soltada sobre un día
+    if (entradaId.startsWith('pendiente:')) {
+      const pendiente = pendientes.find((p) => `pendiente:${p.receta.id}` === entradaId)
+      if (pendiente) añadir(hastaDia, pendiente.receta, pendiente.raciones)
+      return
+    }
     // Encontrar el día de origen
     for (const dia of dias) {
       if (plan[dia].some((e) => e.id === entradaId)) {
@@ -327,6 +428,27 @@ function Planificador() {
         onDragOver={onDragOver as never}
         onDragEnd={onDragEnd}
       >
+        {pendientes.length > 0 && (
+          <div className="mb-4 bg-emerald-50/70 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1">
+              Compradas · por planificar
+            </p>
+            <p className="text-[11px] text-gray-400 mb-3">
+              Arrástralas a un día o toca para elegirlo.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {pendientes.map((pendiente) => (
+                <PendienteChip
+                  key={pendiente.receta.id}
+                  pendiente={pendiente}
+                  onElegirDia={() => setPendienteActiva(pendiente)}
+                  onDescartar={() => quitarPendiente(pendiente.receta.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col gap-2">
           {dias.map((dia) => (
             <FilaDia
@@ -351,6 +473,14 @@ function Planificador() {
               overlay
             />
           )}
+          {pendienteDrag && (
+            <PendienteChip
+              pendiente={pendienteDrag}
+              onElegirDia={() => {}}
+              onDescartar={() => {}}
+              overlay
+            />
+          )}
         </DragOverlay>
       </DndContext>
 
@@ -361,6 +491,14 @@ function Planificador() {
             recetas={recetas}
             onSeleccionar={(receta) => añadir(selectorDia, receta)}
             onCerrar={() => setSelectorDia(null)}
+          />
+        )}
+        {pendienteActiva && (
+          <SelectorDia
+            pendiente={pendienteActiva}
+            dias={dias}
+            onSeleccionar={(dia) => añadir(dia, pendienteActiva.receta, pendienteActiva.raciones)}
+            onCerrar={() => setPendienteActiva(null)}
           />
         )}
       </AnimatePresence>

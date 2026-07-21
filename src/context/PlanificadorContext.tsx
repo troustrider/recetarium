@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useRef, type ReactNode 
 import type { Receta } from '../types/receta'
 import { useListaCompraContext } from './ListaCompraContext'
 import { useRecetasContext } from './RecetasContext'
+import { usePendientesPlan } from './PendientesPlanContext'
 import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
@@ -39,7 +40,7 @@ function hidratar(dtos: EntradaPlanDTO[], recetas: Receta[]): Plan {
 interface PlanificadorCtx {
   plan: Plan
   dias: readonly Dia[]
-  añadir: (dia: Dia, receta: Receta) => void
+  añadir: (dia: Dia, receta: Receta, raciones?: number) => void
   quitar: (dia: Dia, entradaId: string) => void
   setRaciones: (dia: Dia, entradaId: string, raciones: number) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
@@ -53,6 +54,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   const [plan, setPlan] = useState<Plan>(PLAN_VACIO)
   const { recetas, loading } = useRecetasContext()
   const { seleccionadas, toggleReceta, setRaciones: setRacionesLista, estaSeleccionada } = useListaCompraContext()
+  const { pendientes, quitarPendiente } = usePendientesPlan()
 
   // Carga inicial del plan compartido desde el backend (una sola vez,
   // cuando el catálogo está disponible para rehidratar por id).
@@ -117,10 +119,21 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     planIdsRef.current = new Set(totales.keys())
   }, [plan]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  function añadir(dia: Dia, receta: Receta) {
+  // Una pendiente de planificar deja de serlo en cuanto entra en el plan,
+  // da igual por qué vía (drag, selector de día, autollenar).
+  useEffect(() => {
+    if (pendientes.length === 0) return
+    const enPlan = new Set<string>()
+    for (const dia of DIAS) for (const e of plan[dia]) enPlan.add(e.receta.id)
+    for (const p of pendientes) {
+      if (enPlan.has(p.receta.id)) quitarPendiente(p.receta.id)
+    }
+  }, [plan, pendientes, quitarPendiente])
+
+  function añadir(dia: Dia, receta: Receta, raciones = 1) {
     setPlan((prev) => ({
       ...prev,
-      [dia]: [...prev[dia], { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones: 1 }],
+      [dia]: [...prev[dia], { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones }],
     }))
   }
 

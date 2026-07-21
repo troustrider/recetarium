@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, Share2, Check } from 'lucide-react'
-import { useListaCompraContext, useCompradosContext, useDespensa } from '../../context'
+import { useListaCompraContext, useCompradosContext, useDespensa, usePendientesPlan } from '../../context'
 import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
@@ -15,6 +15,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
   const { seleccionadas, listaCompra, enDespensa, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
   const { añadir } = useDespensa()
+  const { marcarPendientes } = usePendientesPlan()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
   const vacia = listaCompra.length === 0 && enDespensa.length === 0
   const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
@@ -23,6 +24,9 @@ function ListaCompraDrawer({ open, onClose }: Props) {
     const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
     if (aGuardar.length === 0) return
     aGuardar.forEach((i) => añadir(i.nombre, i.familia))
+    // Las recetas de esta compra quedan pendientes de colocar en el
+    // planificador, para no olvidar para qué se compró.
+    marcarPendientes(seleccionadas.map(({ receta, raciones }) => ({ receta, raciones })))
     vaciar()
     limpiar()
   }

@@ -7,6 +7,7 @@ import recetasRouter from './routes/recetas.js'
 import estadoRouter from './routes/estado.js'
 import extrasRouter from './routes/extras.js'
 import despensaRouter from './routes/despensa.js'
+import pendientesRouter from './routes/pendientes.js'
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -19,6 +20,7 @@ app.use('/api/v1/recetas', recetasRouter)
 app.use('/api/v1/plan', estadoRouter)
 app.use('/api/v1/extras', extrasRouter)
 app.use('/api/v1/despensa', despensaRouter)
+app.use('/api/v1/pendientes', pendientesRouter)
 
 app.use((err, req, res, next) => {
   console.error(err)

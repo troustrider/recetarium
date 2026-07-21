@@ -53,6 +53,29 @@ export async function putDespensa(req, res) {
   res.json(guardado)
 }
 
+function validarPendientes(pendientes) {
+  if (!Array.isArray(pendientes)) return 'pendientes debe ser un array'
+  for (let i = 0; i < pendientes.length; i++) {
+    const p = pendientes[i]
+    if (!p || typeof p !== 'object') return `pendientes[${i}] debe ser un objeto`
+    if (typeof p.recetaId !== 'string' || !p.recetaId.trim()) return `pendientes[${i}].recetaId es obligatorio`
+    if (typeof p.raciones !== 'number' || p.raciones < 1) return `pendientes[${i}].raciones debe ser >= 1`
+  }
+  return null
+}
+
+export async function getPendientes(req, res) {
+  const pendientes = await estadoService.getPendientes()
+  res.json(pendientes)
+}
+
+export async function putPendientes(req, res) {
+  const error = validarPendientes(req.body)
+  if (error) return res.status(400).json({ error })
+  const guardado = await estadoService.setPendientes(req.body)
+  res.json(guardado)
+}
+
 function validarExtras(extras) {
   if (!Array.isArray(extras)) return 'extras debe ser un array'
   for (let i = 0; i < extras.length; i++) {
