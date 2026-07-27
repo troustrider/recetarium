@@ -24,8 +24,21 @@ function ListaCompraDrawer({ open, onClose }: Props) {
     const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
     if (aGuardar.length === 0) return
     aGuardar.forEach((i) => añadir(i.nombre, i.familia))
-    // Las recetas de esta compra quedan pendientes de colocar en el
-    // planificador, para no olvidar para qué se compró.
+
+    // Si aún queda algo por comprar en la lista, es una compra parcial: solo
+    // sacamos lo marcado y dejamos el resto intacto.
+    const quedaPorComprar = listaCompra.some((i) => !comprados.has(i.clave))
+    if (quedaPorComprar) {
+      aGuardar.forEach((i) => {
+        if (i.esExtra) removeExtra(i.clave)
+        else descartar(i.clave)
+        toggle(i.clave)
+      })
+      return
+    }
+
+    // Se ha comprado todo lo pendiente: las recetas quedan pendientes de
+    // colocar en el planificador y se vacía la lista.
     marcarPendientes(seleccionadas.map(({ receta, raciones }) => ({ receta, raciones })))
     vaciar()
     limpiar()
