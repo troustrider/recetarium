@@ -9,7 +9,7 @@ interface Props {
 // Secciones del súper (familia) para agrupar la lista de forma coherente.
 const SECCIONES = [
   'verduras', 'frutas', 'carnes', 'pescados', 'lacteos', 'huevos',
-  'cereales', 'legumbres', 'condimentos', 'salsas', 'bebidas', 'otros',
+  'cereales', 'legumbres', 'frutos secos', 'especias', 'condimentos', 'salsas', 'bebidas', 'otros',
 ]
 const UNIDADES = ['ud', 'g', 'ml', 'paquete', 'lata', 'manojo']
 

@@ -13,7 +13,9 @@ const UNIDAD_CANON: Record<string, string> = {
   cdta: 'cucharadita', cdtas: 'cucharadita', cucharaditas: 'cucharadita',
   dientes: 'diente', hojas: 'hoja', lonchas: 'loncha', rodajas: 'rodaja',
   rebanadas: 'rebanada', unidad: 'ud', unidades: 'ud', uds: 'ud',
-  gr: 'g', grs: 'g', gramos: 'g', mililitros: 'ml', punados: 'puñado',
+  gr: 'g', grs: 'g', gramos: 'g', mililitros: 'ml',
+  // normalizar() quita la ñ, así que la clave llega sin ella.
+  punado: 'puñado', punados: 'puñado',
   pizcas: 'pizca', gotas: 'gota', tiras: 'tira', latas: 'lata', paquetes: 'paquete',
 }
 

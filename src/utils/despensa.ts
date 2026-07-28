@@ -12,8 +12,8 @@ import { aplicarAlias } from './alias'
 import type { Receta } from '../types/receta'
 
 export const FAMILIAS = [
-  'verduras', 'frutas', 'carnes', 'pescados', 'lácteos',
-  'cereales', 'legumbres', 'conservas', 'especias', 'salsas', 'bebidas', 'otros',
+  'verduras', 'frutas', 'carnes', 'pescados', 'lácteos', 'huevos',
+  'cereales', 'legumbres', 'frutos secos', 'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', 'otros',
 ]
 
 // Conectores sin valor semántico ("aceite DE oliva", "huevo Y queso").
