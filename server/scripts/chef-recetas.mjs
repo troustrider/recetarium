@@ -71,8 +71,12 @@ export function validar(r, { estricto = true } = {}) {
     const minPasos = r.tipo === 'principal' ? 5 : 4
     if (r.pasos.length < minPasos) e.push(`solo ${r.pasos.length} pasos (mínimo ${minPasos} para ${r.tipo ?? 'principal'})`)
 
+    // Un bol de yogur no tiene tres cocciones que cronometrar. El mínimo baja en los
+    // platos de montaje en frío, donde exigir tres tiempos obligaría a inventarlos.
+    const cocinados = r.pasos.filter((p) => VERBOS.test(p.replace(/mientras[^,.]*[,.]/gi, ' '))).length
+    const minTiempos = cocinados >= 2 ? 3 : 2
     const conTiempo = r.pasos.filter((p) => RE_TIEMPO.test(p)).length
-    if (conTiempo < 3) e.push(`solo ${conTiempo} paso(s) con duración parseable (mínimo 3)`)
+    if (conTiempo < minTiempos) e.push(`solo ${conTiempo} paso(s) con duración parseable (mínimo ${minTiempos})`)
 
     r.pasos.forEach((p, n) => {
       // "mientras cuece el arroz, pica..." referencia una cocción de otro paso, no manda una nueva.
