@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Play, Pause, RotateCcw, ChevronLeft, ChevronRight, ListChecks, Timer as TimerIcon } from 'lucide-react'
+import { X, Play, Pause, RotateCcw, ChevronLeft, ChevronRight, ListChecks, Scale, Timer as TimerIcon } from 'lucide-react'
 import type { Receta } from '../../types/receta'
 import { LUZ, SABOR_BG } from '../../utils/sabores'
 import { parseDuraciones, formatReloj } from '../../utils/parseDuracion'
 import { formatCantidad, canonUnidad } from '../../utils/ingredientes'
+import { escalarPasos, tieneCantidadesEscalables } from '../../utils/escalarPasos'
 import { useWakeLock } from '../../hooks/useWakeLock'
 import { useTimers, type Timer } from '../../hooks/useTimers'
 
@@ -29,9 +30,11 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
     return () => { document.body.style.overflow = prev }
   }, [])
 
-  const total = receta.pasos.length
+  const pasos = useMemo(() => escalarPasos(receta.pasos, multiplicador), [receta.pasos, multiplicador])
+  const pasosEscalan = useMemo(() => tieneCantidadesEscalables(receta.pasos), [receta.pasos])
+  const total = pasos.length
   const esUltimo = paso === total - 1
-  const duraciones = useMemo(() => parseDuraciones(receta.pasos[paso] ?? ''), [receta.pasos, paso])
+  const duraciones = useMemo(() => parseDuraciones(pasos[paso] ?? ''), [pasos, paso])
   const activos = timers.filter((t) => t.corriendo && !t.hecho).length
 
   function intentarCerrar() {
@@ -87,7 +90,7 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
 
       {/* Progreso por pasos */}
       <div className="relative px-5 flex gap-1.5">
-        {receta.pasos.map((_, i) => (
+        {pasos.map((_, i) => (
           <button
             key={i}
             onClick={() => setPaso(i)}
@@ -112,8 +115,15 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
               Paso {paso + 1} <span className="text-white/40">/ {total}</span>
             </p>
             <p className="font-display text-[1.7rem] leading-snug font-medium text-white/95">
-              {receta.pasos[paso]}
+              {pasos[paso]}
             </p>
+
+            {multiplicador !== 1 && !pasosEscalan && (
+              <p className="mt-4 flex items-start gap-2 text-sm text-white/60 leading-relaxed">
+                <Scale className="shrink-0 w-4 h-4 mt-0.5" strokeWidth={2.2} />
+                <span>Cantidades de la receta base. Multiplícalas por {String(+multiplicador.toFixed(2)).replace('.', ',')}.</span>
+              </p>
+            )}
 
             {duraciones.length > 0 && (
               <div className="mt-7 flex flex-wrap gap-2.5">

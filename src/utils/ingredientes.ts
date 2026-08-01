@@ -17,6 +17,7 @@ const UNIDAD_CANON: Record<string, string> = {
   // normalizar() quita la ñ, así que la clave llega sin ella.
   punado: 'puñado', punados: 'puñado',
   pizcas: 'pizca', gotas: 'gota', tiras: 'tira', latas: 'lata', paquetes: 'paquete',
+  vasos: 'vaso',
 }
 
 // Condimentos básicos que se compran "al gusto" (no tiene sentido una cantidad).
@@ -36,7 +37,7 @@ export function claveIngrediente(nombre: string, unidad: string): string {
 
 const FRACCIONES: Record<string, string> = { '0.25': '¼', '0.5': '½', '0.75': '¾', '0.33': '⅓', '0.67': '⅔' }
 
-function formatNumero(n: number): string {
+export function formatNumero(n: number): string {
   const entero = Math.floor(n)
   const dec = +(n - entero).toFixed(2)
   if (dec === 0) return String(entero)

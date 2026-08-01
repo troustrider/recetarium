@@ -1,16 +1,21 @@
 import { useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Lightbulb, Undo2, X } from 'lucide-react'
+import { Flame, Lightbulb, Scale, Undo2, X } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
+import { escalarPasos, tieneCantidadesEscalables } from '../utils/escalarPasos'
 import ModoCocina from '../components/cocina/ModoCocina'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
 
 const BASE_COMENSALES = 2
+
+function formatMultiplicador(m: number) {
+  return String(+m.toFixed(2)).replace('.', ',')
+}
 
 function SkeletonLineas({ filas }: { filas: number }) {
   return (
@@ -64,6 +69,8 @@ function DetalleReceta() {
   }
 
   const multiplicador = comensales / BASE_COMENSALES
+  // Las recetas migradas marcan sus cantidades y escalan solas; las antiguas siguen con el aviso.
+  const pasosEscalan = tieneCantidadesEscalables(full?.pasos ?? [])
 
   return (
     <div className="flex flex-col gap-8">
@@ -268,9 +275,19 @@ function DetalleReceta() {
 
       <section>
         <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Pasos</h2>
+        {multiplicador !== 1 && !pasosEscalan && (
+          <p className="flex items-start gap-2.5 mb-4 text-sm bg-amber-50 dark:bg-amber-900/15 border border-amber-100 dark:border-amber-900/30 rounded-2xl px-4 py-3 text-gray-700 dark:text-gray-300 leading-relaxed">
+            <Scale className="shrink-0 w-4 h-4 mt-0.5 text-amber-500 dark:text-amber-400" strokeWidth={2.2} />
+            <span>
+              Los ingredientes están ajustados a {comensales} comensales, pero las cantidades
+              que aparecen en los pasos son las de la receta base para {BASE_COMENSALES}.
+              Multiplícalas por {formatMultiplicador(multiplicador)}.
+            </span>
+          </p>
+        )}
         {detalleListo ? (
           <ol className="flex flex-col gap-4">
-            {full!.pasos.map((paso, i) => (
+            {escalarPasos(full!.pasos, multiplicador).map((paso, i) => (
               <li key={i} className="flex items-start gap-4 text-sm">
                 <span className="shrink-0 w-7 h-7 flex items-center justify-center bg-gradient-to-br from-orange-700 to-amber-600 text-white rounded-full text-xs font-bold shadow-sm">
                   {i + 1}
