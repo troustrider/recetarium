@@ -52,7 +52,8 @@ export function validar(r, { estricto = true } = {}) {
   if (!(r.precioPorPorcion > 0)) e.push('precioPorPorcion debe ser > 0')
   if (!(r.porciones > 0)) e.push('porciones debe ser > 0')
   // El escalado de la app parte de 2 comensales (BASE_COMENSALES en DetalleReceta).
-  if (estricto && r.porciones !== 2) e.push(`porciones = ${r.porciones}; el estándar es 2 y la app escala desde ahí`)
+  if (estricto && r.porciones !== 2)
+    e.push(`porciones = ${r.porciones}; el estándar es 2 y la app escala desde ahí`)
 
   if (!Array.isArray(r.ingredientes) || !r.ingredientes.length) e.push('sin ingredientes')
   else
