@@ -45,10 +45,10 @@ const NUEVAS = [
     nombre: 'Shakshuka', categoria: 'mediterranea', sabor: 'salado', tiempoPreparacion: 25,
     precioPorPorcion: 2.2, porciones: 2, calorias: 420, proteinas: 31, carbohidratos: 18, grasas: 26,
     ingredientes: [
-      ing('huevos', 4, 'ud', 'huevos'), ing('queso feta', 80, 'g', 'lacteos'),
+      ing('huevos', 4, 'ud', 'huevos'), ing('queso feta', 80, 'g', 'lácteos'),
       ing('tomate triturado', 400, 'g', 'verduras'), ing('cebolla', 1, 'ud', 'verduras'),
-      ing('pimiento rojo', 1, 'ud', 'verduras'), ing('comino', 1, 'cucharadita', 'condimentos'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'), ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
+      ing('pimiento rojo', 1, 'ud', 'verduras'), ing('comino', 1, 'cucharadita', 'especias'),
+      ing('pimentón', 1, 'cucharadita', 'especias'), ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
     ],
     pasos: [
       'Pocha la cebolla y el pimiento en aceite 6-7 min.',
@@ -64,7 +64,7 @@ const NUEVAS = [
     ingredientes: [
       ing('contramuslos de pollo deshuesados', 350, 'g', 'carnes'), ing('arroz', 200, 'g', 'cereales'),
       ing('salsa de soja', 3, 'cucharada', 'salsas'), ing('mirin', 2, 'cucharada', 'salsas'),
-      ing('azúcar', 1, 'cucharada', 'condimentos'), ing('jengibre', 1, 'cucharadita', 'condimentos'),
+      ing('azúcar', 1, 'cucharada', 'condimentos'), ing('jengibre', 1, 'cucharadita', 'especias'),
       ing('cebolleta', 1, 'ud', 'verduras'),
     ],
     pasos: [
@@ -95,7 +95,7 @@ const NUEVAS = [
     precioPorPorcion: 2.6, porciones: 2, calorias: 510, proteinas: 44, carbohidratos: 35, grasas: 22,
     ingredientes: [
       ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('patata', 300, 'g', 'verduras'),
-      ing('limón', 1, 'ud', 'frutas'), ing('orégano', 1, 'cucharada', 'condimentos'),
+      ing('limón', 1, 'ud', 'frutas'), ing('orégano', 1, 'cucharada', 'especias'),
       ing('ajo', 2, 'diente', 'verduras'), ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -109,8 +109,8 @@ const NUEVAS = [
     nombre: 'Pollo turco especiado', categoria: 'turca', sabor: 'salado', tiempoPreparacion: 30,
     precioPorPorcion: 2.7, porciones: 2, calorias: 480, proteinas: 45, carbohidratos: 22, grasas: 24,
     ingredientes: [
-      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('yogur griego (kwark)', 150, 'g', 'lacteos'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'), ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('yogur griego (kwark)', 150, 'g', 'lácteos'),
+      ing('pimentón', 1, 'cucharadita', 'especias'), ing('comino', 1, 'cucharadita', 'especias'),
       ing('ajo', 2, 'diente', 'verduras'), ing('limón', 0.5, 'ud', 'frutas'),
     ],
     pasos: [
@@ -138,9 +138,9 @@ const NUEVAS = [
     nombre: 'Bowl de avena proteico', categoria: 'desayuno', sabor: 'dulce', tiempoPreparacion: 5,
     precioPorPorcion: 1.4, porciones: 1, calorias: 460, proteinas: 34, carbohidratos: 48, grasas: 14,
     ingredientes: [
-      ing('kwark (quark)', 200, 'g', 'lacteos'), ing('copos de avena', 50, 'g', 'cereales'),
-      ing('pindakaas (crema de cacahuete)', 1, 'cucharada', 'condimentos'), ing('plátano', 1, 'ud', 'frutas'),
-      ing('canela', 1, 'pizca', 'condimentos'),
+      ing('kwark (quark)', 200, 'g', 'lácteos'), ing('copos de avena', 50, 'g', 'cereales'),
+      ing('pindakaas (crema de cacahuete)', 1, 'cucharada', 'especias'), ing('plátano', 1, 'ud', 'frutas'),
+      ing('canela', 1, 'pizca', 'especias'),
     ],
     pasos: [
       'Mezcla el kwark con la avena.',
@@ -230,7 +230,7 @@ const NUEVAS = [
     ingredientes: [
       ing('tofu firme', 400, 'g', 'legumbres'), ing('arroz', 200, 'g', 'cereales'),
       ing('salsa de soja', 3, 'cucharada', 'salsas'), ing('mirin', 2, 'cucharada', 'salsas'),
-      ing('maicena', 1, 'cucharada', 'condimentos'), ing('cebolleta', 1, 'ud', 'verduras'),
+      ing('maicena', 1, 'cucharada', 'especias'), ing('cebolleta', 1, 'ud', 'verduras'),
     ],
     pasos: [
       'Cuece el arroz.',
@@ -261,7 +261,7 @@ const NUEVAS = [
     precioPorPorcion: 2.7, porciones: 2, calorias: 540, proteinas: 40, carbohidratos: 48, grasas: 20,
     ingredientes: [
       ing('pechuga de pollo', 350, 'g', 'carnes'), ing('arroz', 200, 'g', 'cereales'),
-      ing('cacahuetes', 50, 'g', 'condimentos'), ing('salsa de soja', 3, 'cucharada', 'salsas'),
+      ing('cacahuetes', 50, 'g', 'frutos secos'), ing('salsa de soja', 3, 'cucharada', 'salsas'),
       ing('vinagre de arroz', 1, 'cucharada', 'condimentos'), ing('pimiento', 1, 'ud', 'verduras'),
     ],
     pasos: [
@@ -277,7 +277,7 @@ const NUEVAS = [
     ingredientes: [
       ing('ternera en tiras', 300, 'g', 'carnes'), ing('brócoli', 250, 'g', 'verduras'),
       ing('arroz', 200, 'g', 'cereales'), ing('salsa de soja', 3, 'cucharada', 'salsas'),
-      ing('ajo', 2, 'diente', 'verduras'), ing('maicena', 1, 'cucharada', 'condimentos'),
+      ing('ajo', 2, 'diente', 'verduras'), ing('maicena', 1, 'cucharada', 'especias'),
     ],
     pasos: [
       'Cuece el arroz.',
@@ -383,8 +383,8 @@ const NUEVAS = [
     nombre: 'Pollo satay', categoria: 'indonesia', sabor: 'salado', tiempoPreparacion: 25,
     precioPorPorcion: 2.6, porciones: 2, calorias: 560, proteinas: 42, carbohidratos: 30, grasas: 30,
     ingredientes: [
-      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('crema de cacahuete', 3, 'cucharada', 'condimentos'),
-      ing('leche de coco', 100, 'ml', 'lacteos'), ing('salsa de soja', 2, 'cucharada', 'salsas'),
+      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('crema de cacahuete', 3, 'cucharada', 'especias'),
+      ing('leche de coco', 100, 'ml', 'lácteos'), ing('salsa de soja', 2, 'cucharada', 'salsas'),
       ing('lima', 0.5, 'ud', 'frutas'), ing('ajo', 2, 'diente', 'verduras'),
     ],
     pasos: [
@@ -399,9 +399,9 @@ const NUEVAS = [
     nombre: 'Souvlaki de pollo', categoria: 'griega', sabor: 'salado', tiempoPreparacion: 25,
     precioPorPorcion: 2.5, porciones: 2, calorias: 520, proteinas: 44, carbohidratos: 30, grasas: 24,
     ingredientes: [
-      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('yogur griego', 100, 'g', 'lacteos'),
+      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('yogur griego', 100, 'g', 'lácteos'),
       ing('pan de pita', 2, 'ud', 'cereales'), ing('limón', 0.5, 'ud', 'frutas'),
-      ing('orégano', 1, 'cucharada', 'condimentos'), ing('ajo', 2, 'diente', 'verduras'),
+      ing('orégano', 1, 'cucharada', 'especias'), ing('ajo', 2, 'diente', 'verduras'),
     ],
     pasos: [
       'Marina el pollo en dados con limón, orégano y ajo.',
@@ -415,8 +415,8 @@ const NUEVAS = [
     precioPorPorcion: 2.7, porciones: 2, calorias: 620, proteinas: 43, carbohidratos: 48, grasas: 28,
     ingredientes: [
       ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('pan de pita', 2, 'ud', 'cereales'),
-      ing('yogur griego', 120, 'g', 'lacteos'), ing('pepino', 0.5, 'ud', 'verduras'),
-      ing('tomate', 1, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('yogur griego', 120, 'g', 'lácteos'), ing('pepino', 0.5, 'ud', 'verduras'),
+      ing('tomate', 1, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Marina el pollo con pimentón y asa hasta dorar.',
@@ -429,8 +429,8 @@ const NUEVAS = [
     precioPorPorcion: 2.4, porciones: 2, calorias: 540, proteinas: 36, carbohidratos: 28, grasas: 32,
     ingredientes: [
       ing('carne picada de ternera', 350, 'g', 'carnes'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('comino', 1, 'cucharadita', 'condimentos'), ing('pan rallado', 30, 'g', 'cereales'),
-      ing('perejil', 1, 'puñado', 'verduras'), ing('yogur griego', 100, 'g', 'lacteos'),
+      ing('comino', 1, 'cucharadita', 'especias'), ing('pan rallado', 30, 'g', 'cereales'),
+      ing('perejil', 1, 'puñado', 'verduras'), ing('yogur griego', 100, 'g', 'lácteos'),
     ],
     pasos: [
       'Mezcla carne, cebolla rallada, comino, pan y perejil.',
@@ -442,8 +442,8 @@ const NUEVAS = [
     nombre: 'Tavuk şiş (brochetas turcas de pollo)', categoria: 'turca', sabor: 'salado', tiempoPreparacion: 25,
     precioPorPorcion: 2.6, porciones: 2, calorias: 500, proteinas: 45, carbohidratos: 24, grasas: 24,
     ingredientes: [
-      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('yogur griego', 120, 'g', 'lacteos'),
-      ing('pimiento', 1, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('pechuga de pollo', 400, 'g', 'carnes'), ing('yogur griego', 120, 'g', 'lácteos'),
+      ing('pimiento', 1, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'especias'),
       ing('ajo', 2, 'diente', 'verduras'), ing('limón', 0.5, 'ud', 'frutas'),
     ],
     pasos: [
@@ -457,7 +457,7 @@ const NUEVAS = [
     precioPorPorcion: 1.8, porciones: 2, calorias: 380, proteinas: 30, carbohidratos: 16, grasas: 24,
     ingredientes: [
       ing('huevos', 5, 'ud', 'huevos'), ing('tomate', 2, 'ud', 'verduras'),
-      ing('pimiento verde', 1, 'ud', 'verduras'), ing('queso feta', 60, 'g', 'lacteos'),
+      ing('pimiento verde', 1, 'ud', 'verduras'), ing('queso feta', 60, 'g', 'lácteos'),
       ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -488,8 +488,8 @@ const NUEVAS = [
     precioPorPorcion: 2.8, porciones: 2, calorias: 480, proteinas: 44, carbohidratos: 18, grasas: 24,
     ingredientes: [
       ing('pechuga de pollo', 400, 'g', 'carnes'), ing('limón', 1, 'ud', 'frutas'),
-      ing('harina', 30, 'g', 'cereales'), ing('alcaparras', 1, 'cucharada', 'condimentos'),
-      ing('mantequilla', 20, 'g', 'lacteos'), ing('ajo', 1, 'diente', 'verduras'),
+      ing('harina', 30, 'g', 'cereales'), ing('alcaparras', 1, 'cucharada', 'especias'),
+      ing('mantequilla', 20, 'g', 'lácteos'), ing('ajo', 1, 'diente', 'verduras'),
     ],
     pasos: [
       'Enharina los filetes de pollo y dóralos.',
@@ -516,7 +516,7 @@ const NUEVAS = [
     precioPorPorcion: 2.7, porciones: 2, calorias: 540, proteinas: 45, carbohidratos: 48, grasas: 18,
     ingredientes: [
       ing('pechuga de pollo', 400, 'g', 'carnes'), ing('arroz', 180, 'g', 'cereales'),
-      ing('yogur griego', 120, 'g', 'lacteos'), ing('pepino', 0.5, 'ud', 'verduras'),
+      ing('yogur griego', 120, 'g', 'lácteos'), ing('pepino', 0.5, 'ud', 'verduras'),
       ing('tomate cherry', 100, 'g', 'verduras'), ing('limón', 0.5, 'ud', 'frutas'),
     ],
     pasos: [
@@ -532,8 +532,8 @@ const NUEVAS = [
     nombre: 'Huevos revueltos con kwark', categoria: 'desayuno', sabor: 'salado', tiempoPreparacion: 10,
     precioPorPorcion: 0.9, porciones: 1, calorias: 380, proteinas: 34, carbohidratos: 6, grasas: 24,
     ingredientes: [
-      ing('huevos', 3, 'ud', 'huevos'), ing('kwark (quark)', 100, 'g', 'lacteos'),
-      ing('queso rallado', 20, 'g', 'lacteos'), ing('aceite de oliva', 1, 'cucharadita', 'condimentos'),
+      ing('huevos', 3, 'ud', 'huevos'), ing('kwark (quark)', 100, 'g', 'lácteos'),
+      ing('queso rallado', 20, 'g', 'lácteos'), ing('aceite de oliva', 1, 'cucharadita', 'condimentos'),
     ],
     pasos: [
       'Bate los huevos con el kwark.',
@@ -559,7 +559,7 @@ const NUEVAS = [
     precioPorPorcion: 1.6, porciones: 2, calorias: 520, proteinas: 45, carbohidratos: 55, grasas: 10,
     ingredientes: [
       ing('pechuga de pollo', 300, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
-      ing('aceite de oliva', 1, 'cucharada', 'condimentos'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('aceite de oliva', 1, 'cucharada', 'condimentos'), ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Cuece el arroz.',
@@ -585,7 +585,7 @@ const NUEVAS = [
     nombre: 'Skyr proteico con frutos rojos', categoria: 'desayuno', sabor: 'dulce', tiempoPreparacion: 5,
     precioPorPorcion: 1.0, porciones: 1, calorias: 320, proteinas: 30, carbohidratos: 34, grasas: 6,
     ingredientes: [
-      ing('skyr', 200, 'g', 'lacteos'), ing('frutos rojos congelados', 80, 'g', 'frutas'),
+      ing('skyr', 200, 'g', 'lácteos'), ing('frutos rojos congelados', 80, 'g', 'frutas'),
       ing('copos de avena', 30, 'g', 'cereales'), ing('miel', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -599,7 +599,7 @@ const NUEVAS = [
     ingredientes: [
       ing('garbanzos cocidos de bote', 400, 'g', 'legumbres'), ing('espinacas', 150, 'g', 'verduras'),
       ing('huevos', 2, 'ud', 'huevos'), ing('ajo', 1, 'diente', 'verduras'),
-      ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('comino', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Sofríe el ajo y añade las espinacas.',
@@ -612,7 +612,7 @@ const NUEVAS = [
     precioPorPorcion: 1.9, porciones: 2, calorias: 520, proteinas: 40, carbohidratos: 42, grasas: 20,
     ingredientes: [
       ing('tortillas de trigo (wrap)', 2, 'ud', 'cereales'), ing('pechuga de pollo', 250, 'g', 'carnes'),
-      ing('queso rallado', 60, 'g', 'lacteos'), ing('lechuga', 50, 'g', 'verduras'),
+      ing('queso rallado', 60, 'g', 'lácteos'), ing('lechuga', 50, 'g', 'verduras'),
     ],
     pasos: [
       'Saltea el pollo en tiras.',
@@ -637,7 +637,7 @@ const NUEVAS = [
     precioPorPorcion: 1.9, porciones: 2, calorias: 520, proteinas: 42, carbohidratos: 50, grasas: 14,
     ingredientes: [
       ing('pechuga de pollo', 300, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
-      ing('yogur griego', 100, 'g', 'lacteos'), ing('curry en polvo', 1, 'cucharada', 'condimentos'),
+      ing('yogur griego', 100, 'g', 'lácteos'), ing('curry en polvo', 1, 'cucharada', 'especias'),
       ing('cebolla', 0.5, 'ud', 'verduras'),
     ],
     pasos: [
@@ -665,7 +665,7 @@ const NUEVAS = [
     precioPorPorcion: 1.1, porciones: 1, calorias: 380, proteinas: 28, carbohidratos: 30, grasas: 16,
     ingredientes: [
       ing('pan', 2, 'rebanada', 'cereales'), ing('huevos', 2, 'ud', 'huevos'),
-      ing('queso fresco batido (hüttenkäse)', 100, 'g', 'lacteos'), ing('tomate', 1, 'ud', 'verduras'),
+      ing('queso fresco batido (hüttenkäse)', 100, 'g', 'lácteos'), ing('tomate', 1, 'ud', 'verduras'),
     ],
     pasos: [
       'Tuesta el pan.',
@@ -763,7 +763,7 @@ const NUEVAS = [
     ingredientes: [
       ing('carne picada de ternera', 300, 'g', 'carnes'), ing('tomate triturado', 200, 'g', 'verduras'),
       ing('arroz', 150, 'g', 'cereales'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('comino', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Cuece el arroz.',
@@ -792,7 +792,7 @@ const NUEVAS = [
     precioPorPorcion: 1.7, porciones: 2, calorias: 500, proteinas: 42, carbohidratos: 50, grasas: 14,
     ingredientes: [
       ing('pechuga de pollo', 350, 'g', 'carnes'), ing('tomate triturado', 200, 'g', 'verduras'),
-      ing('cebolla', 0.5, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('cebolla', 0.5, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'especias'),
       ing('arroz', 150, 'g', 'cereales'),
     ],
     pasos: [
@@ -805,9 +805,9 @@ const NUEVAS = [
     nombre: 'Pollo shawarma rápido', categoria: 'mediooriente', sabor: 'salado', tiempoPreparacion: 20,
     precioPorPorcion: 2.0, porciones: 2, calorias: 560, proteinas: 46, carbohidratos: 42, grasas: 22,
     ingredientes: [
-      ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('yogur griego', 100, 'g', 'lacteos'),
-      ing('pan de pita', 2, 'ud', 'cereales'), ing('comino', 1, 'cucharadita', 'condimentos'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'), ing('ajo', 2, 'diente', 'verduras'),
+      ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('yogur griego', 100, 'g', 'lácteos'),
+      ing('pan de pita', 2, 'ud', 'cereales'), ing('comino', 1, 'cucharadita', 'especias'),
+      ing('pimentón', 1, 'cucharadita', 'especias'), ing('ajo', 2, 'diente', 'verduras'),
     ],
     pasos: [
       'Marina el pollo con especias y ajo.',
@@ -819,7 +819,7 @@ const NUEVAS = [
     nombre: 'Maafe de pollo (estofado de cacahuete)', categoria: 'africana', sabor: 'salado', tiempoPreparacion: 30,
     precioPorPorcion: 1.9, porciones: 2, calorias: 600, proteinas: 40, carbohidratos: 56, grasas: 24,
     ingredientes: [
-      ing('contramuslos de pollo', 350, 'g', 'carnes'), ing('crema de cacahuete (pindakaas)', 3, 'cucharada', 'condimentos'),
+      ing('contramuslos de pollo', 350, 'g', 'carnes'), ing('crema de cacahuete (pindakaas)', 3, 'cucharada', 'especias'),
       ing('tomate triturado', 200, 'g', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
       ing('arroz', 150, 'g', 'cereales'),
     ],
@@ -851,7 +851,7 @@ const NUEVAS = [
     ingredientes: [
       ing('carne picada de ternera', 300, 'g', 'carnes'), ing('alubias rojas de bote', 400, 'g', 'legumbres'),
       ing('tomate triturado', 200, 'g', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('comino', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Sofríe la cebolla y la carne.',
@@ -867,7 +867,7 @@ const NUEVAS = [
     ingredientes: [
       ing('pasta', 180, 'g', 'cereales'), ing('carne picada de ternera', 300, 'g', 'carnes'),
       ing('tomate triturado', 300, 'g', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('ajo', 1, 'diente', 'verduras'), ing('queso rallado', 30, 'g', 'lacteos'),
+      ing('ajo', 1, 'diente', 'verduras'), ing('queso rallado', 30, 'g', 'lácteos'),
     ],
     pasos: [
       'Cuece la pasta.',
@@ -896,7 +896,7 @@ const NUEVAS = [
     precioPorPorcion: 1.7, porciones: 2, calorias: 520, proteinas: 44, carbohidratos: 52, grasas: 14,
     ingredientes: [
       ing('pechuga de pollo', 350, 'g', 'carnes'), ing('arroz', 150, 'g', 'cereales'),
-      ing('mostaza', 1, 'cucharada', 'salsas'), ing('yogur griego', 100, 'g', 'lacteos'),
+      ing('mostaza', 1, 'cucharada', 'salsas'), ing('yogur griego', 100, 'g', 'lácteos'),
       ing('cebolla', 0.5, 'ud', 'verduras'),
     ],
     pasos: [
@@ -912,7 +912,7 @@ const NUEVAS = [
     ingredientes: [
       ing('pechuga de pollo', 350, 'g', 'carnes'), ing('champiñones', 200, 'g', 'verduras'),
       ing('arroz', 150, 'g', 'cereales'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('yogur griego', 80, 'g', 'lacteos'),
+      ing('yogur griego', 80, 'g', 'lácteos'),
     ],
     pasos: [
       'Cuece el arroz.',
@@ -927,7 +927,7 @@ const NUEVAS = [
     ingredientes: [
       ing('pasta', 180, 'g', 'cereales'), ing('pechuga de pollo', 300, 'g', 'carnes'),
       ing('tomate triturado', 300, 'g', 'verduras'), ing('ajo', 1, 'diente', 'verduras'),
-      ing('queso rallado', 30, 'g', 'lacteos'),
+      ing('queso rallado', 30, 'g', 'lácteos'),
     ],
     pasos: [
       'Cuece la pasta.',
@@ -983,7 +983,7 @@ const NUEVAS = [
     ingredientes: [
       ing('garbanzos cocidos de bote', 400, 'g', 'legumbres'), ing('chorizo', 100, 'g', 'carnes'),
       ing('huevos', 2, 'ud', 'huevos'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Sofríe la cebolla y el chorizo en rodajas.',
@@ -996,7 +996,7 @@ const NUEVAS = [
     precioPorPorcion: 1.6, porciones: 2, calorias: 540, proteinas: 40, carbohidratos: 40, grasas: 24,
     ingredientes: [
       ing('contramuslos de pollo', 400, 'g', 'carnes'), ing('patata', 300, 'g', 'verduras'),
-      ing('ajo', 2, 'diente', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('ajo', 2, 'diente', 'verduras'), ing('pimentón', 1, 'cucharadita', 'especias'),
       ing('aceite de oliva', 2, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -1011,7 +1011,7 @@ const NUEVAS = [
     ingredientes: [
       ing('lentejas cocidas de bote', 400, 'g', 'legumbres'), ing('chorizo', 120, 'g', 'carnes'),
       ing('zanahoria', 1, 'ud', 'verduras'), ing('cebolla', 0.5, 'ud', 'verduras'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Sofríe la cebolla, la zanahoria y el chorizo en rodajas.',
@@ -1024,8 +1024,8 @@ const NUEVAS = [
     precioPorPorcion: 1.9, porciones: 2, calorias: 500, proteinas: 40, carbohidratos: 44, grasas: 16,
     ingredientes: [
       ing('filetes de pavo', 300, 'g', 'carnes'), ing('patata', 400, 'g', 'verduras'),
-      ing('verduras congeladas', 200, 'g', 'verduras'), ing('leche', 100, 'ml', 'lacteos'),
-      ing('mantequilla', 20, 'g', 'lacteos'),
+      ing('verduras congeladas', 200, 'g', 'verduras'), ing('leche', 100, 'ml', 'lácteos'),
+      ing('mantequilla', 20, 'g', 'lácteos'),
     ],
     pasos: [
       'Cuece las patatas y haz un puré con leche y mantequilla.',
@@ -1040,7 +1040,7 @@ const NUEVAS = [
     precioPorPorcion: 2.0, porciones: 2, calorias: 620, proteinas: 44, carbohidratos: 48, grasas: 24,
     ingredientes: [
       ing('shoarma de pollo', 400, 'g', 'carnes'), ing('tortillas de trigo', 4, 'ud', 'cereales'),
-      ing('lechuga iceberg', 100, 'g', 'verduras'), ing('yogur natural', 150, 'g', 'lacteos'),
+      ing('lechuga iceberg', 100, 'g', 'verduras'), ing('yogur natural', 150, 'g', 'lácteos'),
       ing('ajo', 1, 'diente', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -1054,8 +1054,8 @@ const NUEVAS = [
     precioPorPorcion: 2.3, porciones: 2, calorias: 750, proteinas: 46, carbohidratos: 52, grasas: 38,
     ingredientes: [
       ing('patatas fritas de horno congeladas', 400, 'g', 'verduras'), ing('shoarma de pollo', 300, 'g', 'carnes'),
-      ing('queso rallado', 80, 'g', 'lacteos'), ing('lechuga iceberg', 80, 'g', 'verduras'),
-      ing('yogur natural', 100, 'g', 'lacteos'), ing('ajo', 1, 'diente', 'verduras'),
+      ing('queso rallado', 80, 'g', 'lácteos'), ing('lechuga iceberg', 80, 'g', 'verduras'),
+      ing('yogur natural', 100, 'g', 'lácteos'), ing('ajo', 1, 'diente', 'verduras'),
     ],
     pasos: [
       'Hornea las patatas según el paquete y saltea el shoarma.',
@@ -1069,7 +1069,7 @@ const NUEVAS = [
     ingredientes: [
       ing('patata', 600, 'g', 'verduras'), ing('col rizada congelada', 300, 'g', 'verduras'),
       ing('rookworst', 250, 'g', 'carnes'), ing('bacon en tiras', 100, 'g', 'carnes'),
-      ing('leche', 100, 'ml', 'lacteos'), ing('mantequilla', 20, 'g', 'lacteos'),
+      ing('leche', 100, 'ml', 'lácteos'), ing('mantequilla', 20, 'g', 'lácteos'),
     ],
     pasos: [
       'Cuece las patatas con la col rizada 20 min; calienta la rookworst en la misma olla los últimos 10.',
@@ -1082,8 +1082,8 @@ const NUEVAS = [
     precioPorPorcion: 1.5, porciones: 2, calorias: 520, proteinas: 36, carbohidratos: 34, grasas: 26,
     ingredientes: [
       ing('pan de molde', 4, 'rebanada', 'cereales'), ing('jamón cocido', 100, 'g', 'carnes'),
-      ing('queso en lonchas', 60, 'g', 'lacteos'), ing('huevos', 4, 'ud', 'huevos'),
-      ing('mantequilla', 10, 'g', 'lacteos'),
+      ing('queso en lonchas', 60, 'g', 'lácteos'), ing('huevos', 4, 'ud', 'huevos'),
+      ing('mantequilla', 10, 'g', 'lácteos'),
     ],
     pasos: [
       'Tuesta el pan y cúbrelo con jamón y queso.',
@@ -1096,7 +1096,7 @@ const NUEVAS = [
     precioPorPorcion: 2.3, porciones: 2, calorias: 580, proteinas: 42, carbohidratos: 56, grasas: 18,
     ingredientes: [
       ing('solomillo de cerdo', 300, 'g', 'carnes'), ing('champiñones', 250, 'g', 'verduras'),
-      ing('arroz', 160, 'g', 'cereales'), ing('nata para cocinar', 100, 'ml', 'lacteos'),
+      ing('arroz', 160, 'g', 'cereales'), ing('nata para cocinar', 100, 'ml', 'lácteos'),
       ing('cebolla', 0.5, 'ud', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -1152,8 +1152,8 @@ const NUEVAS = [
     precioPorPorcion: 2.0, porciones: 2, calorias: 640, proteinas: 44, carbohidratos: 54, grasas: 24,
     ingredientes: [
       ing('pechuga de pollo', 250, 'g', 'carnes'), ing('alubias rojas de bote', 200, 'g', 'legumbres'),
-      ing('tortillas de trigo', 4, 'ud', 'cereales'), ing('queso rallado', 80, 'g', 'lacteos'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('tortillas de trigo', 4, 'ud', 'cereales'), ing('queso rallado', 80, 'g', 'lácteos'),
+      ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Saltea el pollo en dados con pimentón y mezcla con las alubias escurridas.',
@@ -1167,7 +1167,7 @@ const NUEVAS = [
     ingredientes: [
       ing('pechuga de pollo', 300, 'g', 'carnes'), ing('pimiento rojo', 1, 'ud', 'verduras'),
       ing('cebolla', 1, 'ud', 'verduras'), ing('tortillas de trigo', 4, 'ud', 'cereales'),
-      ing('pimentón', 1, 'cucharadita', 'condimentos'), ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('pimentón', 1, 'cucharadita', 'especias'), ing('comino', 1, 'cucharadita', 'especias'),
       ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -1181,7 +1181,7 @@ const NUEVAS = [
     precioPorPorcion: 2.1, porciones: 2, calorias: 520, proteinas: 42, carbohidratos: 24, grasas: 28,
     ingredientes: [
       ing('pechuga de pollo', 300, 'g', 'carnes'), ing('lechuga romana', 1, 'ud', 'verduras'),
-      ing('huevos', 2, 'ud', 'huevos'), ing('queso rallado', 40, 'g', 'lacteos'),
+      ing('huevos', 2, 'ud', 'huevos'), ing('queso rallado', 40, 'g', 'lácteos'),
       ing('pan de molde', 2, 'rebanada', 'cereales'), ing('mayonesa', 2, 'cucharada', 'salsas'),
       ing('ajo', 1, 'diente', 'verduras'),
     ],
@@ -1197,7 +1197,7 @@ const NUEVAS = [
     ingredientes: [
       ing('carne picada', 400, 'g', 'carnes'), ing('huevos', 1, 'ud', 'huevos'),
       ing('judías verdes congeladas', 300, 'g', 'verduras'), ing('patata', 400, 'g', 'verduras'),
-      ing('cebolla', 0.5, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('cebolla', 0.5, 'ud', 'verduras'), ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Mezcla la carne con huevo, cebolla picada y pimentón; forma 4 hamburguesas.',
@@ -1211,7 +1211,7 @@ const NUEVAS = [
     ingredientes: [
       ing('carne picada', 300, 'g', 'carnes'), ing('alubias rojas de bote', 200, 'g', 'legumbres'),
       ing('arroz', 100, 'g', 'cereales'), ing('tortillas de trigo', 4, 'ud', 'cereales'),
-      ing('tomate frito', 100, 'g', 'salsas'), ing('comino', 1, 'cucharadita', 'condimentos'),
+      ing('tomate frito', 100, 'g', 'salsas'), ing('comino', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Cuece el arroz.',
@@ -1225,7 +1225,7 @@ const NUEVAS = [
     ingredientes: [
       ing('alubias blancas de bote', 400, 'g', 'legumbres'), ing('rookworst', 200, 'g', 'carnes'),
       ing('zanahoria', 2, 'ud', 'verduras'), ing('cebolla', 1, 'ud', 'verduras'),
-      ing('tomate triturado', 200, 'g', 'verduras'), ing('pimentón', 1, 'cucharadita', 'condimentos'),
+      ing('tomate triturado', 200, 'g', 'verduras'), ing('pimentón', 1, 'cucharadita', 'especias'),
     ],
     pasos: [
       'Sofríe cebolla y zanahoria en rodajas 5 min.',
@@ -1238,7 +1238,7 @@ const NUEVAS = [
     precioPorPorcion: 1.9, porciones: 2, calorias: 700, proteinas: 46, carbohidratos: 70, grasas: 22,
     ingredientes: [
       ing('pasta', 180, 'g', 'cereales'), ing('pechuga de pollo', 300, 'g', 'carnes'),
-      ing('tomate frito', 200, 'g', 'salsas'), ing('queso rallado', 80, 'g', 'lacteos'),
+      ing('tomate frito', 200, 'g', 'salsas'), ing('queso rallado', 80, 'g', 'lácteos'),
       ing('ajo', 1, 'diente', 'verduras'), ing('aceite de oliva', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -1280,8 +1280,8 @@ const NUEVAS = [
     precioPorPorcion: 1.4, porciones: 2, calorias: 480, proteinas: 38, carbohidratos: 6, grasas: 34,
     ingredientes: [
       ing('huevos', 6, 'ud', 'huevos'), ing('jamón cocido', 100, 'g', 'carnes'),
-      ing('queso rallado', 60, 'g', 'lacteos'), ing('champiñones', 150, 'g', 'verduras'),
-      ing('mantequilla', 10, 'g', 'lacteos'),
+      ing('queso rallado', 60, 'g', 'lácteos'), ing('champiñones', 150, 'g', 'verduras'),
+      ing('mantequilla', 10, 'g', 'lácteos'),
     ],
     pasos: [
       'Saltea los champiñones hasta que pierdan el agua.',
@@ -1293,8 +1293,8 @@ const NUEVAS = [
     nombre: 'Batido de kwark, plátano y avena', categoria: 'desayuno', sabor: 'dulce', tiempoPreparacion: 5, tipo: 'desayuno',
     precioPorPorcion: 1.1, porciones: 2, calorias: 420, proteinas: 32, carbohidratos: 56, grasas: 6,
     ingredientes: [
-      ing('kwark desnatado', 500, 'g', 'lacteos'), ing('plátano', 2, 'ud', 'frutas'),
-      ing('copos de avena', 60, 'g', 'cereales'), ing('leche', 200, 'ml', 'lacteos'),
+      ing('kwark desnatado', 500, 'g', 'lácteos'), ing('plátano', 2, 'ud', 'frutas'),
+      ing('copos de avena', 60, 'g', 'cereales'), ing('leche', 200, 'ml', 'lácteos'),
       ing('miel', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
@@ -1308,7 +1308,7 @@ const NUEVAS = [
     precioPorPorcion: 1.2, porciones: 2, calorias: 480, proteinas: 31, carbohidratos: 60, grasas: 12,
     ingredientes: [
       ing('copos de avena', 100, 'g', 'cereales'), ing('huevos', 3, 'ud', 'huevos'),
-      ing('plátano', 1, 'ud', 'frutas'), ing('kwark desnatado', 200, 'g', 'lacteos'),
+      ing('plátano', 1, 'ud', 'frutas'), ing('kwark desnatado', 200, 'g', 'lácteos'),
       ing('miel', 1, 'cucharada', 'condimentos'),
     ],
     pasos: [
