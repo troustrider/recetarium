@@ -14,7 +14,7 @@ const UNIDAD_CANON = {
   cda: 'cucharada', cdas: 'cucharada', cucharadas: 'cucharada',
   cdta: 'cucharadita', cdtas: 'cucharadita', cucharaditas: 'cucharadita',
   dientes: 'diente', hojas: 'hoja', lonchas: 'loncha', rodajas: 'rodaja',
-  rebanadas: 'rebanada', unidad: 'ud', unidades: 'ud', uds: 'ud',
+  rebanadas: 'rebanada', unidad: 'ud', unidades: 'ud', uds: 'ud', vasos: 'vaso',
   gr: 'g', grs: 'g', gramos: 'g', mililitros: 'ml', punados: 'puñado',
   pizcas: 'pizca', gotas: 'gota', tiras: 'tira', latas: 'lata', paquetes: 'paquete',
 }

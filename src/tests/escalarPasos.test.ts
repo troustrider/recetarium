@@ -32,6 +32,19 @@ describe('escalarPasos', () => {
     expect(escalarPaso('Añade {300 g} de carne y {100 ml} de leche.', 2)).toBe('Añade 600 g de carne y 200 ml de leche.')
   })
 
+  it('escala el agua de cocción junto con su sal', () => {
+    // Si solo escalase la sal, a 4 comensales quedarían 2 litros con 40 g: pasta de tirar.
+    const paso = 'Pon a hervir {2 litros} de agua con {20 g} de sal.'
+    expect(escalarPaso(paso, 2)).toBe('Pon a hervir 4 litros de agua con 40 g de sal.')
+  })
+
+  it('escala las piezas que fabrica el propio plato', () => {
+    // Sin esto salen 12 albóndigas del doble de tamaño con el tiempo de las pequeñas.
+    expect(escalarPaso('Forma {12 albóndigas} del tamaño de una nuez.', 2))
+      .toBe('Forma 24 albóndigas del tamaño de una nuez.')
+    expect(escalarPaso('Haz {5 huecos} en la salsa.', 0.4)).toBe('Haz 2 huecos en la salsa.')
+  })
+
   it('detecta si un paso trae cantidades escalables', () => {
     expect(tieneCantidadesEscalables(['Cuece {1 vaso} de arroz 12 min.'])).toBe(true)
     expect(tieneCantidadesEscalables(['Cuece el arroz 12 min.'])).toBe(false)

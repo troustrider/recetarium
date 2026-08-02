@@ -25,7 +25,10 @@ export function tieneCantidadesEscalables(pasos: string[]): boolean {
 }
 
 // Unidades contables que hay que concordar en número al escalar. "g" y "ml" no varían.
-const PLURALIZABLES = ['cucharada', 'cucharadita', 'vaso', 'diente', 'loncha', 'rodaja', 'rebanada', 'puñado', 'lata', 'paquete', 'hoja', 'tira', 'pizca', 'gota']
+// Las piezas que fabrica el propio plato (albóndigas, bolas...) también se marcan y escalan:
+// sin eso, al doblar comensales sale el doble de masa repartida en las mismas piezas.
+const PLURALIZABLES = ['cucharada', 'cucharadita', 'vaso', 'diente', 'loncha', 'rodaja', 'rebanada', 'puñado', 'lata', 'paquete', 'hoja', 'tira', 'pizca', 'gota', 'litro',
+  'albóndiga', 'bola', 'bolita', 'brocheta', 'hamburguesa', 'croqueta', 'tortita', 'muffin', 'pincho', 'rollito', 'hueco', 'filete']
 
 function concordar(resto: string, cantidad: number): string {
   const [primera, ...cola] = resto.split(' ')
