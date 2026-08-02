@@ -2,12 +2,15 @@
 //
 //   node scripts/chef-recetas.mjs audit                 -> audita toda la BD contra las puertas de calidad
 //   node scripts/chef-recetas.mjs check <fichero.json>  -> valida un lote sin escribir
+//   node scripts/chef-recetas.mjs check-doc             -> valida los ejemplos JSON de las referencias de la skill
 //   node scripts/chef-recetas.mjs apply <fichero.json>  -> valida y escribe (UPDATE si trae id, INSERT si no)
 //
 // El UPDATE no toca favorita ni imagen, al contrario que el PUT de la API.
 
 import 'dotenv/config'
 import { readFileSync, writeFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, resolve } from 'node:path'
 import { neon } from '@neondatabase/serverless'
 
 const sql = neon(process.env.DATABASE_URL)
@@ -27,8 +30,26 @@ const VERBOS = /\b(cuece|cuécelo|hierve|hornea|asa|ásalo|fríe|sofríe|saltea|
 const RE_VAGO = /\b(un poco de|un chorro|un chorrito|unas gotas|al gusto|algo de|un buen punado|suficiente|la cantidad necesaria|unos minutos|un rato|un vaso de agua)\b/
 // Cantidad escalable escrita en el paso sin marcar entre llaves. Excluye tiempos,
 // temperaturas y tamaños de utensilio, que nunca deben escalar.
-const RE_SIN_MARCAR = /\b\d+(?:[.,]\d+)?\s*(?:g|ml|kg|l|cucharadas?|cucharaditas?|dientes?|vasos?|rebanadas?|lonchas?|rodajas?|latas?|paquetes?|puñados?)\b/i
+//
+// El agua de cocción entra aquí a propósito: si la sal va entre llaves y el agua no,
+// al subir de comensales se dobla la sal sobre el mismo volumen y la pasta sale salada.
+// Y las piezas que fabrica el propio plato (albóndigas, bolas, brochetas) también, o al
+// escalar sale el doble de masa repartida en el mismo número de piezas, con su tiempo viejo.
+const PIEZAS = 'albondigas?|albóndigas?|bolas?|brochetas?|filetes?|hamburguesas?|croquetas?|tortitas?|muffins?|pinchos?|rollitos?|huecos?|bolitas?'
+const RE_SIN_MARCAR = new RegExp(
+  `\\b\\d+(?:[.,]\\d+)?\\s*(?:litros?|g|ml|kg|l|cucharadas?|cucharaditas?|dientes?|vasos?|rebanadas?|lonchas?|rodajas?|latas?|paquetes?|puñados?|${PIEZAS})\\b`,
+  'i'
+)
 const sinLlaves = (p) => p.replace(/\{[^}]*\}/g, ' ')
+
+// Metacomentario de autoría en `consejos`. La app lo renderiza como "Consejos del chef":
+// hablar de versiones anteriores o de posiciones en el ranking del recetario es ruido de
+// proceso en un campo que solo debe servir para cocinar mejor el plato que se tiene delante.
+const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes ten[ií]a|la anterior|del recetario|en el recetario|respecto a la versi|se iba de rango|he subido|he bajado/i
+
+// Verduras que forman la base aromática y no cuentan como verdura del plato.
+const RE_BASE_AROMATICA = /^(ajo|cebolla|cebolla roja|cebolleta|chalota|puerro|tomate triturado|tomate frito|passata|perejil|cilantro|albahaca|menta|cebollino|limon|lima|guindilla|chile jalapeno)$/
+const RE_GUARNICION = /guarnici[oó]n|al lado|acompa[ñn]|de acompa/i
 
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
 
@@ -39,6 +60,61 @@ const IMPLICITOS = new Set(['sal', 'pimienta', 'agua'])
 function nucleo(nombre) {
   return norm(nombre).split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w))
 }
+
+// --- estimación de macros desde la lista de ingredientes -------------------------------
+//
+// El gate de 4P+4C+9G solo comprueba que los cuatro números cuadren entre sí: un macro
+// inventado que cuadre consigo mismo pasa. Esto contrasta lo declarado contra la
+// composición real de los ingredientes, que es lo único que convierte la puerta de
+// proteína en una puerta y no en un número autodeclarado.
+
+const AQUI = dirname(fileURLToPath(import.meta.url))
+const TABLA = JSON.parse(readFileSync(resolve(AQUI, 'nutrientes.json'), 'utf8'))
+const FICHAS = new Map(Object.entries(TABLA.ingredientes).map(([k, v]) => [norm(k), v]))
+const SIN_FICHA_OK = new Set(TABLA.ignorar.map(norm))
+// Unidades cuyo peso depende tanto del producto que sin override no se puede estimar.
+const UNIDAD_NECESITA_FICHA = new Set(['ud', 'lata', 'paquete', 'loncha', 'rodaja', 'rebanada', 'tira', 'vaso'])
+
+/** Gramos de producto que aporta un ingrediente, o null si no se puede saber. */
+function gramos(ing, ficha) {
+  const u = ing.unidad
+  if (u === 'g' || u === 'ml') return ing.cantidad
+  if (ficha && typeof ficha[u] === 'number') return ing.cantidad * ficha[u]
+  if (UNIDAD_NECESITA_FICHA.has(u)) return null
+  const base = TABLA.unidades[u]
+  return typeof base === 'number' ? ing.cantidad * base : null
+}
+
+/**
+ * Macros por ración estimados desde `ingredientes`.
+ * `desconocidos` lista lo que no se ha podido valorar: si trae algo, el resultado no es
+ * comparable y el gate se abstiene en vez de acusar en falso.
+ */
+export function estimarMacros(r) {
+  const desconocidos = []
+  let p = 0, c = 0, g = 0
+  for (const ing of r.ingredientes ?? []) {
+    const n = norm(ing.nombre)
+    if (SIN_FICHA_OK.has(n)) continue
+    const ficha = FICHAS.get(n)
+    if (!ficha) { desconocidos.push(ing.nombre); continue }
+    const gr = gramos(ing, ficha)
+    if (gr === null) { desconocidos.push(`${ing.nombre} (${ing.unidad})`); continue }
+    p += (gr * ficha.p) / 100
+    c += (gr * ficha.c) / 100
+    g += (gr * ficha.gr) / 100
+  }
+  const porciones = r.porciones > 0 ? r.porciones : 1
+  return {
+    desconocidos,
+    proteinas: p / porciones,
+    carbohidratos: c / porciones,
+    grasas: g / porciones,
+    calorias: (p * 4 + c * 4 + g * 9) / porciones,
+  }
+}
+
+const pct = (declarado, estimado) => Math.abs(declarado - estimado) / estimado
 
 export function validar(r, { estricto = true } = {}) {
   const e = []
@@ -114,6 +190,23 @@ export function validar(r, { estricto = true } = {}) {
   const nc = Array.isArray(r.consejos) ? r.consejos.length : 0
   if (nc < 3) e.push(`solo ${nc} consejo(s) (mínimo 3)`)
   if (nc > 5) w.push(`${nc} consejos (máximo recomendado 5)`)
+  if (Array.isArray(r.consejos))
+    r.consejos.forEach((con, n) => {
+      const meta = con.match(RE_META_CONSEJO)
+      if (meta) w.push(`consejo ${n + 1}: metacomentario de autoría ("${meta[0]}")`)
+    })
+
+  // --- comida completa ---
+  // Un principal sin verdura y sin guarnición declarada es un componente vendido como
+  // comida, y sus macros describen media cena. Aviso mientras se saldan las que ya estaban.
+  if (estricto && r.tipo === 'principal' && Array.isArray(r.ingredientes)) {
+    const verduras = r.ingredientes.filter(
+      (i) => i.familia === 'verduras' && !RE_BASE_AROMATICA.test(norm(i.nombre))
+    )
+    const declaraGuarnicion = (r.consejos ?? []).some((c) => RE_GUARNICION.test(c))
+    if (!verduras.length && !declaraGuarnicion)
+      w.push('principal sin verdura propia y sin guarnición declarada en consejos')
+  }
 
   // --- coherencia ingredientes <-> pasos ---
   if (Array.isArray(r.ingredientes) && Array.isArray(r.pasos)) {
@@ -133,6 +226,29 @@ export function validar(r, { estricto = true } = {}) {
     const desvio = Math.abs(calc - kcal) / kcal
     if (desvio > 0.1) e.push(`macros incoherentes: ${p}P/${c}C/${g}G = ${Math.round(calc)} kcal, pero la ficha dice ${kcal}`)
   }
+  // Coherencia interna (arriba) no es verdad. Esto contrasta lo declarado contra la
+  // composición de los ingredientes. Si algún ingrediente no tiene ficha en
+  // nutrientes.json el gate se abstiene: preferimos ampliar la tabla a acusar en falso.
+  if (Array.isArray(r.ingredientes) && r.ingredientes.length) {
+    const est = estimarMacros(r)
+    if (est.desconocidos.length) {
+      w.push(`macros sin contrastar, falta ficha en nutrientes.json de: ${est.desconocidos.join(', ')}`)
+    } else {
+      if (typeof p === 'number' && est.proteinas >= 5 && pct(p, est.proteinas) > 0.2)
+        e.push(`proteína declarada ${p} g/ración, los ingredientes dan ${est.proteinas.toFixed(1)} g`)
+      if (typeof kcal === 'number' && est.calorias >= 100 && pct(kcal, est.calorias) > 0.2)
+        e.push(`kcal declaradas ${kcal}/ración, los ingredientes dan ${Math.round(est.calorias)}`)
+      // Grasa y carbohidrato admiten más ruido y por eso son aviso, no error. La
+      // estimación cuenta el 100% del aceite añadido, pero en un sofrito o una fritura
+      // parte se queda en la sartén: medido sobre la BD, la grasa declarada va un 22% por
+      // debajo de forma sistemática. El umbral se abre para no llenar el audit de ruido.
+      if (typeof c === 'number' && est.carbohidratos >= 10 && pct(c, est.carbohidratos) > 0.3)
+        w.push(`carbohidratos declarados ${c} g/ración, los ingredientes dan ${est.carbohidratos.toFixed(1)} g`)
+      if (typeof g === 'number' && est.grasas >= 8 && pct(g, est.grasas) > 0.35)
+        w.push(`grasas declaradas ${g} g/ración, los ingredientes dan ${est.grasas.toFixed(1)} g`)
+    }
+  }
+
   if (estricto && r.tipo === 'principal' && typeof p === 'number' && p < 35)
     w.push(`principal con ${p} g de proteína (< 35)`)
   if (estricto && r.tipo === 'desayuno' && typeof p === 'number' && p < 25)
@@ -188,7 +304,7 @@ async function guardar(r) {
 // Reescribe un lote al formato escalable: cantidades del paso entre llaves y porciones = 2.
 // Los macros y el precio son por ración, así que no cambian al reajustar las porciones.
 const NUM = '(?:\\d+(?:[.,]\\d+)?|[½¼¾⅓⅔]|\\d+[½¼¾⅓⅔])'
-const UNID = 'g|ml|kg|l|cucharadas?|cucharaditas?|dientes?|vasos?|rebanadas?|lonchas?|rodajas?|latas?|paquetes?|puñados?'
+const UNID = `litros?|g|ml|kg|l|cucharadas?|cucharaditas?|dientes?|vasos?|rebanadas?|lonchas?|rodajas?|latas?|paquetes?|puñados?|${PIEZAS}`
 
 /** Aplica fn solo al texto que queda fuera de las llaves, para que marcar sea idempotente. */
 function fueraDeLlaves(texto, fn) {
@@ -256,22 +372,55 @@ if (cmd === 'audit') {
 } else if (cmd === 'remarcar') {
   // Marca las cantidades de los pasos directamente en la BD, sin tocar porciones.
   // Solo sobre recetas ya normalizadas a 2 raciones, para no reescalar nada por error.
+  const seco = fichero === '--dry'
   const todas = (await leerTodas()).filter((r) => r.porciones === 2)
   let tocadas = 0
   for (const r of todas) {
-    const antes = JSON.stringify(r.pasos)
     const [m] = migrar([{ ...r, pasos: [...r.pasos] }])
-    if (JSON.stringify(m.pasos) !== antes) {
+    const cambios = r.pasos.map((p, i) => [p, m.pasos[i]]).filter(([a, b]) => a !== b)
+    if (!cambios.length) continue
+    tocadas++
+    if (seco) {
+      console.log(`\n## ${r.nombre}`)
+      cambios.forEach(([, b]) => console.log(`   ${b}`))
+    } else {
       await sql`UPDATE recetas SET pasos = ${JSON.stringify(m.pasos)} WHERE id = ${r.id}`
-      tocadas++
       console.log(`marcada  ${r.nombre}`)
     }
   }
-  console.log(`\n${tocadas} de ${todas.length} recetas actualizadas`)
+  console.log(`\n${tocadas} de ${todas.length} recetas ${seco ? 'cambiarían' : 'actualizadas'}`)
 } else if (cmd === 'marcar') {
   const lote = migrar(JSON.parse(readFileSync(fichero, 'utf8')))
   writeFileSync(fichero, JSON.stringify(lote, null, 2) + '\n', 'utf8')
   console.log(`migradas ${lote.length} recetas en ${fichero}`)
+} else if (cmd === 'check-doc') {
+  // El ejemplo de contrato-receta.md es el trozo de la skill que más pesa al escribir una
+  // receta. Si él se salta una puerta, la enseña saltada. Esto lo ata al validador.
+  const REFS = resolve(AQUI, '../../.claude/skills/chef-recetarium/references')
+  const docs = ['contrato-receta.md']
+  let fallos = 0
+  for (const doc of docs) {
+    const md = readFileSync(resolve(REFS, doc), 'utf8')
+    const bloques = [...md.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1])
+    if (!bloques.length) { console.log(`${doc}: sin bloques json`); continue }
+    bloques.forEach((bloque, n) => {
+      let receta
+      try { receta = JSON.parse(bloque) } catch (err) {
+        fallos++; console.log(`X ${doc} bloque ${n + 1}: JSON inválido — ${err.message}`); return
+      }
+      for (const r of [receta].flat()) {
+        const { errores, avisos } = validar(r)
+        if (errores.length) {
+          fallos++
+          console.log(`\nX ${doc} · ${r.nombre}`)
+          errores.forEach((x) => console.log(`   ERROR  ${x}`))
+        } else {
+          console.log(`ok ${doc} · ${r.nombre}${avisos.length ? '  (' + avisos.join('; ') + ')' : ''}`)
+        }
+      }
+    })
+  }
+  if (fallos) { console.log(`\n${fallos} ejemplo(s) de la documentación con errores.`); process.exit(1) }
 } else if (cmd === 'check' || cmd === 'apply') {
   const lote = JSON.parse(readFileSync(fichero, 'utf8'))
   let fallos = 0
@@ -289,6 +438,6 @@ if (cmd === 'audit') {
     }
   }
 } else {
-  console.log('uso: chef-recetas.mjs audit | check <json> | apply <json>')
+  console.log('uso: chef-recetas.mjs audit | check <json> | check-doc | apply <json> | marcar <json> | remarcar')
   process.exit(1)
 }
