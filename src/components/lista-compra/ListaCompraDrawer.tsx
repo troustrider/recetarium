@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, Share2, Check } from 'lucide-react'
 import { useListaCompraContext, useCompradosContext, useDespensa, usePendientesPlan } from '../../context'
@@ -95,9 +96,13 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                       key={receta.id}
                       className="flex items-center justify-between gap-3 px-3 py-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl"
                     >
-                      <span className="text-xs font-bold text-orange-700 dark:text-orange-400 truncate flex-1 min-w-0">
+                      <Link
+                        to={`/recetas/${receta.id}`}
+                        onClick={onClose}
+                        className="text-xs font-bold text-orange-700 dark:text-orange-400 truncate flex-1 min-w-0 hover:underline"
+                      >
                         {receta.nombre}
-                      </span>
+                      </Link>
                       <div className="flex items-center gap-1.5 shrink-0">
                         <motion.button
                           onClick={() => {

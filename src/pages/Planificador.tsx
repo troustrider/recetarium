@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Dices } from 'lucide-react'
 import {
@@ -72,14 +73,14 @@ function RecetaChip({ entrada, onQuitar, onRaciones, overlay = false }: ChipProp
       <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[entrada.receta.sabor]}`} />
 
       {/* Info */}
-      <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[120px]">
+      <Link to={`/recetas/${entrada.receta.id}`} className="min-w-0 flex-1 group">
+        <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[120px] group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors">
           {entrada.receta.nombre}
         </p>
         <p className={`text-[10px] font-bold uppercase tracking-widest ${SABOR_TEXT[entrada.receta.sabor]}`}>
           {entrada.receta.sabor}
         </p>
-      </div>
+      </Link>
 
       {/* Stepper raciones */}
       <div className="flex items-center gap-1 shrink-0">
