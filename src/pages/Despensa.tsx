@@ -175,7 +175,7 @@ function Despensa() {
             else if (e.key === 'Enter' && puedeAñadir) añadirYLimpiar(q, 'otros')
           }}
           placeholder="Busca o añade un ingrediente..."
-          className="w-full pl-11 pr-4 py-3 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 transition-all"
+          className="w-full pl-11 pr-4 py-3 text-base sm:text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 transition-all"
         />
         {(sugerencias.length > 0 || puedeAñadir) && (
           <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg overflow-hidden z-20">

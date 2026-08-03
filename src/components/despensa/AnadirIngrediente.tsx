@@ -76,7 +76,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
             role="dialog"
             aria-modal="true"
             aria-label="Añadir ingrediente a la despensa"
-            className="w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+2rem)] sm:pb-6"
+            className="w-full max-w-md max-h-[88dvh] overflow-y-auto overflow-x-hidden overscroll-contain bg-white dark:bg-gray-900 rounded-t-3xl px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+2rem)] sm:pb-6"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -105,7 +105,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
               onKeyDown={(e) => e.key === 'Enter' && handleAñadir()}
               placeholder="Ingrediente..."
               autoFocus
-              className="w-full px-4 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 transition-all"
+              className="w-full px-4 py-2.5 text-base sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 transition-all"
             />
 
             {sugerencias.length > 0 && (
@@ -131,7 +131,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
               <select
                 value={familia}
                 onChange={(e) => cambiarFamilia(e.target.value)}
-                className="flex-1 px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
+                className="flex-1 min-w-0 px-3 py-2.5 text-base sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
                 aria-label="Familia"
               >
                 {FAMILIAS.map((f) => (
@@ -142,7 +142,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
                 type="date"
                 value={caducidad}
                 onChange={(e) => setCaducidad(e.target.value)}
-                className="px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
+                className="flex-1 min-w-0 px-3 py-2.5 text-base sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
                 title="Fecha de caducidad (opcional)"
                 aria-label="Fecha de caducidad (opcional)"
               />
@@ -160,13 +160,13 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
                   onKeyDown={(e) => e.key === 'Enter' && handleAñadir()}
                   placeholder={requiereCantidad(familia) ? '¿Cuánto hay?' : 'Cantidad (opcional)'}
                   aria-label="Cantidad"
-                  className="flex-1 min-w-0 px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600"
+                  className="flex-1 min-w-0 px-3 py-2.5 text-base sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600"
                 />
                 <select
                   value={unidad}
                   onChange={(e) => setUnidad(e.target.value)}
                   aria-label="Unidad"
-                  className="px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
+                  className="shrink-0 px-3 py-2.5 text-base sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
                 >
                   {UNIDADES_DESPENSA.map((u) => (
                     <option key={u} value={u}>{u}</option>
@@ -176,7 +176,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
             ) : (
               <button
                 onClick={() => setCantidadManual(true)}
-                className="mt-2 mb-4 px-1 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+                className="mt-1 mb-3 self-start px-1 py-2.5 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
               >
                 + Añadir cantidad
               </button>

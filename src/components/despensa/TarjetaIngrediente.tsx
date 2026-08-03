@@ -61,7 +61,7 @@ function TarjetaIngrediente({ item, onClick }: Props) {
         />
       </span>
 
-      <span className="flex items-center justify-between gap-2 text-[11px] min-h-4">
+      <span className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-[11px] min-h-4">
         {item.cantidad != null ? (
           <span className="font-bold tabular-nums text-gray-700 dark:text-gray-200">
             {formatCantidad(item.cantidad, item.unidad ?? 'ud')}

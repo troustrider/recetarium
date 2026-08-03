@@ -19,7 +19,9 @@ interface Props {
 }
 
 // Ficha de ingrediente en hoja inferior: concentra todas las acciones
-// que antes eran iconos sueltos en el chip.
+// que antes eran iconos sueltos en el chip. La hoja lleva alto máximo y scroll
+// propio porque con el teclado del móvil abierto no cabe entera y los campos
+// de abajo quedarían inalcanzables.
 function FichaIngrediente({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props) {
   return (
     <AnimatePresence>
@@ -35,7 +37,7 @@ function FichaIngrediente({ item, enLista, onEditar, onALista, onQuitar, onClose
             role="dialog"
             aria-modal="true"
             aria-label={`Ficha de ${item.nombre}`}
-            className="w-full max-w-md bg-white dark:bg-gray-900 rounded-t-3xl px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+2rem)] sm:pb-6"
+            className="w-full max-w-md max-h-[88dvh] overflow-y-auto overflow-x-hidden overscroll-contain bg-white dark:bg-gray-900 rounded-t-3xl px-5 pt-3 pb-[calc(env(safe-area-inset-bottom)+2rem)] sm:pb-6"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -101,7 +103,7 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
                 }}
                 autoFocus
                 aria-label="Nombre del ingrediente"
-                className="w-full px-3 py-2 font-display text-lg font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600"
+                className="w-full min-w-0 px-3 py-2 font-display text-lg font-bold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600"
               />
               {chocaConOtro && (
                 <p className="mt-1.5 text-xs text-amber-600 dark:text-amber-400">
@@ -132,7 +134,7 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
           <select
             value={item.familia}
             onChange={(e) => onEditar({ familia: e.target.value })}
-            className="mt-1 -ml-1 px-1 py-0.5 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 bg-transparent border-0 outline-none cursor-pointer hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+            className="mt-1 max-w-full px-1 py-0.5 text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 bg-transparent border-0 outline-none cursor-pointer hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
             aria-label="Cambiar familia"
           >
             {(FAMILIAS.includes(item.familia) ? FAMILIAS : [item.familia, ...FAMILIAS]).map((f) => (
@@ -186,14 +188,14 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
 
       <div className="mb-4">
         <div
-          className={`flex items-center justify-between gap-2 px-4 py-2.5 text-sm rounded-xl border ${
+          className={`flex items-center justify-between gap-2 px-4 py-2 text-sm rounded-xl border ${
             sugerida
               ? 'border-orange-200 dark:border-orange-800/60 bg-orange-50/40 dark:bg-orange-900/10'
               : 'border-gray-200 dark:border-gray-700'
           }`}
         >
           <span className="text-gray-500 dark:text-gray-400 shrink-0">Cantidad</span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 min-w-0">
             <input
               type="number"
               min={0}
@@ -209,14 +211,14 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
               }
               placeholder="—"
               aria-label="Cantidad en la despensa"
-              className="w-20 px-2 py-1 text-right text-sm bg-transparent text-gray-700 dark:text-gray-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 transition-colors"
+              className="w-20 min-w-0 px-2 py-1.5 text-right text-base sm:text-sm bg-transparent text-gray-700 dark:text-gray-200 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 transition-colors"
             />
             <select
               value={unidad}
               onChange={(e) => onEditar({ unidad: e.target.value })}
               disabled={item.cantidad == null}
               aria-label="Unidad"
-              className="px-1.5 py-1 text-sm bg-transparent text-gray-700 dark:text-gray-200 outline-none cursor-pointer disabled:text-gray-300 dark:disabled:text-gray-600 disabled:cursor-default"
+              className="shrink-0 px-1 py-1.5 text-base sm:text-sm bg-transparent text-gray-700 dark:text-gray-200 outline-none cursor-pointer disabled:text-gray-300 dark:disabled:text-gray-600 disabled:cursor-default"
             >
               {UNIDADES_DESPENSA.map((u) => (
                 <option key={u} value={u}>{u}</option>
