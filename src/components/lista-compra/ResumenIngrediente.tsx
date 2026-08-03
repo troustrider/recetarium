@@ -8,6 +8,7 @@ interface IngredienteAgrupado {
   familia: string
   esExtra?: boolean
   quedaPoco?: boolean
+  yaTengo?: number
 }
 
 interface Props {
@@ -22,7 +23,7 @@ function capitalize(s: string) {
 }
 
 function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {
-  const { nombre, cantidad, unidad, esExtra, quedaPoco } = ingrediente
+  const { nombre, cantidad, unidad, esExtra, quedaPoco, yaTengo } = ingrediente
 
   return (
     <motion.li
@@ -39,10 +40,15 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
           </svg>
         )}
       </span>
-      <span className={`flex-1 font-medium text-gray-800 dark:text-gray-200 ${checked ? 'line-through' : ''}`}>
+      <span className={`flex-1 min-w-0 font-medium text-gray-800 dark:text-gray-200 ${checked ? 'line-through' : ''}`}>
         {capitalize(nombre)}
         {esExtra && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">manual</span>}
         {quedaPoco && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-amber-500">queda poco</span>}
+        {yaTengo != null && yaTengo > 0 && (
+          <span className="block text-[11px] font-normal text-emerald-600 dark:text-emerald-400">
+            ya tenéis {formatCantidad(yaTengo, unidad)} en la despensa
+          </span>
+        )}
       </span>
       <span className="text-sm font-bold text-orange-600 tabular-nums shrink-0">
         {formatCantidad(cantidad, unidad)}

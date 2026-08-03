@@ -12,6 +12,8 @@ export interface IngredienteDespensaDTO {
   familia: string
   estado: 'lleno' | 'poco'
   caducidad?: string
+  cantidad?: number
+  unidad?: string
 }
 
 export interface PendientePlanDTO {

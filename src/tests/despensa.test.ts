@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes, coberturaDespensa } from '../utils/despensa'
+import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes, repartirDespensa } from '../utils/despensa'
+import { convertir, requiereCantidad } from '../utils/cantidades'
 import type { Receta } from '../types/receta'
 
 // Estos tests fijan el matching despensa↔receta. Si vuelven a rojo, el
@@ -88,32 +89,98 @@ describe('faltantes / estaEnDespensa', () => {
   })
 })
 
-describe('coberturaDespensa — filtrado de la lista de la compra', () => {
+describe('repartirDespensa — sin cantidades, manda el estado', () => {
   const hoy = new Date()
   const enDias = (n: number) => {
     const d = new Date(hoy)
     d.setDate(d.getDate() + n)
     return d.toISOString().slice(0, 10)
   }
+  const pedir = (nombre: string, cantidad = 100, unidad = 'g') => [{ nombre, cantidad, unidad }]
 
   it('lleno cubre (con matching de cocina), ausente no', () => {
     const despensa = [{ nombre: 'pollo', estado: 'lleno' }]
-    expect(coberturaDespensa('pechuga de pollo', despensa)).toBe('cubierto')
-    expect(coberturaDespensa('salmón', despensa)).toBe('no')
+    expect(repartirDespensa(pedir('pechuga de pollo'), despensa)[0].cobertura).toBe('cubierto')
+    expect(repartirDespensa(pedir('salmón'), despensa)[0].cobertura).toBe('no')
   })
 
   it('estado poco se compra igualmente pero marcado', () => {
     const despensa = [{ nombre: 'arroz', estado: 'poco' }]
-    expect(coberturaDespensa('arroz', despensa)).toBe('poco')
+    const [r] = repartirDespensa(pedir('arroz'), despensa)
+    expect(r.cobertura).toBe('poco')
+    expect(r.aComprar).toBe(100)
   })
 
   it('lo que caduca pronto cuenta como poco aunque esté lleno', () => {
     const despensa = [{ nombre: 'leche', estado: 'lleno', caducidad: enDias(1) }]
-    expect(coberturaDespensa('leche', despensa)).toBe('poco')
+    expect(repartirDespensa(pedir('leche', 200, 'ml'), despensa)[0].cobertura).toBe('poco')
   })
 
   it('caducidad lejana no penaliza', () => {
     const despensa = [{ nombre: 'huevos', estado: 'lleno', caducidad: enDias(20) }]
-    expect(coberturaDespensa('huevo', despensa)).toBe('cubierto')
+    expect(repartirDespensa(pedir('huevo', 2, 'ud'), despensa)[0].cobertura).toBe('cubierto')
+  })
+})
+
+describe('repartirDespensa — con cantidades, resta lo que hay en casa', () => {
+  it('con stock de sobra no se compra', () => {
+    const despensa = [{ nombre: 'pollo', estado: 'lleno', cantidad: 1, unidad: 'kg' }]
+    const [r] = repartirDespensa([{ nombre: 'pechuga de pollo', cantidad: 400, unidad: 'g' }], despensa)
+    expect(r.cobertura).toBe('cubierto')
+    expect(r.yaTengo).toBe(400)
+  })
+
+  it('con stock a medias solo se compra la diferencia', () => {
+    const despensa = [{ nombre: 'arroz', estado: 'lleno', cantidad: 150, unidad: 'g' }]
+    const [r] = repartirDespensa([{ nombre: 'arroz', cantidad: 400, unidad: 'g' }], despensa)
+    expect(r).toEqual({ cobertura: 'parcial', aComprar: 250, yaTengo: 150 })
+  })
+
+  it('la cantidad manda sobre el estado "poco" marcado a mano', () => {
+    const despensa = [{ nombre: 'leche', estado: 'poco', cantidad: 1, unidad: 'l' }]
+    expect(repartirDespensa([{ nombre: 'leche', cantidad: 250, unidad: 'ml' }], despensa)[0].cobertura).toBe('cubierto')
+  })
+
+  it('a cero se compra entero', () => {
+    const despensa = [{ nombre: 'lentejas', estado: 'lleno', cantidad: 0, unidad: 'g' }]
+    expect(repartirDespensa([{ nombre: 'lentejas', cantidad: 200, unidad: 'g' }], despensa)[0].cobertura).toBe('no')
+  })
+
+  it('un mismo stock no cubre dos ingredientes a la vez', () => {
+    const despensa = [{ nombre: 'pollo', estado: 'lleno', cantidad: 500, unidad: 'g' }]
+    const reparto = repartirDespensa(
+      [
+        { nombre: 'pechuga de pollo', cantidad: 400, unidad: 'g' },
+        { nombre: 'muslos de pollo', cantidad: 300, unidad: 'g' },
+      ],
+      despensa
+    )
+    expect(reparto[0].cobertura).toBe('cubierto')
+    expect(reparto[1]).toEqual({ cobertura: 'parcial', aComprar: 200, yaTengo: 100 })
+  })
+
+  it('unidades no comparables caen al criterio por estado', () => {
+    const despensa = [{ nombre: 'aceite de oliva', estado: 'lleno', cantidad: 500, unidad: 'ml' }]
+    const [r] = repartirDespensa([{ nombre: 'aceite de oliva', cantidad: 2, unidad: 'cucharada' }], despensa)
+    expect(r.cobertura).toBe('cubierto')
+    expect(r.yaTengo).toBe(0)
+  })
+})
+
+describe('cantidades — conversión y familias que la necesitan', () => {
+  it('convierte dentro de la misma dimensión y solo ahí', () => {
+    expect(convertir(1, 'kg', 'g')).toBe(1000)
+    expect(convertir(250, 'ml', 'l')).toBe(0.25)
+    expect(convertir(1, 'l', 'g')).toBeNull()
+    expect(convertir(2, 'cucharada', 'ml')).toBeNull()
+  })
+
+  it('pide cantidad donde cambia la compra, no en salsas ni especias', () => {
+    expect(requiereCantidad('carnes')).toBe(true)
+    expect(requiereCantidad('lácteos')).toBe(true)
+    expect(requiereCantidad('lacteos')).toBe(true)
+    expect(requiereCantidad('salsas')).toBe(false)
+    expect(requiereCantidad('especias')).toBe(false)
+    expect(requiereCantidad('condimentos')).toBe(false)
   })
 })

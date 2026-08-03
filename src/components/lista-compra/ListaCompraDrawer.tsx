@@ -14,7 +14,7 @@ interface Props {
 function ListaCompraDrawer({ open, onClose }: Props) {
   const { seleccionadas, listaCompra, enDespensa, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
-  const { añadir } = useDespensa()
+  const { reponer } = useDespensa()
   const { marcarPendientes } = usePendientesPlan()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
   const vacia = listaCompra.length === 0 && enDespensa.length === 0
@@ -23,7 +23,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
   function comprar() {
     const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
     if (aGuardar.length === 0) return
-    aGuardar.forEach((i) => añadir(i.nombre, i.familia))
+    aGuardar.forEach((i) => reponer(i.nombre, i.familia, i.cantidad, i.unidad))
 
     // Si aún queda algo por comprar en la lista, es una compra parcial: solo
     // sacamos lo marcado y dejamos el resto intacto.

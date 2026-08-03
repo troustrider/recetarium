@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { claveIngrediente, canonUnidad } from '../utils/ingredientes'
-import { coberturaDespensa } from '../utils/despensa'
+import { repartirDespensa } from '../utils/despensa'
 import { useDespensa } from '../context/DespensaContext'
 
 export interface IngredienteAgrupado extends Ingrediente {
@@ -10,6 +10,8 @@ export interface IngredienteAgrupado extends Ingrediente {
   esExtra?: boolean
   clave: string
   quedaPoco?: boolean
+  // Parte que ya cubre la despensa: `cantidad` es solo lo que falta comprar.
+  yaTengo?: number
 }
 
 export interface EntradaLista {
@@ -106,9 +108,10 @@ function useListaCompra() {
   )
 
   // Lo que hay que comprar de verdad: lo cubierto por la despensa se aparta a
-  // `enDespensa` (recuperable con un toque, por si el matching se equivoca) y
-  // lo que queda poco entra entero pero marcado. Los extras manuales nunca se
-  // filtran: si se añadieron a mano, se quieren comprar.
+  // `enDespensa` (recuperable con un toque, por si el matching se equivoca), lo
+  // que hay a medias entra rebajado por lo que ya tenemos y lo que queda poco
+  // entra entero pero marcado. Los extras manuales nunca se filtran: si se
+  // añadieron a mano, se quieren comprar.
   const { listaCompra, enDespensa } = useMemo(() => {
     const mapa = new Map<string, IngredienteAgrupado>()
 
@@ -134,12 +137,17 @@ function useListaCompra() {
 
     const comprar: IngredienteAgrupado[] = []
     const yaHay: IngredienteAgrupado[] = []
-    for (const item of mapa.values()) {
-      if (!item.esExtra && descartados.has(item.clave)) continue
-      const cobertura = item.esExtra ? 'no' : coberturaDespensa(item.nombre, despensa)
+    const deReceta = [...mapa.values()].filter((i) => !i.esExtra && !descartados.has(i.clave))
+    const reparto = repartirDespensa(deReceta, despensa)
+
+    comprar.push(...[...mapa.values()].filter((i) => i.esExtra))
+    deReceta.forEach((item, k) => {
+      const { cobertura, aComprar, yaTengo } = reparto[k]
       if (cobertura === 'cubierto') yaHay.push(item)
-      else comprar.push(cobertura === 'poco' ? { ...item, quedaPoco: true } : item)
-    }
+      else if (cobertura === 'poco') comprar.push({ ...item, quedaPoco: true })
+      else if (cobertura === 'parcial') comprar.push({ ...item, cantidad: aComprar, yaTengo })
+      else comprar.push(item)
+    })
 
     const porFamilia = (a: IngredienteAgrupado, b: IngredienteAgrupado) =>
       a.familia.localeCompare(b.familia) || a.nombre.localeCompare(b.nombre)

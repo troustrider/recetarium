@@ -4,6 +4,7 @@ import { Plus, X } from 'lucide-react'
 import { useDespensa } from '../../context/DespensaContext'
 import { FAMILIAS, estaEnDespensa } from '../../utils/despensa'
 import { normalizar } from '../../utils/ingredientes'
+import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
 import useIngredientesConocidos from '../../hooks/useIngredientesConocidos'
 
 function capitalize(s: string) {
@@ -24,6 +25,11 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
   const [nombre, setNombre] = useState('')
   const [familia, setFamilia] = useState('otros')
   const [caducidad, setCaducidad] = useState('')
+  const [cantidad, setCantidad] = useState('')
+  const [unidad, setUnidad] = useState(unidadPorDefecto('otros'))
+  // Familias que no se miden (salsas, especias…) esconden la cantidad hasta
+  // que se pide a mano.
+  const [cantidadManual, setCantidadManual] = useState(false)
 
   const nq = normalizar(nombre)
   const sugerencias = nq
@@ -32,17 +38,28 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
 
   const yaExiste = nombre.trim().length > 0 && estaEnDespensa(nombre, despensa)
   const puedeAñadir = nombre.trim().length > 1 && !yaExiste
+  const mostrarCantidad = requiereCantidad(familia) || cantidadManual
+
+  function cambiarFamilia(f: string) {
+    setFamilia(f)
+    setUnidad(unidadPorDefecto(f))
+  }
 
   function elegirSugerencia(s: { nombre: string; familia: string }) {
     setNombre(s.nombre)
-    setFamilia(s.familia)
+    cambiarFamilia(s.familia)
   }
 
   function handleAñadir() {
     if (!puedeAñadir) return
-    añadir(nombre, familia, caducidad || undefined)
+    const n = Number(cantidad)
+    añadir(nombre, familia, {
+      caducidad: caducidad || undefined,
+      ...(cantidad !== '' && n > 0 ? { cantidad: n, unidad } : {}),
+    })
     setNombre('')
     setCaducidad('')
+    setCantidad('')
   }
 
   return (
@@ -110,10 +127,10 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
               </p>
             )}
 
-            <div className="flex gap-2 mt-3 mb-4">
+            <div className="flex gap-2 mt-3">
               <select
                 value={familia}
-                onChange={(e) => setFamilia(e.target.value)}
+                onChange={(e) => cambiarFamilia(e.target.value)}
                 className="flex-1 px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
                 aria-label="Familia"
               >
@@ -130,6 +147,40 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
                 aria-label="Fecha de caducidad (opcional)"
               />
             </div>
+
+            {mostrarCantidad ? (
+              <div className="flex gap-2 mt-2 mb-4">
+                <input
+                  type="number"
+                  min={0}
+                  step="any"
+                  inputMode="decimal"
+                  value={cantidad}
+                  onChange={(e) => setCantidad(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAñadir()}
+                  placeholder={requiereCantidad(familia) ? '¿Cuánto hay?' : 'Cantidad (opcional)'}
+                  aria-label="Cantidad"
+                  className="flex-1 min-w-0 px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600"
+                />
+                <select
+                  value={unidad}
+                  onChange={(e) => setUnidad(e.target.value)}
+                  aria-label="Unidad"
+                  className="px-3 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
+                >
+                  {UNIDADES_DESPENSA.map((u) => (
+                    <option key={u} value={u}>{u}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <button
+                onClick={() => setCantidadManual(true)}
+                className="mt-2 mb-4 px-1 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+              >
+                + Añadir cantidad
+              </button>
+            )}
 
             <motion.button
               onClick={handleAñadir}

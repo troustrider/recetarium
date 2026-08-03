@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import type { IngredienteDespensa } from '../../context/DespensaContext'
 import { infoCaducidad } from '../../utils/despensa'
+import { requiereCantidad } from '../../utils/cantidades'
+import { formatCantidad } from '../../utils/ingredientes'
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
@@ -60,9 +62,17 @@ function TarjetaIngrediente({ item, onClick }: Props) {
       </span>
 
       <span className="flex items-center justify-between gap-2 text-[11px] min-h-4">
-        <span className={`font-medium ${esLleno ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
-          {esLleno ? 'De sobra' : 'Queda poco'}
-        </span>
+        {item.cantidad != null ? (
+          <span className="font-bold tabular-nums text-gray-700 dark:text-gray-200">
+            {formatCantidad(item.cantidad, item.unidad ?? 'ud')}
+          </span>
+        ) : requiereCantidad(item.familia) ? (
+          <span className="font-medium text-gray-300 dark:text-gray-600">sin cantidad</span>
+        ) : (
+          <span className={`font-medium ${esLleno ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+            {esLleno ? 'De sobra' : 'Queda poco'}
+          </span>
+        )}
         {cad != null && (
           <span
             className={`font-semibold ${

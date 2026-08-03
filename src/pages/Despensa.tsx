@@ -25,7 +25,7 @@ function capitalize(s: string) {
 }
 
 function Despensa() {
-  const { despensa, añadir, quitar, setEstado, setCaducidad, setFamilia, vaciar } = useDespensa()
+  const { despensa, añadir, reponer, editar, quitar, vaciar } = useDespensa()
   const { listaCompra, addExtra } = useListaCompraContext()
   const { comprados } = useCompradosContext()
   const { recetas } = useRecetasContext()
@@ -108,7 +108,7 @@ function Despensa() {
   }
 
   function importarComprados() {
-    for (const ing of importables) añadir(ing.nombre, ing.familia)
+    for (const ing of importables) reponer(ing.nombre, ing.familia, ing.cantidad, ing.unidad)
   }
 
   return (
@@ -342,9 +342,11 @@ function Despensa() {
       <FichaIngrediente
         item={seleccionado}
         enLista={seleccionado ? enLista(seleccionado.nombre) : false}
-        onEstado={(e) => seleccionado && setEstado(seleccionado.nombre, e)}
-        onCaducidad={(c) => seleccionado && setCaducidad(seleccionado.nombre, c)}
-        onFamilia={(f) => seleccionado && setFamilia(seleccionado.nombre, f)}
+        onEditar={(cambios) => {
+          if (!seleccionado) return
+          editar(seleccionado.nombre, cambios)
+          if (cambios.nombre) setSelNombre(cambios.nombre.trim().toLowerCase())
+        }}
         onALista={() => seleccionado && mandarALista(seleccionado)}
         onQuitar={() => { if (seleccionado) { quitar(seleccionado.nombre); setSelNombre(null) } }}
         onClose={() => setSelNombre(null)}

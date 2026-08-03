@@ -8,6 +8,7 @@
 // la receta y viceversa.
 
 import { normalizar, canonUnidad } from './ingredientes'
+import { convertir, redondear, unidadMedible } from './cantidades'
 import { aplicarAlias } from './alias'
 import type { Receta } from '../types/receta'
 
@@ -104,19 +105,73 @@ export function faltantes(receta: Receta, despensa: { nombre: string }[]): strin
     .map((ing) => ing.nombre)
 }
 
-// Cobertura de un ingrediente de la lista de compra por la despensa. La
-// despensa no guarda cantidades, así que "nos falta cantidad" se traduce en
-// estado 'poco' o caducidad encima: se compra entero pero avisando de que
-// queda algo en casa.
-export type CoberturaDespensa = 'cubierto' | 'poco' | 'no'
+// Cobertura de un ingrediente de la lista de compra por la despensa:
+//   cubierto — hay bastante, no se compra
+//   parcial  — hay algo, se compra solo la diferencia
+//   poco     — hay, pero sin cantidad fiable (marcado "poco" o caducando):
+//              se compra entero avisando de que queda algo en casa
+//   no       — no hay
+export type CoberturaDespensa = 'cubierto' | 'parcial' | 'poco' | 'no'
 
-export function coberturaDespensa(
-  nombre: string,
-  despensa: { nombre: string; estado: string; caducidad?: string }[]
-): CoberturaDespensa {
-  const match = despensa.find((d) => despensaCubre(d.nombre, nombre))
-  if (!match) return 'no'
-  return match.estado === 'poco' || caducaPronto(match) ? 'poco' : 'cubierto'
+export interface ItemCompra {
+  nombre: string
+  cantidad: number
+  unidad: string
+}
+
+export interface Reparto {
+  cobertura: CoberturaDespensa
+  aComprar: number // en la unidad del ítem de la lista
+  yaTengo: number // idem; 0 cuando no hay cantidad que descontar
+}
+
+interface ItemDespensa {
+  nombre: string
+  estado: string
+  caducidad?: string
+  cantidad?: number
+  unidad?: string
+}
+
+// Reparte el stock de la despensa entre los ingredientes de la lista, en
+// orden. Un mismo ingrediente de despensa ("pollo") puede cubrir varias
+// entradas ("pechuga", "muslo"): se le va descontando para no contarlo dos
+// veces. Cuando no hay cantidad guardada, o la unidad de la receta no es
+// comparable ("2 cucharadas" contra "500 ml"), se cae al criterio por estado.
+export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]): Reparto[] {
+  const restante = despensa.map((d) =>
+    typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
+  )
+
+  return items.map((item) => {
+    const idx = despensa.findIndex((d) => despensaCubre(d.nombre, item.nombre))
+    if (idx === -1) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
+
+    const d = despensa[idx]
+    const stock = restante[idx]
+    const disponible = stock == null ? null : convertir(stock, d.unidad!, item.unidad)
+
+    if (disponible == null) {
+      const poco = d.estado === 'poco' || caducaPronto(d)
+      return { cobertura: poco ? 'poco' : 'cubierto', aComprar: item.cantidad, yaTengo: 0 }
+    }
+    if (disponible <= 0) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
+
+    // Con cantidad explícita manda la cantidad, pero la caducidad sigue
+    // obligando a reponer aunque el stock diera de sobra.
+    if (disponible >= item.cantidad) {
+      if (caducaPronto(d)) return { cobertura: 'poco', aComprar: item.cantidad, yaTengo: 0 }
+      restante[idx] = redondear(stock! - convertir(item.cantidad, item.unidad, d.unidad!)!)
+      return { cobertura: 'cubierto', aComprar: 0, yaTengo: item.cantidad }
+    }
+
+    restante[idx] = 0
+    return {
+      cobertura: 'parcial',
+      aComprar: redondear(item.cantidad - disponible),
+      yaTengo: disponible,
+    }
+  })
 }
 
 export function diasHastaCaducidad(caducidad: string): number {
