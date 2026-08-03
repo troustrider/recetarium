@@ -14,6 +14,8 @@ export const ALIAS_TOKENS: Record<string, string> = {
   culantro: 'cilantro',
   palta: 'aguacate',
   choclo: 'maiz',
+  repollo: 'col',
+  cabbage: 'col',
 }
 
 export function aplicarAlias(token: string): string {

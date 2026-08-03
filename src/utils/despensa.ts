@@ -35,7 +35,7 @@ const DESCRIPTORES = new Set([
 // "Cabezas" cuyo calificador denota un producto distinto: aceite de oliva ≠
 // aceite de girasol, leche ≠ leche de coco, salsa de soja ≠ salsa de pescado.
 // Un genérico de la despensa (solo la cabeza) NO cubre al específico de receta.
-const CABEZAS_AMBIGUAS = new Set(['aceite', 'leche', 'salsa', 'vino', 'vinagre', 'caldo', 'harina', 'pasta', 'crema'])
+const CABEZAS_AMBIGUAS = new Set(['aceite', 'leche', 'salsa', 'vino', 'vinagre', 'caldo', 'harina', 'pasta', 'crema', 'col'])
 
 function singular(t: string): string {
   if (t.length > 3 && t.endsWith('es')) return t.slice(0, -2)

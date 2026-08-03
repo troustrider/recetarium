@@ -36,6 +36,9 @@ describe('despensaCubre — falsos negativos que rompían la disponibilidad', ()
     expect(despensaCubre('ketjap mani', 'kecap manis')).toBe(true)
     expect(despensaCubre('langostinos', 'gambas')).toBe(true)
     expect(despensaCubre('culantro', 'cilantro')).toBe(true)
+    expect(despensaCubre('repollo', 'col')).toBe(true)
+    expect(despensaCubre('cabbage', 'repollo')).toBe(true)
+    expect(despensaCubre('coles', 'repollos')).toBe(true)
   })
 })
 
@@ -50,6 +53,9 @@ describe('despensaCubre — no debe inventar disponibilidad', () => {
     // tener "leche" a secas no da por buena "leche de coco"
     expect(despensaCubre('leche', 'leche de coco')).toBe(false)
     expect(despensaCubre('harina', 'harina de almendra')).toBe(false)
+    // repollo/col/cabbage son lo mismo, pero no son col rizada ni col china
+    expect(despensaCubre('repollo', 'col rizada congelada')).toBe(false)
+    expect(despensaCubre('cabbage', 'col china')).toBe(false)
   })
 
   it('ingredientes sin relación no casan', () => {
