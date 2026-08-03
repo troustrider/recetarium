@@ -1,36 +1,43 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import type { Ingrediente } from '../../types/receta'
-import { esDeHogar, FAMILIA_HOGAR } from '../../utils/despensa'
+import { esDeHogar, mismoIngrediente, FAMILIAS, FAMILIA_HOGAR } from '../../utils/despensa'
+import useIngredientesConocidos from '../../hooks/useIngredientesConocidos'
 
 interface Props {
   onAdd: (item: Ingrediente) => void
 }
 
-// Secciones del súper (familia) para agrupar la lista de forma coherente.
-// "Hogar" no es comida: lo comprado en esa sección sale de la lista sin pasar
-// por la despensa.
-const SECCIONES = [
-  'verduras', 'frutas', 'carnes', 'pescados', 'lacteos', 'huevos',
-  'cereales', 'legumbres', 'frutos secos', 'especias', 'condimentos', 'salsas', 'bebidas', FAMILIA_HOGAR, 'otros',
-]
+// Mismas secciones que la despensa para que un extra agrupe con lo que ya
+// traen las recetas. "Hogar" no es comida: lo comprado en esa sección sale de
+// la lista sin pasar por la despensa.
+const SECCIONES = FAMILIAS
 const UNIDADES = ['ud', 'g', 'ml', 'paquete', 'lata', 'manojo']
 
 const LABEL = 'block text-[11px] font-semibold text-gray-500 dark:text-gray-400 mb-1'
 const FIELD = 'w-full px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-orange-300 placeholder-gray-400'
 
 function AnadirManual({ onAdd }: Props) {
+  const conocidos = useIngredientesConocidos()
   const [nombre, setNombre] = useState('')
   const [cantidad, setCantidad] = useState('')
   const [unidad, setUnidad] = useState('ud')
   const [familia, setFamilia] = useState('otros')
   const [familiaManual, setFamiliaManual] = useState(false)
 
-  // "Detergente" o "papel higiénico" saltan solos a Hogar; si el usuario toca
-  // el selector, manda su elección.
+  // Sección deducida del nombre: "detergente" va a Hogar y "lentejas" a
+  // Legumbres porque el recetario ya sabe su familia. Si el usuario toca el
+  // selector, manda su elección.
+  function deducirFamilia(valor: string): string {
+    if (!valor.trim()) return 'otros'
+    if (esDeHogar({ nombre: valor })) return FAMILIA_HOGAR
+    const conocido = conocidos.find((c) => mismoIngrediente(c.nombre, valor))
+    return conocido && FAMILIAS.includes(conocido.familia) ? conocido.familia : 'otros'
+  }
+
   function escribirNombre(valor: string) {
     setNombre(valor)
-    if (!familiaManual) setFamilia(esDeHogar({ nombre: valor }) ? FAMILIA_HOGAR : 'otros')
+    if (!familiaManual) setFamilia(deducirFamilia(valor))
   }
 
   function submit() {
