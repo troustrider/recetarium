@@ -12,10 +12,32 @@ import { convertir, redondear, unidadMedible } from './cantidades'
 import { aplicarAlias } from './alias'
 import type { Receta } from '../types/receta'
 
+export const FAMILIA_HOGAR = 'hogar'
+
 export const FAMILIAS = [
   'verduras', 'frutas', 'carnes', 'pescados', 'lácteos', 'huevos',
-  'cereales', 'legumbres', 'frutos secos', 'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', 'otros',
+  'cereales', 'legumbres', 'frutos secos', 'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', FAMILIA_HOGAR, 'otros',
 ]
+
+// Limpieza, higiene y papel: se compran con la lista pero no son ingredientes,
+// así que al marcarlos como comprados salen de la lista sin entrar en la
+// despensa. La familia manda; las pistas por nombre solo evitan tener que
+// elegir la sección a mano en lo más habitual.
+const PISTAS_HOGAR = [
+  'detergente', 'suavizante', 'lejia', 'lavavajillas', 'friegasuelos', 'limpiacristales',
+  'quitagrasas', 'ambientador', 'insecticida', 'estropajo', 'bayeta', 'fregona',
+  'papel higienico', 'papel de cocina', 'servilleta', 'bolsa de basura', 'bolsas de basura',
+  'film transparente', 'papel de aluminio', 'papel aluminio', 'papel de horno',
+  'jabon', 'gel de ducha', 'champu', 'acondicionador', 'pasta de dientes',
+  'cepillo de dientes', 'desodorante', 'cuchilla', 'maquinilla', 'panuelos',
+  'compresa', 'tampon', 'algodon', 'bastoncillo', 'pilas',
+]
+
+export function esDeHogar(item: { nombre: string; familia?: string }): boolean {
+  if (item.familia === FAMILIA_HOGAR) return true
+  const n = normalizar(item.nombre)
+  return PISTAS_HOGAR.some((p) => n.includes(p))
+}
 
 // Conectores sin valor semántico ("aceite DE oliva", "huevo Y queso").
 const STOPWORDS = new Set(['de', 'del', 'la', 'el', 'al', 'con', 'en', 'y', 'a', 'para', 'sin', 'o'])

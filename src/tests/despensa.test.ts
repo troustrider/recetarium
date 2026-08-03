@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes, repartirDespensa } from '../utils/despensa'
+import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes, repartirDespensa, esDeHogar } from '../utils/despensa'
 import { convertir, requiereCantidad } from '../utils/cantidades'
 import type { Receta } from '../types/receta'
 
@@ -179,6 +179,15 @@ describe('cantidades — conversión y familias que la necesitan', () => {
     expect(convertir(250, 'ml', 'l')).toBe(0.25)
     expect(convertir(1, 'l', 'g')).toBeNull()
     expect(convertir(2, 'cucharada', 'ml')).toBeNull()
+  })
+
+  it('no mete la compra de casa en la despensa', () => {
+    expect(esDeHogar({ nombre: 'detergente' })).toBe(true)
+    expect(esDeHogar({ nombre: 'papel higiénico' })).toBe(true)
+    expect(esDeHogar({ nombre: 'lavavajillas a mano' })).toBe(true)
+    expect(esDeHogar({ nombre: 'lo que sea', familia: 'hogar' })).toBe(true)
+    expect(esDeHogar({ nombre: 'lentejas' })).toBe(false)
+    expect(esDeHogar({ nombre: 'papel de arroz' })).toBe(false)
   })
 
   it('pide cantidad donde cambia la compra, no en salsas ni especias', () => {

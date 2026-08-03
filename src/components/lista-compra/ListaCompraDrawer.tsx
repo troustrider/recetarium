@@ -6,6 +6,7 @@ import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
 import { formatCantidad } from '../../utils/ingredientes'
+import { esDeHogar } from '../../utils/despensa'
 
 interface Props {
   open: boolean
@@ -24,7 +25,9 @@ function ListaCompraDrawer({ open, onClose }: Props) {
   function comprar() {
     const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
     if (aGuardar.length === 0) return
-    aGuardar.forEach((i) => reponer(i.nombre, i.familia, i.cantidad, i.unidad))
+    aGuardar
+      .filter((i) => !esDeHogar(i))
+      .forEach((i) => reponer(i.nombre, i.familia, i.cantidad, i.unidad))
 
     // Si aún queda algo por comprar en la lista, es una compra parcial: solo
     // sacamos lo marcado y dejamos el resto intacto.

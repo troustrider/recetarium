@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import type { Ingrediente } from '../../types/receta'
+import { esDeHogar, FAMILIA_HOGAR } from '../../utils/despensa'
 
 interface Props {
   onAdd: (item: Ingrediente) => void
 }
 
 // Secciones del súper (familia) para agrupar la lista de forma coherente.
+// "Hogar" no es comida: lo comprado en esa sección sale de la lista sin pasar
+// por la despensa.
 const SECCIONES = [
   'verduras', 'frutas', 'carnes', 'pescados', 'lacteos', 'huevos',
-  'cereales', 'legumbres', 'frutos secos', 'especias', 'condimentos', 'salsas', 'bebidas', 'otros',
+  'cereales', 'legumbres', 'frutos secos', 'especias', 'condimentos', 'salsas', 'bebidas', FAMILIA_HOGAR, 'otros',
 ]
 const UNIDADES = ['ud', 'g', 'ml', 'paquete', 'lata', 'manojo']
 
@@ -21,6 +24,14 @@ function AnadirManual({ onAdd }: Props) {
   const [cantidad, setCantidad] = useState('')
   const [unidad, setUnidad] = useState('ud')
   const [familia, setFamilia] = useState('otros')
+  const [familiaManual, setFamiliaManual] = useState(false)
+
+  // "Detergente" o "papel higiénico" saltan solos a Hogar; si el usuario toca
+  // el selector, manda su elección.
+  function escribirNombre(valor: string) {
+    setNombre(valor)
+    if (!familiaManual) setFamilia(esDeHogar({ nombre: valor }) ? FAMILIA_HOGAR : 'otros')
+  }
 
   function submit() {
     if (!nombre.trim()) return
@@ -30,7 +41,7 @@ function AnadirManual({ onAdd }: Props) {
       unidad,
       familia,
     })
-    setNombre('')
+    escribirNombre('')
     setCantidad('')
   }
 
@@ -45,7 +56,7 @@ function AnadirManual({ onAdd }: Props) {
           className={FIELD}
           placeholder="Ej: detergente, leche, papel de cocina…"
           value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          onChange={(e) => escribirNombre(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && submit()}
         />
       </div>
@@ -63,7 +74,7 @@ function AnadirManual({ onAdd }: Props) {
         </div>
         <div>
           <label className={LABEL} htmlFor="manual-familia">Sección</label>
-          <select id="manual-familia" className={FIELD} value={familia} onChange={(e) => setFamilia(e.target.value)}>
+          <select id="manual-familia" className={FIELD} value={familia} onChange={(e) => { setFamiliaManual(true); setFamilia(e.target.value) }}>
             {SECCIONES.map((s) => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
           </select>
         </div>
