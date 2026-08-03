@@ -49,7 +49,9 @@ const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes t
 
 // Verduras que forman la base aromática y no cuentan como verdura del plato.
 const RE_BASE_AROMATICA = /^(ajo|cebolla|cebolla roja|cebolleta|chalota|puerro|tomate triturado|tomate frito|passata|perejil|cilantro|albahaca|menta|cebollino|limon|lima|guindilla|chile jalapeno)$/
-const RE_GUARNICION = /guarnici[oó]n|al lado|acompa[ñn]|de acompa/i
+// Formas en que un consejo declara de verdad la guarnición. Es una heurística de prosa: ve
+// que el autor pensó en la comida completa, no si lo que propone pega con el plato.
+const RE_GUARNICION = /guarnici[oó]n|al lado|acompa[ñn]|de acompa|s[ií]rve(?:lo|la)? con|se (?:come|sirve|toma) (?:con|en)|va con|encima van|por encima van/i
 
 const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
 
@@ -193,19 +195,19 @@ export function validar(r, { estricto = true } = {}) {
   if (Array.isArray(r.consejos))
     r.consejos.forEach((con, n) => {
       const meta = con.match(RE_META_CONSEJO)
-      if (meta) w.push(`consejo ${n + 1}: metacomentario de autoría ("${meta[0]}")`)
+      if (meta) e.push(`consejo ${n + 1}: metacomentario de autoría ("${meta[0]}")`)
     })
 
   // --- comida completa ---
   // Un principal sin verdura y sin guarnición declarada es un componente vendido como
-  // comida, y sus macros describen media cena. Aviso mientras se saldan las que ya estaban.
+  // comida, y sus macros describen media cena.
   if (estricto && r.tipo === 'principal' && Array.isArray(r.ingredientes)) {
     const verduras = r.ingredientes.filter(
       (i) => i.familia === 'verduras' && !RE_BASE_AROMATICA.test(norm(i.nombre))
     )
     const declaraGuarnicion = (r.consejos ?? []).some((c) => RE_GUARNICION.test(c))
     if (!verduras.length && !declaraGuarnicion)
-      w.push('principal sin verdura propia y sin guarnición declarada en consejos')
+      e.push('principal sin verdura propia y sin guarnición declarada en consejos')
   }
 
   // --- coherencia ingredientes <-> pasos ---
@@ -234,18 +236,20 @@ export function validar(r, { estricto = true } = {}) {
     if (est.desconocidos.length) {
       w.push(`macros sin contrastar, falta ficha en nutrientes.json de: ${est.desconocidos.join(', ')}`)
     } else {
+      // Proteína y carbohidrato se comen enteros: lo que entra en la lista acaba en el
+      // plato, así que aquí el umbral aprieta y es ERROR.
       if (typeof p === 'number' && est.proteinas >= 5 && pct(p, est.proteinas) > 0.2)
         e.push(`proteína declarada ${p} g/ración, los ingredientes dan ${est.proteinas.toFixed(1)} g`)
-      if (typeof kcal === 'number' && est.calorias >= 100 && pct(kcal, est.calorias) > 0.2)
-        e.push(`kcal declaradas ${kcal}/ración, los ingredientes dan ${Math.round(est.calorias)}`)
-      // Grasa y carbohidrato admiten más ruido y por eso son aviso, no error. La
-      // estimación cuenta el 100% del aceite añadido, pero en un sofrito o una fritura
-      // parte se queda en la sartén: medido sobre la BD, la grasa declarada va un 22% por
-      // debajo de forma sistemática. El umbral se abre para no llenar el audit de ruido.
-      if (typeof c === 'number' && est.carbohidratos >= 10 && pct(c, est.carbohidratos) > 0.3)
-        w.push(`carbohidratos declarados ${c} g/ración, los ingredientes dan ${est.carbohidratos.toFixed(1)} g`)
+      if (typeof c === 'number' && est.carbohidratos >= 10 && pct(c, est.carbohidratos) > 0.25)
+        e.push(`carbohidratos declarados ${c} g/ración, los ingredientes dan ${est.carbohidratos.toFixed(1)} g`)
+      // La grasa es el único macro con una pregunta real de retención: el aceite de una
+      // fritura por inmersión se queda casi entero en la sartén, y contarlo daría 240 g de
+      // grasa por ración en unas croquetas. Aviso, y el número declarado manda.
       if (typeof g === 'number' && est.grasas >= 8 && pct(g, est.grasas) > 0.35)
         w.push(`grasas declaradas ${g} g/ración, los ingredientes dan ${est.grasas.toFixed(1)} g`)
+      // Las kcal no se contrastan por separado: con P y C atados a los ingredientes y la
+      // coherencia interna 4P+4C+9G al 10%, el único grado de libertad que queda es la
+      // grasa, y ahí ya hemos decidido que el declarado es mejor estimador que la suma.
     }
   }
 
@@ -357,7 +361,13 @@ function migrar(lote) {
 
 const [cmd, fichero] = process.argv.slice(2)
 
-if (cmd === 'audit') {
+// Solo despacha comandos si se invoca directamente: así `validar` y `estimarMacros`
+// se pueden importar desde otros scripts sin que arranque la CLI.
+const comoCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+if (!comoCli) {
+  // importado como módulo
+} else if (cmd === 'audit') {
   const todas = await leerTodas()
   let limpias = 0
   const porFallo = new Map()
