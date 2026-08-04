@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
 import type { Receta } from '../types/receta'
 import { useListaCompraContext } from './ListaCompraContext'
 import { useRecetasContext } from './RecetasContext'
 import { usePendientesPlan } from './PendientesPlanContext'
 import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
+import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
 export type Dia = typeof DIAS[number]
@@ -51,52 +52,20 @@ interface PlanificadorCtx {
 const PlanificadorContext = createContext<PlanificadorCtx | null>(null)
 
 export function PlanificadorProvider({ children }: { children: ReactNode }) {
-  const [plan, setPlan] = useState<Plan>(PLAN_VACIO)
   const { recetas, loading } = useRecetasContext()
+
+  // Se hidrata por id contra el catálogo, así que espera a tenerlo cargado.
+  const [plan, cambiarPlan] = useEstadoCompartido<Plan, EntradaPlanDTO[]>({
+    inicial: PLAN_VACIO,
+    listo: !loading && recetas.length > 0,
+    cargar: getPlan,
+    guardar: savePlan,
+    serializar,
+    hidratar: (dtos) => hidratar(dtos, recetas),
+  })
+
   const { seleccionadas, toggleReceta, setRaciones: setRacionesLista, estaSeleccionada } = useListaCompraContext()
   const { pendientes, quitarPendiente } = usePendientesPlan()
-
-  // Carga inicial del plan compartido desde el backend (una sola vez,
-  // cuando el catálogo está disponible para rehidratar por id).
-  const hidratadoRef = useRef(false)
-  const saltarGuardadoRef = useRef(false)
-  const tocadoRef = useRef(false)
-  const planRef = useRef(plan)
-  useEffect(() => {
-    if (hidratadoRef.current || loading || recetas.length === 0) return
-    let cancelado = false
-    getPlan()
-      .then((dtos) => {
-        if (cancelado) return
-        // Si el usuario ya tocó el plan mientras cargaba, lo suyo manda: se
-        // sube en vez de que la respuesta lo borre de la pantalla.
-        if (tocadoRef.current) {
-          savePlan(serializar(planRef.current)).catch(() => {})
-          return
-        }
-        saltarGuardadoRef.current = true
-        setPlan(hidratar(dtos, recetas))
-      })
-      .catch(() => {})
-      .finally(() => { if (!cancelado) hidratadoRef.current = true })
-    return () => { cancelado = true }
-  }, [loading, recetas])
-
-  // Guardado con debounce ante cambios del plan (tras la hidratación).
-  useEffect(() => {
-    planRef.current = plan
-    if (!hidratadoRef.current) return
-    if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
-    const t = setTimeout(() => {
-      savePlan(serializar(plan)).catch(() => {})
-    }, 800)
-    return () => clearTimeout(t)
-  }, [plan])
-
-  const cambiarPlan: typeof setPlan = (accion) => {
-    tocadoRef.current = true
-    setPlan(accion)
-  }
 
   const seleccionadasRef = useRef(seleccionadas)
   const estaSeleccionadaRef = useRef(estaSeleccionada)

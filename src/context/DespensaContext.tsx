@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react'
-import { getDespensa, saveDespensa } from '../api/estado'
+import { createContext, useContext, type ReactNode } from 'react'
+import { getDespensa, saveDespensa, type IngredienteDespensaDTO } from '../api/estado'
+import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { mismoIngrediente } from '../utils/despensa'
 import { convertir, redondear, unidadMedible } from '../utils/cantidades'
 
@@ -73,50 +74,17 @@ function leerCacheLocal(): IngredienteDespensa[] {
 
 export function DespensaProvider({ children }: { children: ReactNode }) {
   // El cache local pinta la UI al instante; el backend es la fuente de verdad
-  // compartida y se impone en cuanto responde.
-  const [despensa, setDespensa] = useState<IngredienteDespensa[]>(leerCacheLocal)
-
-  const hidratadoRef = useRef(false)
-  const saltarGuardadoRef = useRef(false)
-  const tocadoRef = useRef(false)
-  const despensaRef = useRef(despensa)
-  useEffect(() => {
-    let cancelado = false
-    getDespensa()
-      .then((remota) => {
-        if (cancelado) return
-        // Lo que se haya tocado mientras cargaba manda sobre la respuesta.
-        if (tocadoRef.current) {
-          saveDespensa(despensaRef.current).catch(() => {})
-          return
-        }
-        if (remota.length > 0) {
-          saltarGuardadoRef.current = true
-          setDespensa(remota)
-        } else {
-          // Backend vacío: migración única de lo que hubiera en este dispositivo.
-          const local = leerCacheLocal()
-          if (local.length > 0) saveDespensa(local).catch(() => {})
-        }
-      })
-      .catch(() => {})
-      .finally(() => { if (!cancelado) hidratadoRef.current = true })
-    return () => { cancelado = true }
-  }, [])
-
-  useEffect(() => {
-    despensaRef.current = despensa
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(despensa))
-    if (!hidratadoRef.current) return
-    if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
-    const t = setTimeout(() => { saveDespensa(despensa).catch(() => {}) }, 800)
-    return () => clearTimeout(t)
-  }, [despensa])
-
-  const cambiarDespensa: typeof setDespensa = (accion) => {
-    tocadoRef.current = true
-    setDespensa(accion)
-  }
+  // compartida. Si el backend viene vacío, se sube lo que hubiera en este
+  // dispositivo (migración única) devolviendo null desde hidratar.
+  const [despensa, cambiarDespensa] = useEstadoCompartido<IngredienteDespensa[], IngredienteDespensaDTO[]>({
+    inicial: leerCacheLocal,
+    cargar: getDespensa,
+    guardar: saveDespensa,
+    serializar: (d) => d,
+    hidratar: (remota, actual) =>
+      remota.length > 0 ? (remota as IngredienteDespensa[]) : actual.length > 0 ? null : actual,
+    alCambiar: (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d)),
+  })
 
   function añadir(nombre: string, familia: string, alta: AltaIngrediente = {}) {
     const norm = normalizar(nombre)

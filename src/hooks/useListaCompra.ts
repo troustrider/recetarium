@@ -1,6 +1,7 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
+import { useEstadoCompartido } from './useEstadoCompartido'
 import { claveIngrediente, canonUnidad } from '../utils/ingredientes'
 import { repartirDespensa } from '../utils/despensa'
 import { useDespensa } from '../context/DespensaContext'
@@ -21,28 +22,19 @@ export interface EntradaLista {
 
 function useListaCompra() {
   const [seleccionadas, setSeleccionadas] = useState<EntradaLista[]>([])
-  const [extras, setExtras] = useState<Ingrediente[]>([])
   // Claves quitadas a mano de la lista (ítems de receta que no se quieren comprar).
   const [descartados, setDescartados] = useState<Set<string>>(new Set())
-  const { despensa } = useDespensa()
 
   // Ítems manuales: compartidos en backend (los ve también la pareja).
-  const hidratadoRef = useRef(false)
-  const saltarGuardadoRef = useRef(false)
-  useEffect(() => {
-    let cancelado = false
-    getExtras()
-      .then((e) => { if (!cancelado) { saltarGuardadoRef.current = true; setExtras(e) } })
-      .catch(() => {})
-      .finally(() => { if (!cancelado) hidratadoRef.current = true })
-    return () => { cancelado = true }
-  }, [])
-  useEffect(() => {
-    if (!hidratadoRef.current) return
-    if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
-    const t = setTimeout(() => { saveExtras(extras).catch(() => {}) }, 800)
-    return () => clearTimeout(t)
-  }, [extras])
+  const [extras, setExtras] = useEstadoCompartido<Ingrediente[], Ingrediente[]>({
+    inicial: [],
+    cargar: getExtras,
+    guardar: saveExtras,
+    serializar: (e) => e,
+    hidratar: (e) => e,
+  })
+
+  const { despensa } = useDespensa()
 
   // Callbacks estables: RecetaCard está memoizada y los recibe como props.
   const toggleReceta = useCallback((receta: Receta) => {
@@ -69,7 +61,7 @@ function useListaCompra() {
     setSeleccionadas([])
     setExtras([])
     setDescartados(new Set())
-  }, [])
+  }, [setExtras])
 
   // Carga N recetas al azar (que no estén ya), todas con las mismas raciones.
   const cargarAleatorias = useCallback((recetas: Receta[], n: number, raciones: number) => {
@@ -86,11 +78,11 @@ function useListaCompra() {
     setExtras((prev) =>
       prev.some((e) => claveIngrediente(e.nombre, e.unidad) === clave) ? prev : [...prev, item]
     )
-  }, [])
+  }, [setExtras])
 
   const removeExtra = useCallback((clave: string) => {
     setExtras((prev) => prev.filter((e) => claveIngrediente(e.nombre, e.unidad) !== clave))
-  }, [])
+  }, [setExtras])
 
   const descartar = useCallback((clave: string) => {
     setDescartados((prev) => new Set(prev).add(clave))
