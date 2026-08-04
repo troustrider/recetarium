@@ -64,11 +64,16 @@ describe('CRUD de recetas', () => {
     }
   })
 
-  it('un id que no es UUID revienta con 500 en vez de 404', async () => {
-    // Postgres rechaza el cast antes de que el controlador pueda mirar si existe.
-    const res = await http.get('/recetas/no-soy-un-uuid')
-    expect(res.status).toBe(500)
-    expect(await res.json()).toEqual({ error: 'Error interno del servidor' })
+  it('un id que no es UUID también da 404, no 500', async () => {
+    for (const res of [
+      await http.get('/recetas/no-soy-un-uuid'),
+      await http.put('/recetas/no-soy-un-uuid', recetaValida()),
+      await http.patch('/recetas/no-soy-un-uuid/favorita'),
+      await http.del('/recetas/no-soy-un-uuid'),
+    ]) {
+      expect(res.status).toBe(404)
+      expect(await res.json()).toEqual({ error: 'Receta no encontrada' })
+    }
   })
 
   it('actualiza los campos editables', async () => {
@@ -136,39 +141,49 @@ describe('CRUD de recetas', () => {
   })
 })
 
-// Comportamiento actual que sabemos que está mal. Estos tests existen para que
-// el refactor no lo cambie por accidente; se invierten al arreglar el bug.
-describe('bugs conocidos, congelados a propósito', () => {
-  it('BUG: el precio sale como precio_por_porcion, no como precioPorPorcion', async () => {
+describe('contrato de campos al editar', () => {
+  it('devuelve el precio como precioPorPorcion y como número', async () => {
+    // Salía sin alias (precio_por_porcion), asi que el frontend lo leía como
+    // undefined: el coste estimado de la lista siempre daba cero.
     const creada = await crear({ nombre: 'Con precio', precioPorPorcion: 3.75 })
-    expect(creada.precioPorPorcion).toBeUndefined()
-    expect(creada.precio_por_porcion).toBe('3.75')
+    expect(creada.precioPorPorcion).toBe(3.75)
+    expect(creada).not.toHaveProperty('precio_por_porcion')
   })
 
-  it('BUG: editar una receta favorita la desmarca', async () => {
-    const creada = await crear({ nombre: 'Favorita que se pierde' })
+  it('editar una receta favorita NO la desmarca', async () => {
+    // El formulario manda RecetaFormData, que excluye favorita a propósito;
+    // el UPDATE la conserva en vez de darla por false.
+    const creada = await crear({ nombre: 'Favorita que se conserva' })
     await http.patch(`/recetas/${creada.id}/favorita`)
-    expect((await (await http.get(`/recetas/${creada.id}`)).json()).favorita).toBe(true)
 
-    // El formulario manda RecetaFormData, que excluye favorita, y el UPDATE
-    // hace `favorita = ${favorita ?? false}` sin COALESCE.
     const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Editada' }))).json()
+    expect(editada.favorita).toBe(true)
+    expect((await (await http.get(`/recetas/${creada.id}`)).json()).favorita).toBe(true)
+  })
+
+  it('sigue pudiendo desmarcarse enviando favorita explícita', async () => {
+    const creada = await crear({ nombre: 'Se desmarca' })
+    await http.patch(`/recetas/${creada.id}/favorita`)
+
+    const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Se desmarca', favorita: false }))).json()
     expect(editada.favorita).toBe(false)
   })
 
-  it('precio y porciones sí se conservan al editar sin enviarlos', async () => {
+  it('las columnas NOT NULL se conservan al editar sin enviarlas', async () => {
     const creada = await crear({ nombre: 'Conserva precio', precioPorPorcion: 4.5, porciones: 3 })
     const sinPrecio = recetaValida({ nombre: 'Conserva precio', precioPorPorcion: undefined, porciones: undefined })
     const editada = await (await http.put(`/recetas/${creada.id}`, sinPrecio)).json()
-    expect(editada.precio_por_porcion).toBe('4.50')
+    expect(editada.precioPorPorcion).toBe(4.5)
     expect(editada.porciones).toBe(3)
   })
 
-  it('los macros NO se conservan al editar sin enviarlos', async () => {
-    // Asimetría con precio/porciones: aquí no hay COALESCE, así que se borran.
-    const creada = await crear({ nombre: 'Pierde macros', calorias: 500, proteinas: 30 })
+  it('los macros sí se vacían al editar sin enviarlos', async () => {
+    // No es asimetría accidental: el formulario gestiona los macros, así que
+    // dejar el campo en blanco tiene que poder borrarlos. Precio, porciones y
+    // tipo llevan COALESCE porque son columnas NOT NULL.
+    const creada = await crear({ nombre: 'Vacia macros', calorias: 500, proteinas: 30 })
     expect(creada.calorias).toBe(500)
-    const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Pierde macros' }))).json()
+    const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Vacia macros' }))).json()
     expect(editada.calorias).toBeNull()
     expect(editada.proteinas).toBeNull()
   })

@@ -6,7 +6,7 @@ export async function getAll({ categoria, sabor } = {}) {
       SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
              r.tiempo_preparacion AS "tiempoPreparacion",
              r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-             r.precio_por_porcion, r.porciones,
+             r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
              r.calorias, r.proteinas::float AS proteinas,
              r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
@@ -19,7 +19,7 @@ export async function getAll({ categoria, sabor } = {}) {
       SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
              r.tiempo_preparacion AS "tiempoPreparacion",
              r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-             r.precio_por_porcion, r.porciones,
+             r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
              r.calorias, r.proteinas::float AS proteinas,
              r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
@@ -32,7 +32,7 @@ export async function getAll({ categoria, sabor } = {}) {
       SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
              r.tiempo_preparacion AS "tiempoPreparacion",
              r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-             r.precio_por_porcion, r.porciones,
+             r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
              r.calorias, r.proteinas::float AS proteinas,
              r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
@@ -44,7 +44,7 @@ export async function getAll({ categoria, sabor } = {}) {
     SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
            r.tiempo_preparacion AS "tiempoPreparacion",
            r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-           r.precio_por_porcion, r.porciones,
+           r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
            r.calorias, r.proteinas::float AS proteinas,
            r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
@@ -57,7 +57,7 @@ export async function getById(id) {
     SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
            r.tiempo_preparacion AS "tiempoPreparacion",
            r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-           r.precio_por_porcion, r.porciones,
+           r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
            r.calorias, r.proteinas::float AS proteinas,
            r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
@@ -96,7 +96,7 @@ export async function update(id, data) {
       nombre = ${nombre},
       categoria = ${categoria ?? null},
       tiempo_preparacion = ${tiempoPreparacion},
-      favorita = ${favorita ?? false},
+      favorita = COALESCE(${favorita ?? null}, favorita),
       imagen = ${imagen ?? null},
       ingredientes = ${JSON.stringify(ingredientes)},
       pasos = ${JSON.stringify(pasos)},

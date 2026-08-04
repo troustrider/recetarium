@@ -37,14 +37,20 @@ function validar(data) {
   return errores
 }
 
+// Los ids son UUID en la BD: sin este filtro, Postgres revienta al castear y
+// un id mal escrito acaba en 500 en vez de en 404.
+const RE_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const noEncontrada = (res) => res.status(404).json({ error: 'Receta no encontrada' })
+
 export async function getAll(req, res) {
   const recetas = await recetasService.getAll(req.query)
   res.json(recetas)
 }
 
 export async function getById(req, res) {
+  if (!RE_UUID.test(req.params.id)) return noEncontrada(res)
   const receta = await recetasService.getById(req.params.id)
-  if (!receta) return res.status(404).json({ error: 'Receta no encontrada' })
+  if (!receta) return noEncontrada(res)
   res.json(receta)
 }
 
@@ -58,19 +64,22 @@ export async function create(req, res) {
 export async function update(req, res) {
   const errores = validar(req.body)
   if (errores.length > 0) return res.status(400).json({ errores })
+  if (!RE_UUID.test(req.params.id)) return noEncontrada(res)
   const actualizada = await recetasService.update(req.params.id, req.body)
-  if (!actualizada) return res.status(404).json({ error: 'Receta no encontrada' })
+  if (!actualizada) return noEncontrada(res)
   res.json(actualizada)
 }
 
 export async function toggleFavorita(req, res) {
+  if (!RE_UUID.test(req.params.id)) return noEncontrada(res)
   const receta = await recetasService.toggleFavorita(req.params.id)
-  if (!receta) return res.status(404).json({ error: 'Receta no encontrada' })
+  if (!receta) return noEncontrada(res)
   res.json(receta)
 }
 
 export async function remove(req, res) {
+  if (!RE_UUID.test(req.params.id)) return noEncontrada(res)
   const ok = await recetasService.remove(req.params.id)
-  if (!ok) return res.status(404).json({ error: 'Receta no encontrada' })
+  if (!ok) return noEncontrada(res)
   res.status(204).send()
 }
