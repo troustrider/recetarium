@@ -60,12 +60,20 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   // cuando el catálogo está disponible para rehidratar por id).
   const hidratadoRef = useRef(false)
   const saltarGuardadoRef = useRef(false)
+  const tocadoRef = useRef(false)
+  const planRef = useRef(plan)
   useEffect(() => {
     if (hidratadoRef.current || loading || recetas.length === 0) return
     let cancelado = false
     getPlan()
       .then((dtos) => {
         if (cancelado) return
+        // Si el usuario ya tocó el plan mientras cargaba, lo suyo manda: se
+        // sube en vez de que la respuesta lo borre de la pantalla.
+        if (tocadoRef.current) {
+          savePlan(serializar(planRef.current)).catch(() => {})
+          return
+        }
         saltarGuardadoRef.current = true
         setPlan(hidratar(dtos, recetas))
       })
@@ -76,6 +84,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   // Guardado con debounce ante cambios del plan (tras la hidratación).
   useEffect(() => {
+    planRef.current = plan
     if (!hidratadoRef.current) return
     if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
     const t = setTimeout(() => {
@@ -83,6 +92,11 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }, 800)
     return () => clearTimeout(t)
   }, [plan])
+
+  const cambiarPlan: typeof setPlan = (accion) => {
+    tocadoRef.current = true
+    setPlan(accion)
+  }
 
   const seleccionadasRef = useRef(seleccionadas)
   const estaSeleccionadaRef = useRef(estaSeleccionada)
@@ -131,21 +145,21 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   }, [plan, pendientes, quitarPendiente])
 
   function añadir(dia: Dia, receta: Receta, raciones = 1) {
-    setPlan((prev) => ({
+    cambiarPlan((prev) => ({
       ...prev,
       [dia]: [...prev[dia], { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones }],
     }))
   }
 
   function quitar(dia: Dia, entradaId: string) {
-    setPlan((prev) => ({
+    cambiarPlan((prev) => ({
       ...prev,
       [dia]: prev[dia].filter((e) => e.id !== entradaId),
     }))
   }
 
   function setRaciones(dia: Dia, entradaId: string, raciones: number) {
-    setPlan((prev) => ({
+    cambiarPlan((prev) => ({
       ...prev,
       [dia]: prev[dia].map((e) =>
         e.id === entradaId ? { ...e, raciones: Math.max(1, Math.min(4, raciones)) } : e
@@ -155,7 +169,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   function mover(desdeDia: Dia, hastaDia: Dia, entradaId: string) {
     if (desdeDia === hastaDia) return
-    setPlan((prev) => {
+    cambiarPlan((prev) => {
       const entrada = prev[desdeDia].find((e) => e.id === entradaId)
       if (!entrada) return prev
       return {
@@ -167,7 +181,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   }
 
   function limpiar() {
-    setPlan(PLAN_VACIO)
+    cambiarPlan(PLAN_VACIO)
   }
 
   // Rellena los 7 días con una receta al azar cada uno (mismas raciones).
@@ -178,7 +192,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       const receta = recetas[Math.floor(Math.random() * recetas.length)]
       nuevo[dia] = [{ id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`, receta, raciones }]
     }
-    setPlan(nuevo)
+    cambiarPlan(nuevo)
   }
 
   return (

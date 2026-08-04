@@ -24,12 +24,23 @@ export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   // colocar en el planificador. Se hidrata por id contra el catálogo.
   const hidratadoRef = useRef(false)
   const saltarGuardadoRef = useRef(false)
+  const tocadoRef = useRef(false)
+  const pendientesRef = useRef(pendientes)
+  const serializar = (lista: PendientePlan[]): PendientePlanDTO[] =>
+    lista.map(({ receta, raciones }) => ({ recetaId: receta.id, raciones }))
+
   useEffect(() => {
     if (hidratadoRef.current || loading || recetas.length === 0) return
     let cancelado = false
     getPendientes()
       .then((dtos) => {
         if (cancelado) return
+        // Lo que el usuario haya marcado mientras cargaba manda sobre la
+        // respuesta: se sube en vez de perderse.
+        if (tocadoRef.current) {
+          savePendientes(serializar(pendientesRef.current)).catch(() => {})
+          return
+        }
         const byId = new Map(recetas.map((r) => [r.id, r]))
         saltarGuardadoRef.current = true
         setPendientes(
@@ -45,14 +56,16 @@ export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   }, [loading, recetas])
 
   useEffect(() => {
+    pendientesRef.current = pendientes
     if (!hidratadoRef.current) return
     if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
-    const dtos: PendientePlanDTO[] = pendientes.map(({ receta, raciones }) => ({ recetaId: receta.id, raciones }))
+    const dtos = serializar(pendientes)
     const t = setTimeout(() => { savePendientes(dtos).catch(() => {}) }, 800)
     return () => clearTimeout(t)
   }, [pendientes])
 
   const marcarPendientes = useCallback((entradas: PendientePlan[]) => {
+    tocadoRef.current = true
     setPendientes((prev) => {
       const nuevos = entradas.filter((e) => !prev.some((p) => p.receta.id === e.receta.id))
       return nuevos.length === 0 ? prev : [...prev, ...nuevos]
@@ -60,6 +73,7 @@ export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const quitarPendiente = useCallback((recetaId: string) => {
+    tocadoRef.current = true
     setPendientes((prev) => prev.filter((p) => p.receta.id !== recetaId))
   }, [])
 

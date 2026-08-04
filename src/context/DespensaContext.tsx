@@ -78,11 +78,18 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
 
   const hidratadoRef = useRef(false)
   const saltarGuardadoRef = useRef(false)
+  const tocadoRef = useRef(false)
+  const despensaRef = useRef(despensa)
   useEffect(() => {
     let cancelado = false
     getDespensa()
       .then((remota) => {
         if (cancelado) return
+        // Lo que se haya tocado mientras cargaba manda sobre la respuesta.
+        if (tocadoRef.current) {
+          saveDespensa(despensaRef.current).catch(() => {})
+          return
+        }
         if (remota.length > 0) {
           saltarGuardadoRef.current = true
           setDespensa(remota)
@@ -98,6 +105,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
+    despensaRef.current = despensa
     localStorage.setItem(STORAGE_KEY, JSON.stringify(despensa))
     if (!hidratadoRef.current) return
     if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
@@ -105,12 +113,17 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(t)
   }, [despensa])
 
+  const cambiarDespensa: typeof setDespensa = (accion) => {
+    tocadoRef.current = true
+    setDespensa(accion)
+  }
+
   function añadir(nombre: string, familia: string, alta: AltaIngrediente = {}) {
     const norm = normalizar(nombre)
     const fam = normalizar(familia) || 'otros'
     if (!norm || despensa.some((i) => mismoIngrediente(i.nombre, norm))) return
     const medible = alta.cantidad != null && alta.cantidad >= 0 && unidadMedible(alta.unidad)
-    setDespensa((prev) =>
+    cambiarDespensa((prev) =>
       [
         ...prev,
         {
@@ -129,7 +142,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     const norm = normalizar(nombre)
     if (!norm) return
     const medible = cantidad != null && cantidad > 0 && unidadMedible(unidad)
-    setDespensa((prev) => {
+    cambiarDespensa((prev) => {
       const idx = prev.findIndex((i) => mismoIngrediente(i.nombre, norm))
       if (idx === -1) {
         return [
@@ -160,7 +173,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
 
   function editar(nombre: string, cambios: CambiosIngrediente) {
     const clave = normalizar(nombre)
-    setDespensa((prev) => {
+    cambiarDespensa((prev) => {
       const nuevoNombre = cambios.nombre != null ? normalizar(cambios.nombre) : null
       // Un renombrado que choca con otro ingrediente se descarta; el resto de
       // cambios sí se aplican.
@@ -193,11 +206,11 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
   }
 
   function quitar(nombre: string) {
-    setDespensa((prev) => prev.filter((i) => i.nombre !== normalizar(nombre)))
+    cambiarDespensa((prev) => prev.filter((i) => i.nombre !== normalizar(nombre)))
   }
 
   function vaciar() {
-    setDespensa([])
+    cambiarDespensa([])
   }
 
   function tieneIngrediente(nombre: string) {
