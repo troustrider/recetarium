@@ -32,24 +32,35 @@ type Modo = 'android' | 'ios-safari' | 'ios-otro' | null
 // Banner de instalación. Android/desktop Chrome disparan beforeinstallprompt y
 // se instala con un toque. iOS no tiene esa API: se guía manualmente, y si no
 // es Safari se avisa de que la instalación con avisos solo va desde Safari.
+function descartadoOInstalada() {
+  return !!localStorage.getItem(DISMISS_KEY) || esStandalone()
+}
+
 function InstallPrompt() {
-  const [modo, setModo] = useState<Modo>(null)
+  // iOS se decide en el primer render: no hay evento que esperar, solo el
+  // navegador actual. Android sí llega después, por beforeinstallprompt.
+  const [modo, setModo] = useState<Modo>(() => {
+    if (descartadoOInstalada() || !esIOS()) return null
+    return esIOSNoSafari() ? 'ios-otro' : 'ios-safari'
+  })
   const [evento, setEvento] = useState<BeforeInstallPromptEvent | null>(null)
 
   useEffect(() => {
-    if (localStorage.getItem(DISMISS_KEY) || esStandalone()) return
+    if (descartadoOInstalada()) return
 
     const onPrompt = (e: Event) => {
       e.preventDefault()
       setEvento(e as BeforeInstallPromptEvent)
       setModo('android')
     }
+    const onInstalled = () => setModo(null)
     window.addEventListener('beforeinstallprompt', onPrompt)
-    window.addEventListener('appinstalled', () => setModo(null))
+    window.addEventListener('appinstalled', onInstalled)
 
-    if (esIOS()) setModo(esIOSNoSafari() ? 'ios-otro' : 'ios-safari')
-
-    return () => window.removeEventListener('beforeinstallprompt', onPrompt)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onPrompt)
+      window.removeEventListener('appinstalled', onInstalled)
+    }
   }, [])
 
   async function instalar() {

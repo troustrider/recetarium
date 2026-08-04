@@ -13,6 +13,17 @@ import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 
+// PRNG determinista (mulberry32) para barajar sin ensuciar el render.
+function prngDesde(seed: number): () => number {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
 function Catalogo() {
   const { recetas, loading, error, cargar, toggleFavorita } = useRecetasContext()
   const { toggleReceta, estaSeleccionada, cargarAleatorias } = useListaCompraContext()
@@ -63,15 +74,18 @@ function Catalogo() {
   )
 
   // Semilla fresca en cada montaje: al entrar a la página sale un conjunto distinto
-  const [seedAbanico] = useState(() => Math.random())
+  const [seedAbanico] = useState(() => Math.floor(Math.random() * 2 ** 32))
 
   // "Recetas de hoy" — cocinables primero (0 faltan), luego falta 1, 2… pero el
   // orden DENTRO de cada nivel es aleatorio en cada visita, no siempre las mismas.
+  // El barajado va sembrado en vez de con Math.random() para que el memo sea
+  // puro: el orden cambia por montaje, no entre repintados del mismo montaje.
   const hoy = useMemo(() => {
+    const aleatorio = prngDesde(seedAbanico)
     const barajar = <T,>(arr: T[]): T[] => {
       const a = [...arr]
       for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
+        const j = Math.floor(aleatorio() * (i + 1))
         ;[a[i], a[j]] = [a[j], a[i]]
       }
       return a
@@ -89,8 +103,6 @@ function Catalogo() {
       .sort((a, b) => a - b)
       .flatMap((nivel) => barajar(porNivel.get(nivel)!))
       .slice(0, 7)
-    // seedAbanico fuerza un reparto nuevo por montaje; barajar() es intencionadamente impuro
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recetas, faltanPorReceta, seedAbanico])
 
   const mostrarAbanico = !hayFiltrosActivos && hoy.length >= 3
