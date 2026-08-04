@@ -199,3 +199,39 @@ describe('cantidades — conversión y familias que la necesitan', () => {
     expect(requiereCantidad('condimentos')).toBe(false)
   })
 })
+
+// Encontrado en la Fase 1: la regla de plurales trata "-es" como terminación de
+// plural siempre, así que se come la "e" final del singular. Afecta a todo lo
+// acabado en -e y a los plurales en -ces.
+describe('singular — plurales que el matcher no reconoce', () => {
+  it('casa los plurales regulares', () => {
+    expect(mismoIngrediente('huevo', 'huevos')).toBe(true)
+    expect(mismoIngrediente('zanahoria', 'zanahorias')).toBe(true)
+    expect(mismoIngrediente('limon', 'limones')).toBe(true)
+    expect(mismoIngrediente('pan', 'panes')).toBe(true)
+  })
+
+  it('casa los acabados en -e', () => {
+    expect(mismoIngrediente('tomate', 'tomates')).toBe(true)
+    expect(mismoIngrediente('filete', 'filetes')).toBe(true)
+    expect(mismoIngrediente('aguacate', 'aguacates')).toBe(true)
+    expect(mismoIngrediente('jengibre', 'jengibres')).toBe(true)
+  })
+
+  it('casa los plurales en -ces', () => {
+    expect(mismoIngrediente('nuez', 'nueces')).toBe(true)
+    expect(mismoIngrediente('arroz', 'arroces')).toBe(true)
+  })
+
+  it('la despensa en plural cubre el ingrediente en singular de la receta', () => {
+    expect(despensaCubre('tomates', 'tomate')).toBe(true)
+    expect(despensaCubre('filetes de ternera', 'filete de ternera')).toBe(true)
+    expect(despensaCubre('nueces', 'nuez')).toBe(true)
+  })
+
+  it('no funde palabras distintas que solo comparten raíz corta', () => {
+    expect(mismoIngrediente('pato', 'pata')).toBe(false)
+    expect(mismoIngrediente('lima', 'limon')).toBe(false)
+    expect(mismoIngrediente('col', 'cola')).toBe(false)
+  })
+})

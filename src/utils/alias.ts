@@ -17,7 +17,3 @@ export const ALIAS_TOKENS: Record<string, string> = {
   repollo: 'col',
   cabbage: 'col',
 }
-
-export function aplicarAlias(token: string): string {
-  return ALIAS_TOKENS[token] ?? token
-}

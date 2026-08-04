@@ -9,7 +9,7 @@
 
 import { normalizar, canonUnidad } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
-import { aplicarAlias } from './alias'
+import { ALIAS_TOKENS } from './alias'
 import type { Receta } from '../types/receta'
 
 export const FAMILIA_HOGAR = 'hogar'
@@ -57,12 +57,29 @@ const DESCRIPTORES = new Set([
 // "Cabezas" cuyo calificador denota un producto distinto: aceite de oliva ≠
 // aceite de girasol, leche ≠ leche de coco, salsa de soja ≠ salsa de pescado.
 // Un genérico de la despensa (solo la cabeza) NO cubre al específico de receta.
-const CABEZAS_AMBIGUAS = new Set(['aceite', 'leche', 'salsa', 'vino', 'vinagre', 'caldo', 'harina', 'pasta', 'crema', 'col'])
+const CABEZAS_AMBIGUAS_NOMBRES = ['aceite', 'leche', 'salsa', 'vino', 'vinagre', 'caldo', 'harina', 'pasta', 'crema', 'col']
 
+// Raíz común de singular y plural. No intenta acertar el singular real: "-es"
+// es ambiguo en español ("limones" viene de limón, pero "tomates" de tomate) y
+// sin diccionario no se distingue. Lo que sí se puede es llevar las dos formas
+// al mismo sitio quitando también la "e" final, que es lo único que separaba
+// "tomate" de "tomat(es)".
 function singular(t: string): string {
-  if (t.length > 3 && t.endsWith('es')) return t.slice(0, -2)
-  if (t.length > 3 && t.endsWith('s')) return t.slice(0, -1)
-  return t
+  if (t.length > 4 && t.endsWith('ces')) return `${t.slice(0, -3)}z` // nueces → nuez
+  let s = t
+  if (s.length > 3 && s.endsWith('es')) s = s.slice(0, -2)
+  else if (s.length > 3 && s.endsWith('s')) s = s.slice(0, -1)
+  return s.length > 3 && s.endsWith('e') ? s.slice(0, -1) : s
+}
+
+// Las dos tablas de arriba se escriben en singular natural ("leche", "cabbage"),
+// pero los tokens llegan ya reducidos a raíz. Se derivan con la misma función
+// para que sigan casando sin tener que reescribirlas a mano.
+const ALIAS_RAIZ = new Map(Object.entries(ALIAS_TOKENS).map(([k, v]) => [singular(k), singular(v)]))
+const CABEZAS_AMBIGUAS = new Set(CABEZAS_AMBIGUAS_NOMBRES.map(singular))
+
+function aplicarAlias(token: string): string {
+  return ALIAS_RAIZ.get(token) ?? token
 }
 
 // Tokens significativos: normalizados, sin conectores, en singular y con los
