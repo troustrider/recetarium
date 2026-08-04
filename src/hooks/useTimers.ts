@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { desbloquearAudio, sonarAlarma } from '../utils/alarma'
 import { pedirPermisoNotificaciones, notificarTemporizador } from '../utils/notificaciones'
 
@@ -26,29 +26,46 @@ export interface TimerSpec {
 export function useTimers() {
   const [timers, setTimers] = useState<Timer[]>([])
 
+  // El tick lee el estado por ref y calcula fuera del updater de setState:
+  // dentro del updater, la alarma podía sonar dos veces y salir dos
+  // notificaciones, porque React puede reejecutarlo.
+  const timersRef = useRef(timers)
+  useEffect(() => { timersRef.current = timers }, [timers])
+
   useEffect(() => {
     const int = setInterval(() => {
-      setTimers((prev) => {
-        if (!prev.some((t) => t.corriendo && !t.hecho)) return prev
-        const ahora = Date.now()
-        let cambio = false
-        const next = prev.map((t) => {
-          if (!t.corriendo || t.hecho || t.finAt == null) return t
-          const restante = Math.max(0, Math.round((t.finAt - ahora) / 1000))
-          if (restante <= 0) {
-            cambio = true
-            sonarAlarma()
-            void notificarTemporizador('Recetarium — ¡tiempo!', `Paso ${t.stepIndex + 1} · ${t.etiqueta} listo`, t.id)
-            return { ...t, restante: 0, corriendo: false, hecho: true, finAt: null }
-          }
-          if (restante !== t.restante) {
-            cambio = true
-            return { ...t, restante }
-          }
-          return t
-        })
-        return cambio ? next : prev
+      const actuales = timersRef.current
+      if (!actuales.some((t) => t.corriendo && !t.hecho)) return
+
+      const ahora = Date.now()
+      const terminados: Timer[] = []
+      let cambio = false
+      const next = actuales.map((t) => {
+        if (!t.corriendo || t.hecho || t.finAt == null) return t
+        const restante = Math.max(0, Math.round((t.finAt - ahora) / 1000))
+        if (restante <= 0) {
+          cambio = true
+          const fin = { ...t, restante: 0, corriendo: false, hecho: true, finAt: null }
+          terminados.push(fin)
+          return fin
+        }
+        if (restante !== t.restante) {
+          cambio = true
+          return { ...t, restante }
+        }
+        return t
       })
+      if (!cambio) return
+
+      timersRef.current = next
+      setTimers(next)
+
+      if (terminados.length > 0) {
+        sonarAlarma()
+        for (const t of terminados) {
+          void notificarTemporizador('Recetarium — ¡tiempo!', `Paso ${t.stepIndex + 1} · ${t.etiqueta} listo`, t.id)
+        }
+      }
     }, 500)
     return () => clearInterval(int)
   }, [])

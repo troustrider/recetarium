@@ -11,10 +11,32 @@ import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
 
-const BASE_COMENSALES = 2
+// Comensales para los que está escrita la receta cuando no lo declara.
+const PORCIONES_POR_DEFECTO = 2
 
 function formatMultiplicador(m: number) {
   return String(+m.toFixed(2)).replace('.', ',')
+}
+
+function BotonFavorita({ favorita, onClick, className }: {
+  favorita: boolean
+  onClick: () => void
+  className: string
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      className={`${className} p-2 rounded-full backdrop-blur-sm transition-colors ${favorita ? 'bg-red-500 text-white' : 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white'}`}
+      aria-label={favorita ? 'Quitar de favoritas' : 'Añadir a favoritas'}
+      whileTap={{ scale: 0.85 }}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5"
+        fill={favorita ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round"
+          d="M11.998 21.5C11.998 21.5 3 15.5 3 9a5 5 0 0 1 8.998-3.002A5 5 0 0 1 21 9c0 6.5-9.002 12.5-9.002 12.5z" />
+      </svg>
+    </motion.button>
+  )
 }
 
 function SkeletonLineas({ filas }: { filas: number }) {
@@ -32,7 +54,7 @@ function DetalleReceta() {
   const { recetas, eliminar, toggleFavorita, ultimaEdicion, deshacer, descartarDeshacer } = useRecetasContext()
   const { receta: fetched, error, recargar } = useReceta(id!)
   const navigate = useNavigate()
-  const [comensales, setComensales] = useState(BASE_COMENSALES)
+  const [comensales, setComensales] = useState(PORCIONES_POR_DEFECTO)
   const [cocinaOpen, setCocinaOpen] = useState(false)
 
   // Cabecera al instante desde la lista ya cargada; el detalle completo llega por fetch.
@@ -68,7 +90,8 @@ function DetalleReceta() {
     if (ok) navigate('/')
   }
 
-  const multiplicador = comensales / BASE_COMENSALES
+  const porcionesBase = receta.porciones ?? PORCIONES_POR_DEFECTO
+  const multiplicador = comensales / porcionesBase
   // Las recetas migradas marcan sus cantidades y escalan solas; las antiguas siguen con el aviso.
   const pasosEscalan = tieneCantidadesEscalables(full?.pasos ?? [])
 
@@ -115,6 +138,11 @@ function DetalleReceta() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <BotonFavorita
+            favorita={receta.favorita}
+            onClick={() => toggleFavorita(receta.id)}
+            className="absolute top-4 right-4"
+          />
           <div className="absolute bottom-4 left-5 right-5">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60 mb-1">
               {[receta.categoria, receta.sabor, `${receta.tiempoPreparacion} min`].filter(Boolean).join(' / ')}
@@ -139,19 +167,11 @@ function DetalleReceta() {
                 backgroundSize: '20px 20px',
               }}
             />
-            {/* Favorito */}
-            <motion.button
+            <BotonFavorita
+              favorita={receta.favorita}
               onClick={() => toggleFavorita(receta.id)}
-              className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-sm transition-colors ${receta.favorita ? 'bg-red-500 text-white' : 'bg-white/10 text-white/50 hover:bg-white/20 hover:text-white'}`}
-              aria-label={receta.favorita ? 'Quitar de favoritas' : 'Añadir a favoritas'}
-              whileTap={{ scale: 0.85 }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5"
-                fill={receta.favorita ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M11.998 21.5C11.998 21.5 3 15.5 3 9a5 5 0 0 1 8.998-3.002A5 5 0 0 1 21 9c0 6.5-9.002 12.5-9.002 12.5z" />
-              </svg>
-            </motion.button>
+              className="absolute top-4 right-4"
+            />
           </motion.div>
           {/* Metadatos + título */}
           <div>
@@ -164,8 +184,6 @@ function DetalleReceta() {
           </div>
         </div>
       )}
-
-      {/* Favorito cuando hay imagen — va encima del hero */}
 
       <div className="flex gap-2">
         <motion.button
@@ -280,7 +298,7 @@ function DetalleReceta() {
             <Scale className="shrink-0 w-4 h-4 mt-0.5 text-amber-500 dark:text-amber-400" strokeWidth={2.2} />
             <span>
               Los ingredientes están ajustados a {comensales} comensales, pero las cantidades
-              que aparecen en los pasos son las de la receta base para {BASE_COMENSALES}.
+              que aparecen en los pasos son las de la receta base para {porcionesBase}.
               Multiplícalas por {formatMultiplicador(multiplicador)}.
             </span>
           </p>
