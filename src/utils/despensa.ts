@@ -207,8 +207,37 @@ export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]):
     typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
   )
 
+  // Al mismo item de la lista le pueden servir varios de la despensa ("tomate"
+  // y "tomate frito" cubren los dos al tomate de una receta). Quedarse con el
+  // primero dejaba que un bote acabándose mandara sobre los 18 tomates de al
+  // lado. Gana el que de verdad sirve, en este orden: mismo nombre antes que
+  // pariente, con stock utilizable antes que sin cantidad, y lleno y lejos de
+  // caducar antes que acabándose.
+  // Agotado es solo "había cantidad y ya no queda"; no tener cantidad apuntada
+  // no lo es, ahí sigue mandando el estado.
+  const agotado = (d: ItemDespensa, stock: number | null, item: ItemCompra) => {
+    if (stock == null) return false
+    const disponible = convertir(stock, d.unidad!, item.unidad)
+    return disponible != null && disponible <= 0
+  }
+
+  const puntuar = (d: ItemDespensa, stock: number | null, item: ItemCompra) =>
+    (agotado(d, stock, item) ? 0 : 16) +
+    (mismoIngrediente(d.nombre, item.nombre) ? 8 : 0) +
+    (d.estado !== 'poco' ? 2 : 0) +
+    (caducaPronto(d) ? 0 : 1)
+
   return items.map((item) => {
-    const idx = despensa.findIndex((d) => despensaCubre(d.nombre, item.nombre))
+    let idx = -1
+    let mejor = -1
+    for (let i = 0; i < despensa.length; i++) {
+      if (!despensaCubre(despensa[i].nombre, item.nombre)) continue
+      const p = puntuar(despensa[i], restante[i], item)
+      if (p > mejor) {
+        mejor = p
+        idx = i
+      }
+    }
     if (idx === -1) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
 
     const d = despensa[idx]

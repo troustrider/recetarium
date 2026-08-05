@@ -173,6 +173,52 @@ describe('repartirDespensa — con cantidades, resta lo que hay en casa', () => 
   })
 })
 
+// Varios ingredientes de la despensa pueden cubrir al mismo item de la lista.
+// Quedarse con el primero hacía que un bote de tomate frito acabándose mandara
+// sobre los 18 tomates de al lado, y la lista pedía tomates para siempre.
+describe('repartirDespensa — con varios candidatos gana el que de verdad sirve', () => {
+  it('el nombre exacto manda sobre el pariente que se está acabando', () => {
+    const despensa = [
+      { nombre: 'tomate frito', estado: 'poco', familia: 'conservas' },
+      { nombre: 'tomate', estado: 'lleno', cantidad: 18, unidad: 'ud' },
+      { nombre: 'tomate triturado', estado: 'lleno' },
+    ]
+    const [r] = repartirDespensa([{ nombre: 'tomate', cantidad: 2, unidad: 'ud' }], despensa)
+    expect(r.cobertura).toBe('cubierto')
+    expect(r.aComprar).toBe(0)
+  })
+
+  it('el orden en la despensa da igual', () => {
+    const despensa = [
+      { nombre: 'tomate', estado: 'lleno', cantidad: 18, unidad: 'ud' },
+      { nombre: 'tomate frito', estado: 'poco' },
+    ]
+    expect(repartirDespensa([{ nombre: 'tomate', cantidad: 2, unidad: 'ud' }], despensa)[0].cobertura).toBe('cubierto')
+  })
+
+  it('el tomate triturado de una receta tira del triturado, no del tomate suelto', () => {
+    const despensa = [
+      { nombre: 'tomate', estado: 'lleno', cantidad: 18, unidad: 'ud' },
+      { nombre: 'tomate triturado', estado: 'lleno', cantidad: 400, unidad: 'g' },
+    ]
+    const [r] = repartirDespensa([{ nombre: 'tomate triturado', cantidad: 300, unidad: 'g' }], despensa)
+    expect(r).toEqual({ cobertura: 'cubierto', aComprar: 0, yaTengo: 300 })
+  })
+
+  it('si el exacto está a cero, tira del que sí tiene stock', () => {
+    const despensa = [
+      { nombre: 'arroz', estado: 'lleno', cantidad: 0, unidad: 'g' },
+      { nombre: 'arroz basmati', estado: 'lleno', cantidad: 500, unidad: 'g' },
+    ]
+    expect(repartirDespensa([{ nombre: 'arroz', cantidad: 200, unidad: 'g' }], despensa)[0].cobertura).toBe('cubierto')
+  })
+
+  it('un solo candidato sigue mandando aunque esté acabándose', () => {
+    const despensa = [{ nombre: 'tomate frito', estado: 'poco' }]
+    expect(repartirDespensa([{ nombre: 'tomate', cantidad: 2, unidad: 'ud' }], despensa)[0].cobertura).toBe('poco')
+  })
+})
+
 describe('cantidades — conversión y familias que la necesitan', () => {
   it('convierte dentro de la misma dimensión y solo ahí', () => {
     expect(convertir(1, 'kg', 'g')).toBe(1000)
