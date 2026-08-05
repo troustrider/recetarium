@@ -1161,6 +1161,13 @@
       "unidad": "kg",
       "fuente": "estimado",
       "revisado": "2026-08"
+    },
+    {
+      "nombre": "pimienta de jamaica",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
     }
   ]
 }
