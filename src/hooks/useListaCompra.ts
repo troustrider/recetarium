@@ -4,6 +4,7 @@ import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
 import { claveIngrediente, canonUnidad } from '../utils/ingredientes'
 import { repartirDespensa } from '../utils/despensa'
+import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
 import { useDespensa } from '../context/DespensaContext'
 
 export interface IngredienteAgrupado extends Ingrediente {
@@ -13,6 +14,9 @@ export interface IngredienteAgrupado extends Ingrediente {
   quedaPoco?: boolean
   // Parte que ya cubre la despensa: `cantidad` es solo lo que falta comprar.
   yaTengo?: number
+  // Cuánto de lo que se compra va a cada plato, para congelar por raciones.
+  // Solo en lo que se congela en piezas y va a más de un plato.
+  desglose?: ParteReceta[]
 }
 
 export interface EntradaLista {
@@ -112,13 +116,24 @@ function useListaCompra() {
       for (const ing of receta.ingredientes) {
         const clave = claveIngrediente(ing.nombre, ing.unidad)
         const existente = mapa.get(clave)
+        const cantidad = ing.cantidad * raciones
         if (existente) {
-          existente.cantidad += ing.cantidad * raciones
+          existente.cantidad += cantidad
           if (!existente.recetas.includes(receta.nombre)) {
             existente.recetas.push(receta.nombre)
           }
+          const parte = existente.desglose!.find((d) => d.receta === receta.nombre)
+          if (parte) parte.cantidad += cantidad
+          else existente.desglose!.push({ receta: receta.nombre, cantidad })
         } else {
-          mapa.set(clave, { ...ing, unidad: canonUnidad(ing.nombre, ing.unidad), cantidad: ing.cantidad * raciones, recetas: [receta.nombre], clave })
+          mapa.set(clave, {
+            ...ing,
+            unidad: canonUnidad(ing.nombre, ing.unidad),
+            cantidad,
+            recetas: [receta.nombre],
+            desglose: [{ receta: receta.nombre, cantidad }],
+            clave,
+          })
         }
       }
     }
@@ -134,12 +149,20 @@ function useListaCompra() {
     const reparto = repartirDespensa(deReceta, despensa)
 
     comprar.push(...[...mapa.values()].filter((i) => i.esExtra))
+    // Un ingrediente que va a un solo plato ya se lee entero en su cantidad.
+    const conDesglose = (item: IngredienteAgrupado, yaCubierto: number): IngredienteAgrupado => {
+      if (!seDesglosa(item.familia) || (item.desglose?.length ?? 0) < 2) {
+        return { ...item, desglose: undefined }
+      }
+      return { ...item, desglose: repartirPorReceta(item.desglose!, yaCubierto) }
+    }
+
     deReceta.forEach((item, k) => {
       const { cobertura, aComprar, yaTengo } = reparto[k]
-      if (cobertura === 'cubierto') yaHay.push(item)
-      else if (cobertura === 'poco') comprar.push({ ...item, quedaPoco: true })
-      else if (cobertura === 'parcial') comprar.push({ ...item, cantidad: aComprar, yaTengo })
-      else comprar.push(item)
+      if (cobertura === 'cubierto') yaHay.push({ ...item, desglose: undefined })
+      else if (cobertura === 'poco') comprar.push({ ...conDesglose(item, 0), quedaPoco: true })
+      else if (cobertura === 'parcial') comprar.push({ ...conDesglose(item, yaTengo), cantidad: aComprar, yaTengo })
+      else comprar.push(conDesglose(item, 0))
     })
 
     const porFamilia = (a: IngredienteAgrupado, b: IngredienteAgrupado) =>

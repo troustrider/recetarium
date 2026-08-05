@@ -9,6 +9,7 @@ interface IngredienteAgrupado {
   esExtra?: boolean
   quedaPoco?: boolean
   yaTengo?: number
+  desglose?: { receta: string; cantidad: number }[]
 }
 
 interface Props {
@@ -23,7 +24,7 @@ function capitalize(s: string) {
 }
 
 function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {
-  const { nombre, cantidad, unidad, esExtra, quedaPoco, yaTengo } = ingrediente
+  const { nombre, cantidad, unidad, esExtra, quedaPoco, yaTengo, desglose } = ingrediente
 
   return (
     <motion.li
@@ -47,6 +48,17 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
         {yaTengo != null && yaTengo > 0 && (
           <span className="block text-[11px] font-normal text-emerald-600 dark:text-emerald-400">
             ya tenéis {formatCantidad(yaTengo, unidad)} en la despensa
+          </span>
+        )}
+        {desglose && desglose.length > 1 && (
+          <span className="block text-[11px] font-normal text-gray-400 dark:text-gray-500">
+            para congelar:{' '}
+            {desglose.map((d, i) => (
+              <span key={d.receta}>
+                {i > 0 && ' · '}
+                {d.receta} <span className="font-semibold tabular-nums">{formatCantidad(d.cantidad, unidad)}</span>
+              </span>
+            ))}
           </span>
         )}
       </span>

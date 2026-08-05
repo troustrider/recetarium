@@ -12,6 +12,12 @@ export function textoLista(items: IngredienteAgrupado[]): string {
     lineas.push(familia.toUpperCase())
     for (const i of items.filter((x) => x.familia === familia)) {
       lineas.push(`- ${capitalize(i.nombre)}: ${formatCantidad(i.cantidad, i.unidad)}`)
+      // El desglose viaja con la lista: al volver de la compra sirve para
+      // embolsar cada plato por separado antes de congelar.
+      if (i.desglose && i.desglose.length > 1) {
+        const partes = i.desglose.map((d) => `${d.receta} ${formatCantidad(d.cantidad, i.unidad)}`)
+        lineas.push(`  · congelar en: ${partes.join(' · ')}`)
+      }
     }
     lineas.push('')
   }
