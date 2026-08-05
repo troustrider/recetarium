@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
 import { getDespensa, saveDespensa, type IngredienteDespensaDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { mismoIngrediente } from '../utils/despensa'
@@ -87,27 +87,29 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     alCambiar: (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d)),
   })
 
-  function añadir(nombre: string, familia: string, alta: AltaIngrediente = {}) {
+  const añadir = useCallback((nombre: string, familia: string, alta: AltaIngrediente = {}) => {
     const norm = normalizar(nombre)
     const fam = normalizar(familia) || 'otros'
-    if (!norm || despensa.some((i) => mismoIngrediente(i.nombre, norm))) return
+    if (!norm) return
     const medible = alta.cantidad != null && alta.cantidad >= 0 && unidadMedible(alta.unidad)
     cambiarDespensa((prev) =>
-      [
-        ...prev,
-        {
-          nombre: norm,
-          familia: fam,
-          estado: 'lleno' as EstadoDespensa,
-          ...(alta.caducidad ? { caducidad: alta.caducidad } : {}),
-          ...(medible ? { cantidad: alta.cantidad, unidad: normalizar(alta.unidad!) } : {}),
-        },
-      ].sort(porFamiliaYNombre)
+      prev.some((i) => mismoIngrediente(i.nombre, norm))
+        ? prev
+        : [
+            ...prev,
+            {
+              nombre: norm,
+              familia: fam,
+              estado: 'lleno' as EstadoDespensa,
+              ...(alta.caducidad ? { caducidad: alta.caducidad } : {}),
+              ...(medible ? { cantidad: alta.cantidad, unidad: normalizar(alta.unidad!) } : {}),
+            },
+          ].sort(porFamiliaYNombre)
     )
-  }
+  }, [cambiarDespensa])
 
   // Vuelta de la compra: suma al stock existente en vez de ignorar el alta.
-  function reponer(nombre: string, familia: string, cantidad?: number, unidad?: string) {
+  const reponer = useCallback((nombre: string, familia: string, cantidad?: number, unidad?: string) => {
     const norm = normalizar(nombre)
     if (!norm) return
     const medible = cantidad != null && cantidad > 0 && unidadMedible(unidad)
@@ -138,9 +140,9 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
             : { ...actual, estado: 'lleno', cantidad, unidad: normalizar(unidad!) }
       return copia
     })
-  }
+  }, [cambiarDespensa])
 
-  function editar(nombre: string, cambios: CambiosIngrediente) {
+  const editar = useCallback((nombre: string, cambios: CambiosIngrediente) => {
     const clave = normalizar(nombre)
     cambiarDespensa((prev) => {
       const nuevoNombre = cambios.nombre != null ? normalizar(cambios.nombre) : null
@@ -172,25 +174,27 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
         })
         .sort(porFamiliaYNombre)
     })
-  }
+  }, [cambiarDespensa])
 
-  function quitar(nombre: string) {
+  const quitar = useCallback((nombre: string) => {
     cambiarDespensa((prev) => prev.filter((i) => i.nombre !== normalizar(nombre)))
-  }
+  }, [cambiarDespensa])
 
-  function vaciar() {
+  const vaciar = useCallback(() => {
     cambiarDespensa([])
-  }
+  }, [cambiarDespensa])
 
-  function tieneIngrediente(nombre: string) {
-    return despensa.some((i) => mismoIngrediente(i.nombre, nombre))
-  }
-
-  return (
-    <DespensaContext.Provider value={{ despensa, añadir, reponer, editar, quitar, vaciar, tieneIngrediente }}>
-      {children}
-    </DespensaContext.Provider>
+  const tieneIngrediente = useCallback(
+    (nombre: string) => despensa.some((i) => mismoIngrediente(i.nombre, nombre)),
+    [despensa]
   )
+
+  const valor = useMemo(
+    () => ({ despensa, añadir, reponer, editar, quitar, vaciar, tieneIngrediente }),
+    [despensa, añadir, reponer, editar, quitar, vaciar, tieneIngrediente]
+  )
+
+  return <DespensaContext.Provider value={valor}>{children}</DespensaContext.Provider>
 }
 
 export function useDespensa() {

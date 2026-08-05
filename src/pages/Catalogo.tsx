@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Dices } from 'lucide-react'
@@ -12,6 +12,11 @@ import AbanicoRecetas from '../components/recetas/AbanicoRecetas'
 import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
+
+// El catálogo pasa de las 250 recetas: pintarlas todas de golpe son cientos de
+// tarjetas animadas y sus imágenes, y cualquier repintado posterior arrastra
+// con todas. Se pintan por tandas conforme se baja.
+const POR_TANDA = 24
 
 // PRNG determinista (mulberry32) para barajar sin ensuciar el render.
 function prngDesde(seed: number): () => number {
@@ -125,6 +130,42 @@ function Catalogo() {
       ? base.filter((r) => faltanPorReceta.get(r.id) === 0)
       : base
   }, [recetasFiltradas, q, soloDisponibles, faltanPorReceta])
+
+  const [visibles, setVisibles] = useState(POR_TANDA)
+  const centinela = useRef<HTMLDivElement>(null)
+
+  // Cada cambio de filtros empieza otra vez por arriba. En el render y no en un
+  // efecto: así no se llega a pintar la tanda vieja sobre los resultados nuevos.
+  const [resultadosPrevios, setResultadosPrevios] = useState(resultados)
+  if (resultadosPrevios !== resultados) {
+    setResultadosPrevios(resultados)
+    setVisibles(POR_TANDA)
+  }
+
+  // Se pinta la tanda siguiente cuando el final se acerca a la pantalla. Por
+  // scroll y no con IntersectionObserver: el observer no dispara en algunos
+  // navegadores embebidos y el catálogo se quedaría clavado en la primera tanda.
+  useEffect(() => {
+    if (visibles >= resultados.length) return
+    let pedido = false
+    const comprobar = () => {
+      pedido = false
+      const arriba = centinela.current?.getBoundingClientRect().top
+      if (arriba != null && arriba < window.innerHeight + 800) setVisibles((v) => v + POR_TANDA)
+    }
+    const alScroll = () => {
+      if (pedido) return
+      pedido = true
+      requestAnimationFrame(comprobar)
+    }
+    comprobar() // por si la tanda actual no llena ni la pantalla
+    window.addEventListener('scroll', alScroll, { passive: true })
+    window.addEventListener('resize', alScroll)
+    return () => {
+      window.removeEventListener('scroll', alScroll)
+      window.removeEventListener('resize', alScroll)
+    }
+  }, [visibles, resultados.length])
 
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} onRetry={cargar} />
@@ -244,22 +285,34 @@ function Catalogo() {
               </button>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <AnimatePresence mode="popLayout">
-                {resultados.map((receta, i) => (
-                  <RecetaCard
-                    key={receta.id}
-                    receta={receta}
-                    index={i}
-                    onClick={abrirReceta}
-                    onToggleFavorita={toggleFavorita}
-                    faltan={faltanPorReceta?.get(receta.id)}
-                    onToggleLista={toggleReceta}
-                    enLista={estaSeleccionada(receta.id)}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
+            <>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <AnimatePresence>
+                  {resultados.slice(0, visibles).map((receta, i) => (
+                    <RecetaCard
+                      key={receta.id}
+                      receta={receta}
+                      index={i}
+                      onClick={abrirReceta}
+                      onToggleFavorita={toggleFavorita}
+                      faltan={faltanPorReceta?.get(receta.id)}
+                      onToggleLista={toggleReceta}
+                      enLista={estaSeleccionada(receta.id)}
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
+              {visibles < resultados.length && (
+                <div ref={centinela} className="flex justify-center pt-2">
+                  <button
+                    onClick={() => setVisibles((v) => v + POR_TANDA)}
+                    className="px-4 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-orange-700 dark:hover:text-orange-400 transition-colors"
+                  >
+                    Ver más recetas
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}

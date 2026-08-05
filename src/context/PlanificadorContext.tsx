@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import type { Receta } from '../types/receta'
 import { useListaCompraContext } from './ListaCompraContext'
 import { useRecetasContext } from './RecetasContext'
@@ -115,30 +115,30 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }
   }, [plan, pendientes, quitarPendiente])
 
-  function añadir(dia: Dia, receta: Receta, raciones = racionesBase(receta)) {
+  const añadir = useCallback((dia: Dia, receta: Receta, raciones = racionesBase(receta)) => {
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: [...prev[dia], { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones }],
     }))
-  }
+  }, [cambiarPlan])
 
-  function quitar(dia: Dia, entradaId: string) {
+  const quitar = useCallback((dia: Dia, entradaId: string) => {
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: prev[dia].filter((e) => e.id !== entradaId),
     }))
-  }
+  }, [cambiarPlan])
 
-  function setRaciones(dia: Dia, entradaId: string, raciones: number) {
+  const setRaciones = useCallback((dia: Dia, entradaId: string, raciones: number) => {
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: prev[dia].map((e) =>
         e.id === entradaId ? { ...e, raciones: Math.max(1, Math.min(4, raciones)) } : e
       ),
     }))
-  }
+  }, [cambiarPlan])
 
-  function mover(desdeDia: Dia, hastaDia: Dia, entradaId: string) {
+  const mover = useCallback((desdeDia: Dia, hastaDia: Dia, entradaId: string) => {
     if (desdeDia === hastaDia) return
     cambiarPlan((prev) => {
       const entrada = prev[desdeDia].find((e) => e.id === entradaId)
@@ -149,14 +149,14 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
         [hastaDia]: [...prev[hastaDia], entrada],
       }
     })
-  }
+  }, [cambiarPlan])
 
-  function limpiar() {
+  const limpiar = useCallback(() => {
     cambiarPlan(PLAN_VACIO)
-  }
+  }, [cambiarPlan])
 
   // Rellena los 7 días con una receta al azar cada uno (mismas raciones).
-  function autollenar(recetas: Receta[], raciones: number) {
+  const autollenar = useCallback((recetas: Receta[], raciones: number) => {
     if (recetas.length === 0) return
     const nuevo = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
     for (const dia of DIAS) {
@@ -164,13 +164,14 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       nuevo[dia] = [{ id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`, receta, raciones }]
     }
     cambiarPlan(nuevo)
-  }
+  }, [cambiarPlan])
 
-  return (
-    <PlanificadorContext.Provider value={{ plan, dias: DIAS, añadir, quitar, setRaciones, mover, limpiar, autollenar }}>
-      {children}
-    </PlanificadorContext.Provider>
+  const valor = useMemo(
+    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, mover, limpiar, autollenar }),
+    [plan, añadir, quitar, setRaciones, mover, limpiar, autollenar]
   )
+
+  return <PlanificadorContext.Provider value={valor}>{children}</PlanificadorContext.Provider>
 }
 
 export function usePlanificador() {

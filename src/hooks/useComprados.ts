@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 
 const STORAGE_KEY = 'recetarium:comprados'
 
@@ -16,20 +16,18 @@ export function useComprados() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...comprados]))
   }, [comprados])
 
-  function toggle(clave: string) {
+  const toggle = useCallback((clave: string) => {
     setComprados((prev) => {
       const next = new Set(prev)
       if (next.has(clave)) next.delete(clave)
       else next.add(clave)
       return next
     })
-  }
+  }, [])
 
-  function limpiar() {
-    setComprados(new Set())
-  }
+  const limpiar = useCallback(() => setComprados(new Set()), [])
 
-  return { comprados, toggle, limpiar }
+  return useMemo(() => ({ comprados, toggle, limpiar }), [comprados, toggle, limpiar])
 }
 
 export default useComprados

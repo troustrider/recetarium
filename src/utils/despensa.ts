@@ -82,28 +82,54 @@ function aplicarAlias(token: string): string {
   return ALIAS_RAIZ.get(token) ?? token
 }
 
+// Los nombres se repiten muchísimo: calcular disponibilidad son cientos de
+// recetas × sus ingredientes × la despensa entera, y tokenizar es normalizar +
+// regex + singular + alias. Cacheado por nombre, eso pasa a ser un Map.get.
+// Los valores no se mutan en ningún sitio, así que se pueden compartir.
+const TOPE_CACHE = 4000
+
+function memoizar<V>(cache: Map<string, V>, clave: string, calcular: () => V): V {
+  const hit = cache.get(clave)
+  if (hit !== undefined) return hit
+  const valor = calcular()
+  if (cache.size >= TOPE_CACHE) cache.clear()
+  cache.set(clave, valor)
+  return valor
+}
+
+const cacheTokens = new Map<string, string[]>()
+const cacheNucleo = new Map<string, Set<string>>()
+
 // Tokens significativos: normalizados, sin conectores, en singular y con los
 // alias resueltos ("ketjap" → "kecap") para que sinónimos y variantes de
 // escritura casen igual que el resto.
 function tokens(nombre: string): string[] {
-  return normalizar(nombre)
-    .replace(/[()]/g, ' ')
-    .split(/[\s,]+/)
-    .map((t) => t.trim())
-    .filter((t) => t && !STOPWORDS.has(t))
-    .map(singular)
-    .map(aplicarAlias)
+  return memoizar(cacheTokens, nombre, () =>
+    normalizar(nombre)
+      .replace(/[()]/g, ' ')
+      .split(/[\s,]+/)
+      .map((t) => t.trim())
+      .filter((t) => t && !STOPWORDS.has(t))
+      .map(singular)
+      .map(aplicarAlias)
+  )
 }
 
 // Núcleo: tokens sin descriptores. Es lo que define la identidad del
 // ingrediente para decidir si uno cubre a otro.
 function nucleo(nombre: string): Set<string> {
-  const t = tokens(nombre)
-  const sinDesc = t.filter((x) => !DESCRIPTORES.has(x))
-  return new Set(sinDesc.length ? sinDesc : t)
+  return memoizar(cacheNucleo, nombre, () => {
+    const t = tokens(nombre)
+    const sinDesc = t.filter((x) => !DESCRIPTORES.has(x))
+    return new Set(sinDesc.length ? sinDesc : t)
+  })
 }
 
-const esSuperset = (a: Set<string>, b: Set<string>) => b.size > 0 && [...b].every((x) => a.has(x))
+function esSuperset(a: Set<string>, b: Set<string>): boolean {
+  if (b.size === 0 || b.size > a.size) return false
+  for (const x of b) if (!a.has(x)) return false
+  return true
+}
 
 // ¿El ingrediente `enDespensa` sirve para el `deReceta`? Contención en ambas
 // direcciones: la despensa puede ser más específica ("arroz jasmine" cubre
@@ -113,8 +139,7 @@ export function despensaCubre(enDespensa: string, deReceta: string): boolean {
   const p = nucleo(enDespensa)
   const r = nucleo(deReceta)
   if (p.size === 0 || r.size === 0) return normalizar(enDespensa) === normalizar(deReceta)
-  if (esSuperset(p, r) && esSuperset(r, p)) return true // iguales
-  if (esSuperset(p, r)) return true // despensa más específica
+  if (esSuperset(p, r)) return true // iguales o despensa más específica
   if (esSuperset(r, p)) {
     // despensa más genérica: bloquear si es una cabeza que cambia de producto
     return !(p.size === 1 && CABEZAS_AMBIGUAS.has([...p][0]))

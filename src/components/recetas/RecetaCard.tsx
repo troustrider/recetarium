@@ -1,9 +1,42 @@
-import { memo, useState } from 'react'
+import { memo, type ReactNode } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket } from 'lucide-react'
 import type { Receta } from '../../types/receta'
 import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
 import { prefetchDetalleReceta } from '../../utils/prefetch'
+
+// Una sola consulta para todo el catálogo, no una por tarjeta.
+const HOVER_CAPAZ =
+  typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? false : false
+
+const CLASES_TARJETA =
+  'bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:border dark:border-gray-800 transition-shadow duration-300'
+
+// Tilt 3D aislado en su propio componente: en táctil no se monta, y así el
+// catálogo no arrastra dos springs por tarjeta animando para nadie.
+function Tilt({ children }: { children: ReactNode }) {
+  const mvX = useMotionValue(0)
+  const mvY = useMotionValue(0)
+  const rotateX = useSpring(mvX, { stiffness: 250, damping: 22 })
+  const rotateY = useSpring(mvY, { stiffness: 250, damping: 22 })
+
+  function alMover(e: React.PointerEvent<HTMLElement>) {
+    const r = e.currentTarget.getBoundingClientRect()
+    mvX.set(-((e.clientY - r.top) / r.height - 0.5) * 6)
+    mvY.set(((e.clientX - r.left) / r.width - 0.5) * 6)
+  }
+
+  return (
+    <motion.div
+      className={CLASES_TARJETA}
+      onPointerMove={alMover}
+      onPointerLeave={() => { mvX.set(0); mvY.set(0) }}
+      style={{ rotateX, rotateY, transformPerspective: 900 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
 
 interface Props {
   receta: Receta
@@ -19,48 +52,19 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
   const { id, nombre, categoria, sabor, tiempoPreparacion, favorita, imagen, proteinas, calorias } = receta
 
   const reduce = useReducedMotion()
-  // Tilt 3D solo en punteros con hover real (desktop). En táctil se queda plano.
-  const [hoverCapable] = useState(() =>
-    typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? false : false
-  )
-  const tiltOn = hoverCapable && !reduce
-
-  const mvX = useMotionValue(0)
-  const mvY = useMotionValue(0)
-  const rotateX = useSpring(mvX, { stiffness: 250, damping: 22 })
-  const rotateY = useSpring(mvY, { stiffness: 250, damping: 22 })
-
-  function onTiltMove(e: React.PointerEvent<HTMLElement>) {
-    if (!tiltOn) return
-    const r = e.currentTarget.getBoundingClientRect()
-    const px = (e.clientX - r.left) / r.width - 0.5
-    const py = (e.clientY - r.top) / r.height - 0.5
-    mvX.set(-py * 6)
-    mvY.set(px * 6)
-  }
-  function onTiltLeave() {
-    mvX.set(0)
-    mvY.set(0)
-  }
+  const Contenedor = HOVER_CAPAZ && !reduce ? Tilt : Plano
 
   return (
     <motion.article
       className="cursor-pointer group"
       onClick={() => onClick(id)}
       onMouseEnter={prefetchDetalleReceta}
-      layout
       initial={{ opacity: 0, y: reduce ? 0 : 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.25, ease: 'easeOut', delay: reduce ? 0 : Math.min(index, 8) * 0.04 }}
     >
-      {/* Wrapper de tilt 3D — aislado de layout/entrada para no romper la animación de entrada */}
-      <motion.div
-        className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:border dark:border-gray-800 transition-shadow duration-300"
-        onPointerMove={onTiltMove}
-        onPointerLeave={onTiltLeave}
-        style={{ rotateX, rotateY, transformPerspective: 900 }}
-      >
+      <Contenedor>
         {/* Zona visual — origen del morph hacia la cabecera de la ficha */}
         <motion.div layoutId={recetaVisualLayoutId(id)} className="relative h-36 overflow-hidden">
           {imagen ? (
@@ -180,9 +184,13 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
             </div>
           )}
         </div>
-      </motion.div>
+      </Contenedor>
     </motion.article>
   )
+}
+
+function Plano({ children }: { children: ReactNode }) {
+  return <div className={CLASES_TARJETA}>{children}</div>
 }
 
 // Memoizada: el catálogo tiene ~120 cards con animaciones; sin esto, cualquier

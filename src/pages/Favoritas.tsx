@@ -10,7 +10,7 @@ import RecetaCard from '../components/recetas/RecetaCard'
 
 function Favoritas() {
   const { recetas, loading, error, cargar, toggleFavorita } = useRecetasContext()
-  const favoritas = recetas.filter((r) => r.favorita)
+  const favoritas = useMemo(() => recetas.filter((r) => r.favorita), [recetas])
   const { filtros, setFiltros, recetasFiltradas } = useFiltros(favoritas)
   const navigate = useNavigate()
 
@@ -69,7 +69,7 @@ function Favoritas() {
           {recetasFiltradas.length === 0 ? (
             <p className="text-sm text-gray-400 py-10 text-center">Sin resultados para estos filtros.</p>
           ) : (
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence>
               <div className="grid gap-4 sm:grid-cols-2">
                 {recetasFiltradas.map((receta) => (
                   <RecetaCard

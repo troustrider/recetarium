@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useCallback, useMemo, type ReactNode } from 'react'
 import type { Receta } from '../types/receta'
 import { useRecetasContext } from './RecetasContext'
 import { getPendientes, savePendientes, type PendientePlanDTO } from '../api/estado'
@@ -49,11 +49,12 @@ export function PendientesPlanProvider({ children }: { children: ReactNode }) {
     setPendientes((prev) => prev.filter((p) => p.receta.id !== recetaId))
   }, [setPendientes])
 
-  return (
-    <PendientesPlanContext.Provider value={{ pendientes, marcarPendientes, quitarPendiente }}>
-      {children}
-    </PendientesPlanContext.Provider>
+  const valor = useMemo(
+    () => ({ pendientes, marcarPendientes, quitarPendiente }),
+    [pendientes, marcarPendientes, quitarPendiente]
   )
+
+  return <PendientesPlanContext.Provider value={valor}>{children}</PendientesPlanContext.Provider>
 }
 
 export function usePendientesPlan() {

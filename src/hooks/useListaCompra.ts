@@ -182,11 +182,20 @@ function useListaCompra() {
   // en la despensa, lo que quitaste a mano, y ya incluye los items manuales.
   const compra: CosteCompra = useMemo(() => calcularCosteCompra(listaCompra), [listaCompra])
 
-  return {
-    seleccionadas, listaCompra, enDespensa, extras, coste, compra,
-    toggleReceta, setRaciones, estaSeleccionada, vaciar,
-    cargarAleatorias, addExtra, removeExtra, descartar,
-  }
+  // Memoizado: es el value del provider, y sin esto cualquier render de un
+  // padre repinta el catálogo entero.
+  return useMemo(
+    () => ({
+      seleccionadas, listaCompra, enDespensa, extras, coste, compra,
+      toggleReceta, setRaciones, estaSeleccionada, vaciar,
+      cargarAleatorias, addExtra, removeExtra, descartar,
+    }),
+    [
+      seleccionadas, listaCompra, enDespensa, extras, coste, compra,
+      toggleReceta, setRaciones, estaSeleccionada, vaciar,
+      cargarAleatorias, addExtra, removeExtra, descartar,
+    ]
+  )
 }
 
 export default useListaCompra
