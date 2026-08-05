@@ -11,6 +11,7 @@ const { despensa } = vi.hoisted(() => ({
     { nombre: 'pollo', familia: 'carnes', estado: 'lleno', cantidad: 300, unidad: 'g' },
     { nombre: 'arroz', familia: 'cereales', estado: 'lleno', cantidad: 1, unidad: 'kg' },
     { nombre: 'salsa de soja', familia: 'salsas', estado: 'lleno' },
+    { nombre: 'pepino', familia: 'verduras', estado: 'lleno', cantidad: 1, unidad: 'ud' },
   ],
 }))
 
@@ -58,5 +59,39 @@ describe('useListaCompra — cantidades de la despensa', () => {
     expect(pollo).toMatchObject({ cantidad: 700, yaTengo: 300 })
     // 600 g de arroz siguen cabiendo en el kilo
     expect(result.current.enDespensa.map((i) => i.nombre)).toContain('arroz')
+  })
+})
+
+// En la tienda no hay medio pepino: la resta contra la despensa daba 1½ − 1 =
+// ½ y así salía en la lista.
+describe('useListaCompra — lo que va por piezas', () => {
+  const conPepino = (cantidad: number, unidad = 'ud'): Receta => ({
+    ...receta, id: 'r2', ingredientes: [{ nombre: 'pepino', cantidad, unidad, familia: 'verduras' }],
+  })
+
+  it('sube a la pieza entera lo que queda a medias tras descontar la despensa', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(conPepino(1.5)))
+
+    expect(result.current.listaCompra.find((i) => i.nombre === 'pepino'))
+      .toMatchObject({ cantidad: 1, yaTengo: 1 })
+  })
+
+  it('media unidad sin nada en la despensa también se compra entera', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta({
+      ...receta, id: 'r3', ingredientes: [{ nombre: 'calabacín', cantidad: 0.5, unidad: 'ud', familia: 'verduras' }],
+    }))
+
+    expect(result.current.listaCompra[0]).toMatchObject({ nombre: 'calabacín', cantidad: 1 })
+  })
+
+  it('lo que se pesa o se mide no se redondea', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta({
+      ...receta, id: 'r4', ingredientes: [{ nombre: 'calabacín', cantidad: 250.5, unidad: 'g', familia: 'verduras' }],
+    }))
+
+    expect(result.current.listaCompra[0]).toMatchObject({ cantidad: 250.5, unidad: 'g' })
   })
 })

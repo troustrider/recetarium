@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
-import { claveIngrediente, canonUnidad } from '../utils/ingredientes'
+import { claveIngrediente, canonUnidad, cantidadDeCompra } from '../utils/ingredientes'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
 import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
@@ -165,12 +165,19 @@ function useListaCompra() {
       return { ...item, desglose: repartirPorReceta(item.desglose!, yaCubierto) }
     }
 
+    // Lo que se lleva a la tienda va en piezas enteras; el desglose por plato
+    // se queda con el reparto real, que es lo que luego se congela.
+    const enPiezas = (item: IngredienteAgrupado): IngredienteAgrupado => ({
+      ...item,
+      cantidad: cantidadDeCompra(item.cantidad, item.unidad),
+    })
+
     deReceta.forEach((item, k) => {
       const { cobertura, aComprar, yaTengo } = reparto[k]
       if (cobertura === 'cubierto') yaHay.push({ ...item, desglose: undefined })
-      else if (cobertura === 'poco') comprar.push({ ...conDesglose(item, 0), quedaPoco: true })
-      else if (cobertura === 'parcial') comprar.push({ ...conDesglose(item, yaTengo), cantidad: aComprar, yaTengo })
-      else comprar.push(conDesglose(item, 0))
+      else if (cobertura === 'poco') comprar.push({ ...enPiezas(conDesglose(item, 0)), quedaPoco: true })
+      else if (cobertura === 'parcial') comprar.push({ ...enPiezas({ ...conDesglose(item, yaTengo), cantidad: aComprar }), yaTengo })
+      else comprar.push(enPiezas(conDesglose(item, 0)))
     })
 
     const porFamilia = (a: IngredienteAgrupado, b: IngredienteAgrupado) =>

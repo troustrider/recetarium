@@ -35,6 +35,15 @@ export function claveIngrediente(nombre: string, unidad: string): string {
   return `${normalizar(nombre)}__${canonUnidad(nombre, unidad)}`
 }
 
+// Unidades que en la tienda no se parten: medio pepino o media lata no se
+// pueden comprar. La receta sí puede pedir ½; lo que sube a la pieza entera es
+// solo lo que hay que meter en el carro.
+const PIEZAS = new Set(['ud', 'lata', 'paquete'])
+
+export function cantidadDeCompra(cantidad: number, unidad: string): number {
+  return PIEZAS.has(unidad) ? Math.ceil(cantidad) : cantidad
+}
+
 const FRACCIONES: Record<string, string> = { '0.25': '¼', '0.5': '½', '0.75': '¾', '0.33': '⅓', '0.67': '⅔' }
 
 export function formatNumero(n: number): string {
