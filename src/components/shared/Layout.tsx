@@ -6,6 +6,7 @@ import useDarkMode from '../../hooks/useDarkMode'
 import { useListaCompraContext } from '../../context'
 import ListaCompraDrawer from '../lista-compra/ListaCompraDrawer'
 import AvisoDespensa from '../despensa/AvisoDespensa'
+import AvisoSincronizacion from './AvisoSincronizacion'
 
 const LINKS_MAIN = [
   { to: '/', label: 'Catálogo' },
@@ -286,6 +287,7 @@ function Layout({ children }: { children: ReactNode }) {
       </nav>
 
       <ListaCompraDrawer open={listaOpen} onClose={() => setListaOpen(false)} />
+      <AvisoSincronizacion />
       <AvisoDespensa />
     </div>
   )

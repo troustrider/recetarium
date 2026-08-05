@@ -27,6 +27,7 @@ function useListaCompra() {
 
   // Ítems manuales: compartidos en backend (los ve también la pareja).
   const [extras, setExtras] = useEstadoCompartido<Ingrediente[], Ingrediente[]>({
+    nombre: 'la lista de la compra',
     inicial: [],
     cargar: getExtras,
     guardar: saveExtras,

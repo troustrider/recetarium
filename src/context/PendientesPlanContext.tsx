@@ -23,6 +23,7 @@ export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   // Recetas ya compradas que faltan por colocar en el planificador. Se hidratan
   // por id contra el catálogo, así que hay que esperar a tenerlo.
   const [pendientes, setPendientes] = useEstadoCompartido<PendientePlan[], PendientePlanDTO[]>({
+    nombre: 'las recetas compradas',
     inicial: [],
     listo: !loading && recetas.length > 0,
     cargar: getPendientes,

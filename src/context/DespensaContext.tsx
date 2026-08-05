@@ -77,6 +77,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
   // compartida. Si el backend viene vacío, se sube lo que hubiera en este
   // dispositivo (migración única) devolviendo null desde hidratar.
   const [despensa, cambiarDespensa] = useEstadoCompartido<IngredienteDespensa[], IngredienteDespensaDTO[]>({
+    nombre: 'la despensa',
     inicial: leerCacheLocal,
     cargar: getDespensa,
     guardar: saveDespensa,

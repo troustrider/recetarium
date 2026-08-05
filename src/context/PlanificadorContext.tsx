@@ -56,6 +56,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   // Se hidrata por id contra el catálogo, así que espera a tenerlo cargado.
   const [plan, cambiarPlan] = useEstadoCompartido<Plan, EntradaPlanDTO[]>({
+    nombre: 'el plan de la semana',
     inicial: PLAN_VACIO,
     listo: !loading && recetas.length > 0,
     cargar: getPlan,

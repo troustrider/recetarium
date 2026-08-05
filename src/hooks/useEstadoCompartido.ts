@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
+import { inicioGuardado, finGuardado, registrarFallo, limpiarFallo } from '../utils/sincronizacion'
 
 // Ciclo de un trozo del estado compartido (plan, despensa, extras, pendientes):
 // se carga del backend una vez, se guarda con debounce, y la respuesta de la
@@ -9,6 +10,8 @@ import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateA
 // salte el hook rompe esa garantía.
 
 interface Opciones<T, DTO> {
+  // Cómo se llama esto para el usuario si falla el guardado ("la despensa").
+  nombre: string
   inicial: T | (() => T)
   cargar: () => Promise<DTO>
   guardar: (dto: DTO) => Promise<void>
@@ -25,6 +28,7 @@ interface Opciones<T, DTO> {
 }
 
 export function useEstadoCompartido<T, DTO>({
+  nombre,
   inicial,
   cargar,
   guardar,
@@ -48,13 +52,30 @@ export function useEstadoCompartido<T, DTO>({
     fns.current = { cargar, guardar, serializar, hidratar, alCambiar }
   })
 
+  // Guarda siempre lo último que hay en pantalla, no un DTO congelado: si un
+  // guardado falla y se reintenta más tarde, lo que sube es el estado actual.
+  // El reintento va por ref para no encadenar closures viejas.
+  const enviarRef = useRef<() => Promise<void>>(async () => {})
+
+  const enviar = useCallback(async (): Promise<void> => {
+    inicioGuardado()
+    try {
+      await fns.current.guardar(fns.current.serializar(estadoRef.current))
+      limpiarFallo(nombre)
+    } catch {
+      registrarFallo(nombre, () => enviarRef.current())
+    } finally {
+      finGuardado()
+    }
+  }, [nombre])
+
+  useEffect(() => { enviarRef.current = enviar }, [enviar])
+
   useEffect(() => {
     if (hidratadoRef.current || !listo) return
     let cancelado = false
 
-    const subirLocal = () => {
-      fns.current.guardar(fns.current.serializar(estadoRef.current)).catch(() => {})
-    }
+    const subirLocal = () => { void enviar() }
 
     fns.current
       .cargar()
@@ -73,17 +94,16 @@ export function useEstadoCompartido<T, DTO>({
       .finally(() => { if (!cancelado) hidratadoRef.current = true })
 
     return () => { cancelado = true }
-  }, [listo])
+  }, [listo, enviar])
 
   useEffect(() => {
     estadoRef.current = estado
     fns.current.alCambiar?.(estado)
     if (!hidratadoRef.current) return
     if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
-    const dto = fns.current.serializar(estado)
-    const t = setTimeout(() => { fns.current.guardar(dto).catch(() => {}) }, retardo)
+    const t = setTimeout(() => { void enviar() }, retardo)
     return () => clearTimeout(t)
-  }, [estado, retardo])
+  }, [estado, retardo, enviar])
 
   const cambiar = useCallback<Dispatch<SetStateAction<T>>>((accion) => {
     tocadoRef.current = true
