@@ -1,0 +1,1154 @@
+{
+  "meta": {
+    "cadenas": [
+      "Dirk van den Broek",
+      "Lidl"
+    ],
+    "actualizado": "2026-08",
+    "nota": "Fuente unica de precios de ingrediente. La app la importa y la skill chef-recetarium la corrige. 'fuente' dice de donde sale el numero: 'estimado' es una referencia sin contrastar, un nombre de cadena es un precio visto en tienda. 'formato' guarda el envase real para poder repetir la comprobacion."
+  },
+  "precios": [
+    {
+      "nombre": "pechuga de pollo",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "gramosPorUd": 150
+    },
+    {
+      "nombre": "contramuslos de pollo",
+      "euros": 5.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "gramosPorUd": 120
+    },
+    {
+      "nombre": "muslos de pollo",
+      "euros": 5.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "gramosPorUd": 130
+    },
+    {
+      "nombre": "carne picada de ternera",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "carne picada mixta",
+      "euros": 7,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "lomo de cerdo",
+      "euros": 7.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "solomillo de cerdo",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "filete de ternera",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "ternera para guisar",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "jamon serrano",
+      "euros": 20,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "jamon cocido",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "chorizo",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "bacon",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pavo",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "salmon",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "bacalao",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "gambas",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "gambas congeladas",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "atun en lata al natural",
+      "euros": 8.3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "lata 145 g · 1,20 €"
+    },
+    {
+      "nombre": "huevos",
+      "euros": 0.3,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "leche",
+      "euros": 1.1,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "nata para cocinar",
+      "euros": 5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "brik 200 ml · 1,00 €"
+    },
+    {
+      "nombre": "mantequilla",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "queso rallado",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "queso feta",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "queso en lonchas",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "yogur griego",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "yogur natural",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "quark",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "magere kwark",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "skyr",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "arroz",
+      "euros": 2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pasta",
+      "euros": 1.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "udon seco",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "udon precocido",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "fideos ramen",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "fideos de arroz",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "harina",
+      "euros": 0.8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "maicena",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pan rallado",
+      "euros": 2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pan rallado panko",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "copos de avena",
+      "euros": 1.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cuscus",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "bulgur",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pan de pita",
+      "euros": 0.3,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pan de molde",
+      "euros": 2.7,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "molde 600 g · 1,60 €"
+    },
+    {
+      "nombre": "tortillas de trigo",
+      "euros": 0.3,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "tortillas de maiz",
+      "euros": 0.25,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "garbanzos cocidos de bote",
+      "euros": 2.25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bote 400 g · 0,90 €"
+    },
+    {
+      "nombre": "alubias rojas de bote",
+      "euros": 2.25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bote 400 g · 0,90 €"
+    },
+    {
+      "nombre": "lentejas",
+      "euros": 2.2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cebolla",
+      "euros": 0.2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cebolla roja",
+      "euros": 0.25,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cebolleta",
+      "euros": 0.2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "ajo",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "zanahoria",
+      "euros": 0.15,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "patata",
+      "euros": 1.2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "tomate",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "gramosPorUd": 120
+    },
+    {
+      "nombre": "tomate triturado",
+      "euros": 2.25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "lata 400 g · 0,90 €"
+    },
+    {
+      "nombre": "tomate cherry",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pimiento",
+      "euros": 0.8,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pimiento rojo",
+      "euros": 0.8,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "calabacin",
+      "euros": 1.5,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "berenjena",
+      "euros": 1.5,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "brocoli",
+      "euros": 3.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "brocoli congelado",
+      "euros": 2.2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "coliflor",
+      "euros": 3.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "espinacas",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa 300 g · 1,50 €"
+    },
+    {
+      "nombre": "champinones",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "guisantes",
+      "euros": 2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "verduras congeladas",
+      "euros": 1.8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "repollo",
+      "euros": 1.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "col blanca",
+      "euros": 1.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pepino",
+      "euros": 0.8,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "apio",
+      "euros": 1.2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "maiz dulce",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "limon",
+      "euros": 0.4,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "lima",
+      "euros": 0.4,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "platano",
+      "euros": 0.25,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "manzana",
+      "euros": 0.35,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cacahuetes",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "nueces",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "aceite de oliva",
+      "euros": 8,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "aceite de girasol",
+      "euros": 2.5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "aceite de sesamo",
+      "euros": 14,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "vinagre",
+      "euros": 1.5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "vinagre de arroz",
+      "euros": 4,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "vino blanco seco",
+      "euros": 5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "azucar",
+      "euros": 1,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "miel",
+      "euros": 6,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "salsa de soja",
+      "euros": 4,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "ketjap manis",
+      "euros": 5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "mirin",
+      "euros": 6,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "salsa de ostras",
+      "euros": 6,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pasta de miso",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "gochujang",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "sambal oelek",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "crema de cacahuete",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "mayonesa",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "ketchup",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "mostaza",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "tomate frito",
+      "euros": 2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "leche de coco",
+      "euros": 3.25,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "lata 400 ml · 1,30 €"
+    },
+    {
+      "nombre": "caldo de pollo",
+      "euros": 0.15,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "pastilla 0,15 € por litro"
+    },
+    {
+      "nombre": "caldo de carne",
+      "euros": 0.15,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "pastilla 0,15 € por litro"
+    },
+    {
+      "nombre": "caldo de verduras",
+      "euros": 0.15,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "pastilla 0,15 € por litro"
+    },
+    {
+      "nombre": "pastilla de caldo",
+      "euros": 0.15,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pimenton",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "comino",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "curcuma",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "canela",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "oregano",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "copos de chile",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "curry en polvo",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "jengibre",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "jengibre fresco",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "sesamo",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "vainilla",
+      "euros": 40,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "laurel",
+      "euros": 40,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "perejil",
+      "euros": 25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cilantro",
+      "euros": 25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "albahaca",
+      "euros": 25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "alga nori",
+      "euros": 60,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "detergente",
+      "euros": 4,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "papel higienico",
+      "euros": 4,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "papel de cocina",
+      "euros": 2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "lavavajillas",
+      "euros": 3,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "bolsas de basura",
+      "euros": 2.5,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "gel de ducha",
+      "euros": 2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "champu",
+      "euros": 3,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pasta de dientes",
+      "euros": 2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "carne picada de cerdo",
+      "euros": 6.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "paleta de cerdo",
+      "euros": 6,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "panceta de cerdo",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "shoarma de pollo",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "falda de ternera",
+      "euros": 11,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "ternera en tiras",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "ternera en lonchas finas",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "gerookt spek",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "rookworst",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pescado blanco congelado",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "caballa ahumada",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "mozzarella",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "parmesano rallado",
+      "euros": 20,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "grana padano",
+      "euros": 18,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "mascarpone",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "requeson",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "nata para montar",
+      "euros": 5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "aguacate",
+      "euros": 1.2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "lechuga",
+      "euros": 1.2,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cacao en polvo",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "tahini",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "frutos rojos",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "levadura quimica",
+      "euros": 15,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pimienta negra",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "fideos de huevo",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "vinagre de vino tinto",
+      "euros": 2,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "calabaza",
+      "euros": 1.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "puerro",
+      "euros": 0.8,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "nata agria",
+      "euros": 5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "curry rojo en pasta",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    }
+  ]
+}

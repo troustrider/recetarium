@@ -14,7 +14,7 @@ interface Props {
 }
 
 function ListaCompraDrawer({ open, onClose }: Props) {
-  const { seleccionadas, listaCompra, enDespensa, coste, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar } = useListaCompraContext()
+  const { seleccionadas, listaCompra, enDespensa, compra, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar } = useListaCompraContext()
   const { comprados, toggle, limpiar } = useCompradosContext()
   const { reponer } = useDespensa()
   const { marcarPendientes } = usePendientesPlan()
@@ -73,15 +73,16 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                   <>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'}
-                      {coste > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {coste.toFixed(2)} €</span> en platos</>}
+                      {compra.total > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {compra.total.toFixed(2)} €</span></>}
                     </p>
-                    {/* El coste sale del precio por porción de cada receta, así que
-                        es lo que cuesta cocinarlo todo de cero, no lo que se paga
-                        en caja. Se dice en vez de dejar que el número engañe. */}
-                    {coste > 0 && enDespensa.length > 0 && (
+                    {/* Nunca se estima lo que no se sabe: si falta precio de
+                        algo, se dice, en vez de dar un total corto por bueno. */}
+                    {compra.sinPrecio.length > 0 && (
                       <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
-                        Cocinarlo todo de cero. En caja pagaréis menos: {enDespensa.length}{' '}
-                        {enDespensa.length === 1 ? 'ingrediente ya lo tenéis' : 'ingredientes ya los tenéis'}.
+                        Sin contar {compra.sinPrecio.length}{' '}
+                        {compra.sinPrecio.length === 1 ? 'ingrediente sin precio' : 'ingredientes sin precio'}:{' '}
+                        {compra.sinPrecio.slice(0, 3).join(', ')}
+                        {compra.sinPrecio.length > 3 && '…'}
                       </p>
                     )}
                   </>

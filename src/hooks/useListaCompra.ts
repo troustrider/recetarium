@@ -5,6 +5,7 @@ import { useEstadoCompartido } from './useEstadoCompartido'
 import { claveIngrediente, canonUnidad } from '../utils/ingredientes'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
+import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
 import { useDespensa } from '../context/DespensaContext'
 
 export interface IngredienteAgrupado extends Ingrediente {
@@ -170,8 +171,12 @@ function useListaCompra() {
     return { listaCompra: comprar.sort(porFamilia), enDespensa: yaHay.sort(porFamilia) }
   }, [seleccionadas, extras, despensa, descartados])
 
+  // Lo que se paga en caja: sale de la lista final, que ya excluye lo que hay
+  // en la despensa, lo que quitaste a mano, y ya incluye los items manuales.
+  const compra: CosteCompra = useMemo(() => calcularCosteCompra(listaCompra), [listaCompra])
+
   return {
-    seleccionadas, listaCompra, enDespensa, extras, coste,
+    seleccionadas, listaCompra, enDespensa, extras, coste, compra,
     toggleReceta, setRaciones, estaSeleccionada, vaciar,
     cargarAleatorias, addExtra, removeExtra, descartar,
   }
