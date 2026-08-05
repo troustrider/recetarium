@@ -10,48 +10,54 @@
   "precios": [
     {
       "nombre": "pechuga de pollo",
-      "euros": 8,
+      "euros": 12,
       "unidad": "kg",
-      "fuente": "estimado",
+      "fuente": "supermarktscanner",
       "revisado": "2026-08",
-      "gramosPorUd": 150
+      "gramosPorUd": 150,
+      "formato": "media NL ago-2026"
     },
     {
       "nombre": "contramuslos de pollo",
-      "euros": 5.5,
+      "euros": 11.49,
       "unidad": "kg",
-      "fuente": "estimado",
+      "fuente": "supermarktscanner",
       "revisado": "2026-08",
-      "gramosPorUd": 120
+      "gramosPorUd": 120,
+      "formato": "kipdijfilet, media NL ago-2026"
     },
     {
       "nombre": "muslos de pollo",
-      "euros": 5.5,
+      "euros": 11.49,
       "unidad": "kg",
-      "fuente": "estimado",
+      "fuente": "supermarktscanner",
       "revisado": "2026-08",
-      "gramosPorUd": 130
+      "gramosPorUd": 130,
+      "formato": "kipdijfilet, media NL ago-2026"
     },
     {
       "nombre": "carne picada de ternera",
-      "euros": 9,
+      "euros": 10.79,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "rundergehakt AH jul-2026"
     },
     {
       "nombre": "carne picada mixta",
-      "euros": 7,
+      "euros": 8.74,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "half-om-half jun-2026"
     },
     {
       "nombre": "lomo de cerdo",
-      "euros": 7.5,
+      "euros": 7.85,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "varkenshaas PLUS jul-2026"
     },
     {
       "nombre": "solomillo de cerdo",
@@ -62,17 +68,19 @@
     },
     {
       "nombre": "filete de ternera",
-      "euros": 14,
+      "euros": 17.95,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "biefstuk Dirk ago-2026"
     },
     {
       "nombre": "ternera para guisar",
-      "euros": 10,
+      "euros": 11.58,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "runderlappen Jumbo jul-2026"
     },
     {
       "nombre": "jamon serrano",
@@ -97,10 +105,11 @@
     },
     {
       "nombre": "bacon",
-      "euros": 9,
+      "euros": 11.59,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "spek media NL jul-2026"
     },
     {
       "nombre": "pavo",
@@ -111,17 +120,19 @@
     },
     {
       "nombre": "salmon",
-      "euros": 14,
+      "euros": 10.36,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "zalm AH jul-2026"
     },
     {
       "nombre": "bacalao",
-      "euros": 9,
+      "euros": 17.76,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "kabeljauw AH jul-2026"
     },
     {
       "nombre": "gambas",
@@ -132,10 +143,11 @@
     },
     {
       "nombre": "gambas congeladas",
-      "euros": 12,
+      "euros": 12.98,
       "unidad": "kg",
-      "fuente": "estimado",
-      "revisado": "2026-08"
+      "fuente": "supermarktscanner",
+      "revisado": "2026-08",
+      "formato": "garnalen Dirk jul-2026"
     },
     {
       "nombre": "atun en lata al natural",
