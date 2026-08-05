@@ -70,10 +70,21 @@ function ListaCompraDrawer({ open, onClose }: Props) {
               <div>
                 <h2 className="font-display font-bold text-gray-900 dark:text-gray-100 text-lg">Lista de compra</h2>
                 {!vacia && (
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'}
-                    {coste > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {coste.toFixed(2)} €</span></>}
-                  </p>
+                  <>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'}
+                      {coste > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {coste.toFixed(2)} €</span> en platos</>}
+                    </p>
+                    {/* El coste sale del precio por porción de cada receta, así que
+                        es lo que cuesta cocinarlo todo de cero, no lo que se paga
+                        en caja. Se dice en vez de dejar que el número engañe. */}
+                    {coste > 0 && enDespensa.length > 0 && (
+                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+                        Cocinarlo todo de cero. En caja pagaréis menos: {enDespensa.length}{' '}
+                        {enDespensa.length === 1 ? 'ingrediente ya lo tenéis' : 'ingredientes ya los tenéis'}.
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
               <button
