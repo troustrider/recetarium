@@ -12,7 +12,7 @@ let recetas = []
 
 beforeAll(async () => {
   recetas = await sql`
-    SELECT nombre, precio_por_porcion::float AS precio, porciones, ingredientes
+    SELECT id, nombre, precio_por_porcion::float AS precio, porciones, ingredientes
     FROM recetas ORDER BY nombre
   `
 })
@@ -75,6 +75,7 @@ describe('contraste contra los precios curados por el chef', () => {
         if (partes.some((p) => p == null)) return null
         const calculado = partes.reduce((a, b) => a + b, 0) / (r.porciones ?? 1)
         return {
+          id: r.id,
           nombre: r.nombre,
           curado: r.precio,
           calculado: Math.round(calculado * 100) / 100,
@@ -99,9 +100,11 @@ describe('contraste contra los precios curados por el chef', () => {
     const sospechosas = filas.filter((f) => Math.abs(f.desvio) > 0.4)
 
     console.log(`\nrecetas con desvío > 40%: ${sospechosas.length}`)
-    for (const f of sospechosas.slice(0, 20)) {
+    // Sale el id porque de aquí se construye a mano el UPDATE de producción:
+    // ningún script escribe en la base de datos compartida por su cuenta.
+    for (const f of sospechosas) {
       const signo = f.desvio > 0 ? '+' : ''
-      console.log(`  ${signo}${(100 * f.desvio).toFixed(0).padStart(4)}%  ${f.nombre} — curado ${f.curado} € · calculado ${f.calculado} €`)
+      console.log(`  ${f.id} ${signo}${(100 * f.desvio).toFixed(0).padStart(4)}% ${f.curado} -> ${f.calculado} ${f.nombre}`)
     }
     expect(true).toBe(true)
   })
