@@ -3,6 +3,7 @@ import { getDespensa, saveDespensa, type IngredienteDespensaDTO } from '../api/e
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { mismoIngrediente } from '../utils/despensa'
 import { convertir, redondear, unidadMedible } from '../utils/cantidades'
+import type { ConsumoIngrediente } from '../utils/consumo'
 
 export type EstadoDespensa = 'lleno' | 'poco'
 
@@ -38,6 +39,7 @@ interface DespensaCtx {
   añadir: (nombre: string, familia: string, alta?: AltaIngrediente) => void
   reponer: (nombre: string, familia: string, cantidad?: number, unidad?: string) => void
   editar: (nombre: string, cambios: CambiosIngrediente) => void
+  consumir: (consumos: ConsumoIngrediente[]) => void
   quitar: (nombre: string) => void
   vaciar: () => void
   tieneIngrediente: (nombre: string) => boolean
@@ -176,6 +178,21 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     })
   }, [cambiarDespensa])
 
+  // Plato hecho: lo gastado sale de la despensa y lo que sobra se queda con el
+  // stock rebajado. Va en un solo cambio para que no se guarden N versiones.
+  const consumir = useCallback((consumos: ConsumoIngrediente[]) => {
+    if (consumos.length === 0) return
+    const porNombre = new Map(consumos.map((c) => [c.nombre, c]))
+    cambiarDespensa((prev) =>
+      prev.flatMap((i) => {
+        const c = porNombre.get(i.nombre)
+        if (!c) return [i]
+        if (c.accion === 'quitar') return []
+        return [{ ...i, cantidad: c.cantidad, unidad: c.unidad ?? i.unidad }]
+      })
+    )
+  }, [cambiarDespensa])
+
   const quitar = useCallback((nombre: string) => {
     cambiarDespensa((prev) => prev.filter((i) => i.nombre !== normalizar(nombre)))
   }, [cambiarDespensa])
@@ -190,8 +207,8 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
   )
 
   const valor = useMemo(
-    () => ({ despensa, añadir, reponer, editar, quitar, vaciar, tieneIngrediente }),
-    [despensa, añadir, reponer, editar, quitar, vaciar, tieneIngrediente]
+    () => ({ despensa, añadir, reponer, editar, consumir, quitar, vaciar, tieneIngrediente }),
+    [despensa, añadir, reponer, editar, consumir, quitar, vaciar, tieneIngrediente]
   )
 
   return <DespensaContext.Provider value={valor}>{children}</DespensaContext.Provider>

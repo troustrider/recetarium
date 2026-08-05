@@ -245,6 +245,63 @@ describe('pendientes de planificar', () => {
   })
 })
 
+describe('platos ya cocinados', () => {
+  it('marcar una receta como hecha la saca de la lista de la compra', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Lunes', POLLO, 2))
+    await waitFor(() => expect(result.current.lista.estaSeleccionada('r1')).toBe(true))
+
+    const entradaId = result.current.plan.plan.Lunes[0].id
+    act(() => result.current.plan.marcarCocinada('Lunes', entradaId, true))
+
+    await waitFor(() => expect(result.current.lista.estaSeleccionada('r1')).toBe(false))
+    expect(result.current.plan.plan.Lunes[0].cocinada).toBe(true)
+  })
+
+  it('deshacerlo la devuelve a la lista', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Lunes', POLLO, 2))
+    const entradaId = result.current.plan.plan.Lunes[0].id
+
+    act(() => result.current.plan.marcarCocinada('Lunes', entradaId, true))
+    await waitFor(() => expect(result.current.lista.estaSeleccionada('r1')).toBe(false))
+
+    act(() => result.current.plan.marcarCocinada('Lunes', entradaId, false))
+    await waitFor(() => expect(result.current.lista.estaSeleccionada('r1')).toBe(true))
+  })
+
+  it('lo cocinado se guarda y vuelve del backend', async () => {
+    api.getPlan.mockResolvedValue([{ dia: 'Lunes', recetaId: 'r1', raciones: 2, cocinada: true }])
+    const { result } = montar()
+
+    await waitFor(() => expect(result.current.plan.plan.Lunes).toHaveLength(1))
+    expect(result.current.plan.plan.Lunes[0].cocinada).toBe(true)
+
+    act(() => result.current.plan.marcarCocinada('Lunes', result.current.plan.plan.Lunes[0].id, false))
+    await waitFor(() => expect(api.savePlan).toHaveBeenCalledTimes(1), { timeout: 3000 })
+    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 2 }])
+  })
+
+  it('consumir vacía lo gastado y rebaja lo que sobra', async () => {
+    api.getDespensa.mockResolvedValue([
+      { nombre: 'pollo', familia: 'carnes', estado: 'lleno', cantidad: 800, unidad: 'g' },
+      { nombre: 'curry', familia: 'especias', estado: 'lleno' },
+    ])
+    const { result } = renderHook(() => useDespensa(), { wrapper: envoltorio })
+    await waitFor(() => expect(result.current.despensa).toHaveLength(2))
+
+    act(() =>
+      result.current.consumir([
+        { nombre: 'pollo', familia: 'carnes', usadoPor: ['pollo'], accion: 'restar', cantidad: 600, unidad: 'g' },
+        { nombre: 'curry', familia: 'especias', usadoPor: ['curry'], accion: 'quitar' },
+      ])
+    )
+
+    expect(result.current.despensa).toHaveLength(1)
+    expect(result.current.despensa[0]).toMatchObject({ nombre: 'pollo', cantidad: 600, unidad: 'g' })
+  })
+})
+
 describe('hidratación del plan desde el backend', () => {
   it('rehidrata por id contra el catálogo', async () => {
     api.getPlan.mockResolvedValue([

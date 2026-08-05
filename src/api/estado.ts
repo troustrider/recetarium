@@ -5,6 +5,7 @@ export interface EntradaPlanDTO {
   dia: string
   recetaId: string
   raciones: number
+  cocinada?: boolean
 }
 
 export interface IngredienteDespensaDTO {

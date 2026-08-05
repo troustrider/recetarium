@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Dices } from 'lucide-react'
+import { Dices, ChefHat, Undo2 } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,
@@ -15,7 +15,10 @@ import {
 } from '@dnd-kit/core'
 import { usePlanificador, type Dia, type EntradaPlan } from '../context/PlanificadorContext'
 import { useRecetasContext, usePendientesPlan } from '../context'
+import { useDespensa } from '../context/DespensaContext'
 import type { PendientePlan } from '../context/PendientesPlanContext'
+import { consumoAlCocinar, type ConsumoIngrediente } from '../utils/consumo'
+import { formatCantidad } from '../utils/ingredientes'
 import type { Receta, Sabor } from '../types/receta'
 
 const SABOR_STRIP: Record<Sabor, string> = {
@@ -40,20 +43,26 @@ interface ChipProps {
   dia: Dia
   onQuitar: () => void
   onRaciones: (n: number) => void
+  onCocinar: () => void
   overlay?: boolean
 }
 
-function RecetaChip({ entrada, onQuitar, onRaciones, overlay = false }: ChipProps) {
+function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false }: ChipProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: entrada.id,
     data: { entradaId: entrada.id },
   })
+  const hecha = entrada.cocinada === true
 
   return (
     <div
       ref={setNodeRef}
       style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
-      className={`flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 select-none ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm'}`}
+      className={`flex items-center gap-2 border rounded-xl px-3 py-2 select-none ${
+        hecha
+          ? 'bg-gray-50 dark:bg-gray-800/50 border-dashed border-emerald-300 dark:border-emerald-800'
+          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+      } ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm'}`}
     >
       {/* Handle de drag */}
       <button
@@ -70,17 +79,37 @@ function RecetaChip({ entrada, onQuitar, onRaciones, overlay = false }: ChipProp
       </button>
 
       {/* Franja de sabor */}
-      <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[entrada.receta.sabor]}`} />
+      <div className={`w-1 h-8 rounded-full shrink-0 ${hecha ? 'bg-emerald-400' : SABOR_STRIP[entrada.receta.sabor]}`} />
 
       {/* Info */}
       <Link to={`/recetas/${entrada.receta.id}`} className="min-w-0 flex-1 group">
-        <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[120px] group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors">
+        <p className={`text-xs font-semibold truncate max-w-[120px] transition-colors ${
+          hecha
+            ? 'text-gray-400 dark:text-gray-500 line-through'
+            : 'text-gray-900 dark:text-gray-100 group-hover:text-orange-500 dark:group-hover:text-orange-400'
+        }`}>
           {entrada.receta.nombre}
         </p>
-        <p className={`text-[10px] font-bold uppercase tracking-widest ${SABOR_TEXT[entrada.receta.sabor]}`}>
-          {entrada.receta.sabor}
+        <p className={`text-[10px] font-bold uppercase tracking-widest ${
+          hecha ? 'text-emerald-500 dark:text-emerald-400' : SABOR_TEXT[entrada.receta.sabor]
+        }`}>
+          {hecha ? 'hecha' : entrada.receta.sabor}
         </p>
       </Link>
+
+      {/* Hecha: vacía de la despensa lo que llevaba */}
+      <button
+        onClick={onCocinar}
+        className={`shrink-0 transition-colors ${
+          hecha
+            ? 'text-emerald-500 hover:text-gray-400'
+            : 'text-gray-300 dark:text-gray-600 hover:text-emerald-500'
+        }`}
+        title={hecha ? 'Deshacer: vuelve a contar para la compra' : 'Ya la he cocinado'}
+        aria-label={hecha ? 'Marcar como no cocinada' : 'Marcar como cocinada'}
+      >
+        {hecha ? <Undo2 className="w-3.5 h-3.5" /> : <ChefHat className="w-4 h-4" />}
+      </button>
 
       {/* Stepper raciones */}
       <div className="flex items-center gap-1 shrink-0">
@@ -201,6 +230,111 @@ function SelectorDia({ pendiente, dias, onSeleccionar, onCerrar }: SelectorDiaPr
   )
 }
 
+// ——— Confirmación de plato hecho ———
+interface ConfirmarCocinadaProps {
+  entrada: EntradaPlan
+  consumos: ConsumoIngrediente[]
+  onConfirmar: (elegidos: ConsumoIngrediente[]) => void
+  onCerrar: () => void
+}
+
+function ConfirmarCocinada({ entrada, consumos, onConfirmar, onCerrar }: ConfirmarCocinadaProps) {
+  // El matching entre despensa y receta es aproximado: se enseña lo que se va
+  // a vaciar y se puede desmarcar lo que no toca.
+  const [excluidos, setExcluidos] = useState<Set<string>>(new Set())
+
+  const alternar = (nombre: string) =>
+    setExcluidos((prev) => {
+      const sig = new Set(prev)
+      if (!sig.delete(nombre)) sig.add(nombre)
+      return sig
+    })
+
+  return (
+    <>
+      <motion.div
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onCerrar}
+      />
+      <motion.div
+        className="fixed inset-x-4 top-24 max-w-md mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 overflow-hidden"
+        initial={{ opacity: 0, y: -16, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: -8, scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      >
+        <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+          <p className="text-xs font-bold uppercase tracking-widest text-emerald-500 dark:text-emerald-400">
+            Ya está hecha
+          </p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-1">
+            {entrada.receta.nombre} · {entrada.raciones} {entrada.raciones === 1 ? 'ración' : 'raciones'}
+          </p>
+        </div>
+
+        {consumos.length === 0 ? (
+          <p className="px-4 py-6 text-sm text-gray-400 dark:text-gray-500">
+            No hay nada de esta receta en la despensa que descontar.
+          </p>
+        ) : (
+          <ul className="max-h-72 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-800">
+            {consumos.map((c) => {
+              const activo = !excluidos.has(c.nombre)
+              return (
+                <li key={c.nombre}>
+                  <button
+                    onClick={() => alternar(c.nombre)}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left"
+                  >
+                    <span
+                      className={`w-4 h-4 shrink-0 rounded border flex items-center justify-center text-[10px] font-bold ${
+                        activo
+                          ? 'bg-emerald-500 border-emerald-500 text-white'
+                          : 'border-gray-300 dark:border-gray-600 text-transparent'
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className={`block text-sm font-semibold truncate ${activo ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 line-through'}`}>
+                        {c.nombre}
+                      </span>
+                      <span className="block text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500 truncate">
+                        {c.usadoPor.join(', ')}
+                      </span>
+                    </span>
+                    <span className={`shrink-0 text-[11px] font-bold ${c.accion === 'quitar' ? 'text-red-400' : 'text-gray-400'}`}>
+                      {c.accion === 'quitar' ? 'se acaba' : `quedan ${formatCantidad(c.cantidad!, c.unidad!)}`}
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+
+        <div className="flex gap-2 p-4 border-t border-gray-100 dark:border-gray-800">
+          <button
+            onClick={onCerrar}
+            className="flex-1 py-2 rounded-xl text-sm font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => { onConfirmar(consumos.filter((c) => !excluidos.has(c.nombre))); onCerrar() }}
+            className="flex-1 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-white hover:bg-emerald-600 transition-colors"
+          >
+            Vaciar y marcar
+          </button>
+        </div>
+      </motion.div>
+    </>
+  )
+}
+
 // ——— Fila de día droppable ———
 interface FilaDiaProps {
   dia: Dia
@@ -208,10 +342,11 @@ interface FilaDiaProps {
   onAñadir: () => void
   onQuitar: (id: string) => void
   onRaciones: (id: string, n: number) => void
+  onCocinar: (entrada: EntradaPlan) => void
   isDragOver: boolean
 }
 
-function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, isDragOver }: FilaDiaProps) {
+function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
 
   return (
@@ -246,6 +381,7 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, isDragOver }:
                 dia={dia}
                 onQuitar={() => onQuitar(entrada.id)}
                 onRaciones={(n) => onRaciones(entrada.id, n)}
+                onCocinar={() => onCocinar(entrada)}
               />
             </motion.div>
           ))}
@@ -332,11 +468,13 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
 
 // ——— Página principal ———
 function Planificador() {
-  const { plan, dias, añadir, quitar, setRaciones, mover, limpiar, autollenar } = usePlanificador()
+  const { plan, dias, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar } = usePlanificador()
   const { recetas } = useRecetasContext()
   const { pendientes, quitarPendiente } = usePendientesPlan()
+  const { despensa, consumir } = useDespensa()
   const [selectorDia, setSelectorDia] = useState<Dia | null>(null)
   const [pendienteActiva, setPendienteActiva] = useState<PendientePlan | null>(null)
+  const [cocinando, setCocinando] = useState<{ dia: Dia; entrada: EntradaPlan } | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const [dragOverDia, setDragOverDia] = useState<Dia | null>(null)
 
@@ -345,6 +483,17 @@ function Planificador() {
   )
 
   const totalRecetas = dias.reduce((acc, d) => acc + plan[d].length, 0)
+
+  const consumos = useMemo(
+    () => (cocinando ? consumoAlCocinar([cocinando.entrada], despensa) : []),
+    [cocinando, despensa]
+  )
+
+  // Deshacer no devuelve nada a la despensa: lo que se comió, comido está.
+  function alCocinar(dia: Dia, entrada: EntradaPlan) {
+    if (entrada.cocinada) marcarCocinada(dia, entrada.id, false)
+    else setCocinando({ dia, entrada })
+  }
 
   const pendienteDrag = activeDragId?.startsWith('pendiente:')
     ? pendientes.find((p) => `pendiente:${p.receta.id}` === activeDragId) ?? null
@@ -459,6 +608,7 @@ function Planificador() {
               onAñadir={() => setSelectorDia(dia)}
               onQuitar={(id) => quitar(dia, id)}
               onRaciones={(id, n) => setRaciones(dia, id, n)}
+              onCocinar={(entrada) => alCocinar(dia, entrada)}
               isDragOver={dragOverDia === dia}
             />
           ))}
@@ -471,6 +621,7 @@ function Planificador() {
               dia={entradaActiva.dia}
               onQuitar={() => {}}
               onRaciones={() => {}}
+              onCocinar={() => {}}
               overlay
             />
           )}
@@ -492,6 +643,17 @@ function Planificador() {
             recetas={recetas}
             onSeleccionar={(receta) => añadir(selectorDia, receta)}
             onCerrar={() => setSelectorDia(null)}
+          />
+        )}
+        {cocinando && (
+          <ConfirmarCocinada
+            entrada={cocinando.entrada}
+            consumos={consumos}
+            onConfirmar={(elegidos) => {
+              consumir(elegidos)
+              marcarCocinada(cocinando.dia, cocinando.entrada.id, true)
+            }}
+            onCerrar={() => setCocinando(null)}
           />
         )}
         {pendienteActiva && (

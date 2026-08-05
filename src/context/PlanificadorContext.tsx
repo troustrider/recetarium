@@ -14,6 +14,8 @@ export interface EntradaPlan {
   id: string
   receta: Receta
   raciones: number
+  // Plato ya hecho: sale de la lista de la compra y su chip queda en gris.
+  cocinada?: boolean
 }
 
 type Plan = Record<Dia, EntradaPlan[]>
@@ -23,7 +25,9 @@ const PLAN_VACIO: Plan = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown
 function serializar(plan: Plan): EntradaPlanDTO[] {
   const out: EntradaPlanDTO[] = []
   for (const dia of DIAS) {
-    for (const e of plan[dia]) out.push({ dia, recetaId: e.receta.id, raciones: e.raciones })
+    for (const e of plan[dia]) {
+      out.push({ dia, recetaId: e.receta.id, raciones: e.raciones, ...(e.cocinada ? { cocinada: true } : {}) })
+    }
   }
   return out
 }
@@ -31,10 +35,15 @@ function serializar(plan: Plan): EntradaPlanDTO[] {
 function hidratar(dtos: EntradaPlanDTO[], recetas: Receta[]): Plan {
   const byId = new Map(recetas.map((r) => [r.id, r]))
   const result = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
-  for (const { dia, recetaId, raciones } of dtos) {
+  for (const { dia, recetaId, raciones, cocinada } of dtos) {
     const receta = byId.get(recetaId)
     if (!receta || !DIAS.includes(dia as Dia)) continue
-    result[dia as Dia].push({ id: `${dia}-${recetaId}-${Date.now()}-${Math.random()}`, receta, raciones })
+    result[dia as Dia].push({
+      id: `${dia}-${recetaId}-${Date.now()}-${Math.random()}`,
+      receta,
+      raciones,
+      ...(cocinada ? { cocinada: true } : {}),
+    })
   }
   return result
 }
@@ -45,6 +54,7 @@ interface PlanificadorCtx {
   añadir: (dia: Dia, receta: Receta, raciones?: number) => void
   quitar: (dia: Dia, entradaId: string) => void
   setRaciones: (dia: Dia, entradaId: string, raciones: number) => void
+  marcarCocinada: (dia: Dia, entradaId: string, cocinada: boolean) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
   autollenar: (recetas: Receta[], raciones: number) => void
@@ -80,7 +90,9 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const totales = new Map<string, { receta: Receta; raciones: number }>()
     for (const dia of DIAS) {
-      for (const { receta, raciones } of plan[dia]) {
+      for (const { receta, raciones, cocinada } of plan[dia]) {
+        // Lo ya cocinado ni se compra ni se cuenta.
+        if (cocinada) continue
         const prev = totales.get(receta.id)
         totales.set(receta.id, { receta, raciones: (prev?.raciones ?? 0) + raciones })
       }
@@ -138,6 +150,13 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }))
   }, [cambiarPlan])
 
+  const marcarCocinada = useCallback((dia: Dia, entradaId: string, cocinada: boolean) => {
+    cambiarPlan((prev) => ({
+      ...prev,
+      [dia]: prev[dia].map((e) => (e.id === entradaId ? { ...e, cocinada } : e)),
+    }))
+  }, [cambiarPlan])
+
   const mover = useCallback((desdeDia: Dia, hastaDia: Dia, entradaId: string) => {
     if (desdeDia === hastaDia) return
     cambiarPlan((prev) => {
@@ -167,8 +186,8 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   }, [cambiarPlan])
 
   const valor = useMemo(
-    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, mover, limpiar, autollenar }),
-    [plan, añadir, quitar, setRaciones, mover, limpiar, autollenar]
+    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar }),
+    [plan, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar]
   )
 
   return <PlanificadorContext.Provider value={valor}>{children}</PlanificadorContext.Provider>
