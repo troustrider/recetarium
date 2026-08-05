@@ -96,6 +96,85 @@ describe('guardado fallido', () => {
   })
 })
 
+// Postgres guarda el estado en jsonb y devuelve las claves reordenadas
+// ({nombre, familia, estado} vuelve como {estado, nombre, familia}). Comparar
+// el JSON tal cual daba "ha cambiado" con el mismo contenido, y cada vuelta a
+// la pestaña repintaba la despensa entera y reseteaba el catálogo.
+describe('revalidar al volver a la pestaña', () => {
+  type Item = { nombre: string; familia: string; estado: string }
+
+  function montarObjetos() {
+    return renderHook(() =>
+      useEstadoCompartido<Item[], Item[]>({
+        nombre: 'la despensa',
+        inicial: [],
+        cargar,
+        guardar,
+        serializar: (e) => e,
+        hidratar: (dto) => dto,
+        retardo: 10,
+      })
+    )
+  }
+
+  const volverALaPestana = async () => {
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'))
+      await new Promise((r) => setTimeout(r, 30))
+    })
+  }
+
+  it('el mismo contenido con las claves en otro orden no toca el estado', async () => {
+    cargar.mockResolvedValue([])
+    const { result } = montarObjetos()
+    await waitFor(() => expect(cargar).toHaveBeenCalled())
+    await act(async () => { await Promise.resolve() })
+
+    act(() => result.current[1]([{ nombre: 'tomate', familia: 'verduras', estado: 'lleno' }]))
+    await waitFor(() => expect(guardar).toHaveBeenCalled())
+
+    const antes = result.current[0]
+    cargar.mockResolvedValue([{ estado: 'lleno', nombre: 'tomate', familia: 'verduras' }])
+    await volverALaPestana()
+
+    expect(result.current[0]).toBe(antes)
+  })
+
+  it('un cambio de verdad del otro dispositivo sí entra', async () => {
+    cargar.mockResolvedValue([])
+    const { result } = montarObjetos()
+    await waitFor(() => expect(cargar).toHaveBeenCalled())
+    await act(async () => { await Promise.resolve() })
+
+    act(() => result.current[1]([{ nombre: 'tomate', familia: 'verduras', estado: 'lleno' }]))
+    await waitFor(() => expect(guardar).toHaveBeenCalled())
+
+    cargar.mockResolvedValue([{ estado: 'poco', nombre: 'tomate', familia: 'verduras' }])
+    await volverALaPestana()
+
+    expect(result.current[0][0].estado).toBe('poco')
+  })
+
+  it('lo que está sin guardar aquí no lo pisa el servidor', async () => {
+    cargar.mockResolvedValue([])
+    let resolverGuardado: () => void = () => {}
+    guardar.mockImplementation(() => new Promise<void>((r) => { resolverGuardado = r }))
+
+    const { result } = montarObjetos()
+    await waitFor(() => expect(cargar).toHaveBeenCalled())
+    await act(async () => { await Promise.resolve() })
+
+    act(() => result.current[1]([{ nombre: 'puerro', familia: 'verduras', estado: 'lleno' }]))
+    await waitFor(() => expect(guardar).toHaveBeenCalled())
+
+    cargar.mockResolvedValue([{ estado: 'lleno', nombre: 'otra cosa', familia: 'otros' }])
+    await volverALaPestana()
+
+    expect(result.current[0][0].nombre).toBe('puerro')
+    resolverGuardado()
+  })
+})
+
 describe('reintentar', () => {
   it('vuelve a intentarlo y limpia el aviso si va bien', async () => {
     guardar.mockRejectedValue(new Error('sin red'))

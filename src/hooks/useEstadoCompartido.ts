@@ -13,6 +13,22 @@ import { inicioGuardado, finGuardado, registrarFallo, limpiarFallo } from '../ut
 
 const INTERVALO_REVALIDACION = 60_000
 
+// Huella del contenido, con las claves en orden. Postgres guarda el estado en
+// jsonb y devuelve las claves reordenadas, asi que comparar el JSON tal cual
+// daria "ha cambiado" con el mismo contenido y repintaria la app cada minuto.
+function huella(valor: unknown): string {
+  if (Array.isArray(valor)) return `[${valor.map(huella).join(',')}]`
+  if (valor !== null && typeof valor === 'object') {
+    const obj = valor as Record<string, unknown>
+    const partes = Object.keys(obj)
+      .filter((k) => obj[k] !== undefined)
+      .sort()
+      .map((k) => `${k}:${huella(obj[k])}`)
+    return `{${partes.join(',')}}`
+  }
+  return JSON.stringify(valor) ?? 'null'
+}
+
 interface Opciones<T, DTO> {
   // Cómo se llama esto para el usuario si falla el guardado ("la despensa").
   nombre: string
@@ -127,7 +143,7 @@ export function useEstadoCompartido<T, DTO>({
     // Hidratar devuelve objetos nuevos aunque el contenido sea el mismo; sin
     // esta comparación cada minuto repintaría toda la app para nada.
     const { serializar: ser } = fns.current
-    if (JSON.stringify(ser(siguiente)) === JSON.stringify(ser(estadoRef.current))) return
+    if (huella(ser(siguiente)) === huella(ser(estadoRef.current))) return
     saltarGuardadoRef.current = true
     setEstado(siguiente)
   }, [])
