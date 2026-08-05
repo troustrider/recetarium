@@ -45,7 +45,15 @@ const sinLlaves = (p) => p.replace(/\{[^}]*\}/g, ' ')
 // Metacomentario de autoría en `consejos`. La app lo renderiza como "Consejos del chef":
 // hablar de versiones anteriores o de posiciones en el ranking del recetario es ruido de
 // proceso en un campo que solo debe servir para cocinar mejor el plato que se tiene delante.
-const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes ten[ií]a|la anterior|del recetario|en el recetario|respecto a la versi|se iba de rango|he subido|he bajado/i
+const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes ten[ií]a|la anterior|del recetario|en el recetario|respecto a la versi|se iba de rango|he subido|he bajado|corregid[oa]s?\b|corrijo|la ficha (?:dec[ií]a|ten[ií]a|estaba)|ficha anterior|estaba[n]? mal/i
+
+// El consejo lo lee quien cocina, no es una nota de entrega: nada de primera persona ni de
+// juicios del editor sobre la propia ficha. El dato se conserva, cambia el sujeto.
+const RE_PRIMERA_PERSONA =
+  /no lo vendo|lo vendo como|etiqueto|(?:no lo |lo )presento como|propongo|planteo|prefiero|recomiendo|considero|opino|he (?:a[ñn]adido|puesto|quitado|cambiado|ajustado|dejado|usado|preferido)|adici[oó]n m[ií]a|aportaci[oó]n m[ií]a|a mi juicio|me parece|personalmente/i
+
+// Las reglas de macros de quien mantiene el recetario no se le cuentan al que cocina.
+const RE_REGLA_PERSONAL = /tu m[ií]nimo|tus \d+ g|tu objetivo|tus macros/i
 
 // Verduras que forman la base aromática y no cuentan como verdura del plato.
 const RE_BASE_AROMATICA = /^(ajo|cebolla|cebolla roja|cebolleta|chalota|puerro|tomate triturado|tomate frito|passata|perejil|cilantro|albahaca|menta|cebollino|limon|lima|guindilla|chile jalapeno)$/
@@ -196,6 +204,10 @@ export function validar(r, { estricto = true } = {}) {
     r.consejos.forEach((con, n) => {
       const meta = con.match(RE_META_CONSEJO)
       if (meta) e.push(`consejo ${n + 1}: metacomentario de autoría ("${meta[0]}")`)
+      const yo = con.match(RE_PRIMERA_PERSONA)
+      if (yo) e.push(`consejo ${n + 1}: primera persona ("${yo[0]}")`)
+      const regla = con.match(RE_REGLA_PERSONAL)
+      if (regla) e.push(`consejo ${n + 1}: regla personal de macros ("${regla[0]}")`)
     })
 
   // --- comida completa ---
