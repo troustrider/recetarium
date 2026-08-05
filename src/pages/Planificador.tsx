@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Dices, ChefHat, Undo2 } from 'lucide-react'
+import { Dices, ChefHat } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,
@@ -78,6 +78,23 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
         </svg>
       </button>
 
+      {/* Hecha. Va al principio, como la casilla de una lista de tareas: es el
+          estado del plato, se lee antes que nada y queda lejos del stepper y de
+          la ×, que es donde un toque de más duele. */}
+      <button
+        onClick={onCocinar}
+        aria-pressed={hecha}
+        aria-label={hecha ? 'Marcar como no cocinada' : 'Marcar como cocinada'}
+        title={hecha ? 'Deshacer: vuelve a contar para la compra' : 'Ya la he cocinado: vacía sus ingredientes de la despensa'}
+        className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
+          hecha
+            ? 'bg-orange-500 border-orange-500 text-white hover:bg-orange-400'
+            : 'border-gray-200 dark:border-gray-600 text-gray-300 dark:text-gray-500 hover:border-orange-400 hover:text-orange-400'
+        }`}
+      >
+        <ChefHat className="w-3.5 h-3.5" />
+      </button>
+
       {/* Franja de sabor */}
       <div className={`w-1 h-8 rounded-full shrink-0 ${hecha ? 'bg-emerald-400' : SABOR_STRIP[entrada.receta.sabor]}`} />
 
@@ -96,20 +113,6 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
           {hecha ? 'hecha' : entrada.receta.sabor}
         </p>
       </Link>
-
-      {/* Hecha: vacía de la despensa lo que llevaba */}
-      <button
-        onClick={onCocinar}
-        className={`shrink-0 transition-colors ${
-          hecha
-            ? 'text-emerald-500 hover:text-gray-400'
-            : 'text-gray-300 dark:text-gray-600 hover:text-emerald-500'
-        }`}
-        title={hecha ? 'Deshacer: vuelve a contar para la compra' : 'Ya la he cocinado'}
-        aria-label={hecha ? 'Marcar como no cocinada' : 'Marcar como cocinada'}
-      >
-        {hecha ? <Undo2 className="w-3.5 h-3.5" /> : <ChefHat className="w-4 h-4" />}
-      </button>
 
       {/* Stepper raciones */}
       <div className="flex items-center gap-1 shrink-0">
