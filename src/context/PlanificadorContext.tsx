@@ -5,6 +5,7 @@ import { useRecetasContext } from './RecetasContext'
 import { usePendientesPlan } from './PendientesPlanContext'
 import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
+import { racionesBase } from '../hooks/useListaCompra'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
 export type Dia = typeof DIAS[number]
@@ -114,7 +115,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }
   }, [plan, pendientes, quitarPendiente])
 
-  function añadir(dia: Dia, receta: Receta, raciones = 1) {
+  function añadir(dia: Dia, receta: Receta, raciones = racionesBase(receta)) {
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: [...prev[dia], { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones }],

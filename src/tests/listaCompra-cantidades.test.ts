@@ -49,9 +49,10 @@ describe('useListaCompra — cantidades de la despensa', () => {
   })
 
   it('escala con las raciones antes de restar', () => {
+    // La receta esta escrita para 2 raciones, asi que 4 son dos veces.
     const { result } = renderHook(() => useListaCompra())
     act(() => result.current.toggleReceta(receta))
-    act(() => result.current.setRaciones('r1', 2))
+    act(() => result.current.setRaciones('r1', 4))
 
     const pollo = result.current.listaCompra.find((i) => i.nombre === 'pechuga de pollo')
     expect(pollo).toMatchObject({ cantidad: 700, yaTengo: 300 })

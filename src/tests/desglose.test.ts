@@ -107,16 +107,34 @@ describe('lista de la compra con desglose', () => {
     expect(item.desglose!.reduce((a, d) => a + d.cantidad, 0)).toBe(item.cantidad)
   })
 
-  it('escala con las raciones', () => {
+  it('las raciones cuentan personas: doblarlas dobla el plato', () => {
+    // Las recetas estan escritas para 2, asi que 4 raciones son dos veces.
     const { result } = renderHook(() => useListaCompra())
     act(() => result.current.toggleReceta(RAMEN))
     act(() => result.current.toggleReceta(KATSU))
-    act(() => result.current.setRaciones('r1', 2))
+    act(() => result.current.setRaciones('r1', 4))
 
     expect(pollo(result)?.desglose).toEqual([
       { receta: 'Ramen de pollo', cantidad: 700 },
       { receta: 'Katsu curry', cantidad: 250 },
     ])
+  })
+
+  it('pedir las raciones para las que esta escrita no la multiplica', () => {
+    // El bug: pedir 2 raciones de un plato para 2 traia comida para 4.
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(RAMEN))
+    act(() => result.current.setRaciones('r1', 2))
+
+    expect(pollo(result)?.cantidad).toBe(350)
+  })
+
+  it('la mitad de raciones es medio plato', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(RAMEN))
+    act(() => result.current.setRaciones('r1', 1))
+
+    expect(pollo(result)?.cantidad).toBe(175)
   })
 
   it('un solo plato no lleva desglose: la cantidad ya lo dice', () => {
@@ -201,13 +219,13 @@ describe('desglose con parte ya en la despensa', () => {
 describe('coste estimado: qué mide y qué no', () => {
   afterEach(() => { despensa.length = 0 })
 
-  it('suma precio por porción × porciones × raciones', () => {
+  it('suma precio por ración × raciones', () => {
     const { result } = renderHook(() => useListaCompra())
     act(() => result.current.toggleReceta(RAMEN))
     expect(result.current.coste).toBe(4)
 
     act(() => result.current.setRaciones('r1', 3))
-    expect(result.current.coste).toBe(12)
+    expect(result.current.coste).toBe(6)
   })
 
   it('NO descuenta lo que ya está en la despensa', () => {

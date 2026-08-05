@@ -25,6 +25,14 @@ export interface EntradaLista {
   raciones: number
 }
 
+// Cuánta gente come con la receta tal cual está escrita. `raciones` cuenta
+// personas, no veces que se cocina: pedir 2 raciones de un plato escrito para 2
+// es hacerlo una vez, no dos. Antes multiplicaba la receta entera por raciones
+// y la lista salía al doble.
+export function racionesBase(receta: Pick<Receta, 'porciones'>): number {
+  return receta.porciones && receta.porciones > 0 ? receta.porciones : 2
+}
+
 function useListaCompra() {
   const [seleccionadas, setSeleccionadas] = useState<EntradaLista[]>([])
   // Claves quitadas a mano de la lista (ítems de receta que no se quieren comprar).
@@ -47,7 +55,7 @@ function useListaCompra() {
     setSeleccionadas((prev) =>
       prev.some((e) => e.receta.id === receta.id)
         ? prev.filter((e) => e.receta.id !== receta.id)
-        : [...prev, { receta, raciones: 1 }]
+        : [...prev, { receta, raciones: racionesBase(receta) }]
     )
   }, [])
 
@@ -94,12 +102,11 @@ function useListaCompra() {
     setDescartados((prev) => new Set(prev).add(clave))
   }, [])
 
-  // Coste estimado de la compra: precio/porción × porciones × raciones.
+  // Coste de los platos: precio por ración × raciones.
   const coste = useMemo(
     () =>
       seleccionadas.reduce(
-        (acc, { receta, raciones }) =>
-          acc + (receta.precioPorPorcion ?? 0) * (receta.porciones ?? 1) * raciones,
+        (acc, { receta, raciones }) => acc + (receta.precioPorPorcion ?? 0) * raciones,
         0
       ),
     [seleccionadas]
@@ -117,7 +124,7 @@ function useListaCompra() {
       for (const ing of receta.ingredientes) {
         const clave = claveIngrediente(ing.nombre, ing.unidad)
         const existente = mapa.get(clave)
-        const cantidad = ing.cantidad * raciones
+        const cantidad = ing.cantidad * (raciones / racionesBase(receta))
         if (existente) {
           existente.cantidad += cantidad
           if (!existente.recetas.includes(receta.nombre)) {
