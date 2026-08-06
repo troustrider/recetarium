@@ -1,6 +1,7 @@
 // Herramienta de mantenimiento del recetario para la skill chef-recetarium.
 //
 //   node scripts/chef-recetas.mjs audit                 -> audita toda la BD contra las puertas de calidad
+//   node scripts/chef-recetas.mjs nutricion [--dry]     -> recalcula hierro, gluten y micros de toda la BD
 //   node scripts/chef-recetas.mjs check <fichero.json>  -> valida un lote sin escribir
 //   node scripts/chef-recetas.mjs check-doc             -> valida los ejemplos JSON de las referencias de la skill
 //   node scripts/chef-recetas.mjs apply <fichero.json>  -> valida y escribe (UPDATE si trae id, INSERT si no)
@@ -12,6 +13,11 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { neon } from '@neondatabase/serverless'
+import { norm, estimarMacros, fichaNutricional } from '../src/lib/nutricion.js'
+
+export { estimarMacros, fichaNutricional }
+
+const AQUI = dirname(fileURLToPath(import.meta.url))
 
 const sql = neon(process.env.DATABASE_URL)
 
@@ -61,67 +67,12 @@ const RE_BASE_AROMATICA = /^(ajo|cebolla|cebolla roja|cebolleta|chalota|puerro|t
 // que el autor pensó en la comida completa, no si lo que propone pega con el plato.
 const RE_GUARNICION = /guarnici[oó]n|al lado|acompa[ñn]|de acompa|s[ií]rve(?:lo|la)? con|se (?:come|sirve|toma) (?:con|en)|va con|encima van|por encima van/i
 
-const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
-
 // Palabras vacías al buscar un ingrediente dentro de los pasos.
 const STOP = new Set(['de', 'del', 'la', 'el', 'en', 'con', 'y', 'al', 'a', 'para', 'los', 'las'])
 const IMPLICITOS = new Set(['sal', 'pimienta', 'agua'])
 
 function nucleo(nombre) {
   return norm(nombre).split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w))
-}
-
-// --- estimación de macros desde la lista de ingredientes -------------------------------
-//
-// El gate de 4P+4C+9G solo comprueba que los cuatro números cuadren entre sí: un macro
-// inventado que cuadre consigo mismo pasa. Esto contrasta lo declarado contra la
-// composición real de los ingredientes, que es lo único que convierte la puerta de
-// proteína en una puerta y no en un número autodeclarado.
-
-const AQUI = dirname(fileURLToPath(import.meta.url))
-const TABLA = JSON.parse(readFileSync(resolve(AQUI, 'nutrientes.json'), 'utf8'))
-const FICHAS = new Map(Object.entries(TABLA.ingredientes).map(([k, v]) => [norm(k), v]))
-const SIN_FICHA_OK = new Set(TABLA.ignorar.map(norm))
-// Unidades cuyo peso depende tanto del producto que sin override no se puede estimar.
-const UNIDAD_NECESITA_FICHA = new Set(['ud', 'lata', 'paquete', 'loncha', 'rodaja', 'rebanada', 'tira', 'vaso'])
-
-/** Gramos de producto que aporta un ingrediente, o null si no se puede saber. */
-function gramos(ing, ficha) {
-  const u = ing.unidad
-  if (u === 'g' || u === 'ml') return ing.cantidad
-  if (ficha && typeof ficha[u] === 'number') return ing.cantidad * ficha[u]
-  if (UNIDAD_NECESITA_FICHA.has(u)) return null
-  const base = TABLA.unidades[u]
-  return typeof base === 'number' ? ing.cantidad * base : null
-}
-
-/**
- * Macros por ración estimados desde `ingredientes`.
- * `desconocidos` lista lo que no se ha podido valorar: si trae algo, el resultado no es
- * comparable y el gate se abstiene en vez de acusar en falso.
- */
-export function estimarMacros(r) {
-  const desconocidos = []
-  let p = 0, c = 0, g = 0
-  for (const ing of r.ingredientes ?? []) {
-    const n = norm(ing.nombre)
-    if (SIN_FICHA_OK.has(n)) continue
-    const ficha = FICHAS.get(n)
-    if (!ficha) { desconocidos.push(ing.nombre); continue }
-    const gr = gramos(ing, ficha)
-    if (gr === null) { desconocidos.push(`${ing.nombre} (${ing.unidad})`); continue }
-    p += (gr * ficha.p) / 100
-    c += (gr * ficha.c) / 100
-    g += (gr * ficha.gr) / 100
-  }
-  const porciones = r.porciones > 0 ? r.porciones : 1
-  return {
-    desconocidos,
-    proteinas: p / porciones,
-    carbohidratos: c / porciones,
-    grasas: g / porciones,
-    calorias: (p * 4 + c * 4 + g * 9) / porciones,
-  }
 }
 
 const pct = (declarado, estimado) => Math.abs(declarado - estimado) / estimado
@@ -296,23 +247,28 @@ async function guardar(r) {
   const ing = JSON.stringify(r.ingredientes)
   const pas = JSON.stringify(r.pasos)
   const con = JSON.stringify(r.consejos ?? [])
+  const f = fichaNutricional(r)
+  const mic = JSON.stringify(f.micros)
   if (r.id) {
     const [row] = await sql`
       UPDATE recetas SET nombre = ${r.nombre}, categoria = ${r.categoria ?? null},
         tiempo_preparacion = ${r.tiempoPreparacion}, ingredientes = ${ing}, pasos = ${pas},
         consejos = ${con}, category_id = ${cid}, precio_por_porcion = ${r.precioPorPorcion},
         porciones = ${r.porciones}, calorias = ${r.calorias ?? null}, proteinas = ${r.proteinas ?? null},
-        carbohidratos = ${r.carbohidratos ?? null}, grasas = ${r.grasas ?? null}, tipo = ${r.tipo ?? 'principal'}
+        carbohidratos = ${r.carbohidratos ?? null}, grasas = ${r.grasas ?? null}, tipo = ${r.tipo ?? 'principal'},
+        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}
       WHERE id = ${r.id} RETURNING id, nombre`
     if (!row) throw new Error(`id no encontrado: ${r.id}`)
     return { accion: 'UPDATE', ...row }
   }
   const [row] = await sql`
     INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, ingredientes, pasos, consejos,
-      precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo)
+      precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo,
+      hierro, sin_gluten, micros)
     VALUES (${r.nombre}, ${r.categoria ?? null}, ${r.tiempoPreparacion}, false, ${ing}, ${pas}, ${con},
       ${r.precioPorPorcion}, ${r.porciones}, ${cid}, ${r.calorias ?? null}, ${r.proteinas ?? null},
-      ${r.carbohidratos ?? null}, ${r.grasas ?? null}, ${r.tipo ?? 'principal'})
+      ${r.carbohidratos ?? null}, ${r.grasas ?? null}, ${r.tipo ?? 'principal'},
+      ${f.hierro}, ${f.sinGluten}, ${mic})
     RETURNING id, nombre`
   return { accion: 'INSERT', ...row }
 }
@@ -411,6 +367,31 @@ if (!comoCli) {
     }
   }
   console.log(`\n${tocadas} de ${todas.length} recetas ${seco ? 'cambiarían' : 'actualizadas'}`)
+} else if (cmd === 'nutricion') {
+  // Recalcula hierro, gluten y micros de toda la BD desde los ingredientes. Idempotente:
+  // no toca ninguna otra columna, así que se puede repetir cada vez que crezca la tabla
+  // de nutrientes. Con --dry solo enseña el resumen.
+  const seco = fichero === '--dry'
+  const todas = await leerTodas()
+  const sinFicha = new Map()
+  let conGluten = 0, dudosas = 0, parciales = 0
+  for (const r of todas) {
+    const f = fichaNutricional(r)
+    estimarMacros(r).sinFicha.forEach((n) => sinFicha.set(n, (sinFicha.get(n) ?? 0) + 1))
+    if (f.sinGluten === false) conGluten++
+    if (f.sinGluten === null) dudosas++
+    if (f.micros.estimadoDe === 'parcial') parciales++
+    if (!seco)
+      await sql`UPDATE recetas SET hierro = ${f.hierro}, sin_gluten = ${f.sinGluten},
+                micros = ${JSON.stringify(f.micros)} WHERE id = ${r.id}`
+  }
+  console.log(`${todas.length} recetas ${seco ? 'se recalcularían' : 'actualizadas'}`)
+  console.log(`  con gluten: ${conGluten} | sin gluten: ${todas.length - conGluten - dudosas} | no afirmable: ${dudosas}`)
+  console.log(`  ficha parcial (alguna cantidad sin convertir a gramos): ${parciales}`)
+  if (sinFicha.size) {
+    console.log(`\ningredientes sin ficha en nutrientes.json (${sinFicha.size}):`)
+    ;[...sinFicha].sort((a, b) => b[1] - a[1]).forEach(([n, c]) => console.log(`   ${c}x  ${n}`))
+  }
 } else if (cmd === 'marcar') {
   const lote = migrar(JSON.parse(readFileSync(fichero, 'utf8')))
   writeFileSync(fichero, JSON.stringify(lote, null, 2) + '\n', 'utf8')

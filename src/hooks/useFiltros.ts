@@ -8,11 +8,13 @@ export interface Filtros {
   sabor: Sabor | ''
   tiempoMax: 15 | 30 | 60 | ''
   ingrediente: string
+  /** true = solo recetas confirmadas sin gluten */
+  sinGluten: boolean
 }
 
-export type Orden = 'nombre' | 'tiempo' | 'proteina' | 'precio'
+export type Orden = 'nombre' | 'tiempo' | 'proteina' | 'precio' | 'hierro'
 
-const FILTROS_VACIOS: Filtros = { categoria: '', sabor: '', tiempoMax: '', ingrediente: '' }
+const FILTROS_VACIOS: Filtros = { categoria: '', sabor: '', tiempoMax: '', ingrediente: '', sinGluten: false }
 
 // includes() cubre lo que se está tecleando ("tom" → tomate); despensaCubre
 // añade el matching por tokens ya existente (plurales, acentos, genéricos:
@@ -34,6 +36,8 @@ function useFiltros(recetas: Receta[]) {
       if (filtros.sabor && r.sabor !== filtros.sabor) return false
       if (filtros.tiempoMax && r.tiempoPreparacion > filtros.tiempoMax) return false
       if (filtros.ingrediente.trim() && !llevaIngrediente(r, filtros.ingrediente.trim())) return false
+      // Solo pasa el true explícito: null es "no se puede afirmar", y para un celíaco eso no vale.
+      if (filtros.sinGluten && r.sinGluten !== true) return false
       return true
     })
     const cmp: Record<Orden, (a: Receta, b: Receta) => number> = {
@@ -41,6 +45,7 @@ function useFiltros(recetas: Receta[]) {
       tiempo: (a, b) => a.tiempoPreparacion - b.tiempoPreparacion,
       proteina: (a, b) => (b.proteinas ?? -1) - (a.proteinas ?? -1),
       precio: (a, b) => (a.precioPorPorcion ?? Infinity) - (b.precioPorPorcion ?? Infinity),
+      hierro: (a, b) => (b.hierro ?? -1) - (a.hierro ?? -1),
     }
     return [...filtradas].sort(cmp[orden])
   }, [recetas, filtros, orden])

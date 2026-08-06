@@ -31,7 +31,7 @@ interface Props {
 function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) {
   const [open, setOpen] = useState(false)
 
-  const activeCount = [filtros.categoria !== '', filtros.sabor !== '', filtros.tiempoMax !== '', filtros.ingrediente !== ''].filter(Boolean).length
+  const activeCount = [filtros.categoria !== '', filtros.sabor !== '', filtros.tiempoMax !== '', filtros.ingrediente !== '', filtros.sinGluten].filter(Boolean).length
   const saborActivo = SABORES.find((s) => s.valor === filtros.sabor)
   const panelBg = saborActivo?.gradient ?? NEUTRAL_BG
 
@@ -78,6 +78,13 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
               className="flex items-center gap-1 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold rounded-full capitalize"
               initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.1 }}>
               con {filtros.ingrediente}<X className="w-3 h-3 ml-0.5" />
+            </motion.button>
+          )}
+          {filtros.sinGluten && (
+            <motion.button key="g" type="button" onClick={() => onChange({ ...filtros, sinGluten: false })}
+              className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-semibold rounded-full"
+              initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} transition={{ duration: 0.1 }}>
+              sin gluten<X className="w-3 h-3 ml-0.5" />
             </motion.button>
           )}
           {filtros.tiempoMax !== '' && (
@@ -204,6 +211,20 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   )}
                 </div>
 
+                {/* Sin gluten — solo deja pasar las confirmadas, no las dudosas */}
+                <div className="px-5 py-3.5 border-b border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => onChange({ ...filtros, sinGluten: !filtros.sinGluten })}
+                    className="w-full flex items-center justify-between"
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50">Solo sin gluten</span>
+                    <span className={`w-9 h-5 rounded-full p-0.5 transition-colors ${filtros.sinGluten ? 'bg-white' : 'bg-white/20'}`}>
+                      <span className={`block w-4 h-4 rounded-full transition-transform ${filtros.sinGluten ? 'translate-x-4 bg-gray-900' : 'bg-white/70'}`} />
+                    </span>
+                  </button>
+                </div>
+
                 {/* Tiempo — glass segmented control */}
                 <div className="px-5 py-3.5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-2">Tiempo máx.</p>
@@ -230,7 +251,7 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   <div className="px-5 pb-4 flex justify-end">
                     <button
                       type="button"
-                      onClick={() => { onChange({ categoria: '', sabor: '', tiempoMax: '', ingrediente: '' }); setOpen(false) }}
+                      onClick={() => { onChange({ categoria: '', sabor: '', tiempoMax: '', ingrediente: '', sinGluten: false }); setOpen(false) }}
                       className="text-[11px] text-white/50 hover:text-white/90 transition-colors underline underline-offset-2"
                     >
                       Limpiar todos

@@ -5,6 +5,7 @@ import { Flame, Lightbulb, Scale, Undo2, X } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
+import FichaMicros from '../components/recetas/FichaMicros'
 import { escalarPasos, tieneCantidadesEscalables } from '../utils/escalarPasos'
 import ModoCocina from '../components/cocina/ModoCocina'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
@@ -236,9 +237,19 @@ function DetalleReceta() {
               </p>
             </div>
           ))}
+          {receta.micros && (
+            <div className="col-span-4 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">
+              <span>Fibra {receta.micros.fibra}g</span>
+              <span>Azúcares {receta.micros.azucares}g</span>
+              <span>Saturadas {receta.micros.saturadas}g</span>
+              <span>Sal {String(receta.micros.sal).replace('.', ',')}g</span>
+            </div>
+          )}
           <p className="col-span-4 text-[10px] text-gray-400 dark:text-gray-500 text-center -mt-1">por porción</p>
         </div>
       )}
+
+      <FichaMicros receta={receta} />
 
       <section>
         <div className="flex items-center justify-between mb-4">

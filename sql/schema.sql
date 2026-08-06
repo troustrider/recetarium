@@ -21,6 +21,13 @@
     proteinas           NUMERIC(5,1),
     carbohidratos       NUMERIC(5,1),
     grasas              NUMERIC(5,1),
+    -- Hierro mg/porción. En columna para poder filtrar y ordenar por él.
+    hierro              NUMERIC(5,1),
+    -- true = sin gluten, false = lleva, null = algún ingrediente sin ficha (no afirmable)
+    sin_gluten          BOOLEAN,
+    -- Resto de micros por porción: {fibra, azucares, saturadas, sal, hierroHemo,
+    -- vitaminaC, calcio, b12, folato, gluten: {fuentes, evitable}, estimadoDe}
+    micros              JSONB,
     -- Tipo de plato: principal | postre | desayuno | entrante
     tipo                VARCHAR(30) NOT NULL DEFAULT 'principal',
     category_id         UUID NOT NULL,

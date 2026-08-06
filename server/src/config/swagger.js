@@ -42,6 +42,41 @@ const options = {
             proteinas: { type: 'number', example: 38.5 },
             carbohidratos: { type: 'number', example: 45 },
             grasas: { type: 'number', example: 18 },
+            hierro: { type: 'number', example: 4.6, readOnly: true, description: 'mg/porción. Lo calcula el servidor desde los ingredientes.' },
+            sinGluten: { type: 'boolean', nullable: true, example: false, readOnly: true, description: 'null si algún ingrediente no tiene ficha: ahí no se puede afirmar que no lleve.' },
+            micros: {
+              type: 'object', readOnly: true,
+              description: 'Micronutrientes por porción, calculados desde los ingredientes.',
+              properties: {
+                fibra: { type: 'number', example: 6.2 },
+                azucares: { type: 'number', example: 8.1 },
+                saturadas: { type: 'number', example: 4.3 },
+                sal: { type: 'number', example: 1.94, description: 'La de los ingredientes; no cuenta la añadida al cocinar.' },
+                hierroHemo: { type: 'number', example: 1.8, description: 'Parte del hierro que es hemo (carne, pescado).' },
+                vitaminaC: { type: 'integer', example: 42 },
+                calcio: { type: 'integer', example: 180 },
+                b12: { type: 'number', example: 1.4 },
+                folato: { type: 'integer', example: 96 },
+                gluten: {
+                  type: 'object', nullable: true,
+                  properties: {
+                    fuentes: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          nombre: { type: 'string', example: 'salsa de soja' },
+                          certeza: { type: 'string', enum: ['si', 'depende'] },
+                          sustituto: { type: 'string', nullable: true, example: 'tamari sin gluten' },
+                        },
+                      },
+                    },
+                    evitable: { type: 'boolean', example: true },
+                  },
+                },
+                estimadoDe: { type: 'string', enum: ['completo', 'parcial'] },
+              },
+            },
             tipo: { type: 'string', enum: ['principal', 'postre', 'desayuno', 'entrante'], example: 'principal' },
           },
         },

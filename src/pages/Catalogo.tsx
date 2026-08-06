@@ -56,10 +56,11 @@ function Catalogo() {
     { valor: 'tiempo', label: 'Más rápidas' },
     { valor: 'proteina', label: 'Más proteína' },
     { valor: 'precio', label: 'Más baratas' },
+    { valor: 'hierro', label: 'Más hierro' },
   ]
 
   function limpiarTodo() {
-    setFiltros({ categoria: '', sabor: '', tiempoMax: '', ingrediente: '' })
+    setFiltros({ categoria: '', sabor: '', tiempoMax: '', ingrediente: '', sinGluten: false })
     setSoloDisponibles(false)
     if (searchParams.get('q')) navigate('/')
   }
@@ -71,7 +72,7 @@ function Catalogo() {
   )
 
   const hayFiltrosActivos =
-    !!q || soloDisponibles || filtros.categoria !== '' || filtros.sabor !== '' || filtros.tiempoMax !== '' || filtros.ingrediente !== ''
+    !!q || soloDisponibles || filtros.categoria !== '' || filtros.sabor !== '' || filtros.tiempoMax !== '' || filtros.ingrediente !== '' || filtros.sinGluten
 
   const ingredientesUnicos = useMemo(
     () => [...new Set(recetas.flatMap((r) => r.ingredientes.map((i) => i.nombre.toLowerCase())))].sort(),

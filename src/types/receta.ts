@@ -11,6 +11,29 @@ export interface Ingrediente {
   familia: string
 }
 
+export interface FuenteGluten {
+  nombre: string
+  certeza: 'si' | 'depende'
+  sustituto: string | null
+}
+
+/** Micronutrientes por porción. Los calcula el servidor desde los ingredientes. */
+export interface Micros {
+  fibra: number
+  azucares: number
+  saturadas: number
+  /** Sal de los ingredientes; no cuenta la que se añada al cocinar. */
+  sal: number
+  /** Parte del hierro que es hemo (carne, pescado): se absorbe mucho mejor. */
+  hierroHemo: number
+  vitaminaC: number
+  calcio: number
+  b12: number
+  folato: number
+  gluten: { fuentes: FuenteGluten[]; evitable: boolean } | null
+  estimadoDe: 'completo' | 'parcial'
+}
+
 export interface Receta {
   id: string
   nombre: string
@@ -28,5 +51,10 @@ export interface Receta {
   proteinas?: number
   carbohidratos?: number
   grasas?: number
+  /** Hierro mg/porción. */
+  hierro?: number
+  /** null = algún ingrediente sin ficha, así que no se puede afirmar que no lleve. */
+  sinGluten?: boolean | null
+  micros?: Micros
   tipo?: Tipo
 }
