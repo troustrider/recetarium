@@ -23,8 +23,13 @@ recetas_live.json
 .env.*
 !.env.example
 
-# Claude Code
-.claude/
+# Claude Code: todo local salvo la skill del chef, que es contrato del recetario y
+# tiene que viajar con el repo. Hay que desexcluir nivel a nivel: git no entra en un
+# directorio ignorado, así que una negación suelta dentro de `.claude/` no valdría.
+.claude/*
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/chef-recetarium/
 
 # Editor directories and files
 .vscode/*
