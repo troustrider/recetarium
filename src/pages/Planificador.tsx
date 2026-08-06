@@ -58,7 +58,7 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
     <div
       ref={setNodeRef}
       style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
-      className={`flex items-center gap-2 border rounded-xl px-3 py-2 select-none ${
+      className={`flex items-center gap-2 border rounded-xl px-3 py-2 select-none min-w-0 max-w-full ${
         hecha
           ? 'bg-gray-50 dark:bg-gray-800/50 border-dashed border-emerald-300 dark:border-emerald-800'
           : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
@@ -99,7 +99,9 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
       <div className={`w-1 h-8 rounded-full shrink-0 ${hecha ? 'bg-emerald-400' : SABOR_STRIP[entrada.receta.sabor]}`} />
 
       {/* Info */}
-      <Link to={`/recetas/${entrada.receta.id}`} className="min-w-0 flex-1 group">
+      {/* El nombre es lo único elástico del chip: el resto son controles de ancho fijo.
+          El suelo evita que en una pantalla estrecha se quede en una letra y puntos. */}
+      <Link to={`/recetas/${entrada.receta.id}`} className="min-w-[64px] flex-1 group">
         <p className={`text-xs font-semibold truncate max-w-[120px] transition-colors ${
           hecha
             ? 'text-gray-400 dark:text-gray-500 line-through'
@@ -355,25 +357,27 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, is
   return (
     <div
       ref={setNodeRef}
-      className={`flex gap-3 items-start bg-white dark:bg-gray-800 rounded-2xl border transition-colors p-4 min-h-[68px] ${
+      className={`flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-start bg-white dark:bg-gray-800 rounded-2xl border transition-colors p-4 min-h-[68px] ${
         isDragOver
           ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/10'
           : 'border-gray-100 dark:border-gray-700'
       }`}
     >
-      {/* Etiqueta del día */}
-      <div className="w-16 shrink-0 pt-1">
+      {/* Etiqueta del día. En móvil va encima y no al lado: la columna le quitaba al chip
+          los 64px que el chip necesita para no desbordar la fila. */}
+      <div className="w-full sm:w-16 shrink-0 sm:pt-1">
         <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
           {dia.slice(0, 3)}
         </p>
       </div>
 
       {/* Chips de recetas + botón añadir */}
-      <div className="flex flex-wrap gap-2 flex-1">
+      <div className="flex flex-wrap gap-2 flex-1 min-w-0">
         <AnimatePresence>
           {entradas.map((entrada) => (
             <motion.div
               key={entrada.id}
+              className="min-w-0 max-w-full"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}

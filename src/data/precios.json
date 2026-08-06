@@ -1168,6 +1168,14 @@
       "unidad": "kg",
       "fuente": "estimado",
       "revisado": "2026-08"
+    },
+    {
+      "nombre": "pasta de curry japonés",
+      "euros": 25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bloque 92 g · 2,30 €"
     }
   ]
 }
