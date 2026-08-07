@@ -68,6 +68,26 @@ describe('ranura de deshacer', () => {
     expect(nueva).toHaveBeenCalledTimes(1)
   })
 
+  it('avisa a quien registró cuando la oferta se retira sin usarse', () => {
+    const alCerrar = vi.fn()
+    const { result } = renderHook(() => useDeshacer(), { wrapper: soloDeshacer })
+
+    // Cerrar a mano.
+    act(() => result.current.registrar('Receta editada', () => {}, alCerrar))
+    act(() => result.current.descartar())
+    expect(alCerrar).toHaveBeenCalledTimes(1)
+
+    // Que llegue otra acción también retira la anterior.
+    act(() => result.current.registrar('Receta editada', () => {}, alCerrar))
+    act(() => result.current.registrar('Semana vaciada', () => {}))
+    expect(alCerrar).toHaveBeenCalledTimes(2)
+
+    // Deshacer de verdad no es "retirar sin usar": ahí no se avisa.
+    act(() => result.current.registrar('Receta editada', () => {}, alCerrar))
+    act(() => result.current.ejecutar())
+    expect(alCerrar).toHaveBeenCalledTimes(2)
+  })
+
   it('descartar cierra el aviso sin deshacer', () => {
     const deshacer = vi.fn()
     const { result } = renderHook(() => useDeshacer(), { wrapper: soloDeshacer })
