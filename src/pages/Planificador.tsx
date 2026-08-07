@@ -14,7 +14,7 @@ import {
   type DragStartEvent,
 } from '@dnd-kit/core'
 import { usePlanificador, type Dia, type EntradaPlan } from '../context/PlanificadorContext'
-import { useRecetasContext, usePendientesPlan } from '../context'
+import { useRecetasContext, usePendientesPlan, useDeshacer } from '../context'
 import { useDespensa } from '../context/DespensaContext'
 import type { PendientePlan } from '../context/PendientesPlanContext'
 import { consumoAlCocinar, type ConsumoIngrediente } from '../utils/consumo'
@@ -58,17 +58,22 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
     <div
       ref={setNodeRef}
       style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
-      className={`flex items-center gap-2 border rounded-xl px-3 py-2 select-none min-w-0 max-w-full ${
+      className={`relative flex items-center gap-2 border rounded-xl pr-3 py-2 select-none min-w-0 max-w-full overflow-hidden ${
         hecha
-          ? 'bg-gray-50 dark:bg-gray-800/50 border-dashed border-emerald-300 dark:border-emerald-800'
-          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
-      } ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm'}`}
+          ? 'bg-white dark:bg-gray-800 border-dashed border-emerald-300 dark:border-emerald-800'
+          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+      } ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm dark:shadow-none'}`}
     >
+      {/* Franja de sabor. Va pegada al canto y a toda altura: es lo que hace que
+          una semana llena se lea de un vistazo como un calendario y no como una
+          lista. Ocupa el sitio del padding izquierdo, así que no ensancha el chip. */}
+      <div className={`self-stretch w-[3px] shrink-0 ${hecha ? 'bg-emerald-400' : SABOR_STRIP[entrada.receta.sabor]}`} />
+
       {/* Handle de drag */}
       <button
         {...listeners}
         {...attributes}
-        className="shrink-0 cursor-grab active:cursor-grabbing text-gray-300 dark:text-gray-600 hover:text-gray-400 transition-colors touch-none"
+        className="relative shrink-0 cursor-grab active:cursor-grabbing text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors touch-none after:content-[''] after:absolute after:-inset-1.5"
         aria-label="Arrastrar"
       >
         <svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor">
@@ -89,14 +94,11 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
         className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
           hecha
             ? 'bg-orange-500 border-orange-500 text-white hover:bg-orange-400'
-            : 'border-gray-200 dark:border-gray-600 text-gray-300 dark:text-gray-500 hover:border-orange-400 hover:text-orange-400'
+            : 'border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-orange-400 hover:text-orange-400'
         }`}
       >
         <ChefHat className="w-3.5 h-3.5" />
       </button>
-
-      {/* Franja de sabor */}
-      <div className={`w-1 h-8 rounded-full shrink-0 ${hecha ? 'bg-emerald-400' : SABOR_STRIP[entrada.receta.sabor]}`} />
 
       {/* Info */}
       {/* El nombre es lo único elástico del chip: el resto son controles de ancho fijo.
@@ -116,11 +118,13 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
         </p>
       </Link>
 
-      {/* Stepper raciones */}
+      {/* Stepper raciones. El área pulsable se amplía con pseudo-elemento y no con
+          padding: en móvil el chip ya va justo de ancho y crecerlo desborda la fila. */}
       <div className="flex items-center gap-1 shrink-0">
         <button
           onClick={() => onRaciones(entrada.raciones - 1)}
-          className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm leading-none"
+          aria-label="Quitar una ración"
+          className="relative w-5 h-5 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm leading-none after:content-[''] after:absolute after:-inset-1.5"
         >
           −
         </button>
@@ -129,16 +133,18 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
         </span>
         <button
           onClick={() => onRaciones(entrada.raciones + 1)}
-          className="w-5 h-5 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm leading-none"
+          aria-label="Añadir una ración"
+          className="relative w-5 h-5 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm leading-none after:content-[''] after:absolute after:-inset-1.5"
         >
           +
         </button>
       </div>
 
-      {/* Quitar */}
+      {/* Quitar. El margen extra separa su zona de toque de la del stepper: es la
+          única acción destructiva del chip y no tiene deshacer. */}
       <button
         onClick={onQuitar}
-        className="shrink-0 text-gray-300 dark:text-gray-600 hover:text-red-400 transition-colors text-base leading-none"
+        className="relative shrink-0 ml-1.5 text-gray-500 hover:text-red-400 transition-colors text-base leading-none after:content-[''] after:absolute after:-inset-y-1.5 after:-inset-x-2"
         aria-label="Quitar receta"
       >
         ×
@@ -166,9 +172,11 @@ function PendienteChip({ pendiente, onElegirDia, onDescartar, overlay = false }:
       {...listeners}
       {...attributes}
       style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
-      className={`flex items-center gap-2 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 rounded-xl px-3 py-2 select-none touch-none cursor-grab active:cursor-grabbing ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm'}`}
+      className={`relative flex items-center gap-2 bg-white dark:bg-gray-800 border border-emerald-200 dark:border-emerald-800 rounded-xl pr-3 py-2 select-none touch-none cursor-grab active:cursor-grabbing overflow-hidden ${
+        overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm dark:shadow-none'
+      }`}
     >
-      <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[pendiente.receta.sabor]}`} />
+      <div className={`self-stretch w-[3px] shrink-0 ${SABOR_STRIP[pendiente.receta.sabor]}`} />
       <button onClick={onElegirDia} className="min-w-0 flex-1 text-left" aria-label={`Planificar ${pendiente.receta.nombre}`}>
         <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[140px]">
           {pendiente.receta.nombre}
@@ -179,7 +187,7 @@ function PendienteChip({ pendiente, onElegirDia, onDescartar, overlay = false }:
       </button>
       <button
         onClick={onDescartar}
-        className="shrink-0 text-gray-300 dark:text-gray-600 hover:text-red-400 transition-colors text-base leading-none"
+        className="relative shrink-0 ml-1.5 text-gray-500 hover:text-red-400 transition-colors text-base leading-none after:content-[''] after:absolute after:-inset-y-1.5 after:-inset-x-2"
         aria-label="Descartar pendiente"
       >
         ×
@@ -354,13 +362,16 @@ interface FilaDiaProps {
 function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
 
+  // La fila hace de bandeja y va un nivel por debajo del chip: si comparten color,
+  // el chip no tiene con qué destacar. gray-900 es además el nivel de tarjeta del
+  // resto de la app (gray-800 es el de inputs).
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-start bg-white dark:bg-gray-800 rounded-2xl border transition-colors p-4 min-h-[68px] ${
+      className={`flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-start rounded-2xl border transition-colors p-4 min-h-[68px] ${
         isDragOver
           ? 'border-orange-400 bg-orange-50 dark:bg-orange-900/10'
-          : 'border-gray-100 dark:border-gray-700'
+          : 'bg-stone-100 dark:bg-gray-900 border-stone-200 dark:border-gray-800'
       }`}
     >
       {/* Etiqueta del día. En móvil va encima y no al lado: la columna le quitaba al chip
@@ -396,7 +407,7 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, is
 
         <button
           onClick={onAñadir}
-          className="flex items-center gap-1 px-3 py-2 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-400 dark:text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-300 dark:hover:border-orange-700 transition-colors"
+          className="flex items-center gap-1 px-3 py-2 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-300 dark:hover:border-orange-700 transition-colors"
         >
           + Añadir
         </button>
@@ -475,10 +486,11 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
 
 // ——— Página principal ———
 function Planificador() {
-  const { plan, dias, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar } = usePlanificador()
+  const { plan, dias, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
   const { recetas } = useRecetasContext()
-  const { pendientes, quitarPendiente } = usePendientesPlan()
-  const { despensa, consumir } = useDespensa()
+  const { pendientes, quitarPendiente, restaurarPendientes } = usePendientesPlan()
+  const { despensa, consumir, restaurarDespensa } = useDespensa()
+  const { registrar } = useDeshacer()
   const [selectorDia, setSelectorDia] = useState<Dia | null>(null)
   const [pendienteActiva, setPendienteActiva] = useState<PendientePlan | null>(null)
   const [cocinando, setCocinando] = useState<{ dia: Dia; entrada: EntradaPlan } | null>(null)
@@ -496,10 +508,22 @@ function Planificador() {
     [cocinando, despensa]
   )
 
-  // Deshacer no devuelve nada a la despensa: lo que se comió, comido está.
+  // Destocar el gorro no devuelve nada a la despensa: lo que se comió, comido
+  // está. Para recuperar el stock hay que deshacer desde el aviso, que sí
+  // rebobina despensa y plan juntos.
   function alCocinar(dia: Dia, entrada: EntradaPlan) {
     if (entrada.cocinada) marcarCocinada(dia, entrada.id, false)
     else setCocinando({ dia, entrada })
+  }
+
+  function quitarConDeshacer(dia: Dia, entradaId: string) {
+    const anterior = plan
+    const entrada = plan[dia].find((e) => e.id === entradaId)
+    quitar(dia, entradaId)
+    registrar(
+      entrada ? `Quitada ${entrada.receta.nombre}` : 'Receta quitada del plan',
+      () => restaurarPlan(anterior)
+    )
   }
 
   const pendienteDrag = activeDragId?.startsWith('pendiente:')
@@ -558,7 +582,11 @@ function Planificador() {
         </div>
         <div className="flex items-center gap-3">
           <motion.button
-            onClick={() => autollenar(recetas.filter((r) => (r.tipo ?? 'principal') === 'principal'), 2)}
+            onClick={() => {
+              const anterior = plan
+              autollenar(recetas.filter((r) => (r.tipo ?? 'principal') === 'principal'), 2)
+              registrar('Semana rellenada al azar', () => restaurarPlan(anterior))
+            }}
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
@@ -569,7 +597,11 @@ function Planificador() {
           </motion.button>
           {totalRecetas > 0 && (
             <motion.button
-              onClick={limpiar}
+              onClick={() => {
+                const anterior = plan
+                limpiar()
+                registrar('Semana vaciada', () => restaurarPlan(anterior))
+              }}
               className="text-xs font-semibold text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
               whileTap={{ scale: 0.95 }}
             >
@@ -599,7 +631,11 @@ function Planificador() {
                   key={pendiente.receta.id}
                   pendiente={pendiente}
                   onElegirDia={() => setPendienteActiva(pendiente)}
-                  onDescartar={() => quitarPendiente(pendiente.receta.id)}
+                  onDescartar={() => {
+                    const anterior = pendientes
+                    quitarPendiente(pendiente.receta.id)
+                    registrar(`Descartada ${pendiente.receta.nombre}`, () => restaurarPendientes(anterior))
+                  }}
                 />
               ))}
             </div>
@@ -613,7 +649,7 @@ function Planificador() {
               dia={dia}
               entradas={plan[dia]}
               onAñadir={() => setSelectorDia(dia)}
-              onQuitar={(id) => quitar(dia, id)}
+              onQuitar={(id) => quitarConDeshacer(dia, id)}
               onRaciones={(id, n) => setRaciones(dia, id, n)}
               onCocinar={(entrada) => alCocinar(dia, entrada)}
               isDragOver={dragOverDia === dia}
@@ -657,8 +693,15 @@ function Planificador() {
             entrada={cocinando.entrada}
             consumos={consumos}
             onConfirmar={(elegidos) => {
+              const planAnterior = plan
+              const despensaAnterior = despensa
+              const { dia, entrada } = cocinando
               consumir(elegidos)
-              marcarCocinada(cocinando.dia, cocinando.entrada.id, true)
+              marcarCocinada(dia, entrada.id, true)
+              registrar(`Hecha ${entrada.receta.nombre}`, () => {
+                restaurarDespensa(despensaAnterior)
+                restaurarPlan(planAnterior)
+              })
             }}
             onCerrar={() => setCocinando(null)}
           />

@@ -13,6 +13,8 @@ interface PendientesPlanCtx {
   pendientes: PendientePlan[]
   marcarPendientes: (entradas: PendientePlan[]) => void
   quitarPendiente: (recetaId: string) => void
+  // Vuelve a una lista de pendientes anterior tal cual, para el deshacer.
+  restaurarPendientes: (anterior: PendientePlan[]) => void
 }
 
 const PendientesPlanContext = createContext<PendientesPlanCtx | null>(null)
@@ -49,9 +51,13 @@ export function PendientesPlanProvider({ children }: { children: ReactNode }) {
     setPendientes((prev) => prev.filter((p) => p.receta.id !== recetaId))
   }, [setPendientes])
 
+  const restaurarPendientes = useCallback((anterior: PendientePlan[]) => {
+    setPendientes(anterior)
+  }, [setPendientes])
+
   const valor = useMemo(
-    () => ({ pendientes, marcarPendientes, quitarPendiente }),
-    [pendientes, marcarPendientes, quitarPendiente]
+    () => ({ pendientes, marcarPendientes, quitarPendiente, restaurarPendientes }),
+    [pendientes, marcarPendientes, quitarPendiente, restaurarPendientes]
   )
 
   return <PendientesPlanContext.Provider value={valor}>{children}</PendientesPlanContext.Provider>

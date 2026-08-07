@@ -5,6 +5,7 @@ interface CompradosCtx {
   comprados: Set<string>
   toggle: (clave: string) => void
   limpiar: () => void
+  restaurarComprados: (anterior: Set<string>) => void
 }
 
 const CompradosContext = createContext<CompradosCtx | null>(null)

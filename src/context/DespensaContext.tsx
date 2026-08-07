@@ -43,6 +43,8 @@ interface DespensaCtx {
   quitar: (nombre: string) => void
   vaciar: () => void
   tieneIngrediente: (nombre: string) => boolean
+  // Vuelve a una despensa anterior tal cual, para el deshacer.
+  restaurarDespensa: (anterior: IngredienteDespensa[]) => void
 }
 
 const DespensaContext = createContext<DespensaCtx | null>(null)
@@ -206,9 +208,13 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     [despensa]
   )
 
+  const restaurarDespensa = useCallback((anterior: IngredienteDespensa[]) => {
+    cambiarDespensa(anterior)
+  }, [cambiarDespensa])
+
   const valor = useMemo(
-    () => ({ despensa, añadir, reponer, editar, consumir, quitar, vaciar, tieneIngrediente }),
-    [despensa, añadir, reponer, editar, consumir, quitar, vaciar, tieneIngrediente]
+    () => ({ despensa, añadir, reponer, editar, consumir, quitar, vaciar, tieneIngrediente, restaurarDespensa }),
+    [despensa, añadir, reponer, editar, consumir, quitar, vaciar, tieneIngrediente, restaurarDespensa]
   )
 
   return <DespensaContext.Provider value={valor}>{children}</DespensaContext.Provider>

@@ -25,6 +25,12 @@ export interface EntradaLista {
   raciones: number
 }
 
+export interface InstantaneaLista {
+  seleccionadas: EntradaLista[]
+  extras: Ingrediente[]
+  descartados: Set<string>
+}
+
 // Cuánta gente come con la receta tal cual está escrita. `raciones` cuenta
 // personas, no veces que se cocina: pedir 2 raciones de un plato escrito para 2
 // es hacerlo una vez, no dos. Antes multiplicaba la receta entera por raciones
@@ -101,6 +107,18 @@ function useListaCompra() {
   const descartar = useCallback((clave: string) => {
     setDescartados((prev) => new Set(prev).add(clave))
   }, [])
+
+  // La lista son tres trozos de estado, así que el deshacer los devuelve juntos.
+  const instantanea = useCallback(
+    (): InstantaneaLista => ({ seleccionadas, extras, descartados }),
+    [seleccionadas, extras, descartados]
+  )
+
+  const restaurarLista = useCallback((anterior: InstantaneaLista) => {
+    setSeleccionadas(anterior.seleccionadas)
+    setExtras(anterior.extras)
+    setDescartados(anterior.descartados)
+  }, [setExtras])
 
   // Coste de los platos: precio por ración × raciones.
   const coste = useMemo(
@@ -196,11 +214,13 @@ function useListaCompra() {
       seleccionadas, listaCompra, enDespensa, extras, coste, compra,
       toggleReceta, setRaciones, estaSeleccionada, vaciar,
       cargarAleatorias, addExtra, removeExtra, descartar,
+      instantanea, restaurarLista,
     }),
     [
       seleccionadas, listaCompra, enDespensa, extras, coste, compra,
       toggleReceta, setRaciones, estaSeleccionada, vaciar,
       cargarAleatorias, addExtra, removeExtra, descartar,
+      instantanea, restaurarLista,
     ]
   )
 }

@@ -6,7 +6,7 @@ import {
   Wheat, Bean, Nut, Package, Leaf, Droplet, Egg, BottleWine, CupSoda, ShoppingBasket, Trash2, type LucideIcon,
 } from 'lucide-react'
 import { useDespensa, type IngredienteDespensa } from '../context/DespensaContext'
-import { useListaCompraContext, useCompradosContext, useRecetasContext } from '../context'
+import { useListaCompraContext, useCompradosContext, useRecetasContext, useDeshacer } from '../context'
 import { normalizar } from '../utils/ingredientes'
 import { FAMILIAS, mismoIngrediente, estaEnDespensa, porAgotarse, faltantes } from '../utils/despensa'
 import TarjetaIngrediente from '../components/despensa/TarjetaIngrediente'
@@ -25,7 +25,8 @@ function capitalize(s: string) {
 }
 
 function Despensa() {
-  const { despensa, añadir, reponer, editar, quitar, vaciar } = useDespensa()
+  const { despensa, añadir, reponer, editar, quitar, vaciar, restaurarDespensa } = useDespensa()
+  const { registrar } = useDeshacer()
   const { listaCompra, addExtra } = useListaCompraContext()
   const { comprados } = useCompradosContext()
   const { recetas } = useRecetasContext()
@@ -319,7 +320,12 @@ function Despensa() {
             <motion.button
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              onClick={() => { vaciar(); setConfirmarVaciar(false) }}
+              onClick={() => {
+                const anterior = despensa
+                vaciar()
+                setConfirmarVaciar(false)
+                registrar(`Despensa vaciada (${anterior.length})`, () => restaurarDespensa(anterior))
+              }}
               className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -344,11 +350,21 @@ function Despensa() {
         enLista={seleccionado ? enLista(seleccionado.nombre) : false}
         onEditar={(cambios) => {
           if (!seleccionado) return
+          const anterior = despensa
+          const nombre = seleccionado.nombre
           editar(seleccionado.nombre, cambios)
           if (cambios.nombre) setSelNombre(cambios.nombre.trim().toLowerCase())
+          registrar(`Editado ${nombre}`, () => restaurarDespensa(anterior))
         }}
         onALista={() => seleccionado && mandarALista(seleccionado)}
-        onQuitar={() => { if (seleccionado) { quitar(seleccionado.nombre); setSelNombre(null) } }}
+        onQuitar={() => {
+          if (!seleccionado) return
+          const anterior = despensa
+          const nombre = seleccionado.nombre
+          quitar(nombre)
+          setSelNombre(null)
+          registrar(`Borrado ${nombre}`, () => restaurarDespensa(anterior))
+        }}
         onClose={() => setSelNombre(null)}
       />
     </div>

@@ -7,6 +7,7 @@ import { useListaCompraContext } from '../../context'
 import ListaCompraDrawer from '../lista-compra/ListaCompraDrawer'
 import AvisoDespensa from '../despensa/AvisoDespensa'
 import AvisoSincronizacion from './AvisoSincronizacion'
+import AvisoDeshacer from './AvisoDeshacer'
 
 const LINKS_MAIN = [
   { to: '/', label: 'Catálogo' },
@@ -288,6 +289,7 @@ function Layout({ children }: { children: ReactNode }) {
 
       <ListaCompraDrawer open={listaOpen} onClose={() => setListaOpen(false)} />
       <AvisoSincronizacion />
+      <AvisoDeshacer />
       <AvisoDespensa />
     </div>
   )

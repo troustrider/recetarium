@@ -58,7 +58,12 @@ interface PlanificadorCtx {
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
   autollenar: (recetas: Receta[], raciones: number) => void
+  // Vuelve a un plan anterior tal cual. Lo usa el deshacer: quien lanza la
+  // acción se queda con el `plan` de antes y lo devuelve aquí.
+  restaurarPlan: (anterior: Plan) => void
 }
+
+export type { Plan }
 
 const PlanificadorContext = createContext<PlanificadorCtx | null>(null)
 
@@ -185,9 +190,13 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     cambiarPlan(nuevo)
   }, [cambiarPlan])
 
+  const restaurarPlan = useCallback((anterior: Plan) => {
+    cambiarPlan(anterior)
+  }, [cambiarPlan])
+
   const valor = useMemo(
-    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar }),
-    [plan, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar]
+    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar, restaurarPlan }),
+    [plan, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar, restaurarPlan]
   )
 
   return <PlanificadorContext.Provider value={valor}>{children}</PlanificadorContext.Provider>

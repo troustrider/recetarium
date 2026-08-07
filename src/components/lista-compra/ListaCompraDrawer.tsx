@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, Share2, Check } from 'lucide-react'
-import { useListaCompraContext, useCompradosContext, useDespensa, usePendientesPlan } from '../../context'
+import { useListaCompraContext, useCompradosContext, useDespensa, usePendientesPlan, useDeshacer } from '../../context'
 import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
@@ -14,17 +14,35 @@ interface Props {
 }
 
 function ListaCompraDrawer({ open, onClose }: Props) {
-  const { seleccionadas, listaCompra, enDespensa, compra, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar } = useListaCompraContext()
-  const { comprados, toggle, limpiar } = useCompradosContext()
-  const { reponer } = useDespensa()
-  const { marcarPendientes } = usePendientesPlan()
+  const { seleccionadas, listaCompra, enDespensa, compra, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar, instantanea, restaurarLista } = useListaCompraContext()
+  const { comprados, toggle, limpiar, restaurarComprados } = useCompradosContext()
+  const { despensa, reponer, restaurarDespensa } = useDespensa()
+  const { pendientes, marcarPendientes, restaurarPendientes } = usePendientesPlan()
+  const { registrar } = useDeshacer()
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
   const vacia = listaCompra.length === 0 && enDespensa.length === 0
   const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
 
+  // Cerrar la compra toca cuatro estados a la vez (despensa, lista, pendientes y
+  // carro), así que el deshacer los rebobina juntos o no sirve de nada.
+  function rebobinarTodo() {
+    const despensaAntes = despensa
+    const listaAntes = instantanea()
+    const pendientesAntes = pendientes
+    const compradosAntes = new Set(comprados)
+    return () => {
+      restaurarDespensa(despensaAntes)
+      restaurarLista(listaAntes)
+      restaurarPendientes(pendientesAntes)
+      restaurarComprados(compradosAntes)
+    }
+  }
+
   function comprar() {
     const aGuardar = listaCompra.filter((i) => comprados.has(i.clave))
     if (aGuardar.length === 0) return
+    const deshacer = rebobinarTodo()
+
     aGuardar
       .filter((i) => !esDeHogar(i))
       .forEach((i) => reponer(i.nombre, i.familia, i.cantidad, i.unidad))
@@ -38,6 +56,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
         else descartar(i.clave)
         toggle(i.clave)
       })
+      registrar(`Guardados ${aGuardar.length} en la despensa`, deshacer)
       return
     }
 
@@ -46,6 +65,7 @@ function ListaCompraDrawer({ open, onClose }: Props) {
     marcarPendientes(seleccionadas.map(({ receta, raciones }) => ({ receta, raciones })))
     vaciar()
     limpiar()
+    registrar('Compra cerrada', deshacer)
   }
 
   return (
@@ -166,7 +186,12 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                           ingrediente={ing}
                           checked={comprados.has(ing.clave)}
                           onToggle={() => toggle(ing.clave)}
-                          onRemove={() => (ing.esExtra ? removeExtra(ing.clave) : descartar(ing.clave))}
+                          onRemove={() => {
+                            const antes = instantanea()
+                            if (ing.esExtra) removeExtra(ing.clave)
+                            else descartar(ing.clave)
+                            registrar(`Quitado ${ing.nombre}`, () => restaurarLista(antes))
+                          }}
                         />
                       ))}
                   </ul>
@@ -227,7 +252,16 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                   Compartir lista
                 </motion.button>
                 <motion.button
-                  onClick={() => { vaciar(); limpiar() }}
+                  onClick={() => {
+                    const antes = instantanea()
+                    const compradosAntes = new Set(comprados)
+                    vaciar()
+                    limpiar()
+                    registrar('Lista vaciada', () => {
+                      restaurarLista(antes)
+                      restaurarComprados(compradosAntes)
+                    })
+                  }}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-500 bg-red-50 rounded-xl hover:bg-red-100 transition-colors"
                   whileTap={{ scale: 0.97 }}
                 >

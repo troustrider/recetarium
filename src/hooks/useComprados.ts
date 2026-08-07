@@ -27,7 +27,12 @@ export function useComprados() {
 
   const limpiar = useCallback(() => setComprados(new Set()), [])
 
-  return useMemo(() => ({ comprados, toggle, limpiar }), [comprados, toggle, limpiar])
+  const restaurarComprados = useCallback((anterior: Set<string>) => setComprados(new Set(anterior)), [])
+
+  return useMemo(
+    () => ({ comprados, toggle, limpiar, restaurarComprados }),
+    [comprados, toggle, limpiar, restaurarComprados]
+  )
 }
 
 export default useComprados

@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react'
-import useListaCompra, { type IngredienteAgrupado, type EntradaLista } from '../hooks/useListaCompra'
+import useListaCompra, { type IngredienteAgrupado, type EntradaLista, type InstantaneaLista } from '../hooks/useListaCompra'
 import type { Receta, Ingrediente } from '../types/receta'
 
 interface ListaCompraContextValue {
@@ -17,6 +17,9 @@ interface ListaCompraContextValue {
   addExtra: (item: Ingrediente) => void
   removeExtra: (clave: string) => void
   descartar: (clave: string) => void
+  // Los tres trozos de estado de la lista, para poder deshacer de golpe.
+  instantanea: () => InstantaneaLista
+  restaurarLista: (anterior: InstantaneaLista) => void
 }
 
 const ListaCompraContext = createContext<ListaCompraContextValue | null>(null)
