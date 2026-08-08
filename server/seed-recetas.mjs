@@ -1330,14 +1330,23 @@ async function run() {
   console.log(`Backfill: ${backfilled} recetas actualizadas (${BACKFILL.length - backfilled} ya tenían macros).`)
 
   const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
-  const existentes = await sql`SELECT nombre FROM recetas`
+  // El dedup cuenta también las borradas: una receta que se borró a propósito no
+  // vuelve por sembrar. Pero se avisa de cuáles son, que si no el "ya existían"
+  // de abajo las tapa y no hay forma de saber por qué no apareció.
+  const existentes = await sql`SELECT nombre, borrada_en FROM recetas`
   const set = new Set(existentes.map((r) => norm(r.nombre)))
+  const borradas = new Set(existentes.filter((r) => r.borrada_en).map((r) => norm(r.nombre)))
   const cats = await sql`SELECT name, id FROM categories`
   const catId = Object.fromEntries(cats.map((c) => [c.name, c.id]))
 
   let inserted = 0, skipped = 0
+  const saltadasPorBorradas = []
   for (const r of NUEVAS) {
-    if (set.has(norm(r.nombre))) { skipped++; continue }
+    if (set.has(norm(r.nombre))) {
+      skipped++
+      if (borradas.has(norm(r.nombre))) saltadasPorBorradas.push(r.nombre)
+      continue
+    }
     const cid = catId[r.sabor]
     if (!cid) { console.warn(`Sabor desconocido en "${r.nombre}": ${r.sabor}`); continue }
     await sql`
@@ -1349,6 +1358,12 @@ async function run() {
     inserted++
   }
   console.log(`Nuevas: ${inserted} insertadas, ${skipped} ya existían.`)
+  if (saltadasPorBorradas.length > 0) {
+    console.log(
+      `Saltadas por estar borradas (${saltadasPorBorradas.length}): ${saltadasPorBorradas.join(', ')}\n` +
+      `Para recuperarlas con su id y sus datos: POST /api/v1/recetas/<id>/restaurar`
+    )
+  }
 }
 
 run().then(() => process.exit(0)).catch((e) => { console.error(e); process.exit(1) })
