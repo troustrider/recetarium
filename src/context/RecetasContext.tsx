@@ -12,6 +12,7 @@ interface RecetasContextValue {
   crear: (data: RecetaFormData) => Promise<Receta | null>
   actualizar: (id: string, data: RecetaFormData, anterior?: RecetaFormData) => Promise<boolean>
   eliminar: (id: string) => Promise<boolean>
+  restaurar: (id: string) => Promise<boolean>
   toggleFavorita: (id: string) => Promise<boolean>
   ultimaEdicion: UltimaEdicion | null
   deshacer: () => Promise<boolean>

@@ -59,3 +59,10 @@ export async function deleteReceta(id: string): Promise<void> {
     throw new Error(body.error ?? `Error ${res.status}`)
   }
 }
+
+// El borrado es lógico, así que la receta vuelve con su mismo id y las entradas
+// del plan que la referencian siguen valiendo.
+export async function restoreReceta(id: string): Promise<Receta> {
+  const res = await authedFetch(`${URL_RECETAS}/${id}/restaurar`, { method: 'POST' })
+  return manejarRespuesta<Receta>(res)
+}

@@ -5,6 +5,7 @@ import {
   createReceta,
   updateReceta,
   deleteReceta,
+  restoreReceta,
   toggleFavorita,
 } from '../api/client'
 
@@ -102,6 +103,22 @@ function useRecetas() {
     }
   }
 
+  // Devuelve al catálogo una receta borrada. El id es el de antes, así que lo
+  // que la referenciaba (plan, pendientes, favoritas) vuelve a encontrarla.
+  async function restaurar(id: string): Promise<boolean> {
+    try {
+      const receta = await restoreReceta(id)
+      setState((prev) =>
+        prev.recetas.some((r) => r.id === receta.id)
+          ? prev
+          : { ...prev, recetas: [...prev.recetas, receta].sort((a, b) => a.nombre.localeCompare(b.nombre)) }
+      )
+      return true
+    } catch {
+      return false
+    }
+  }
+
   // Estable: llega como prop a las RecetaCard memoizadas.
   const alternarFavorita = useCallback(async (id: string): Promise<boolean> => {
     setState((prev) => ({
@@ -121,7 +138,7 @@ function useRecetas() {
   }, [])
 
   return {
-    ...state, cargar, crear, actualizar, eliminar, toggleFavorita: alternarFavorita,
+    ...state, cargar, crear, actualizar, eliminar, restaurar, toggleFavorita: alternarFavorita,
     ultimaEdicion, deshacer, descartarDeshacer,
   }
 }

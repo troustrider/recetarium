@@ -13,7 +13,7 @@ let recetas = []
 beforeAll(async () => {
   recetas = await sql`
     SELECT id, nombre, precio_por_porcion::float AS precio, porciones, ingredientes
-    FROM recetas ORDER BY nombre
+    FROM recetas WHERE borrada_en IS NULL ORDER BY nombre
   `
 })
 

@@ -12,7 +12,7 @@ export async function getAll({ categoria, sabor } = {}) {
              r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
              r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-      WHERE r.categoria = ${categoria} AND c.name = ${sabor}
+      WHERE r.borrada_en IS NULL AND r.categoria = ${categoria} AND c.name = ${sabor}
       ORDER BY r.nombre
     `
   }
@@ -26,7 +26,7 @@ export async function getAll({ categoria, sabor } = {}) {
              r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
              r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-      WHERE r.categoria = ${categoria}
+      WHERE r.borrada_en IS NULL AND r.categoria = ${categoria}
       ORDER BY r.nombre
     `
   }
@@ -40,7 +40,7 @@ export async function getAll({ categoria, sabor } = {}) {
              r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
              r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros
       FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-      WHERE c.name = ${sabor}
+      WHERE r.borrada_en IS NULL AND c.name = ${sabor}
       ORDER BY r.nombre
     `
   }
@@ -53,6 +53,7 @@ export async function getAll({ categoria, sabor } = {}) {
            r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
            r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
+    WHERE r.borrada_en IS NULL
     ORDER BY r.nombre
   `
 }
@@ -67,7 +68,7 @@ export async function getById(id) {
            r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
            r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-    WHERE r.id = ${id}
+    WHERE r.borrada_en IS NULL AND r.id = ${id}
   `
   return row ?? null
 }
@@ -143,7 +144,22 @@ export async function toggleFavorita(id) {
   return getById(id)
 }
 
+// Borrado lógico: la fila se queda para que restaurar devuelva la receta con su
+// mismo id, que es por donde la referencian el plan y las pendientes.
 export async function remove(id) {
-  const result = await sql`DELETE FROM recetas WHERE id = ${id} RETURNING id`
+  const result = await sql`
+    UPDATE recetas SET borrada_en = now()
+    WHERE id = ${id} AND borrada_en IS NULL
+    RETURNING id
+  `
+  return result.length > 0
+}
+
+export async function restore(id) {
+  const result = await sql`
+    UPDATE recetas SET borrada_en = NULL
+    WHERE id = ${id} AND borrada_en IS NOT NULL
+    RETURNING id
+  `
   return result.length > 0
 }

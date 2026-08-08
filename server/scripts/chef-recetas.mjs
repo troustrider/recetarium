@@ -239,7 +239,8 @@ async function leerTodas() {
            r.ingredientes, r.pasos, r.consejos, r.porciones, r.tipo,
            r.precio_por_porcion::float AS "precioPorPorcion", r.calorias,
            r.proteinas::float AS proteinas, r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas
-    FROM recetas r JOIN categories c ON r.category_id = c.id ORDER BY r.nombre`
+    FROM recetas r JOIN categories c ON r.category_id = c.id
+    WHERE r.borrada_en IS NULL ORDER BY r.nombre`
 }
 
 async function guardar(r) {

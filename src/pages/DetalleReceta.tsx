@@ -52,7 +52,7 @@ function SkeletonLineas({ filas }: { filas: number }) {
 
 function DetalleReceta() {
   const { id } = useParams<{ id: string }>()
-  const { recetas, eliminar, toggleFavorita, ultimaEdicion, deshacer, descartarDeshacer } = useRecetasContext()
+  const { recetas, eliminar, restaurar, toggleFavorita, ultimaEdicion, deshacer, descartarDeshacer } = useRecetasContext()
   const { registrar } = useDeshacer()
   const { receta: fetched, error, recargar } = useReceta(id!)
   const registradaRef = useRef<typeof ultimaEdicion>(null)
@@ -96,10 +96,14 @@ function DetalleReceta() {
     return <LoadingSpinner />
   }
 
+  // Sin confirmación previa: el borrado es lógico y el aviso lo deshace, que es
+  // menos fricción que un modal y protege igual.
   async function handleEliminar() {
-    if (!confirm(`¿Eliminar "${receta!.nombre}"?`)) return
-    const ok = await eliminar(receta!.id)
-    if (ok) navigate('/')
+    const { id: borradaId, nombre } = receta!
+    const ok = await eliminar(borradaId)
+    if (!ok) return
+    navigate('/')
+    registrar(`Borrada ${nombre}`, () => { void restaurar(borradaId) })
   }
 
   const porcionesBase = receta.porciones ?? PORCIONES_POR_DEFECTO

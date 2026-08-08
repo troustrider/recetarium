@@ -83,3 +83,11 @@ export async function remove(req, res) {
   if (!ok) return noEncontrada(res)
   res.status(204).send()
 }
+
+export async function restore(req, res) {
+  if (!RE_UUID.test(req.params.id)) return noEncontrada(res)
+  const ok = await recetasService.restore(req.params.id)
+  if (!ok) return noEncontrada(res)
+  const receta = await recetasService.getById(req.params.id)
+  res.json(receta)
+}

@@ -156,7 +156,7 @@ router.patch('/:id/favorita', requireKey, c.toggleFavorita)
  * @swagger
  * /recetas/{id}:
  *   delete:
- *     summary: Eliminar una receta
+ *     summary: Eliminar una receta (borrado lógico, se puede restaurar)
  *     tags: [Recetas]
  *     parameters:
  *       - in: path
@@ -174,5 +174,32 @@ router.patch('/:id/favorita', requireKey, c.toggleFavorita)
  *               $ref: '#/components/schemas/Error'
  */
 router.delete('/:id', requireKey, c.remove)
+
+/**
+ * @swagger
+ * /recetas/{id}/restaurar:
+ *   post:
+ *     summary: Devolver al catálogo una receta borrada, con su mismo id
+ *     tags: [Recetas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200:
+ *         description: Receta restaurada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Receta'
+ *       404:
+ *         description: No existe o no estaba borrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post('/:id/restaurar', requireKey, c.restore)
 
 export default router

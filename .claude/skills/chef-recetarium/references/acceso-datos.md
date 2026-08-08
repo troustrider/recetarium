@@ -31,25 +31,27 @@ curl.exe -s -X POST https://recetarium-one.vercel.app/api/v1/recetas -H "Content
 
 Herramientas `mcp__Neon__*`. Localiza el proyecto con `list_projects` (busca el que contiene la BD del recetarium) y usa `run_sql`.
 
-**Lecturas útiles:**
+**Lecturas útiles.** El borrado de recetas es lógico: la fila se queda con `borrada_en` puesto. Toda lectura tiene que filtrar `borrada_en IS NULL` o verás recetas que el usuario ya borró.
 
 ```sql
 -- Dedup: solo nombres
-SELECT nombre FROM recetas ORDER BY nombre;
+SELECT nombre FROM recetas WHERE borrada_en IS NULL ORDER BY nombre;
 
 -- Filtro por criterios (ejemplo: principales rápidos y proteicos, baratos)
 SELECT r.nombre, r.tiempo_preparacion, r.precio_por_porcion, r.proteinas, r.categoria
 FROM recetas r JOIN categories c ON r.category_id = c.id
-WHERE r.tipo = 'principal' AND r.tiempo_preparacion <= 20 AND r.proteinas >= 25
+WHERE r.borrada_en IS NULL AND r.tipo = 'principal' AND r.tiempo_preparacion <= 20 AND r.proteinas >= 25
 ORDER BY r.precio_por_porcion;
 
 -- Modo nevera: recetas que usan un ingrediente (JSONB)
 SELECT nombre FROM recetas, jsonb_array_elements(ingredientes) AS i
-WHERE i->>'nombre' ILIKE '%calabacin%' OR i->>'nombre' ILIKE '%calabacín%';
+WHERE borrada_en IS NULL
+  AND (i->>'nombre' ILIKE '%calabacin%' OR i->>'nombre' ILIKE '%calabacín%');
 
 -- Nombres de ingrediente ya en uso (para reutilizarlos exactos)
 SELECT DISTINCT i->>'nombre' AS ingrediente, i->>'familia' AS familia
-FROM recetas, jsonb_array_elements(ingredientes) AS i ORDER BY 1;
+FROM recetas, jsonb_array_elements(ingredientes) AS i
+WHERE borrada_en IS NULL ORDER BY 1;
 ```
 
 **Escritura (solo si la vía API no es viable):** el INSERT directo se salta la validación del servidor — valida tú contra el contrato antes. Resuelve `category_id` desde el sabor:

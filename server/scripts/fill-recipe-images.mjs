@@ -135,7 +135,7 @@ function pick(cands, { primary, keywords }, used) {
 }
 
 const used = new Set()
-for (const r of await sql`SELECT imagen FROM recetas WHERE imagen IS NOT NULL`) {
+for (const r of await sql`SELECT imagen FROM recetas WHERE imagen IS NOT NULL AND borrada_en IS NULL`) {
   const m = r.imagen.match(/photo-[a-z0-9-]+/i)
   if (m) used.add(m[0].replace('photo-', ''))
 }
@@ -149,7 +149,7 @@ const priorityIds = new Set((arg('--priority')?.split(',').map((s) => s.trim()) 
 
 const [estado] = await sql`SELECT despensa FROM app_estado WHERE id = 1`
 const despensa = estado?.despensa ?? []
-let rows = (await sql`SELECT id, nombre, ingredientes FROM recetas WHERE imagen IS NULL`)
+let rows = (await sql`SELECT id, nombre, ingredientes FROM recetas WHERE imagen IS NULL AND borrada_en IS NULL`)
   .map((r) => ({ ...r, faltan: faltan(r, despensa) }))
 if (onlyIds) rows = rows.filter((r) => onlyIds.includes(r.id))
 rows.sort((a, b) =>

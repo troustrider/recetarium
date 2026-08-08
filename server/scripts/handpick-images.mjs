@@ -46,14 +46,14 @@ const PICKS = {
 }
 
 const used = new Set()
-for (const r of await sql`SELECT imagen FROM recetas WHERE imagen IS NOT NULL`) {
+for (const r of await sql`SELECT imagen FROM recetas WHERE imagen IS NOT NULL AND borrada_en IS NULL`) {
   const m = r.imagen.match(/photo-[a-z0-9-]+/i)
   if (m) used.add(m[0].replace('photo-', ''))
 }
 
 let done = 0, miss = 0
 for (const [nombre, { q, terms }] of Object.entries(PICKS)) {
-  const [row] = await sql`SELECT id FROM recetas WHERE nombre = ${nombre} AND imagen IS NULL`
+  const [row] = await sql`SELECT id FROM recetas WHERE nombre = ${nombre} AND imagen IS NULL AND borrada_en IS NULL`
   if (!row) { console.log(`  — ya tiene foto o no existe: ${nombre}`); continue }
   const res = await fetch(`https://api.unsplash.com/search/photos?per_page=10&orientation=landscape&content_filter=high&query=${encodeURIComponent(q)}`,
     { headers: { Authorization: `Client-ID ${KEY}` } })
