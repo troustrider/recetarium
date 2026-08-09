@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 
 function useDarkMode() {
-  const [dark, setDark] = useState(() => {
-    const stored = localStorage.getItem('dark-mode')
-    if (stored !== null) return stored === 'true'
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-  })
+  // El script de index.html ya resolvió el tema y puso la clase antes del primer
+  // pintado, así que aquí solo se lee. Duplicar la lógica arriesga que las dos
+  // versiones se desincronicen.
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'))
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)

@@ -310,8 +310,11 @@ tocar producción (`sql/backups/`, ignorado por git).
 - [x] Copia de `app_estado` de producción en `sql/backups/2026-08-09-app_estado.json`
 - [x] Paso 1 (expand) aplicado en producción (`br-frosty-bird-ab7ziouz`) sin caída:
       `id` intacto, `hogar_id` poblado, 8 entradas de plan y 66 de despensa conservadas
-- [ ] Desplegado: la app se comporta igual que antes
-- [ ] Paso 2 (`-contraer.sql`) aplicado en producción, ya con el código nuevo en vivo
+- [x] Desplegado (`addfeab`, Vercel READY) y verificado en vivo antes de contraer
+- [x] Paso 2 (`-contraer.sql`) aplicado en producción y verificado después: 8 entradas de
+      plan y 66 ingredientes intactos, `/recetas` en 200
+
+**Fase 1 terminada.**
 
 ---
 
@@ -319,6 +322,43 @@ tocar producción (`sql/backups/`, ignorado por git).
 
 Todavía sin cambiar quién lee qué. Al terminar, se puede iniciar sesión, pero los datos
 siguen siendo del hogar por defecto.
+
+### Cómo se configura Neon Auth (importante)
+
+**El tool MCP `configure_neon_auth` no sirve para todo.** Su esquema viene sin tipos, así
+que cualquier parámetro que sea un objeto (como `methods`) llega al servidor como texto y
+lo rechaza. Los parámetros de texto sí funcionan (`add_trusted_origin`).
+
+Para lo demás, **la CLI**, que sí lo cubre entero:
+
+```bash
+npx -y neonctl@latest neon-auth config email-password update --project-id rapid-dust-88814325 --branch <rama> --disable-sign-up
+```
+
+Otros subcomandos útiles: `neon-auth status`, `neon-auth config email-password get`,
+`neon-auth oauth-provider list|add|update`, `neon-auth domain`, `neon-auth user`.
+
+### Estado de la configuración (rama `recetarium-test`)
+
+- Base URL: `https://ep-gentle-field-abm7rrx3.neonauth.eu-west-2.aws.neon.tech/neondb/auth`
+- Google: activo, tipo `shared`. **No hace falta pasar por Google Cloud Console.**
+- Correo y contraseña: método habilitado pero **`allow_sign_up: false`**. Nadie se registra
+  solo; el alta la controla la lista blanca.
+- `trusted_origins`: `https://recetarium-one.vercel.app`. `allow_localhost: true`.
+- Falta replicar todo esto en la rama de producción cuando llegue el momento.
+
+### Deuda aceptada: vulnerabilidades de better-auth
+
+Los paquetes beta de Neon fijan `better-auth@1.4.18`, con 5 vulnerabilidades sin ruta de
+arreglo (una crítica, varias altas), parcheadas en 1.6.11+. `npm audit` queda en rojo y no
+se puede cerrar desde el proyecto. Decisión consciente por ser tres usuarios de confianza.
+Compromisos asociados, que no se deben dejar caer:
+
+1. Evaluar la migración a Clerk a corto-medio plazo, o comprobar si Neon ya subió su beta.
+2. **Monitorización de sesiones** (pedida explícitamente): panel o consulta de IPs y
+   dispositivos que inician sesión. Neon Auth guarda sesiones en el esquema `neon_auth` de
+   la propia base de datos, así que sale con SQL directo, sin herramienta externa. Si
+   aparece cualquier acceso raro, la migración a Clerk pasa a ser inmediata.
 
 ### Riesgo a validar el primer día
 

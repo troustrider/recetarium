@@ -13,6 +13,7 @@ const EditarReceta  = lazy(() => import('./pages/EditarReceta'))
 const Planificador  = lazy(() => import('./pages/Planificador'))
 const Despensa      = lazy(() => import('./pages/Despensa'))
 const NotFound      = lazy(() => import('./pages/NotFound'))
+const Acceso        = lazy(() => import('./pages/Acceso'))
 
 function App() {
   const location = useLocation()
@@ -42,6 +43,7 @@ function App() {
                 <Route path="recetas/nueva" element={<NuevaReceta />} />
                 <Route path="recetas/:id" element={<DetalleReceta />} />
                 <Route path="recetas/:id/editar" element={<EditarReceta />} />
+                <Route path="acceso" element={<Acceso />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </motion.div>
