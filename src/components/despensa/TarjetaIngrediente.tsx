@@ -16,9 +16,9 @@ interface Props {
 // La tarjeta "envejece" con la caducidad: neutra de lejos, ámbar a 2-3 días,
 // roja cuando caduca hoy/mañana o ya caducó.
 const TINTES = {
-  rojo: 'bg-red-50 border-red-200 hover:border-red-300 dark:bg-red-900/20 dark:border-red-800 dark:hover:border-red-700',
-  ambar: 'bg-amber-50 border-amber-200 hover:border-amber-300 dark:bg-amber-900/20 dark:border-amber-800 dark:hover:border-amber-700',
-  neutro: 'bg-white border-gray-100 hover:border-orange-200 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-orange-800',
+  rojo: 'bg-red-50 border-red-300 hover:border-red-400 dark:bg-red-900/20 dark:border-red-800 dark:hover:border-red-700',
+  ambar: 'bg-amber-50 border-amber-300 hover:border-amber-400 dark:bg-amber-900/20 dark:border-amber-800 dark:hover:border-amber-700',
+  neutro: 'bg-white border-gray-200 hover:border-orange-300 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-orange-800',
 }
 
 function TarjetaIngrediente({ item, onClick }: Props) {
@@ -35,7 +35,7 @@ function TarjetaIngrediente({ item, onClick }: Props) {
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.15 }}
       onClick={onClick}
-      className={`relative overflow-hidden text-left rounded-2xl border p-3.5 flex flex-col gap-2.5 transition-colors ${tinte}`}
+      className={`relative overflow-hidden text-left rounded-2xl border p-3.5 flex flex-col gap-2.5 shadow-sm dark:shadow-none transition-colors ${tinte}`}
     >
       {/* Cifra fantasma: días restantes como marca de agua cuando urge */}
       {cad != null && cad.pronto && (
@@ -67,7 +67,7 @@ function TarjetaIngrediente({ item, onClick }: Props) {
             {formatCantidad(item.cantidad, item.unidad ?? 'ud')}
           </span>
         ) : requiereCantidad(item.familia) ? (
-          <span className="font-medium text-gray-300 dark:text-gray-600">sin cantidad</span>
+          <span className="font-medium text-gray-400 dark:text-gray-600">sin cantidad</span>
         ) : (
           <span className={`font-medium ${esLleno ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
             {esLleno ? 'De sobra' : 'Queda poco'}
@@ -80,7 +80,7 @@ function TarjetaIngrediente({ item, onClick }: Props) {
                 ? 'text-red-600 dark:text-red-400'
                 : cad.pronto
                   ? 'text-amber-600 dark:text-amber-400'
-                  : 'text-gray-400 dark:text-gray-500'
+                  : 'text-gray-500 dark:text-gray-500'
             }`}
           >
             {cad.label}
