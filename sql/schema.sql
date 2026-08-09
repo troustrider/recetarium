@@ -35,15 +35,22 @@
       REFERENCES categories(id) ON DELETE RESTRICT
   );
 
-  -- Estado compartido de la app (fila única). Guarda el plan semanal
-  -- como [{dia, recetaId, raciones}], la despensa, los extras de la lista
-  -- y las recetas compradas pendientes de planificar como
-  -- [{recetaId, raciones}]. Sin login: una sola fila id=1.
+  -- Un hogar es el dueño del estado: uno o varios usuarios que comparten
+  -- despensa, plan y lista de la compra.
+  CREATE TABLE hogares (
+    id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre    TEXT NOT NULL,
+    creado_en TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+
+  -- Estado de la app, una fila por hogar. Guarda el plan semanal como
+  -- [{dia, recetaId, raciones}], la despensa, los extras de la lista y las
+  -- recetas compradas pendientes de planificar como [{recetaId, raciones}].
   CREATE TABLE app_estado (
-    id         INTEGER PRIMARY KEY DEFAULT 1,
+    hogar_id   UUID PRIMARY KEY REFERENCES hogares(id) ON DELETE CASCADE,
     plan       JSONB NOT NULL DEFAULT '[]'::jsonb,
     despensa   JSONB NOT NULL DEFAULT '[]'::jsonb,
     extras     JSONB NOT NULL DEFAULT '[]'::jsonb,
     pendientes JSONB NOT NULL DEFAULT '[]'::jsonb,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    CONSTRAINT app_estado_single_row CHECK (id = 1)
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );

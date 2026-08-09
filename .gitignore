@@ -41,3 +41,6 @@ recetas_live.json
 *.njsproj
 *.sln
 *.sw?
+
+# Volcados de estado de producción antes de migrar
+sql/backups/
