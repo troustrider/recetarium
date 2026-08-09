@@ -168,9 +168,14 @@ export function validar(r, { estricto = true } = {}) {
     const verduras = r.ingredientes.filter(
       (i) => i.familia === 'verduras' && !RE_BASE_AROMATICA.test(norm(i.nombre))
     )
-    const declaraGuarnicion = (r.consejos ?? []).some((c) => RE_GUARNICION.test(c))
-    if (!verduras.length && !declaraGuarnicion)
-      e.push('principal sin verdura propia y sin guarnición declarada en consejos')
+    // El campo `guarnicion` es la forma canónica desde que existe la columna; la
+    // frase en `consejos` sigue valiendo para las que aún no se han migrado.
+    const tieneCampo = r.guarnicion != null && Array.isArray(r.guarnicion.ingredientes) && r.guarnicion.ingredientes.length > 0
+    const declaraEnProsa = (r.consejos ?? []).some((c) => RE_GUARNICION.test(c))
+    if (!verduras.length && !tieneCampo && !declaraEnProsa)
+      e.push('principal sin verdura propia y sin guarnición (ni campo `guarnicion` ni declarada en consejos)')
+    if (!verduras.length && !tieneCampo && declaraEnProsa)
+      w.push('guarnición solo en prosa: pásala al campo `guarnicion` para que entre en la compra')
   }
 
   // --- coherencia ingredientes <-> pasos ---
@@ -238,7 +243,8 @@ async function leerTodas() {
     SELECT r.id, r.nombre, r.categoria, c.name AS sabor, r.tiempo_preparacion AS "tiempoPreparacion",
            r.ingredientes, r.pasos, r.consejos, r.porciones, r.tipo,
            r.precio_por_porcion::float AS "precioPorPorcion", r.calorias,
-           r.proteinas::float AS proteinas, r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas
+           r.proteinas::float AS proteinas, r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas,
+           r.guarnicion
     FROM recetas r JOIN categories c ON r.category_id = c.id
     WHERE r.borrada_en IS NULL ORDER BY r.nombre`
 }

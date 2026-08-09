@@ -53,7 +53,9 @@ Se ejecuta desde `server/` (necesita `DATABASE_URL` de `server/.env` y el driver
 
 **Macros contra ingredientes** (`nutrientes.json`): estima los cuatro macros desde la lista de ingredientes y los contrasta con los declarados. ERROR si la proteína o las kcal se desvían más de un 20%; aviso en carbohidratos (30%) y grasas (35%). Detalle abajo.
 
-**Perfil**: aviso si un `principal` baja de 35 g de proteína o un `desayuno` de 25 g, si un `principal` no lleva verdura propia ni declara guarnición en `consejos`, si algún consejo es metacomentario de autoría, y si el precio se sale del rango 0,80-4,50 €/ración.
+**Perfil**: aviso si un `principal` baja de 35 g de proteína o un `desayuno` de 25 g, si un `principal` no lleva verdura propia ni guarnición, si algún consejo es metacomentario de autoría, y si el precio se sale del rango 0,80-4,50 €/ración.
+
+La guarnición cuenta de dos formas, y no son equivalentes. El campo `guarnicion` es la canónica: está estructurado, entra en la lista de la compra y lleva su propia ficha. La frase en `consejos` sigue valiendo para no suspender a las que aún no se han migrado, pero levanta un aviso aparte ("guarnición solo en prosa"), porque una guarnición que solo existe en un texto no se puede comprar ni descontar de la despensa.
 
 ## La tabla `nutrientes.json`
 
@@ -81,7 +83,7 @@ Y por tanto sigue siendo responsabilidad del chef en cada receta:
 - **Fidelidad al canon**: que el plato exista, que sus no negociables estén presentes y que las desviaciones estén declaradas. Es juicio, no regex.
 - **Disponibilidad real en Dirk y Lidl.**
 - **Que el paso se entienda.** "Saltea 3 min hasta que pase algo" pasa todos los gates y no sirve de nada.
-- **Si la guarnición declarada es la correcta.** El script ve que hay una línea que la menciona, no si tiene sentido con el plato.
+- **Si la guarnición declarada es la correcta.** El script ve que hay una línea que la menciona, o que el campo está relleno, no si lo que propone tiene sentido con el plato. La heurística de prosa además confunde con una guarnición cualquier frase que hable de cómo se come el plato: "la cebolla encurtida no es guarnición" o "se acompaña de salsa tonkatsu" la disparan igual.
 
 Cuando añadas un criterio de los automatizables, impleméntalo. Cuando añadas uno de estos, escríbelo en la lista de arriba para que quede claro que el script verde no significa receta correcta.
 
