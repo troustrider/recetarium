@@ -238,7 +238,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                 <p className="mt-1.5 flex items-center gap-1 text-[11px] text-white/60">
                   <Clock className="w-3 h-3" />
                   {receta.tiempoPreparacion} min
-                  {receta.proteinas != null && <span className="text-orange-300 font-semibold">· {receta.proteinas}g</span>}
+                  {receta.proteinas != null && <span className="text-orange-300 font-semibold">· {receta.proteinas}g prot</span>}
                 </p>
               </div>
 
