@@ -1,61 +1,42 @@
 import sql from '../lib/db.js'
 
-export async function getPlan() {
-  const [row] = await sql`SELECT plan FROM app_estado WHERE id = 1`
-  return row?.plan ?? []
+// Las cuatro columnas de estado de app_estado. La lista es literal a propósito:
+// el nombre de columna se interpola en el SQL con sql.unsafe, así que no puede
+// venir nunca de la petición.
+const CAMPOS = ['plan', 'despensa', 'extras', 'pendientes']
+
+function columna(campo) {
+  if (!CAMPOS.includes(campo)) throw new Error(`Campo de estado no permitido: ${campo}`)
+  return sql.unsafe(campo)
 }
 
-export async function setPlan(plan) {
+export async function getCampo(hogarId, campo) {
+  const col = columna(campo)
+  const [row] = await sql`SELECT ${col} FROM app_estado WHERE hogar_id = ${hogarId}`
+  return row?.[campo] ?? []
+}
+
+// El upsert vale también como alta: un hogar recién creado no tiene fila y la
+// primera escritura se la crea con el resto de campos a su default.
+export async function setCampo(hogarId, campo, valor) {
+  const col = columna(campo)
   const [row] = await sql`
-    INSERT INTO app_estado (id, plan, updated_at)
-    VALUES (1, ${JSON.stringify(plan)}, now())
-    ON CONFLICT (id) DO UPDATE SET plan = EXCLUDED.plan, updated_at = now()
-    RETURNING plan, updated_at AS "updatedAt"
+    INSERT INTO app_estado (hogar_id, ${col}, updated_at)
+    VALUES (${hogarId}, ${JSON.stringify(valor)}, now())
+    ON CONFLICT (hogar_id) DO UPDATE SET ${col} = EXCLUDED.${col}, updated_at = now()
+    RETURNING ${col}, updated_at AS "updatedAt"
   `
   return row
 }
 
-export async function getDespensa() {
-  const [row] = await sql`SELECT despensa FROM app_estado WHERE id = 1`
-  return row?.despensa ?? []
-}
+export const getPlan = (hogarId) => getCampo(hogarId, 'plan')
+export const setPlan = (hogarId, plan) => setCampo(hogarId, 'plan', plan)
 
-export async function setDespensa(despensa) {
-  const [row] = await sql`
-    INSERT INTO app_estado (id, despensa, updated_at)
-    VALUES (1, ${JSON.stringify(despensa)}, now())
-    ON CONFLICT (id) DO UPDATE SET despensa = EXCLUDED.despensa, updated_at = now()
-    RETURNING despensa, updated_at AS "updatedAt"
-  `
-  return row
-}
+export const getDespensa = (hogarId) => getCampo(hogarId, 'despensa')
+export const setDespensa = (hogarId, despensa) => setCampo(hogarId, 'despensa', despensa)
 
-export async function getPendientes() {
-  const [row] = await sql`SELECT pendientes FROM app_estado WHERE id = 1`
-  return row?.pendientes ?? []
-}
+export const getPendientes = (hogarId) => getCampo(hogarId, 'pendientes')
+export const setPendientes = (hogarId, pendientes) => setCampo(hogarId, 'pendientes', pendientes)
 
-export async function setPendientes(pendientes) {
-  const [row] = await sql`
-    INSERT INTO app_estado (id, pendientes, updated_at)
-    VALUES (1, ${JSON.stringify(pendientes)}, now())
-    ON CONFLICT (id) DO UPDATE SET pendientes = EXCLUDED.pendientes, updated_at = now()
-    RETURNING pendientes, updated_at AS "updatedAt"
-  `
-  return row
-}
-
-export async function getExtras() {
-  const [row] = await sql`SELECT extras FROM app_estado WHERE id = 1`
-  return row?.extras ?? []
-}
-
-export async function setExtras(extras) {
-  const [row] = await sql`
-    INSERT INTO app_estado (id, extras, updated_at)
-    VALUES (1, ${JSON.stringify(extras)}, now())
-    ON CONFLICT (id) DO UPDATE SET extras = EXCLUDED.extras, updated_at = now()
-    RETURNING extras, updated_at AS "updatedAt"
-  `
-  return row
-}
+export const getExtras = (hogarId) => getCampo(hogarId, 'extras')
+export const setExtras = (hogarId, extras) => setCampo(hogarId, 'extras', extras)

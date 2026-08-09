@@ -1,4 +1,5 @@
 import * as estadoService from '../services/estadoService.js'
+import { hogarDe } from '../lib/hogar.js'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
@@ -16,14 +17,14 @@ function validarPlan(plan) {
 }
 
 export async function getPlan(req, res) {
-  const plan = await estadoService.getPlan()
+  const plan = await estadoService.getPlan(hogarDe(req))
   res.json(plan)
 }
 
 export async function putPlan(req, res) {
   const error = validarPlan(req.body)
   if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setPlan(req.body)
+  const guardado = await estadoService.setPlan(hogarDe(req), req.body)
   res.json(guardado)
 }
 
@@ -51,14 +52,14 @@ function validarDespensa(despensa) {
 }
 
 export async function getDespensa(req, res) {
-  const despensa = await estadoService.getDespensa()
+  const despensa = await estadoService.getDespensa(hogarDe(req))
   res.json(despensa)
 }
 
 export async function putDespensa(req, res) {
   const error = validarDespensa(req.body)
   if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setDespensa(req.body)
+  const guardado = await estadoService.setDespensa(hogarDe(req), req.body)
   res.json(guardado)
 }
 
@@ -74,14 +75,14 @@ function validarPendientes(pendientes) {
 }
 
 export async function getPendientes(req, res) {
-  const pendientes = await estadoService.getPendientes()
+  const pendientes = await estadoService.getPendientes(hogarDe(req))
   res.json(pendientes)
 }
 
 export async function putPendientes(req, res) {
   const error = validarPendientes(req.body)
   if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setPendientes(req.body)
+  const guardado = await estadoService.setPendientes(hogarDe(req), req.body)
   res.json(guardado)
 }
 
@@ -99,13 +100,13 @@ function validarExtras(extras) {
 }
 
 export async function getExtras(req, res) {
-  const extras = await estadoService.getExtras()
+  const extras = await estadoService.getExtras(hogarDe(req))
   res.json(extras)
 }
 
 export async function putExtras(req, res) {
   const error = validarExtras(req.body)
   if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setExtras(req.body)
+  const guardado = await estadoService.setExtras(hogarDe(req), req.body)
   res.json(guardado)
 }
