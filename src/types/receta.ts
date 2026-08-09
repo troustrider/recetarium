@@ -34,6 +34,25 @@ export interface Micros {
   estimadoDe: 'completo' | 'parcial'
 }
 
+/**
+ * Acompañamiento opcional del plato. Va en su propio bloque y no dentro de
+ * `ingredientes` porque la nutrición del plato se calcula desde ese array: un
+ * arroz de guarnición ahí dentro marcaría la receta entera como con gluten
+ * aunque no la prepares. Su nutrición la calcula el servidor al guardar.
+ */
+export interface Guarnicion {
+  nombre: string
+  ingredientes: Ingrediente[]
+  pasos: string[]
+  calorias?: number
+  proteinas?: number
+  carbohidratos?: number
+  grasas?: number
+  hierro?: number
+  sinGluten?: boolean | null
+  micros?: Micros
+}
+
 export interface Receta {
   id: string
   nombre: string
@@ -57,4 +76,6 @@ export interface Receta {
   sinGluten?: boolean | null
   micros?: Micros
   tipo?: Tipo
+  /** null o ausente = el plato no lleva guarnición. */
+  guarnicion?: Guarnicion | null
 }

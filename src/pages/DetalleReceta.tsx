@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Lightbulb, Scale } from 'lucide-react'
+import { Flame, Lightbulb, Scale, Salad } from 'lucide-react'
 import { useRecetasContext, useDeshacer } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
@@ -285,6 +285,51 @@ function DetalleReceta() {
           )}
         </div>
       </section>
+
+      {/* Guarnición. Va en su propio bloque y con su ficha aparte porque es
+          opcional: las kcal y el gluten de arriba son los del plato solo. */}
+      {full?.guarnicion && (
+        <section className="bg-lime-50/60 dark:bg-lime-900/10 border border-lime-100 dark:border-lime-900/30 rounded-2xl p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <Salad className="w-4 h-4 text-lime-600 dark:text-lime-400" strokeWidth={2.2} />
+            <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100">
+              {full.guarnicion.nombre}
+            </h2>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            Guarnición opcional. No está contada en los valores de arriba.
+          </p>
+
+          <ul className="flex flex-col mb-4">
+            {full.guarnicion.ingredientes.map((ing, i) => (
+              <IngredienteItem key={i} ingrediente={ing} multiplicador={multiplicador} />
+            ))}
+          </ul>
+
+          {full.guarnicion.pasos.length > 0 && (
+            <ol className="flex flex-col gap-2 mb-4">
+              {escalarPasos(full.guarnicion.pasos, multiplicador).map((paso, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm">
+                  <span className="shrink-0 w-5 h-5 flex items-center justify-center bg-lime-600 text-white rounded-full text-[10px] font-bold">
+                    {i + 1}
+                  </span>
+                  <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{paso}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+
+          {full.guarnicion.calorias != null && (
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Añade <strong className="text-gray-900 dark:text-gray-100">{full.guarnicion.calorias} kcal</strong> por ración
+              {full.guarnicion.proteinas != null && <> y {full.guarnicion.proteinas} g de proteína</>}
+              {full.guarnicion.sinGluten === false && (
+                <span className="text-amber-600 dark:text-amber-400"> · lleva gluten</span>
+              )}
+            </p>
+          )}
+        </section>
+      )}
 
       <section>
         <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Pasos</h2>

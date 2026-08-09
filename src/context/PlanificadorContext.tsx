@@ -16,6 +16,9 @@ export interface EntradaPlan {
   raciones: number
   // Plato ya hecho: sale de la lista de la compra y su chip queda en gris.
   cocinada?: boolean
+  // Si se va a hacer con su guarnición, entra también en la compra y en el gasto
+  // de despensa. Solo tiene sentido en recetas que traen guarnición.
+  conGuarnicion?: boolean
 }
 
 type Plan = Record<Dia, EntradaPlan[]>
@@ -26,7 +29,13 @@ function serializar(plan: Plan): EntradaPlanDTO[] {
   const out: EntradaPlanDTO[] = []
   for (const dia of DIAS) {
     for (const e of plan[dia]) {
-      out.push({ dia, recetaId: e.receta.id, raciones: e.raciones, ...(e.cocinada ? { cocinada: true } : {}) })
+      out.push({
+        dia,
+        recetaId: e.receta.id,
+        raciones: e.raciones,
+        ...(e.cocinada ? { cocinada: true } : {}),
+        ...(e.conGuarnicion ? { conGuarnicion: true } : {}),
+      })
     }
   }
   return out
@@ -35,7 +44,7 @@ function serializar(plan: Plan): EntradaPlanDTO[] {
 function hidratar(dtos: EntradaPlanDTO[], recetas: Receta[]): Plan {
   const byId = new Map(recetas.map((r) => [r.id, r]))
   const result = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
-  for (const { dia, recetaId, raciones, cocinada } of dtos) {
+  for (const { dia, recetaId, raciones, cocinada, conGuarnicion } of dtos) {
     const receta = byId.get(recetaId)
     if (!receta || !DIAS.includes(dia as Dia)) continue
     result[dia as Dia].push({
@@ -43,6 +52,7 @@ function hidratar(dtos: EntradaPlanDTO[], recetas: Receta[]): Plan {
       receta,
       raciones,
       ...(cocinada ? { cocinada: true } : {}),
+      ...(conGuarnicion ? { conGuarnicion: true } : {}),
     })
   }
   return result
@@ -54,6 +64,7 @@ interface PlanificadorCtx {
   añadir: (dia: Dia, receta: Receta, raciones?: number) => void
   quitar: (dia: Dia, entradaId: string) => void
   setRaciones: (dia: Dia, entradaId: string, raciones: number) => void
+  setGuarnicionPlan: (dia: Dia, entradaId: string, conGuarnicion: boolean) => void
   marcarCocinada: (dia: Dia, entradaId: string, cocinada: boolean) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
@@ -81,7 +92,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     hidratar: (dtos) => hidratar(dtos, recetas),
   })
 
-  const { seleccionadas, toggleReceta, setRaciones: setRacionesLista, estaSeleccionada } = useListaCompraContext()
+  const { seleccionadas, toggleReceta, setRaciones: setRacionesLista, setGuarnicion: setGuarnicionLista, estaSeleccionada } = useListaCompraContext()
   const { pendientes, quitarPendiente } = usePendientesPlan()
 
   const seleccionadasRef = useRef(seleccionadas)
@@ -93,21 +104,28 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   const planIdsRef = useRef<Set<string>>(new Set())
 
   useEffect(() => {
-    const totales = new Map<string, { receta: Receta; raciones: number }>()
+    const totales = new Map<string, { receta: Receta; raciones: number; conGuarnicion: boolean }>()
     for (const dia of DIAS) {
-      for (const { receta, raciones, cocinada } of plan[dia]) {
+      for (const { receta, raciones, cocinada, conGuarnicion } of plan[dia]) {
         // Lo ya cocinado ni se compra ni se cuenta.
         if (cocinada) continue
         const prev = totales.get(receta.id)
-        totales.set(receta.id, { receta, raciones: (prev?.raciones ?? 0) + raciones })
+        totales.set(receta.id, {
+          receta,
+          raciones: (prev?.raciones ?? 0) + raciones,
+          // La misma receta puede estar dos días, uno con guarnición y otro sin.
+          // Basta que un día la lleve para tener que comprarla.
+          conGuarnicion: (prev?.conGuarnicion ?? false) || !!conGuarnicion,
+        })
       }
     }
 
-    for (const [, { receta, raciones }] of totales) {
+    for (const [, { receta, raciones, conGuarnicion }] of totales) {
       if (!estaSeleccionadaRef.current(receta.id)) {
         toggleReceta(receta)
       }
       setRacionesLista(receta.id, raciones)
+      setGuarnicionLista(receta.id, conGuarnicion)
     }
 
     // Solo quita de la lista lo que el planificador había añadido antes
@@ -155,6 +173,13 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }))
   }, [cambiarPlan])
 
+  const setGuarnicionPlan = useCallback((dia: Dia, entradaId: string, conGuarnicion: boolean) => {
+    cambiarPlan((prev) => ({
+      ...prev,
+      [dia]: prev[dia].map((e) => (e.id === entradaId ? { ...e, conGuarnicion } : e)),
+    }))
+  }, [cambiarPlan])
+
   const marcarCocinada = useCallback((dia: Dia, entradaId: string, cocinada: boolean) => {
     cambiarPlan((prev) => ({
       ...prev,
@@ -195,8 +220,8 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   }, [cambiarPlan])
 
   const valor = useMemo(
-    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar, restaurarPlan }),
-    [plan, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar, restaurarPlan]
+    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan }),
+    [plan, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan]
   )
 
   return <PlanificadorContext.Provider value={valor}>{children}</PlanificadorContext.Provider>

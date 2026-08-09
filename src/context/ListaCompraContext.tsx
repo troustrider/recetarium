@@ -11,6 +11,7 @@ interface ListaCompraContextValue {
   compra: { total: number; sinPrecio: string[] }
   toggleReceta: (receta: Receta) => void
   setRaciones: (id: string, raciones: number) => void
+  setGuarnicion: (id: string, conGuarnicion: boolean) => void
   estaSeleccionada: (id: string) => boolean
   vaciar: () => void
   cargarAleatorias: (recetas: Receta[], n: number, raciones: number) => void

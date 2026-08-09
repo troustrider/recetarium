@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
-import { claveIngrediente, canonUnidad, cantidadDeCompra } from '../utils/ingredientes'
+import { claveIngrediente, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
 import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
@@ -23,6 +23,8 @@ export interface IngredienteAgrupado extends Ingrediente {
 export interface EntradaLista {
   receta: Receta
   raciones: number
+  /** Comprar también lo de la guarnición. Lo marca el planificador o la propia lista. */
+  conGuarnicion?: boolean
 }
 
 export interface InstantaneaLista {
@@ -69,6 +71,12 @@ function useListaCompra() {
     const clamped = Math.max(1, raciones)
     setSeleccionadas((prev) =>
       prev.map((e) => (e.receta.id === id ? { ...e, raciones: clamped } : e))
+    )
+  }, [])
+
+  const setGuarnicion = useCallback((id: string, conGuarnicion: boolean) => {
+    setSeleccionadas((prev) =>
+      prev.map((e) => (e.receta.id === id ? { ...e, conGuarnicion } : e))
     )
   }, [])
 
@@ -138,8 +146,8 @@ function useListaCompra() {
   const { listaCompra, enDespensa } = useMemo(() => {
     const mapa = new Map<string, IngredienteAgrupado>()
 
-    for (const { receta, raciones } of seleccionadas) {
-      for (const ing of receta.ingredientes) {
+    for (const { receta, raciones, conGuarnicion } of seleccionadas) {
+      for (const ing of ingredientesDe(receta, conGuarnicion)) {
         const clave = claveIngrediente(ing.nombre, ing.unidad)
         const existente = mapa.get(clave)
         const cantidad = ing.cantidad * (raciones / racionesBase(receta))
@@ -212,13 +220,13 @@ function useListaCompra() {
   return useMemo(
     () => ({
       seleccionadas, listaCompra, enDespensa, extras, coste, compra,
-      toggleReceta, setRaciones, estaSeleccionada, vaciar,
+      toggleReceta, setRaciones, setGuarnicion, estaSeleccionada, vaciar,
       cargarAleatorias, addExtra, removeExtra, descartar,
       instantanea, restaurarLista,
     }),
     [
       seleccionadas, listaCompra, enDespensa, extras, coste, compra,
-      toggleReceta, setRaciones, estaSeleccionada, vaciar,
+      toggleReceta, setRaciones, setGuarnicion, estaSeleccionada, vaciar,
       cargarAleatorias, addExtra, removeExtra, descartar,
       instantanea, restaurarLista,
     ]

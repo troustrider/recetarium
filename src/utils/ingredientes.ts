@@ -3,6 +3,18 @@
 // mayúsculas, acentos, plurales o abreviaturas de unidad, y formatea las
 // cantidades de forma legible (½ limón, 2 huevos, sal al gusto).
 
+import type { Ingrediente, Receta } from '../types/receta'
+
+// Único sitio que decide si la guarnición cuenta. Lista de la compra, consumo de
+// despensa y precio pasan todos por aquí para que no puedan discrepar entre sí.
+export function ingredientesDe(
+  receta: Pick<Receta, 'ingredientes' | 'guarnicion'>,
+  conGuarnicion?: boolean
+): Ingrediente[] {
+  if (!conGuarnicion || !receta.guarnicion) return receta.ingredientes
+  return [...receta.ingredientes, ...receta.guarnicion.ingredientes]
+}
+
 export function normalizar(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Dices, ChefHat } from 'lucide-react'
+import { Dices, ChefHat, Salad } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,
@@ -44,10 +44,11 @@ interface ChipProps {
   onQuitar: () => void
   onRaciones: (n: number) => void
   onCocinar: () => void
+  onGuarnicion: (conGuarnicion: boolean) => void
   overlay?: boolean
 }
 
-function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false }: ChipProps) {
+function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, onGuarnicion, overlay = false }: ChipProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: entrada.id,
     data: { entradaId: entrada.id },
@@ -99,6 +100,28 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, overlay = false 
       >
         <ChefHat className="w-3.5 h-3.5" />
       </button>
+
+      {/* Guarnición. Solo aparece si la receta trae una: es lo que decide si sus
+          ingredientes entran en la compra y se gastan de la despensa. */}
+      {entrada.receta.guarnicion && (
+        <button
+          onClick={() => onGuarnicion(!entrada.conGuarnicion)}
+          aria-pressed={!!entrada.conGuarnicion}
+          aria-label={entrada.conGuarnicion ? 'Quitar la guarnición' : 'Añadir la guarnición'}
+          title={
+            entrada.conGuarnicion
+              ? `Sin ${entrada.receta.guarnicion.nombre}: deja de contar para la compra`
+              : `Con ${entrada.receta.guarnicion.nombre}: entra en la compra`
+          }
+          className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
+            entrada.conGuarnicion
+              ? 'bg-lime-500 border-lime-500 text-white hover:bg-lime-400'
+              : 'border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-lime-400 hover:text-lime-500'
+          }`}
+        >
+          <Salad className="w-3.5 h-3.5" />
+        </button>
+      )}
 
       {/* Info */}
       {/* El nombre es lo único elástico del chip: el resto son controles de ancho fijo.
@@ -356,10 +379,11 @@ interface FilaDiaProps {
   onQuitar: (id: string) => void
   onRaciones: (id: string, n: number) => void
   onCocinar: (entrada: EntradaPlan) => void
+  onGuarnicion: (id: string, conGuarnicion: boolean) => void
   isDragOver: boolean
 }
 
-function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, isDragOver }: FilaDiaProps) {
+function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, onGuarnicion, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
 
   // La fila hace de bandeja y va un nivel por debajo del chip: si comparten color,
@@ -400,6 +424,7 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, is
                 onQuitar={() => onQuitar(entrada.id)}
                 onRaciones={(n) => onRaciones(entrada.id, n)}
                 onCocinar={() => onCocinar(entrada)}
+                onGuarnicion={(v) => onGuarnicion(entrada.id, v)}
               />
             </motion.div>
           ))}
@@ -486,7 +511,7 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
 
 // ——— Página principal ———
 function Planificador() {
-  const { plan, dias, añadir, quitar, setRaciones, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
+  const { plan, dias, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
   const { recetas } = useRecetasContext()
   const { pendientes, quitarPendiente, restaurarPendientes } = usePendientesPlan()
   const { despensa, consumir, restaurarDespensa } = useDespensa()
@@ -652,6 +677,7 @@ function Planificador() {
               onQuitar={(id) => quitarConDeshacer(dia, id)}
               onRaciones={(id, n) => setRaciones(dia, id, n)}
               onCocinar={(entrada) => alCocinar(dia, entrada)}
+              onGuarnicion={(id, v) => setGuarnicionPlan(dia, id, v)}
               isDragOver={dragOverDia === dia}
             />
           ))}
@@ -665,6 +691,7 @@ function Planificador() {
               onQuitar={() => {}}
               onRaciones={() => {}}
               onCocinar={() => {}}
+              onGuarnicion={() => {}}
               overlay
             />
           )}

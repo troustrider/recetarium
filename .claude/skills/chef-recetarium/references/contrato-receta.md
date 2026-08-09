@@ -49,9 +49,15 @@ Dos cosas que enseña a propósito:
   "consejos": [
     "La shakshuka es de origen magrebí, no israelí; esta versión sigue la tunecina con pimiento y comino.",
     "El punto crítico es el paso 4: si el tomate sigue líquido, los huevos se dispersan y quedan crudos por arriba. No pases al paso 5 sin el surco.",
-    "Son 24 g de proteína por ración, por debajo de los 35 de un principal. Es lo que da el plato bien hecho. Para llegar, acompáñala de 200 g de yogur griego o de 150 g de hummus, que suman sin tocar la sartén.",
-    "De guarnición va pan de pita o una rebanada de pan rústico tostado, que es como se come. Ese pan no está en los macros de arriba."
-  ]
+    "Son 24 g de proteína por ración, por debajo de los 35 de un principal. Es lo que da el plato bien hecho. Para llegar, acompáñala de 200 g de yogur griego o de 150 g de hummus, que suman sin tocar la sartén."
+  ],
+  "guarnicion": {
+    "nombre": "Pan de pita tostado",
+    "ingredientes": [
+      { "nombre": "pan de pita", "cantidad": 2, "unidad": "ud", "familia": "cereales" }
+    ],
+    "pasos": ["Tostar 2 min por lado hasta que infle."]
+  }
 }
 ```
 
@@ -70,9 +76,10 @@ Dos cosas que enseña a propósito:
 | `porciones` | **siempre 2.** Es la base desde la que la app escala (`BASE_COMENSALES` en `DetalleReceta`). Ajusta las cantidades de los ingredientes a 2 raciones, no las porciones al plato |
 | `tipo` | opcional, default `principal`; uno de: `principal`, `postre`, `desayuno`, `entrante` |
 | `categoria` | opcional pero ponla siempre: minúsculas, sin acentos ("espanola", no "española") |
+| `guarnicion` | opcional. `null` u omitido = el plato no la lleva. Si va, exige `nombre` y `ingredientes` no vacío (mismo formato que `ingredientes`); `pasos` opcional. **No pongas sus macros: los calcula el servidor.** Ver abajo |
 | `favorita`, `imagen` | opcionales; normalmente se omiten al crear |
 
-⚠️ **`PUT /recetas/:id` reemplaza el recurso entero.** Los campos que omitas se pierden: `consejos` omitido se guarda como `[]`, y `calorias`/`proteinas`/etc. omitidos se guardan como `null`. En modo revisión, envía siempre la receta completa, no un parche.
+⚠️ **`PUT /recetas/:id` reemplaza el recurso entero.** Los campos que omitas se pierden: `consejos` omitido se guarda como `[]`, y `guarnicion`, `calorias`/`proteinas`/etc. omitidos se guardan como `null`. En modo revisión, envía siempre la receta completa, no un parche.
 
 ## Categorías (cocinas) ya en uso
 
@@ -123,6 +130,38 @@ Recórrelo entero. Cualquier "no" bloquea la entrega.
 
 **Perfil (`criterio-chef.md`)**
 17. Si es para Karim: sin pescado, no india, y ≥35 g de proteína por ración (≥25 g en desayunos). Si no llega, no se ha tocado ningún ratio del canon para forzarlo: el número va como sale y la palanca en `consejos`.
-18. Es una comida completa: lleva verdura propia, o la guarnición está declarada en `consejos` y no está contada en los macros.
+18. Es una comida completa: lleva verdura propia, o va con `guarnicion` rellena. La guarnición NO se declara en `consejos` ni se cuenta en los macros del plato: tiene campo propio y el servidor le calcula su ficha aparte.
 19. Los `consejos` no hablan de versiones anteriores ni comparan con el resto del recetario.
 20. No duplica una receta existente (dedup por lista completa de nombres).
+
+## Guarnición
+
+Campo opcional para el acompañamiento del plato. Existe porque la guarnición es
+opcional al cocinar: unos días la haces y otros no, y sus ingredientes solo
+tienen que entrar en la lista de la compra si la vas a hacer.
+
+Va en su propio campo y **nunca dentro de `ingredientes`**. Los macros, el hierro
+y el gluten del plato se calculan desde `ingredientes` en cada guardado: un arroz
+o una pasta metidos ahí marcarían la receta entera como con gluten aunque no
+prepares la guarnición, y eso importa (ver `nutricion-ficha.md`).
+
+```json
+"guarnicion": {
+  "nombre": "Arroz blanco",
+  "ingredientes": [
+    { "nombre": "arroz", "cantidad": 160, "unidad": "g", "familia": "cereales" }
+  ],
+  "pasos": ["Cocer 12 min en agua con sal."]
+}
+```
+
+Reglas:
+
+- Cantidades **para 2 raciones**, igual que `ingredientes`.
+- No pongas `calorias`, `proteinas`, `hierro`, `sinGluten` ni `micros`: los
+  calcula el servidor al guardar y los devuelve dentro del propio objeto.
+- Solo cuando el plato la pide de verdad. Un curry, un guiso o una carne a la
+  plancha la piden; una pasta, un arroz salteado o un bocadillo ya son plato
+  completo y van con `guarnicion: null`.
+- Los ingredientes de la guarnición cuentan para las puertas de compra NL igual
+  que los del plato: un T3 ahí dentro necesita su sustituto en `consejos`.

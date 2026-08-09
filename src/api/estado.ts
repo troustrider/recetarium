@@ -6,6 +6,7 @@ export interface EntradaPlanDTO {
   recetaId: string
   raciones: number
   cocinada?: boolean
+  conGuarnicion?: boolean
 }
 
 export interface IngredienteDespensaDTO {

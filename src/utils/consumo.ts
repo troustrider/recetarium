@@ -8,7 +8,7 @@
 //   - un stock con cantidad guardada solo se toca si la unidad es comparable
 //     (no se resta "2 ud" de "500 ml").
 
-import { canonUnidad } from './ingredientes'
+import { canonUnidad, ingredientesDe } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
 import { despensaCubre } from './despensa'
 import { racionesBase } from '../hooks/useListaCompra'
@@ -17,6 +17,8 @@ import type { Receta } from '../types/receta'
 export interface EntradaCocinada {
   receta: Receta
   raciones: number
+  /** Si el plato se hizo con su guarnición, también se gasta lo suyo. */
+  conGuarnicion?: boolean
 }
 
 interface ItemDespensa {
@@ -46,9 +48,9 @@ export function consumoAlCocinar(
   // lee después en el aviso.
   const tocados = new Map<number, { usadoPor: string[]; agotado: boolean }>()
 
-  for (const { receta, raciones } of entradas) {
+  for (const { receta, raciones, conGuarnicion } of entradas) {
     const factor = raciones / racionesBase(receta)
-    for (const ing of receta.ingredientes) {
+    for (const ing of ingredientesDe(receta, conGuarnicion)) {
       const unidad = canonUnidad(ing.nombre, ing.unidad)
       if (!unidadMedible(unidad)) continue
 
