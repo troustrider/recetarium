@@ -74,6 +74,82 @@ const GUARNICIONES = {
   'İskender kebab casero': ENSALADA_TOMATE,
 }
 
+// —— Lote 2: guarnición declarada solo en prosa ——
+// Ya la decían en `consejos`, pero un texto no se compra ni se descuenta de la
+// despensa. Cuando el consejo ofrecía varias, se elige una y se le ponen
+// cantidades. Todo lo usado es T1 de Dirk/Lidl.
+const COBAN = { nombre: 'Ensalada çoban', ingredientes: [v('tomate', 2, 'ud'), v('pepino', 1, 'ud'), v('cebolla', 0.5, 'ud')], pasos: ['Cortar todo en dados de 1 cm y aliñar con limón, aceite y sal.'] }
+const REPOLLO_LIMA = { nombre: 'Repollo con lima', ingredientes: [v('repollo', 200), v('lima', 1, 'ud', 'frutas')], pasos: ['Cortar en juliana muy fina y aliñar con el zumo de lima y sal 10 min antes de servir.'] }
+const PATATA = { nombre: 'Patata cocida', ingredientes: [v('patata', 400)], pasos: ['Cocer en agua con sal 20 min desde el hervor, hasta que el cuchillo entre sin resistencia.'] }
+const JUDIAS = { nombre: 'Judías verdes hervidas', ingredientes: [v('judías verdes', 300)], pasos: ['Hervir 6 min en agua con sal y escurrir; deben quedar verdes y con algo de mordida.'] }
+const PAN_MOJAR = { nombre: 'Pan para mojar', ingredientes: [v('pan', 150, 'g', 'cereales')], pasos: ['Cortar en rebanadas gruesas y tostar ligeramente.'] }
+const ESPARRAGOS = { nombre: 'Espárragos al vapor', ingredientes: [v('espárragos', 250)], pasos: ['Cocer al vapor 5 min, hasta que el tallo ceda pero la punta siga firme.'] }
+const LECHUGA_ENVOLVER = { nombre: 'Hojas de lechuga para envolver', ingredientes: [v('lechuga', 150)], pasos: ['Separar las hojas enteras, lavar y secar bien para que no aguen el relleno.'] }
+const PIMIENTOS_ASADOS = { nombre: 'Pimientos asados', ingredientes: [v('pimiento rojo', 2, 'ud')], pasos: ['Asar a 220°C 25 min girando a mitad, tapar 10 min para que sude, pelar y aliñar con aceite y sal.'] }
+// El consejo del poke pide edamame, pero no está en el catálogo ni en la tabla de
+// nutrientes: entraría sin ficha y dejaría la guarnición sin macros. Se queda en
+// pepino y aguacate, que son los otros dos que el propio consejo nombra.
+const POKE_TOPPING = { nombre: 'Pepino y aguacate', ingredientes: [v('pepino', 1, 'ud'), v('aguacate', 1, 'ud', 'frutas')], pasos: ['Cortar el pepino en medias lunas y el aguacate en dados, y repartir por encima al servir.'] }
+
+Object.assign(GUARNICIONES, {
+  'Arroz caldoso de bacalao y garbanzos': PIMIENTOS_ASADOS,
+  'Baleadas de huevo, frijoles y queso': REPOLLO_LIMA,
+  "Bucatini all'amatriciana": ENSALADA_VERDE,
+  'Bulgogi': ARROZ,
+  'Burrito de carne picada y alubias': REPOLLO_LIMA,
+  'Cacio e pepe': { nombre: 'Quark al lado', ingredientes: [v('quark', 300, 'g', 'lácteos')], pasos: ['Servir frío en un cuenco aparte, con pimienta negra recién molida.'] },
+  'Carbonara': ENSALADA_VERDE,
+  'Carnitas de cerdo con tortillas': REPOLLO_LIMA,
+  'Chilaquiles rojos con pollo y huevo': AGUACATE,
+  'Enchiladas de pollo': AGUACATE,
+  'Fabada rápida con lomo y chorizo': { nombre: 'Ensalada de lechuga y cebolla', ingredientes: [v('lechuga', 100), v('cebolla', 0.5, 'ud')], pasos: ['Cortar fino y aliñar con mucho vinagre, aceite y sal.'] },
+  'Falafel al horno con salsa de yogur': COBAN,
+  'Gambas al ajillo con huevo': PAN_MOJAR,
+  'Gyudon': PEPINO_VINAGRE,
+  'Hachee (estofado holandés de ternera)': PATATA,
+  'Huevos al horno con garbanzos, tomate y feta': PITA,
+  'Jeyuk bokkeum (cerdo picante coreano)': LECHUGA_ENVOLVER,
+  'Karaage de pollo': ARROZ,
+  'Köfte turco': COBAN,
+  'Larb de pollo': LECHUGA_ENVOLVER,
+  'Loco moco': REPOLLO_LIMA,
+  'Mapo tofu': ARROZ,
+  'Pastitsio': JUDIAS,
+  'Poke bowl de atún': POKE_TOPPING,
+  'Pollo a la mostaza con arroz': BROCOLI,
+  'Pollo a la parmesana': ENSALADA_VERDE,
+  'Pollo al ajillo con arroz': PIMIENTOS_ASADOS,
+  'Pollo al pesto con pasta fresca': ENSALADA_VERDE,
+  'Pollo alla cacciatora': PIMIENTOS_ASADOS,
+  'Pollo desmechado con arroz': ENSALADA_TOMATE,
+  'Pollo en pepitoria': JUDIAS,
+  'Pollo piccata': ESPARRAGOS,
+  'Pollo teriyaki': BROCOLI,
+  'Pollo tikka masala': ARROZ,
+  'Pollo turco especiado': COBAN,
+  'Quesadillas de pollo y alubias rojas': REPOLLO_LIMA,
+  'Revuelto de gambas y huevo': ENSALADA_VERDE,
+  'Salmón glaseado con miel y soja': ARROZ,
+  'Tofu teriyaki': BROCOLI,
+  'Tortilla de atún': ENSALADA_VERDE,
+  'Yakitori de pollo': ARROZ,
+  'Yangnyeom chikin (pollo frito coreano)': PEPINO_VINAGRE,
+  'Youvetsi de ternera con orzo': JUDIAS,
+  'Seco de ternera con frejoles': ARROZ,
+  'Tavuk şiş (brochetas turcas de pollo)': COBAN,
+  'Mujadara con pollo y yogur': { nombre: 'Yogur al lado', ingredientes: [v('yogur griego', 200, 'g', 'lácteos')], pasos: ['Servir frío en un cuenco aparte, con una pizca de sal.'] },
+})
+
+// —— Lote 3: el consejo dice qué falta para ser comida completa ——
+// Aquí la guarnición no es adorno: es lo que cierra el plato, y en dos casos es
+// además la palanca de proteína que el canon no deja meter dentro.
+Object.assign(GUARNICIONES, {
+  'Curry de pollo y brócoli con leche de coco': ARROZ,
+  'Gratén de pollo y brócoli': PATATA,
+  'Pollo satay': ARROZ,
+  'Yakisoba de cerdo y col': { nombre: 'Huevo frito', ingredientes: [v('huevos', 2, 'ud', 'huevos')], pasos: ['Freír en aceite bien caliente hasta que el borde quede crujiente y la yema líquida.'] },
+})
+
 for (const nombre of SACAR_PAN) GUARNICIONES[nombre] ??= PITA
 
 const red1 = (n) => Math.round(n * 10) / 10
