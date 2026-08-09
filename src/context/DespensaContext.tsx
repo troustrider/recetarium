@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, type ReactNode } from 
 import { getDespensa, saveDespensa, type IngredienteDespensaDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { mismoIngrediente } from '../utils/despensa'
+import { caducidadEstimada } from '../utils/caducidadEstimada'
 import { convertir, redondear, unidadMedible } from '../utils/cantidades'
 import type { ConsumoIngrediente } from '../utils/consumo'
 
@@ -120,12 +121,15 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     cambiarDespensa((prev) => {
       const idx = prev.findIndex((i) => mismoIngrediente(i.nombre, norm))
       if (idx === -1) {
+        const fam = normalizar(familia) || 'otros'
+        const estimada = caducidadEstimada(norm, fam)
         return [
           ...prev,
           {
             nombre: norm,
-            familia: normalizar(familia) || 'otros',
+            familia: fam,
             estado: 'lleno' as EstadoDespensa,
+            ...(estimada ? { caducidad: estimada } : {}),
             ...(medible ? { cantidad, unidad: normalizar(unidad!) } : {}),
           },
         ].sort(porFamiliaYNombre)
@@ -136,12 +140,16 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
       // Si el que había no llevaba cantidad, la compra se la estrena; si la
       // llevaba en otra dimensión (g contra ml), no se inventa una suma.
       const sumado = medible && tieneStock ? convertir(cantidad!, unidad!, actual.unidad!) : null
-      copia[idx] =
+      const repuesto =
         !medible || (tieneStock && sumado == null)
-          ? { ...actual, estado: 'lleno' }
+          ? { ...actual, estado: 'lleno' as EstadoDespensa }
           : tieneStock
-            ? { ...actual, estado: 'lleno', cantidad: redondear(actual.cantidad! + sumado!) }
-            : { ...actual, estado: 'lleno', cantidad, unidad: normalizar(unidad!) }
+            ? { ...actual, estado: 'lleno' as EstadoDespensa, cantidad: redondear(actual.cantidad! + sumado!) }
+            : { ...actual, estado: 'lleno' as EstadoDespensa, cantidad, unidad: normalizar(unidad!) }
+      // La fecha que ya hubiera es del envase o la puso alguien a mano: manda
+      // sobre la estimación, que solo estrena a los que no tenían ninguna.
+      const estimada = repuesto.caducidad ? null : caducidadEstimada(norm, repuesto.familia)
+      copia[idx] = estimada ? { ...repuesto, caducidad: estimada } : repuesto
       return copia
     })
   }, [cambiarDespensa])

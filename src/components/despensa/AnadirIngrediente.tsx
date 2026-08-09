@@ -5,6 +5,7 @@ import { useDespensa } from '../../context/DespensaContext'
 import { FAMILIAS, estaEnDespensa } from '../../utils/despensa'
 import { normalizar } from '../../utils/ingredientes'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
+import { caducidadEstimada, diasEstimados } from '../../utils/caducidadEstimada'
 import useIngredientesConocidos from '../../hooks/useIngredientesConocidos'
 
 function capitalize(s: string) {
@@ -25,6 +26,9 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
   const [nombre, setNombre] = useState('')
   const [familia, setFamilia] = useState('otros')
   const [caducidad, setCaducidad] = useState('')
+  // Hasta que se toca el campo manda la estimación, que se recalcula sola al
+  // cambiar el nombre o la familia.
+  const [caducidadTocada, setCaducidadTocada] = useState(false)
   const [cantidad, setCantidad] = useState('')
   const [unidad, setUnidad] = useState(unidadPorDefecto('otros'))
   // Familias que no se miden (salsas, especias…) esconden la cantidad hasta
@@ -40,6 +44,9 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
   const puedeAñadir = nombre.trim().length > 1 && !yaExiste
   const mostrarCantidad = requiereCantidad(familia) || cantidadManual
 
+  const estimada = caducidadTocada || nombre.trim().length < 2 ? null : caducidadEstimada(nombre, familia)
+  const valorCaducidad = caducidadTocada ? caducidad : estimada ?? ''
+
   function cambiarFamilia(f: string) {
     setFamilia(f)
     setUnidad(unidadPorDefecto(f))
@@ -54,11 +61,12 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
     if (!puedeAñadir) return
     const n = Number(cantidad)
     añadir(nombre, familia, {
-      caducidad: caducidad || undefined,
+      caducidad: valorCaducidad || undefined,
       ...(cantidad !== '' && n > 0 ? { cantidad: n, unidad } : {}),
     })
     setNombre('')
     setCaducidad('')
+    setCaducidadTocada(false)
     setCantidad('')
   }
 
@@ -140,13 +148,26 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
               </select>
               <input
                 type="date"
-                value={caducidad}
-                onChange={(e) => setCaducidad(e.target.value)}
-                className="flex-1 min-w-0 px-3 py-2.5 text-base sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer"
+                value={valorCaducidad}
+                onChange={(e) => {
+                  setCaducidadTocada(true)
+                  setCaducidad(e.target.value)
+                }}
+                className={`flex-1 min-w-0 px-3 py-2.5 text-base sm:text-sm border rounded-xl outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-600 cursor-pointer ${
+                  estimada
+                    ? 'bg-orange-50/40 dark:bg-orange-900/10 border-orange-200 dark:border-orange-800/60 text-orange-700 dark:text-orange-300'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+                }`}
                 title="Fecha de caducidad (opcional)"
                 aria-label="Fecha de caducidad (opcional)"
               />
             </div>
+
+            {estimada && (
+              <p className="px-1 mt-1.5 text-[11px] text-orange-600/80 dark:text-orange-400/80">
+                Caducidad estimada ({diasEstimados(nombre, familia)} días). Cámbiala si el envase trae otra.
+              </p>
+            )}
 
             {mostrarCantidad ? (
               <div className="flex gap-2 mt-2 mb-4">

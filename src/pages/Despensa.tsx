@@ -9,6 +9,7 @@ import { useDespensa, type IngredienteDespensa } from '../context/DespensaContex
 import { useListaCompraContext, useCompradosContext, useRecetasContext, useDeshacer } from '../context'
 import { normalizar } from '../utils/ingredientes'
 import { FAMILIAS, mismoIngrediente, estaEnDespensa, porAgotarse, faltantes } from '../utils/despensa'
+import { caducidadEstimada } from '../utils/caducidadEstimada'
 import TarjetaIngrediente from '../components/despensa/TarjetaIngrediente'
 import FichaIngrediente from '../components/despensa/FichaIngrediente'
 import AnadirIngrediente from '../components/despensa/AnadirIngrediente'
@@ -100,7 +101,7 @@ function Despensa() {
   )
 
   function añadirYLimpiar(nombre: string, familia: string) {
-    añadir(nombre, familia)
+    añadir(nombre, familia, { caducidad: caducidadEstimada(nombre, familia) ?? undefined })
     setQ('')
   }
 

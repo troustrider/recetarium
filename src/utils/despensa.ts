@@ -125,6 +125,13 @@ function nucleo(nombre: string): Set<string> {
   })
 }
 
+// Tokens del núcleo en orden. En español la cabeza va primero ("harina de
+// maíz" es harina, "lechuga romana" es lechuga), así que el primero identifica
+// el producto y los siguientes solo lo matizan.
+export function nucleoOrdenado(nombre: string): string[] {
+  return [...nucleo(nombre)]
+}
+
 function esSuperset(a: Set<string>, b: Set<string>): boolean {
   if (b.size === 0 || b.size > a.size) return false
   for (const x of b) if (!a.has(x)) return false
