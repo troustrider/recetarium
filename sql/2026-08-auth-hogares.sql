@@ -35,7 +35,10 @@ CREATE TABLE invitados (
   usado_en    TIMESTAMPTZ
 );
 
-INSERT INTO invitados (email, hogar_id, rol) VALUES
-  ('akarim1398@gmail.com', '00000000-0000-0000-0000-000000000001', 'admin');
-
 COMMIT;
+
+-- Las invitaciones NO van aquí. Este repositorio es público y un correo es dato
+-- personal, así que la lista blanca se rellena con:
+--
+--   node server/scripts/invitar.mjs <correo> --compartido --admin
+--   node server/scripts/invitar.mjs <correo> --propio
