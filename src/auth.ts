@@ -11,14 +11,42 @@ export const authClient = createAuthClient(URL_AUTH, {
   adapter: BetterAuthReactAdapter(),
 })
 
-export const { useSession, signIn, signOut } = authClient
+export const { signIn } = authClient
 
-// La API vive en otro host que el servicio de auth, así que su cookie de sesión
-// no llega sola: el token viaja en Authorization. getSession() lo devuelve en el
-// cuerpo, y el cliente lo cachea, así que llamar aquí no es una petición de red
-// por cada fetch.
-export async function cabeceraSesion(): Promise<Record<string, string>> {
+// El servicio de auth corre en otro host, así que su cookie de sesión no
+// sobrevive al cierre de la app en la PWA de iOS: se entra bien y al volver a
+// abrir ya no hay sesión. Comprobado en un iPhone, y no hay arreglo por ese
+// lado: Neon no expone el plugin `bearer` de Better Auth, así que mandar el
+// token en la cabecera contra su servicio devuelve null.
+//
+// Por eso la fuente de verdad de la sesión pasa a ser nuestra API, que valida
+// el token contra neon_auth.session en su misma base de datos y no necesita la
+// cookie para nada. El token se guarda aquí, y ese es el compromiso: un XSS se
+// lo llevaría. Se acota con la CSP de vercel.json, con revocación inmediata
+// (DELETE /yo/sesion borra la fila) y con el aviso de IPs nuevas en
+// /admin/sesiones. La alternativa era entrar con Google en cada arranque.
+const CLAVE_TOKEN = 'recetarium:sesion'
+
+export function tokenGuardado(): string | null {
+  return localStorage.getItem(CLAVE_TOKEN)
+}
+
+export function olvidarToken(): void {
+  localStorage.removeItem(CLAVE_TOKEN)
+}
+
+// Justo después del login la cookie todavía vale, así que es el único momento
+// en que se puede leer el token del servicio de auth. Se captura y se guarda.
+export async function capturarToken(): Promise<string | null> {
+  const guardado = tokenGuardado()
+  if (guardado) return guardado
   const { data } = await authClient.getSession()
   const token = data?.session?.token
+  if (token) localStorage.setItem(CLAVE_TOKEN, token)
+  return token ?? null
+}
+
+export function cabeceraSesion(): Record<string, string> {
+  const token = tokenGuardado()
   return token ? { Authorization: `Bearer ${token}` } : {}
 }

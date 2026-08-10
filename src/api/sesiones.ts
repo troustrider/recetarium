@@ -36,7 +36,7 @@ export interface PanelSesiones {
 const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
 export async function getPanelSesiones(dias = 7): Promise<PanelSesiones> {
-  const res = await fetch(`${BASE}/admin/sesiones?dias=${dias}`, { headers: await cabeceraSesion() })
+  const res = await fetch(`${BASE}/admin/sesiones?dias=${dias}`, { headers: cabeceraSesion() })
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
     throw new Error(body.error ?? `Error ${res.status}`)

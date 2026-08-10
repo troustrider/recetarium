@@ -1,9 +1,10 @@
 import { useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChefHat, ShoppingCart, Search, Menu, X, BookOpen, ShoppingBasket, CalendarDays } from 'lucide-react'
+import { ChefHat, ShoppingCart, Search, Menu, X, BookOpen, ShoppingBasket, CalendarDays, UserRound } from 'lucide-react'
 import useDarkMode from '../../hooks/useDarkMode'
 import { useListaCompraContext } from '../../context'
+import { useSesion } from '../../context/SesionContext'
 import ListaCompraDrawer from '../lista-compra/ListaCompraDrawer'
 import AvisoDespensa from '../despensa/AvisoDespensa'
 import AvisoSincronizacion from './AvisoSincronizacion'
@@ -55,6 +56,8 @@ function Layout({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
   const { dark, toggle } = useDarkMode()
   const { listaCompra } = useListaCompraContext()
+  const { usuario, salir } = useSesion()
+  const [cuentaOpen, setCuentaOpen] = useState(false)  // Menú de cuenta (desktop)
   const [menuOpen, setMenuOpen] = useState(false)      // Más dropdown (desktop)
   const [mobileOpen, setMobileOpen] = useState(false)  // Mobile menu
   const [listaOpen, setListaOpen] = useState(false)
@@ -186,6 +189,58 @@ function Layout({ children }: { children: ReactNode }) {
               {dark ? <SunIcon /> : <MoonIcon />}
             </motion.button>
 
+            {/* Cuenta — desktop. En móvil va al final del hamburguesa: la nav
+                inferior son cuatro zonas repartidas para el pulgar y una quinta
+                las estrecharía. */}
+            <div className="relative hidden sm:block">
+              <motion.button
+                onClick={() => setCuentaOpen((o) => !o)}
+                className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Cuenta"
+                whileTap={{ scale: 0.88 }}
+              >
+                <UserRound className="w-5 h-5" />
+              </motion.button>
+              <AnimatePresence>
+                {cuentaOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setCuentaOpen(false)} />
+                    <motion.div
+                      className="absolute right-0 top-11 w-60 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-20"
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                          {usuario?.nombre || usuario?.email}
+                        </p>
+                        {usuario?.nombre && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{usuario.email}</p>
+                        )}
+                      </div>
+                      {usuario?.rol === 'admin' && (
+                        <NavLink
+                          to="/admin/sesiones"
+                          onClick={() => setCuentaOpen(false)}
+                          className="block px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          Accesos
+                        </NavLink>
+                      )}
+                      <button
+                        onClick={salir}
+                        className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        Cerrar sesión
+                      </button>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+
             {/* Hamburger — solo mobile */}
             <motion.button
               onClick={() => setMobileOpen((o) => !o)}
@@ -239,7 +294,35 @@ function Layout({ children }: { children: ReactNode }) {
                     {label}
                   </NavLink>
                 ))}
+                {usuario?.rol === 'admin' && (
+                  <NavLink
+                    to="/admin/sesiones"
+                    onClick={() => setMobileOpen(false)}
+                    className={({ isActive }) =>
+                      `px-4 py-2.5 text-sm font-medium rounded-xl transition-colors ${
+                        isActive
+                          ? 'text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`
+                    }
+                  >
+                    Accesos
+                  </NavLink>
+                )}
               </nav>
+
+              {/* Cuenta — móvil */}
+              <div className="px-2 pb-3 pt-2 border-t border-gray-100 dark:border-gray-800">
+                <p className="px-4 pb-1 text-xs text-gray-500 dark:text-gray-400 truncate">
+                  {usuario?.nombre || usuario?.email}
+                </p>
+                <button
+                  onClick={salir}
+                  className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  Cerrar sesión
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

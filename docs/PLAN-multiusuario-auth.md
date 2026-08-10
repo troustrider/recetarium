@@ -406,6 +406,48 @@ Es el esquema de un servicio gestionado y Neon puede recrear sus tablas en cualq
 migración suya, lo que dejaría la nuestra bloqueada o rota. El JOIN funciona igual, que es
 lo que se necesita. Contra `hogares`, que es nuestra, sí hay FK con `ON DELETE CASCADE`.
 
+### El arranque en frío de la PWA: probado, falla, y cómo se resolvió
+
+**Resultado de la prueba en un iPhone (iOS 18.7), 2026-08-10.** El login con Google
+funciona y la sesión queda bien guardada en la base de datos. Pero al cerrar la app del
+todo y volver a abrirla desde la pantalla de inicio, **la sesión se pierde**: la cookie
+vive en el host de Neon, no en el de la app, y Safari no la conserva entre arranques de una
+PWA instalada.
+
+Dos salidas descartadas con pruebas, no por intuición:
+
+- **Token en la cabecera contra el servicio de auth.** Better Auth trae el plugin `bearer`
+  para esto. Un token válido en `Authorization` contra `get-session` devuelve `null`:
+  Neon **no lo tiene activado**, y `neonctl neon-auth plugins list` confirma que no está
+  entre los configurables (solo `organization`, `magic_link`, `phone_number`,
+  `email_provider`, `email_and_password`, `oauth_providers`).
+- **Proxy en el dominio propio** para que la cookie fuese de primera parte. No sirve: el
+  callback de Google aterriza en el dominio de Neon, porque es el `redirect_uri` registrado
+  en sus credenciales compartidas de Google, y la cookie se sigue poniendo allí.
+
+**Lo que se hizo.** La fuente de verdad de la sesión pasa a ser **nuestra API**, que ya
+validaba el token contra `neon_auth.session` sin necesitar la cookie. El cliente guarda el
+token al entrar (único momento en que la cookie vale) y en cada arranque pregunta a
+`GET /api/v1/yo`. La cookie deja de importar.
+
+**El precio, asumido a conciencia.** El token vive en `localStorage`, en contra de la regla
+que este mismo documento fija más arriba. La alternativa era entrar con Google en cada
+arranque, también en el supermercado. Es el mismo compromiso que acepta cualquier app
+móvil. Se acota con:
+
+- **CSP en `vercel.json`** con `script-src 'self'`, sin `'unsafe-inline'`: sin poder
+  inyectar script, un XSS no puede leer el token. Por eso el script del tema se movió a
+  `public/tema.js`, para no necesitar un hash que se rompa al editarlo.
+- **Revocación inmediata**: `DELETE /api/v1/yo/sesion` borra la fila, y el token muere en
+  el momento. Verificado.
+- **Aviso de IPs nuevas** en `/admin/sesiones`.
+
+**Nota:** los ficheros de `public/` se sirven sin minificar, así que sus comentarios se ven
+en el código fuente. `tema.js` va sin ellos a propósito.
+
+Van tres pegas de Neon Auth (beta, dependencia vulnerable, y esto). Cuenta para la decisión
+aplazada sobre Clerk, en `[[recetarium-auth-deuda-clerk]]`.
+
 ### Riesgo a validar el primer día
 
 **Cookies de sesión en la PWA de iOS.** El host de Neon Auth
@@ -457,9 +499,19 @@ esto al final de la fase cuesta el triple.
       compartido, alta con hogar propio, idempotencia y rol admin
 - [x] Suite de backend completa: 9 ficheros, 92 tests
 - [ ] **`VITE_NEON_AUTH_URL` en Vercel** (bloquea el despliegue del spike)
-- [ ] Ciclo de login verificado en iPhone con la PWA instalada
-- [ ] Correo de Cloe en `invitados`, apuntando al hogar compartido
-- [ ] Replicar tablas y configuración de auth en la rama de producción
+- [x] `VITE_NEON_AUTH_URL` en Vercel. Ojo: la primera vez entró con una errata (`autH`),
+      y al estar marcada «Sensitive» no se puede leer para comprobarla
+- [x] Ciclo de login verificado en iPhone: entra bien, **pero la sesión no sobrevive al
+      arranque en frío**. Ver la sección del arranque en frío
+- [x] Sesión por token propio + `GET /api/v1/yo`, CSP en `vercel.json`
+- [x] Puerta de tres estados, splash y landing (opción B). Verificado en local: landing sin
+      sesión, app entera con sesión, salir instantáneo, revocación efectiva, oscuro con la
+      paleta de la casa y sin desbordamiento a 375px
+- [x] Menú de cuenta: avatar en escritorio, final del hamburguesa en móvil, sin quinta
+      pestaña en la nav inferior
+- [x] Correo de Cloe en `invitados` del hogar compartido (rama de pruebas)
+- [ ] **Volver a probar el arranque en frío en el iPhone**, ahora con el token propio
+- [ ] Replicar tablas, invitaciones y configuración de auth en la rama de producción
 - [ ] Sesión en cookie `httpOnly` + `Secure` + `SameSite`
 - [ ] `requireUser` devuelve 401 sin sesión y adjunta el usuario a `req`
 - [ ] Auth funcionando también en la rama `recetarium-test`

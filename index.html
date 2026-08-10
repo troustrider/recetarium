@@ -22,19 +22,7 @@
       rel="stylesheet"
     />
     <title>Recetarium</title>
-    <!-- El tema se aplica antes del primer pintado. Si esperásemos al efecto de
-         useDarkMode, la app abriría en blanco y saltaría a oscuro al montar; con
-         la landing de login por delante, ese destello sería una pantalla entera. -->
-    <script>
-      (function () {
-        var guardado = localStorage.getItem('dark-mode')
-        var oscuro =
-          guardado === null
-            ? window.matchMedia('(prefers-color-scheme: dark)').matches
-            : guardado === 'true'
-        document.documentElement.classList.toggle('dark', oscuro)
-      })()
-    </script>
+    <script src="/tema.js"></script>
   </head>
   <body>
     <div id="root"></div>
