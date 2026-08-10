@@ -17,6 +17,10 @@ const LINKS_MAIN = [
 const LINKS_EXTRA = [
   { to: '/planificador', label: 'Planificador semanal' },
   { to: '/despensa', label: 'Mi despensa' },
+  // Temporal (fase 2 de docs/PLAN-multiusuario-auth.md). En la PWA instalada no
+  // hay barra de direcciones, así que sin esta entrada no hay forma de llegar a
+  // la página de diagnóstico desde el móvil. Se va con la puerta definitiva.
+  { to: '/acceso', label: 'Diagnóstico de sesión' },
 ]
 
 const ALL_LINKS = [...LINKS_MAIN, ...LINKS_EXTRA]
