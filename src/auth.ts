@@ -12,3 +12,13 @@ export const authClient = createAuthClient(URL_AUTH, {
 })
 
 export const { useSession, signIn, signOut } = authClient
+
+// La API vive en otro host que el servicio de auth, así que su cookie de sesión
+// no llega sola: el token viaja en Authorization. getSession() lo devuelve en el
+// cuerpo, y el cliente lo cachea, así que llamar aquí no es una petición de red
+// por cada fetch.
+export async function cabeceraSesion(): Promise<Record<string, string>> {
+  const { data } = await authClient.getSession()
+  const token = data?.session?.token
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}

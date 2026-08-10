@@ -8,6 +8,7 @@ import estadoRouter from './routes/estado.js'
 import extrasRouter from './routes/extras.js'
 import despensaRouter from './routes/despensa.js'
 import pendientesRouter from './routes/pendientes.js'
+import sesionesRouter from './routes/sesiones.js'
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use('/api/v1/plan', estadoRouter)
 app.use('/api/v1/extras', extrasRouter)
 app.use('/api/v1/despensa', despensaRouter)
 app.use('/api/v1/pendientes', pendientesRouter)
+app.use('/api/v1/admin', sesionesRouter)
 
 app.use((err, req, res, next) => {
   console.error(err)

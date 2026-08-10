@@ -362,10 +362,16 @@ se puede cerrar desde el proyecto. Decisión consciente por ser tres usuarios de
 Compromisos asociados, que no se deben dejar caer:
 
 1. Evaluar la migración a Clerk a corto-medio plazo, o comprobar si Neon ya subió su beta.
-2. **Monitorización de sesiones** (pedida explícitamente): panel o consulta de IPs y
-   dispositivos que inician sesión. Neon Auth guarda sesiones en el esquema `neon_auth` de
-   la propia base de datos, así que sale con SQL directo, sin herramienta externa. Si
-   aparece cualquier acceso raro, la migración a Clerk pasa a ser inmediata.
+2. **Monitorización de sesiones: hecha.** Dos vías, porque el día que sospeches de un
+   acceso puede que no quieras entrar por la app:
+   - `node server/scripts/sesiones.mjs` (añade `--test` para la rama de pruebas,
+     `--dias N` para la ventana). Saca resumen por usuario, IPs nuevas y últimas sesiones.
+   - Pantalla `/admin/sesiones`, servida por `GET /api/v1/admin/sesiones`, protegida con
+     `requireUser` + `requireAdmin`.
+
+   Lo que de verdad avisa es el bloque de **IPs vistas por primera vez**: con tres
+   usuarios, una IP desconocida es señal suficiente. Si aparece, la migración a Clerk pasa
+   a ser inmediata.
 
 ### Cómo verifica la sesión el backend
 
