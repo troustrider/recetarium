@@ -91,8 +91,15 @@ La API exacta del lado Express se confirma **al empezar la fase 2**, no antes.
 1. **El `hogarId` sale siempre de la sesión del servidor, nunca del cliente.** Si un
    endpoint acepta `?hogar=7` del front, cualquiera cambia el número y lee la despensa
    ajena. Es un IDOR y es el fallo número uno en apps caseras multiusuario.
-2. **Sesión en cookie `httpOnly; Secure; SameSite`**, no token en `localStorage`. Lo
-   segundo lo lee cualquier script inyectado.
+2. **El token de sesión no se guarda nunca en `localStorage`.** Lo lee cualquier script
+   inyectado. Vive en memoria, y lo custodia el cliente de Neon Auth.
+
+   *Corrección sobre la versión inicial de este plan:* aquí ponía que la sesión iría en
+   una cookie `httpOnly` que el backend leería. **No puede ser así.** El servicio de auth
+   corre en otro host (`*.neonauth.aws.neon.tech`), así que su cookie de sesión nunca
+   llega a `recetarium-one.vercel.app/api/*`. El token va en `Authorization: Bearer`, y el
+   cliente lo obtiene de `getSession()`, que lo devuelve en el cuerpo de la respuesta.
+   La cookie sigue existiendo, pero solo entre el navegador y el servicio de auth.
 3. **Los `GET` también se cierran.** Hoy son públicos. Un endpoint de lectura sin sesión
    filtra exactamente los mismos datos que uno de escritura.
 4. **La lista blanca se comprueba en el servidor**, en el alta y en cada sesión. Ocultar
@@ -310,8 +317,11 @@ tocar producción (`sql/backups/`, ignorado por git).
 - [x] Copia de `app_estado` de producción en `sql/backups/2026-08-09-app_estado.json`
 - [x] Paso 1 (expand) aplicado en producción (`br-frosty-bird-ab7ziouz`) sin caída:
       `id` intacto, `hogar_id` poblado, 8 entradas de plan y 66 de despensa conservadas
-- [ ] Desplegado: la app se comporta igual que antes
-- [ ] Paso 2 (`-contraer.sql`) aplicado en producción, ya con el código nuevo en vivo
+- [x] Desplegado (`addfeab`, Vercel READY) y verificado en vivo antes de contraer
+- [x] Paso 2 (`-contraer.sql`) aplicado en producción y verificado después: 8 entradas de
+      plan y 66 ingredientes intactos, `/recetas` en 200
+
+**Fase 1 terminada.**
 
 ---
 
@@ -319,6 +329,76 @@ tocar producción (`sql/backups/`, ignorado por git).
 
 Todavía sin cambiar quién lee qué. Al terminar, se puede iniciar sesión, pero los datos
 siguen siendo del hogar por defecto.
+
+### Cómo se configura Neon Auth (importante)
+
+**El tool MCP `configure_neon_auth` no sirve para todo.** Su esquema viene sin tipos, así
+que cualquier parámetro que sea un objeto (como `methods`) llega al servidor como texto y
+lo rechaza. Los parámetros de texto sí funcionan (`add_trusted_origin`).
+
+Para lo demás, **la CLI**, que sí lo cubre entero:
+
+```bash
+npx -y neonctl@latest neon-auth config email-password update --project-id rapid-dust-88814325 --branch <rama> --disable-sign-up
+```
+
+Otros subcomandos útiles: `neon-auth status`, `neon-auth config email-password get`,
+`neon-auth oauth-provider list|add|update`, `neon-auth domain`, `neon-auth user`.
+
+### Estado de la configuración (rama `recetarium-test`)
+
+- Base URL: `https://ep-gentle-field-abm7rrx3.neonauth.eu-west-2.aws.neon.tech/neondb/auth`
+- Google: activo, tipo `shared`. **No hace falta pasar por Google Cloud Console.**
+- Correo y contraseña: método habilitado pero **`allow_sign_up: false`**. Nadie se registra
+  solo; el alta la controla la lista blanca.
+- `trusted_origins`: `https://recetarium-one.vercel.app`. `allow_localhost: true`.
+- Falta replicar todo esto en la rama de producción cuando llegue el momento.
+
+### Deuda aceptada: vulnerabilidades de better-auth
+
+Los paquetes beta de Neon fijan `better-auth@1.4.18`, con 5 vulnerabilidades sin ruta de
+arreglo (una crítica, varias altas), parcheadas en 1.6.11+. `npm audit` queda en rojo y no
+se puede cerrar desde el proyecto. Decisión consciente por ser tres usuarios de confianza.
+Compromisos asociados, que no se deben dejar caer:
+
+1. Evaluar la migración a Clerk a corto-medio plazo, o comprobar si Neon ya subió su beta.
+2. **Monitorización de sesiones** (pedida explícitamente): panel o consulta de IPs y
+   dispositivos que inician sesión. Neon Auth guarda sesiones en el esquema `neon_auth` de
+   la propia base de datos, así que sale con SQL directo, sin herramienta externa. Si
+   aparece cualquier acceso raro, la migración a Clerk pasa a ser inmediata.
+
+### Cómo verifica la sesión el backend
+
+Neon Auth guarda todo en el esquema `neon_auth` de **esta misma base de datos**, así que
+validar una sesión es un JOIN y no un salto de red:
+
+```
+neon_auth.user     id, name, email, emailVerified, image, role, banned, banReason…
+neon_auth.session  id, token (UNIQUE), userId, expiresAt, ipAddress, userAgent…
+neon_auth.account  proveedor OAuth por usuario
+```
+
+`requireUser` lee `Authorization: Bearer`, busca `session.token` (que tiene índice único,
+`session_token_key`, así que es un acierto directo), comprueba `expiresAt`, descarta
+cuentas con `banned`, y resuelve el hogar por `miembros`.
+
+**Aviso sobre el SDK:** `getJWTToken()` **no devuelve un JWT**. Su implementación real
+devuelve `session.data.session.token`, el token opaco de Better Auth, el mismo valor que
+está en `neon_auth.session.token`. El nombre engaña; comprobado leyendo el código
+compilado, no la documentación. Por eso el backend no necesita `jose` ni la JWKS.
+
+Ventaja no buscada: revocar es borrar la fila de `session`, con efecto inmediato. Con un
+JWT habría que esperar a que caducara.
+
+**`neon_auth.session` guarda `ipAddress` y `userAgent`.** Eso es exactamente la
+monitorización de accesos que hay pendiente: sale con una consulta, sin servicio externo.
+
+### Sobre las claves ajenas a `neon_auth`
+
+`miembros.usuario_id` **no** lleva `FOREIGN KEY` a `neon_auth.user(id)`, aunque se pueda.
+Es el esquema de un servicio gestionado y Neon puede recrear sus tablas en cualquier
+migración suya, lo que dejaría la nuestra bloqueada o rota. El JOIN funciona igual, que es
+lo que se necesita. Contra `hogares`, que es nuestra, sí hay FK con `ON DELETE CASCADE`.
 
 ### Riesgo a validar el primer día
 
@@ -356,7 +436,24 @@ esto al final de la fase cuesta el triple.
 
 ### Checklist
 
+- [x] Neon Auth provisionado en `recetarium-test`, config cerrada, Google activo
+- [x] `src/auth.ts` con `createAuthClient` + `BetterAuthReactAdapter`. API confirmada
+      contra los `.d.mts` instalados, no de memoria; `tsc -b` limpio
+- [x] Tema subido por encima de la puerta (script en `index.html`, hook solo lee)
+- [x] `/acceso`, página de diagnóstico temporal, verificada en local: el servicio
+      responde 200 y `useSession` resuelve sin error
+- [x] Tablas `miembros` e `invitados` (`sql/2026-08-auth-hogares.sql`), aplicadas en
+      `recetarium-test`. Karim sembrado como admin del hogar compartido
+- [x] `requireUser` y `requireAdmin` en `server/src/lib/auth.js`, con el alta automática
+      desde la lista blanca en el primer inicio de sesión
+- [x] `server/tests/auth-usuario.test.js`: 10 tests verdes. Cubre sesión ausente,
+      inventada y caducada, correo no invitado, cuenta suspendida, alta en hogar
+      compartido, alta con hogar propio, idempotencia y rol admin
+- [x] Suite de backend completa: 9 ficheros, 92 tests
+- [ ] **`VITE_NEON_AUTH_URL` en Vercel** (bloquea el despliegue del spike)
 - [ ] Ciclo de login verificado en iPhone con la PWA instalada
+- [ ] Correo de Cloe en `invitados`, apuntando al hogar compartido
+- [ ] Replicar tablas y configuración de auth en la rama de producción
 - [ ] Sesión en cookie `httpOnly` + `Secure` + `SameSite`
 - [ ] `requireUser` devuelve 401 sin sesión y adjunta el usuario a `req`
 - [ ] Auth funcionando también en la rama `recetarium-test`
