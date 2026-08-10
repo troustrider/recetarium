@@ -37,10 +37,9 @@ const RE_VAGO = /\b(un poco de|un chorro|un chorrito|unas gotas|al gusto|algo de
 // Cantidad escalable escrita en el paso sin marcar entre llaves. Excluye tiempos,
 // temperaturas y tamaños de utensilio, que nunca deben escalar.
 //
-// El agua de cocción entra aquí a propósito: si la sal va entre llaves y el agua no,
-// al subir de comensales se dobla la sal sobre el mismo volumen y la pasta sale salada.
-// Y las piezas que fabrica el propio plato (albóndigas, bolas, brochetas) también, o al
-// escalar sale el doble de masa repartida en el mismo número de piezas, con su tiempo viejo.
+// Incluye a propósito el agua de cocción (si la sal escala y el agua no, la pasta
+// sale salada) y las piezas que fabrica el propio plato (si no, sale el doble de
+// masa repartida en el mismo número de piezas, con su tiempo viejo).
 const PIEZAS = 'albondigas?|albóndigas?|bolas?|brochetas?|filetes?|hamburguesas?|croquetas?|tortitas?|muffins?|pinchos?|rollitos?|huecos?|bolitas?'
 const RE_SIN_MARCAR = new RegExp(
   `\\b\\d+(?:[.,]\\d+)?\\s*(?:litros?|g|ml|kg|l|cucharadas?|cucharaditas?|dientes?|vasos?|rebanadas?|lonchas?|rodajas?|latas?|paquetes?|puñados?|${PIEZAS})\\b`,
@@ -48,9 +47,9 @@ const RE_SIN_MARCAR = new RegExp(
 )
 const sinLlaves = (p) => p.replace(/\{[^}]*\}/g, ' ')
 
-// Metacomentario de autoría en `consejos`. La app lo renderiza como "Consejos del chef":
-// hablar de versiones anteriores o de posiciones en el ranking del recetario es ruido de
-// proceso en un campo que solo debe servir para cocinar mejor el plato que se tiene delante.
+// Metacomentario de autoría en `consejos`. La app lo renderiza como "Consejos del
+// chef": hablar de versiones anteriores o del recetario es ruido de proceso en un
+// campo que solo sirve para cocinar mejor el plato que se tiene delante.
 const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes ten[ií]a|la anterior|del recetario|en el recetario|respecto a la versi|se iba de rango|he subido|he bajado|corregid[oa]s?\b|corrijo|la ficha (?:dec[ií]a|ten[ií]a|estaba)|ficha anterior|estaba[n]? mal/i
 
 // El consejo lo lee quien cocina, no es una nota de entrega: nada de primera persona ni de
@@ -196,28 +195,27 @@ export function validar(r, { estricto = true } = {}) {
     const desvio = Math.abs(calc - kcal) / kcal
     if (desvio > 0.1) e.push(`macros incoherentes: ${p}P/${c}C/${g}G = ${Math.round(calc)} kcal, pero la ficha dice ${kcal}`)
   }
-  // Coherencia interna (arriba) no es verdad. Esto contrasta lo declarado contra la
-  // composición de los ingredientes. Si algún ingrediente no tiene ficha en
-  // nutrientes.json el gate se abstiene: preferimos ampliar la tabla a acusar en falso.
+  // La coherencia interna de arriba no es verdad: esto contrasta lo declarado
+  // contra la composición de los ingredientes. Si alguno no tiene ficha en
+  // nutrientes.json el gate se abstiene, antes ampliar la tabla que acusar en falso.
   if (Array.isArray(r.ingredientes) && r.ingredientes.length) {
     const est = estimarMacros(r)
     if (est.desconocidos.length) {
       w.push(`macros sin contrastar, falta ficha en nutrientes.json de: ${est.desconocidos.join(', ')}`)
     } else {
-      // Proteína y carbohidrato se comen enteros: lo que entra en la lista acaba en el
-      // plato, así que aquí el umbral aprieta y es ERROR.
+      // Proteína y carbohidrato se comen enteros, así que el umbral aprieta y es ERROR.
       if (typeof p === 'number' && est.proteinas >= 5 && pct(p, est.proteinas) > 0.2)
         e.push(`proteína declarada ${p} g/ración, los ingredientes dan ${est.proteinas.toFixed(1)} g`)
       if (typeof c === 'number' && est.carbohidratos >= 10 && pct(c, est.carbohidratos) > 0.25)
         e.push(`carbohidratos declarados ${c} g/ración, los ingredientes dan ${est.carbohidratos.toFixed(1)} g`)
-      // La grasa es el único macro con una pregunta real de retención: el aceite de una
-      // fritura por inmersión se queda casi entero en la sartén, y contarlo daría 240 g de
-      // grasa por ración en unas croquetas. Aviso, y el número declarado manda.
+      // La grasa es el único macro con retención real: el aceite de una fritura se
+      // queda en la sartén, y contarlo daría 240 g por ración en unas croquetas.
+      // Solo aviso; manda el número declarado.
       if (typeof g === 'number' && est.grasas >= 8 && pct(g, est.grasas) > 0.35)
         w.push(`grasas declaradas ${g} g/ración, los ingredientes dan ${est.grasas.toFixed(1)} g`)
-      // Las kcal no se contrastan por separado: con P y C atados a los ingredientes y la
-      // coherencia interna 4P+4C+9G al 10%, el único grado de libertad que queda es la
-      // grasa, y ahí ya hemos decidido que el declarado es mejor estimador que la suma.
+      // Las kcal no se contrastan aparte: con P y C atados a los ingredientes y la
+      // coherencia interna al 10%, el único grado de libertad es la grasa, donde ya
+      // manda el declarado.
     }
   }
 
@@ -341,7 +339,6 @@ const [cmd, fichero] = process.argv.slice(2)
 const comoCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
 if (!comoCli) {
-  // importado como módulo
 } else if (cmd === 'audit') {
   const todas = await leerTodas()
   let limpias = 0
@@ -375,9 +372,8 @@ if (!comoCli) {
   }
   console.log(`\n${tocadas} de ${todas.length} recetas ${seco ? 'cambiarían' : 'actualizadas'}`)
 } else if (cmd === 'nutricion') {
-  // Recalcula hierro, gluten y micros de toda la BD desde los ingredientes. Idempotente:
-  // no toca ninguna otra columna, así que se puede repetir cada vez que crezca la tabla
-  // de nutrientes. Con --dry solo enseña el resumen.
+  // Recalcula hierro, gluten y micros desde los ingredientes. Idempotente y sin
+  // tocar otras columnas: se repite cada vez que crece la tabla de nutrientes.
   const seco = fichero === '--dry'
   const todas = await leerTodas()
   const sinFicha = new Map()

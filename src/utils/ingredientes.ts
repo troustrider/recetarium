@@ -1,12 +1,11 @@
-// Normalización y humanización de ingredientes para la lista de la compra.
-// Evita que el mismo ingrediente aparezca duplicado por diferencias de
-// mayúsculas, acentos, plurales o abreviaturas de unidad, y formatea las
-// cantidades de forma legible (½ limón, 2 huevos, sal al gusto).
+// Normalización y formato de ingredientes para la lista de la compra: evita
+// duplicados por mayúsculas, acentos, plurales o abreviaturas de unidad, y hace
+// legibles las cantidades (½ limón, 2 huevos, sal al gusto).
 
 import type { Ingrediente, Receta } from '../types/receta'
 
-// Único sitio que decide si la guarnición cuenta. Lista de la compra, consumo de
-// despensa y precio pasan todos por aquí para que no puedan discrepar entre sí.
+// Único sitio que decide si la guarnición cuenta: lista, consumo y precio pasan
+// todos por aquí para que no puedan discrepar.
 export function ingredientesDe(
   receta: Pick<Receta, 'ingredientes' | 'guarnicion'>,
   conGuarnicion?: boolean
@@ -32,7 +31,6 @@ const UNIDAD_CANON: Record<string, string> = {
   vasos: 'vaso',
 }
 
-// Condimentos básicos que se compran "al gusto" (no tiene sentido una cantidad).
 const AL_GUSTO = new Set(['sal', 'pimienta', 'sal y pimienta', 'sal y pimienta al gusto'])
 
 export function canonUnidad(nombre: string, unidad: string): string {
@@ -47,9 +45,8 @@ export function claveIngrediente(nombre: string, unidad: string): string {
   return `${normalizar(nombre)}__${canonUnidad(nombre, unidad)}`
 }
 
-// Unidades que en la tienda no se parten: medio pepino o media lata no se
-// pueden comprar. La receta sí puede pedir ½; lo que sube a la pieza entera es
-// solo lo que hay que meter en el carro.
+// Unidades que en la tienda no se parten. La receta sí puede pedir ½; lo que
+// sube a pieza entera es solo lo que hay que meter en el carro.
 const PIEZAS = new Set(['ud', 'lata', 'paquete'])
 
 export function cantidadDeCompra(cantidad: number, unidad: string): number {

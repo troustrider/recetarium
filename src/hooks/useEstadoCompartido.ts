@@ -2,20 +2,17 @@ import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateA
 import { inicioGuardado, finGuardado, registrarFallo, limpiarFallo } from '../utils/sincronizacion'
 
 // Ciclo de un trozo del estado compartido (plan, despensa, extras, pendientes):
-// se carga del backend al montar, se guarda con debounce, y se revalida al
-// volver a la pestaña o cada minuto, para que lo que se toca en el móvil llegue
-// al ordenador sin recargar. La carga nunca pisa lo que el usuario haya tocado
-// mientras tanto.
+// se carga al montar, se guarda con debounce y se revalida al volver a la
+// pestaña o cada minuto. La carga nunca pisa lo que el usuario haya tocado.
 //
-// Devuelve el estado y un setter con la misma firma que el de useState. Usar
-// ese setter es lo que marca el estado como tocado: cualquier setEstado que se
-// salte el hook rompe esa garantía.
+// El setter que devuelve es lo que marca el estado como tocado: cualquier
+// setEstado que se salte el hook rompe esa garantía.
 
 const INTERVALO_REVALIDACION = 60_000
 
-// Huella del contenido, con las claves en orden. Postgres guarda el estado en
-// jsonb y devuelve las claves reordenadas, asi que comparar el JSON tal cual
-// daria "ha cambiado" con el mismo contenido y repintaria la app cada minuto.
+// Huella con las claves en orden: Postgres guarda el estado en jsonb y las
+// devuelve reordenadas, así que comparar el JSON tal cual daría "ha cambiado"
+// con el mismo contenido y repintaría la app cada minuto.
 function huella(valor: unknown): string {
   if (Array.isArray(valor)) return `[${valor.map(huella).join(',')}]`
   if (valor !== null && typeof valor === 'object') {
@@ -71,16 +68,15 @@ export function useEstadoCompartido<T, DTO>({
   const guardadaRef = useRef(0)
   const pendienteDeGuardar = () => versionRef.current > guardadaRef.current
 
-  // Las funciones cambian de identidad en cada render; se llaman siempre las
-  // últimas sin meterlas en las deps de los efectos.
+  // Cambian de identidad en cada render; así se llaman siempre las últimas sin
+  // meterlas en las deps de los efectos.
   const fns = useRef({ cargar, guardar, serializar, hidratar, alCambiar })
   useEffect(() => {
     fns.current = { cargar, guardar, serializar, hidratar, alCambiar }
   })
 
-  // Guarda siempre lo último que hay en pantalla, no un DTO congelado: si un
-  // guardado falla y se reintenta más tarde, lo que sube es el estado actual.
-  // El reintento va por ref para no encadenar closures viejas.
+  // Guarda lo último que hay en pantalla, no un DTO congelado: un reintento
+  // tardío sube el estado actual. Por ref para no encadenar closures viejas.
   const enviarRef = useRef<() => Promise<void>>(async () => {})
 
   const enviar = useCallback(async (): Promise<void> => {
@@ -126,9 +122,8 @@ export function useEstadoCompartido<T, DTO>({
     return () => { cancelado = true }
   }, [listo, enviar])
 
-  // Trae lo que haya cambiado en el otro dispositivo. Solo se aplica si aquí no
-  // hay nada pendiente de subir: entre dos versiones, gana la de quien está
-  // editando ahora mismo.
+  // Trae lo del otro dispositivo, solo si aquí no hay nada pendiente de subir:
+  // entre dos versiones gana la de quien está editando ahora mismo.
   const revalidar = useCallback(async () => {
     if (!hidratadoRef.current || pendienteDeGuardar()) return
     let dto: DTO
@@ -140,8 +135,7 @@ export function useEstadoCompartido<T, DTO>({
     if (pendienteDeGuardar()) return
     const siguiente = fns.current.hidratar(dto, estadoRef.current)
     if (siguiente === null || siguiente === estadoRef.current) return
-    // Hidratar devuelve objetos nuevos aunque el contenido sea el mismo; sin
-    // esta comparación cada minuto repintaría toda la app para nada.
+    // Hidratar devuelve objetos nuevos aunque el contenido sea el mismo.
     const { serializar: ser } = fns.current
     if (huella(ser(siguiente)) === huella(ser(estadoRef.current))) return
     saltarGuardadoRef.current = true

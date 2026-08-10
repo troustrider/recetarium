@@ -1,11 +1,11 @@
 import type { Receta } from '../types/receta'
 
-// El hierro de una comida no se absorbe entero, y cuánto entra depende de con qué va.
-// El hemo (carne, pescado) se absorbe ~3x mejor y le afectan poco los inhibidores; el no
-// hemo (legumbres, verdura, cereal) sube mucho con vitamina C en la misma comida y baja
-// con el calcio de los lácteos. Por eso no basta con enseñar los mg.
+// El hierro no se absorbe entero y cuánto entra depende de con qué va: el hemo
+// (carne, pescado) se absorbe ~3x mejor y le afectan poco los inhibidores; el no
+// hemo sube con vitamina C en la misma comida y baja con el calcio. Por eso no
+// basta con enseñar los mg.
 //
-// Umbrales pensados sobre una ingesta de referencia de 18 mg/día (mujer adulta): una
+// Umbrales sobre una ingesta de referencia de 18 mg/día (mujer adulta): una
 // comida "alta" aporta al menos un cuarto del día.
 const HIERRO_ALTO = 4.5
 const HIERRO_MEDIO = 2.5

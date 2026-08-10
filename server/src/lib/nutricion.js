@@ -1,8 +1,8 @@
-// Estimación de la ficha nutricional de una receta desde su lista de ingredientes.
+// Estimación de la ficha nutricional de una receta desde sus ingredientes.
 //
-// Vive en src/lib y no en scripts/ porque lo usan los dos lados: el validador del chef
-// (scripts/chef-recetas.mjs) para contrastar lo declarado, y el servicio de recetas para
-// calcular hierro, gluten y micros en cada alta y edición. Nada aquí toca la BD.
+// En src/lib y no en scripts/ porque lo usan los dos lados: el validador del
+// chef para contrastar lo declarado, y el servicio de recetas para calcular
+// hierro, gluten y micros en cada alta y edición. Nada aquí toca la BD.
 
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'

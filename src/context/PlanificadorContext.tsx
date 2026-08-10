@@ -16,8 +16,7 @@ export interface EntradaPlan {
   raciones: number
   // Plato ya hecho: sale de la lista de la compra y su chip queda en gris.
   cocinada?: boolean
-  // Si se va a hacer con su guarnición, entra también en la compra y en el gasto
-  // de despensa. Solo tiene sentido en recetas que traen guarnición.
+  // Entra también en la compra y en el gasto de despensa.
   conGuarnicion?: boolean
 }
 
@@ -69,8 +68,6 @@ interface PlanificadorCtx {
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
   autollenar: (recetas: Receta[], raciones: number) => void
-  // Vuelve a un plan anterior tal cual. Lo usa el deshacer: quien lanza la
-  // acción se queda con el `plan` de antes y lo devuelve aquí.
   restaurarPlan: (anterior: Plan) => void
 }
 
@@ -100,7 +97,6 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   useEffect(() => { seleccionadasRef.current = seleccionadas }, [seleccionadas])
   useEffect(() => { estaSeleccionadaRef.current = estaSeleccionada }, [estaSeleccionada])
 
-  // IDs de recetas que el planificador puso en la lista de compra
   const planIdsRef = useRef<Set<string>>(new Set())
 
   useEffect(() => {
@@ -113,8 +109,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
         totales.set(receta.id, {
           receta,
           raciones: (prev?.raciones ?? 0) + raciones,
-          // La misma receta puede estar dos días, uno con guarnición y otro sin.
-          // Basta que un día la lleve para tener que comprarla.
+          // Puede estar dos días, uno con guarnición y otro sin: basta uno.
           conGuarnicion: (prev?.conGuarnicion ?? false) || !!conGuarnicion,
         })
       }
@@ -139,8 +134,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     planIdsRef.current = new Set(totales.keys())
   }, [plan]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Una pendiente de planificar deja de serlo en cuanto entra en el plan,
-  // da igual por qué vía (drag, selector de día, autollenar).
+  // Una pendiente deja de serlo en cuanto entra en el plan, por la vía que sea.
   useEffect(() => {
     if (pendientes.length === 0) return
     const enPlan = new Set<string>()

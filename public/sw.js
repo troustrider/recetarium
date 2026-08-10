@@ -1,6 +1,5 @@
-// Service worker: shell + assets + recetas para poder cocinar sin cobertura, y
-// clic en notificación. Antes solo cacheaba la navegación, así que sin red el
-// shell cargaba pero el bundle de JS no y la app se quedaba en blanco.
+// Service worker: shell, assets y recetas para poder cocinar sin cobertura, más
+// el clic en notificación.
 //
 // Los ficheros del build llevan hash en el nombre y aquí no se conocen, así que
 // no hay precache: se cachea sobre la marcha lo que se va pidiendo. Basta con
@@ -74,15 +73,14 @@ self.addEventListener('fetch', (e) => {
     return
   }
 
-  // Recetas y estado compartido: manda lo de red, pero si no hay se sirve la
-  // última copia para poder consultar la receta en la cocina.
+  // Manda lo de red; sin ella, la última copia para consultar en la cocina.
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(redPrimero(request, API))
     return
   }
 
-  // El build de Vite: nombres con hash, así que lo cacheado nunca queda viejo.
-  // En desarrollo no existe /assets/, de modo que esto no toca el HMR.
+  // Nombres con hash, así que lo cacheado nunca queda viejo. En desarrollo no
+  // existe /assets/, de modo que esto no toca el HMR.
   if (url.pathname.startsWith('/assets/') || ESENCIALES.includes(url.pathname)) {
     e.respondWith(cachePrimero(request, ASSETS))
   }

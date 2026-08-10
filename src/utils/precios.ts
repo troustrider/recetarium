@@ -1,10 +1,8 @@
-// Precio de lo que hay que comprar de verdad. El total de la lista salía de
-// sumar el precio por porción de cada receta, así que contaba lo que ya está en
-// casa, no descontaba lo que quitas a mano y no veía los ítems manuales. Esto
-// pone precio a la lista final, que ya es la verdad.
+// Precio de la lista final de la compra, no de las recetas: así no cuenta lo
+// que ya está en casa ni se pierde lo añadido a mano.
 //
-// Regla que no se negocia: si un ingrediente no tiene precio conocido, NO se
-// estima por encima. Se devuelve aparte para poder decirlo.
+// Regla que no se negocia: un ingrediente sin precio conocido NO se estima por
+// encima. Se devuelve aparte para poder decirlo.
 
 import tabla from '../data/precios.json'
 import { normalizar, canonUnidad } from './ingredientes'
@@ -25,11 +23,10 @@ export interface EntradaPrecio {
 export const PRECIOS: EntradaPrecio[] = tabla.precios
 export const CADENAS: string[] = tabla.meta.cadenas
 
-// Equivalencias aproximadas de las unidades de cocina. Van aquí y no en
-// convertir() a propósito: convertir() es la aritmética del stock de despensa y
-// tiene que seguir negándose a comparar "2 cucharadas" con "500 ml", porque ahí
-// una equivalencia inventada descuadra lo que hay en casa. Para poner precio, en
-// cambio, aproximar es correcto: el error son céntimos.
+// Equivalencias aproximadas de las unidades de cocina. Aquí y no en convertir()
+// a propósito: esa es la aritmética del stock y tiene que seguir negándose a
+// comparar "2 cucharadas" con "500 ml", donde una equivalencia inventada
+// descuadra la despensa. Para poner precio, aproximar cuesta céntimos.
 const COCINA: Record<string, { g?: number; ml?: number }> = {
   cucharada: { g: 12, ml: 15 },
   cucharadita: { g: 4, ml: 5 },
@@ -83,9 +80,8 @@ export function precioDe(item: ItemPrecio): number | null {
   const dim = dimension(entrada.unidad)
   if (!dim) return null
 
-  // Todo se lleva a la unidad pequeña (g, ml, ud) antes de multiplicar. Al
-  // revés no vale: convertir() redondea a dos decimales, y 25 g pasados a kg
-  // se convierten en 0,03 y el precio sale inflado.
+  // A la unidad pequeña (g, ml, ud) antes de multiplicar. Al revés no vale:
+  // convertir() redondea a dos decimales y 25 g en kg salen 0,03, precio inflado.
   const porBase = convertir(1, entrada.unidad, dim)
   if (porBase == null || porBase === 0) return null
   const eurosPorBase = entrada.euros / porBase

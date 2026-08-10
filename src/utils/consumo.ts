@@ -1,12 +1,7 @@
-// Qué sale de la despensa cuando un plato del planificador ya está hecho. Es
-// la operación inversa de repartirDespensa(): allí el stock decide qué NO se
-// compra, aquí decide qué se descuenta y qué se queda a medias.
-//
-// Dos cautelas para no vaciar la despensa de más:
-//   - las unidades de cocina ("2 cucharadas", "1 diente") no gastan nada: son
-//     una pizca de un envase que dura semanas;
-//   - un stock con cantidad guardada solo se toca si la unidad es comparable
-//     (no se resta "2 ud" de "500 ml").
+// Qué sale de la despensa cuando un plato del planificador ya está hecho: la
+// inversa de repartirDespensa(). Dos cautelas para no vaciarla de más: las
+// unidades de cocina ("2 cucharadas") no gastan nada, y un stock con cantidad
+// solo se toca si la unidad es comparable (no se resta "2 ud" de "500 ml").
 
 import { canonUnidad, ingredientesDe } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
@@ -44,8 +39,7 @@ export function consumoAlCocinar(
   const restante = despensa.map((d) =>
     typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
   )
-  // Insertion order = orden de los ingredientes de la receta, que es como se
-  // lee después en el aviso.
+  // Insertion order = orden de los ingredientes, que es como se lee en el aviso.
   const tocados = new Map<number, { usadoPor: string[]; agotado: boolean }>()
 
   for (const { receta, raciones, conGuarnicion } of entradas) {

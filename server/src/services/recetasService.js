@@ -73,9 +73,8 @@ export async function getById(id) {
   return row ?? null
 }
 
-// La guarnición lleva su propia ficha, calculada aparte con los mismos gramajes
-// por ración que el plato. Así la ficha del plato sigue siendo la del plato solo
-// y la app puede enseñar "y con guarnición, tanto".
+// Ficha propia, con los mismos gramajes por ración que el plato: así la del
+// plato sigue siendo la del plato solo y la app puede sumar aparte.
 function guarnicionConFicha(guarnicion, porciones) {
   if (!guarnicion) return null
   const entrada = { ingredientes: guarnicion.ingredientes, porciones }
@@ -105,8 +104,8 @@ async function getCategoryId(sabor) {
 export async function create(data) {
   const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
-  // Hierro, gluten y micros salen siempre de los ingredientes, nunca del payload: son la
-  // parte de la ficha que no tiene sentido dejar que alguien declare a mano.
+  // Siempre de los ingredientes, nunca del payload: no tiene sentido dejar que
+  // alguien los declare a mano.
   const ficha = fichaNutricional({ ingredientes, porciones: porciones ?? 1 })
   const guarnicion = guarnicionConFicha(data.guarnicion, porciones ?? 1)
   const [row] = await sql`
@@ -127,8 +126,8 @@ export async function create(data) {
 export async function update(id, data) {
   const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
-  // porciones se conserva con COALESCE si el payload no la trae, así que la ficha tiene
-  // que dividir por la que quede en la fila, no por 1.
+  // porciones se conserva con COALESCE si el payload no la trae: la ficha divide
+  // por la que quede en la fila, no por 1.
   const raciones = porciones ?? (await getById(id))?.porciones ?? 1
   const ficha = fichaNutricional({ ingredientes, porciones: raciones })
   const guarnicion = guarnicionConFicha(data.guarnicion, raciones)

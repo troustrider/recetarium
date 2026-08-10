@@ -13,7 +13,6 @@ interface PendientesPlanCtx {
   pendientes: PendientePlan[]
   marcarPendientes: (entradas: PendientePlan[]) => void
   quitarPendiente: (recetaId: string) => void
-  // Vuelve a una lista de pendientes anterior tal cual, para el deshacer.
   restaurarPendientes: (anterior: PendientePlan[]) => void
 }
 
@@ -22,8 +21,8 @@ const PendientesPlanContext = createContext<PendientesPlanCtx | null>(null)
 export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   const { recetas, loading } = useRecetasContext()
 
-  // Recetas ya compradas que faltan por colocar en el planificador. Se hidratan
-  // por id contra el catálogo, así que hay que esperar a tenerlo.
+  // Recetas compradas que faltan por colocar. Se hidratan por id contra el
+  // catálogo, así que hay que esperar a tenerlo.
   const [pendientes, setPendientes] = useEstadoCompartido<PendientePlan[], PendientePlanDTO[]>({
     nombre: 'las recetas compradas',
     inicial: [],

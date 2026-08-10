@@ -49,8 +49,7 @@ function useRecetas() {
   }
 
   async function actualizar(id: string, data: RecetaFormData, anterior?: RecetaFormData): Promise<boolean> {
-    // Snapshot de la versión previa (la pasa el formulario, que tiene la receta completa)
-    // para poder deshacer una edición accidental.
+    // Versión previa, que pasa el formulario, para deshacer la edición.
     const previa = anterior
       ?? (() => {
         const r = state.recetas.find((x) => x.id === id)

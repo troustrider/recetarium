@@ -1,11 +1,8 @@
-// Estado de los guardados contra el backend. Antes cada save fallido moría en
-// un .catch(() => {}) y la app seguía enseñando el cambio como si estuviera
-// compartido con el otro dispositivo. Aquí se registra qué no se pudo guardar
-// para poder avisar y reintentar.
+// Registra qué no se pudo guardar en el backend, para avisar y reintentar en vez
+// de enseñar el cambio como si estuviera compartido con el otro dispositivo.
 //
 // Store de módulo en vez de contexto: lo escribe useEstadoCompartido desde
-// dentro de cuatro providers distintos y lo lee un aviso que vive por encima
-// de todos ellos.
+// dentro de cuatro providers y lo lee un aviso que vive por encima de todos.
 
 type Reintento = () => Promise<void>
 
@@ -53,8 +50,8 @@ export function limpiarFallo(nombre: string) {
   if (fallos.delete(nombre)) emitir()
 }
 
-// Reintenta todo lo pendiente. Cada reintento vuelve a registrarse solo si
-// falla otra vez, así que basta con lanzarlos.
+// Cada reintento vuelve a registrarse solo si falla otra vez, así que basta con
+// lanzarlos.
 export async function reintentarTodo(): Promise<void> {
   await Promise.all([...fallos.values()].map((r) => r().catch(() => {})))
 }

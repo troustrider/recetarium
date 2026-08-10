@@ -35,8 +35,7 @@ export interface InstantaneaLista {
 
 // Cuánta gente come con la receta tal cual está escrita. `raciones` cuenta
 // personas, no veces que se cocina: pedir 2 raciones de un plato escrito para 2
-// es hacerlo una vez, no dos. Antes multiplicaba la receta entera por raciones
-// y la lista salía al doble.
+// es hacerlo una vez, no dos.
 export function racionesBase(receta: Pick<Receta, 'porciones'>): number {
   return receta.porciones && receta.porciones > 0 ? receta.porciones : 2
 }
@@ -91,7 +90,6 @@ function useListaCompra() {
     setDescartados(new Set())
   }, [setExtras])
 
-  // Carga N recetas al azar (que no estén ya), todas con las mismas raciones.
   const cargarAleatorias = useCallback((recetas: Receta[], n: number, raciones: number) => {
     setSeleccionadas((prev) => {
       const yaIds = new Set(prev.map((e) => e.receta.id))
@@ -128,7 +126,6 @@ function useListaCompra() {
     setDescartados(anterior.descartados)
   }, [setExtras])
 
-  // Coste de los platos: precio por ración × raciones.
   const coste = useMemo(
     () =>
       seleccionadas.reduce(
@@ -138,11 +135,10 @@ function useListaCompra() {
     [seleccionadas]
   )
 
-  // Lo que hay que comprar de verdad: lo cubierto por la despensa se aparta a
-  // `enDespensa` (recuperable con un toque, por si el matching se equivoca), lo
-  // que hay a medias entra rebajado por lo que ya tenemos y lo que queda poco
-  // entra entero pero marcado. Los extras manuales nunca se filtran: si se
-  // añadieron a mano, se quieren comprar.
+  // Lo cubierto por la despensa se aparta a `enDespensa` (recuperable con un
+  // toque, por si el matching se equivoca), lo que hay a medias entra rebajado y
+  // lo que queda poco entra entero pero marcado. Los extras manuales no se
+  // filtran nunca: si se añadieron a mano, se quieren comprar.
   const { listaCompra, enDespensa } = useMemo(() => {
     const mapa = new Map<string, IngredienteAgrupado>()
 
@@ -211,12 +207,11 @@ function useListaCompra() {
     return { listaCompra: comprar.sort(porFamilia), enDespensa: yaHay.sort(porFamilia) }
   }, [seleccionadas, extras, despensa, descartados])
 
-  // Lo que se paga en caja: sale de la lista final, que ya excluye lo que hay
-  // en la despensa, lo que quitaste a mano, y ya incluye los items manuales.
+  // Lo que se paga en caja: sale de la lista final, no de las recetas.
   const compra: CosteCompra = useMemo(() => calcularCosteCompra(listaCompra), [listaCompra])
 
-  // Memoizado: es el value del provider, y sin esto cualquier render de un
-  // padre repinta el catálogo entero.
+  // Es el value del provider: sin memo, cualquier render de un padre repinta el
+  // catálogo entero.
   return useMemo(
     () => ({
       seleccionadas, listaCompra, enDespensa, extras, coste, compra,

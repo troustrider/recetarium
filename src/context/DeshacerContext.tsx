@@ -1,21 +1,19 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 
 // Deshacer de una sola ranura: la última acción destructiva deja aquí cómo
-// revertirse y el aviso de abajo la ofrece durante unos segundos. Restaurar es
-// siempre "escribe otra vez el estado anterior", así que vale igual para el
-// plan, la despensa y la lista, y se sincroniza como cualquier otro cambio.
+// revertirse y el aviso de abajo la ofrece unos segundos. Restaurar es siempre
+// "escribe otra vez el estado anterior", así que sirve igual para plan,
+// despensa y lista.
 //
-// Una acción nueva sustituye a la anterior: no hay pila. Con estado compartido
-// entre dos móviles, una pila de deshacer acabaría revirtiendo cosas que el
-// otro ya había tocado.
+// Sin pila, a propósito: con el estado compartido entre dos móviles, una pila
+// acabaría revirtiendo cosas que el otro ya había tocado.
 
 interface Accion {
   id: number
   mensaje: string
   deshacer: () => void
-  // Se llama si la oferta se retira sin usarse (caduca, se cierra, o llega otra
-  // acción). Quien tenga su propio estado de deshacer lo limpia aquí, para que
-  // no reviva al volver a la pantalla.
+  // Si la oferta se retira sin usarse (caduca, se cierra, llega otra acción).
+  // Quien tenga su propio estado de deshacer lo limpia aquí.
   alCerrar?: () => void
 }
 
@@ -33,8 +31,8 @@ const VIDA_MS = 8000
 export function DeshacerProvider({ children }: { children: ReactNode }) {
   const [pendiente, setPendiente] = useState<Accion | null>(null)
 
-  // Espejo en ref: las tres operaciones leen la acción viva sin depender de ella,
-  // así los callbacks son estables y no hay cierres caducos en el temporizador.
+  // Espejo en ref: los callbacks quedan estables y el temporizador no arrastra
+  // cierres caducos.
   const vivaRef = useRef<Accion | null>(null)
 
   const descartar = useCallback(() => {

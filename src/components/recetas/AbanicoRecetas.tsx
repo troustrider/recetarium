@@ -40,7 +40,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
     typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? true : true
   )
 
-  // Índice efectivo, clampado por si la lista cambia de tamaño
   const active = Math.min(activeRaw, Math.max(0, recetas.length - 1))
 
   function medirRect() {
@@ -131,8 +130,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
           const conColor = faltan === 1  // color por sabor solo cuando falta 1 ingrediente
           const bg = conColor ? luz.bg : NEUTRAL_BG
           const bloom = conColor ? luz.bloom : 'transparent'
-          // Halo en el color del sabor: señal inequívoca de "a un ingrediente" que
-          // sobrevive al atenuado de las laterales. Las neutras no lo llevan.
+          // Halo en el color del sabor: sobrevive al atenuado de las laterales.
           const glow = conColor ? `0 0 0 1px ${luz.dot}66, 0 0 20px -2px ${luz.dot}55` : ''
           const slot = i - centerIndex   // posición fija en el abanico
           const d = i - active           // distancia a la card activa (solo estética)

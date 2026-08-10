@@ -1,11 +1,7 @@
-// Matching entre nombres de ingrediente (despensa ↔ recetas ↔ lista) y
-// cálculo de disponibilidad. El problema real: la despensa se escribe a mano
-// ("aceite oliva", "pollo") mientras las recetas usan nombres de cocina
-// precisos ("aceite de oliva", "pechuga de pollo"). Un match exacto deja 0
-// recetas disponibles con la despensa llena. Se compara por conjuntos de
-// tokens ignorando conectores ("de"), acentos y plurales, con contención
-// direccional: un ingrediente genérico de la despensa cubre uno específico de
-// la receta y viceversa.
+// Matching entre nombres de ingrediente (despensa ↔ recetas ↔ lista). La
+// despensa se escribe a mano ("aceite oliva") y las recetas usan nombres
+// precisos ("aceite de oliva"), así que se compara por conjuntos de tokens
+// —sin conectores, acentos ni plurales— con contención en ambas direcciones.
 
 import { normalizar, canonUnidad } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
@@ -19,10 +15,9 @@ export const FAMILIAS = [
   'cereales', 'legumbres', 'frutos secos', 'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', FAMILIA_HOGAR, 'otros',
 ]
 
-// Limpieza, higiene y papel: se compran con la lista pero no son ingredientes,
-// así que al marcarlos como comprados salen de la lista sin entrar en la
-// despensa. La familia manda; las pistas por nombre solo evitan tener que
-// elegir la sección a mano en lo más habitual.
+// Se compran con la lista pero no son ingredientes: al marcarlos como
+// comprados salen de la lista sin entrar en la despensa. La familia manda; las
+// pistas por nombre solo ahorran elegir la sección a mano.
 const PISTAS_HOGAR = [
   'detergente', 'suavizante', 'lejia', 'lavavajillas', 'friegasuelos', 'limpiacristales',
   'quitagrasas', 'ambientador', 'insecticida', 'estropajo', 'bayeta', 'fregona',
@@ -42,9 +37,8 @@ export function esDeHogar(item: { nombre: string; familia?: string }): boolean {
 // Conectores sin valor semántico ("aceite DE oliva", "huevo Y queso").
 const STOPWORDS = new Set(['de', 'del', 'la', 'el', 'al', 'con', 'en', 'y', 'a', 'para', 'sin', 'o'])
 
-// Descriptores que no cambian la identidad del ingrediente: "brócoli
-// congelado" sigue siendo brócoli, "carne picada" sigue siendo carne. Se
-// ignoran para la contención pero NO para la igualdad (dedup de despensa).
+// No cambian la identidad del ingrediente: "brócoli congelado" sigue siendo
+// brócoli. Se ignoran para la contención pero NO para la igualdad (dedup).
 const DESCRIPTORES = new Set([
   'fresco', 'fresca', 'congelado', 'congelada', 'congelados', 'congeladas',
   'seco', 'seca', 'molido', 'molida', 'picado', 'picada', 'rallado', 'rallada',
@@ -54,16 +48,13 @@ const DESCRIPTORES = new Set([
   'planos', 'finas', 'fina', 'variadas',
 ])
 
-// "Cabezas" cuyo calificador denota un producto distinto: aceite de oliva ≠
-// aceite de girasol, leche ≠ leche de coco, salsa de soja ≠ salsa de pescado.
-// Un genérico de la despensa (solo la cabeza) NO cubre al específico de receta.
+// Cabezas cuyo calificador denota otro producto: aceite de oliva ≠ de girasol,
+// leche ≠ de coco. Un genérico de la despensa NO cubre al específico de receta.
 const CABEZAS_AMBIGUAS_NOMBRES = ['aceite', 'leche', 'salsa', 'vino', 'vinagre', 'caldo', 'harina', 'pasta', 'crema', 'col']
 
-// Raíz común de singular y plural. No intenta acertar el singular real: "-es"
-// es ambiguo en español ("limones" viene de limón, pero "tomates" de tomate) y
-// sin diccionario no se distingue. Lo que sí se puede es llevar las dos formas
-// al mismo sitio quitando también la "e" final, que es lo único que separaba
-// "tomate" de "tomat(es)".
+// Raíz común de singular y plural, no el singular real: "-es" es ambiguo en
+// español ("limones" viene de limón, "tomates" de tomate) y sin diccionario no
+// se distingue. Quitando también la "e" final, ambas formas caen en el mismo sitio.
 function singular(t: string): string {
   if (t.length > 4 && t.endsWith('ces')) return `${t.slice(0, -3)}z` // nueces → nuez
   let s = t
@@ -72,9 +63,8 @@ function singular(t: string): string {
   return s.length > 3 && s.endsWith('e') ? s.slice(0, -1) : s
 }
 
-// Las dos tablas de arriba se escriben en singular natural ("leche", "cabbage"),
-// pero los tokens llegan ya reducidos a raíz. Se derivan con la misma función
-// para que sigan casando sin tener que reescribirlas a mano.
+// Las tablas de arriba se escriben en singular natural, pero los tokens llegan
+// reducidos a raíz: se derivan con la misma función para que sigan casando.
 const ALIAS_RAIZ = new Map(Object.entries(ALIAS_TOKENS).map(([k, v]) => [singular(k), singular(v)]))
 const CABEZAS_AMBIGUAS = new Set(CABEZAS_AMBIGUAS_NOMBRES.map(singular))
 
@@ -82,10 +72,9 @@ function aplicarAlias(token: string): string {
   return ALIAS_RAIZ.get(token) ?? token
 }
 
-// Los nombres se repiten muchísimo: calcular disponibilidad son cientos de
-// recetas × sus ingredientes × la despensa entera, y tokenizar es normalizar +
-// regex + singular + alias. Cacheado por nombre, eso pasa a ser un Map.get.
-// Los valores no se mutan en ningún sitio, así que se pueden compartir.
+// Calcular disponibilidad son cientos de recetas × sus ingredientes × la
+// despensa entera, y tokenizar es normalizar + regex + singular + alias.
+// Cacheado por nombre pasa a ser un Map.get; los valores no se mutan.
 const TOPE_CACHE = 4000
 
 function memoizar<V>(cache: Map<string, V>, clave: string, calcular: () => V): V {
@@ -100,9 +89,8 @@ function memoizar<V>(cache: Map<string, V>, clave: string, calcular: () => V): V
 const cacheTokens = new Map<string, string[]>()
 const cacheNucleo = new Map<string, Set<string>>()
 
-// Tokens significativos: normalizados, sin conectores, en singular y con los
-// alias resueltos ("ketjap" → "kecap") para que sinónimos y variantes de
-// escritura casen igual que el resto.
+// Normalizados, sin conectores, en singular y con los alias resueltos
+// ("ketjap" → "kecap"), para que sinónimos y variantes de escritura casen.
 function tokens(nombre: string): string[] {
   return memoizar(cacheTokens, nombre, () =>
     normalizar(nombre)
@@ -115,8 +103,8 @@ function tokens(nombre: string): string[] {
   )
 }
 
-// Núcleo: tokens sin descriptores. Es lo que define la identidad del
-// ingrediente para decidir si uno cubre a otro.
+// Tokens sin descriptores: la identidad del ingrediente para decidir si uno
+// cubre a otro.
 function nucleo(nombre: string): Set<string> {
   return memoizar(cacheNucleo, nombre, () => {
     const t = tokens(nombre)
@@ -125,9 +113,8 @@ function nucleo(nombre: string): Set<string> {
   })
 }
 
-// Tokens del núcleo en orden. En español la cabeza va primero ("harina de
-// maíz" es harina, "lechuga romana" es lechuga), así que el primero identifica
-// el producto y los siguientes solo lo matizan.
+// En español la cabeza va primero ("harina de maíz" es harina): el primer token
+// identifica el producto y los siguientes solo lo matizan.
 export function nucleoOrdenado(nombre: string): string[] {
   return [...nucleo(nombre)]
 }
@@ -138,10 +125,9 @@ function esSuperset(a: Set<string>, b: Set<string>): boolean {
   return true
 }
 
-// ¿El ingrediente `enDespensa` sirve para el `deReceta`? Contención en ambas
-// direcciones: la despensa puede ser más específica ("arroz jasmine" cubre
-// "arroz") o más genérica ("pollo" cubre "pechuga de pollo"), salvo cuando el
-// genérico es una cabeza ambigua (una leche cualquiera no cubre leche de coco).
+// Contención en ambas direcciones: la despensa puede ser más específica ("arroz
+// jasmine" cubre "arroz") o más genérica ("pollo" cubre "pechuga de pollo"),
+// salvo cuando el genérico es una cabeza ambigua.
 export function despensaCubre(enDespensa: string, deReceta: string): boolean {
   const p = nucleo(enDespensa)
   const r = nucleo(deReceta)
@@ -154,9 +140,8 @@ export function despensaCubre(enDespensa: string, deReceta: string): boolean {
   return false
 }
 
-// Mismo ingrediente (simétrico): para deduplicar despensa y cruzar con la lista
-// de la compra. Igualdad de tokens completos (incluidos descriptores) para no
-// fundir "arroz" con "arroz integral", pero tolerando conectores y plurales.
+// Simétrico, para deduplicar despensa y cruzar con la lista. Igualdad de tokens
+// completos (con descriptores) para no fundir "arroz" con "arroz integral".
 export function mismoIngrediente(a: string, b: string): boolean {
   const ta = tokens(a)
   const tb = new Set(tokens(b))
@@ -167,8 +152,7 @@ export function estaEnDespensa(nombre: string, despensa: { nombre: string }[]): 
   return despensa.some((d) => mismoIngrediente(d.nombre, nombre))
 }
 
-// Ingredientes de la receta que la despensa no cubre. Los "al gusto"
-// (sal, pimienta, especias de pizca) se asumen básicos de casa y no cuentan.
+// Los "al gusto" (sal, pimienta, pizcas) se asumen básicos de casa y no cuentan.
 export function faltantes(receta: Receta, despensa: { nombre: string }[]): string[] {
   return receta.ingredientes
     .filter((ing) => canonUnidad(ing.nombre, ing.unidad) !== 'al gusto')
@@ -204,24 +188,20 @@ interface ItemDespensa {
   unidad?: string
 }
 
-// Reparte el stock de la despensa entre los ingredientes de la lista, en
-// orden. Un mismo ingrediente de despensa ("pollo") puede cubrir varias
-// entradas ("pechuga", "muslo"): se le va descontando para no contarlo dos
-// veces. Cuando no hay cantidad guardada, o la unidad de la receta no es
-// comparable ("2 cucharadas" contra "500 ml"), se cae al criterio por estado.
+// Reparte el stock entre los ingredientes de la lista, en orden. Uno de
+// despensa ("pollo") puede cubrir varias entradas ("pechuga", "muslo"): se le
+// va descontando para no contarlo dos veces. Sin cantidad guardada, o con
+// unidad incomparable ("2 cucharadas" contra "500 ml"), manda el estado.
 export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]): Reparto[] {
   const restante = despensa.map((d) =>
     typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
   )
 
-  // Al mismo item de la lista le pueden servir varios de la despensa ("tomate"
-  // y "tomate frito" cubren los dos al tomate de una receta). Quedarse con el
-  // primero dejaba que un bote acabándose mandara sobre los 18 tomates de al
-  // lado. Gana el que de verdad sirve, en este orden: mismo nombre antes que
-  // pariente, con stock utilizable antes que sin cantidad, y lleno y lejos de
-  // caducar antes que acabándose.
-  // Agotado es solo "había cantidad y ya no queda"; no tener cantidad apuntada
-  // no lo es, ahí sigue mandando el estado.
+  // Al mismo item le pueden servir varios de la despensa ("tomate" y "tomate
+  // frito"). Gana, por este orden: con stock utilizable, mismo nombre antes que
+  // pariente, lleno antes que "poco", y lejos de caducar antes que encima.
+  // Agotado es solo "había cantidad y ya no queda"; sin cantidad apuntada manda
+  // el estado.
   const agotado = (d: ItemDespensa, stock: number | null, item: ItemCompra) => {
     if (stock == null) return false
     const disponible = convertir(stock, d.unidad!, item.unidad)
@@ -257,8 +237,7 @@ export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]):
     }
     if (disponible <= 0) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
 
-    // Con cantidad explícita manda la cantidad, pero la caducidad sigue
-    // obligando a reponer aunque el stock diera de sobra.
+    // La caducidad obliga a reponer aunque el stock diera de sobra.
     if (disponible >= item.cantidad) {
       if (caducaPronto(d)) return { cobertura: 'poco', aComprar: item.cantidad, yaTengo: 0 }
       restante[idx] = redondear(stock! - convertir(item.cantidad, item.unidad, d.unidad!)!)
@@ -286,7 +265,6 @@ export function caducaPronto(item: { caducidad?: string }): boolean {
   return item.caducidad != null && diasHastaCaducidad(item.caducidad) <= UMBRAL_CADUCIDAD_DIAS
 }
 
-// Lo que se está acabando: marcado como "poco" o con caducidad encima.
 export function porAgotarse<T extends { estado: string; caducidad?: string }>(despensa: T[]): T[] {
   return despensa.filter((d) => d.estado === 'poco' || caducaPronto(d))
 }

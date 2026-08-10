@@ -1,6 +1,5 @@
-// Cantidades de despensa. Sin ellas la lista de la compra solo sabe "hay o no
-// hay"; con ellas sabe "hay 200 g de los 500 g que piden las recetas, compra
-// 300 g".
+// Cantidades de despensa: sin ellas la lista solo sabe "hay o no hay"; con ellas
+// sabe "hay 200 g de los 500 g que piden las recetas, compra 300 g".
 
 import { normalizar } from './ingredientes'
 
@@ -36,11 +35,9 @@ export function redondear(n: number): number {
   return Math.round(n * 100) / 100
 }
 
-// Familias donde la cantidad cambia la compra: se consumen por peso o por
-// piezas y una sola receta se lleva una parte apreciable de lo que hay en
-// casa. Las que no están aquí (especias, condimentos, salsas, bebidas, dulces)
-// se compran por envase y duran semanas: basta con "de sobra / queda poco".
-// Sin acentos porque las familias llegan escritas de las dos formas.
+// Familias donde una sola receta se lleva una parte apreciable de lo que hay en
+// casa. Las que no están aquí se compran por envase y duran semanas: basta con
+// "de sobra / queda poco". Sin acentos: las familias llegan de las dos formas.
 const FAMILIAS_CON_CANTIDAD = new Set([
   'carnes', 'pescados', 'lacteos', 'huevos',
   'verduras', 'frutas', 'cereales', 'legumbres', 'frutos secos', 'conservas',
@@ -50,7 +47,6 @@ export function requiereCantidad(familia: string): boolean {
   return FAMILIAS_CON_CANTIDAD.has(normalizar(familia))
 }
 
-// Unidad con la que se suele medir cada familia en el recetario.
 const UNIDAD_FAMILIA: Record<string, string> = {
   huevos: 'ud', frutas: 'ud', verduras: 'ud', conservas: 'ud',
   bebidas: 'ml', caldos: 'ml',

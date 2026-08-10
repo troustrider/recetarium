@@ -13,8 +13,7 @@ export interface IngredienteDespensa {
   familia: string
   estado: EstadoDespensa
   caducidad?: string // YYYY-MM-DD
-  // Opcionales: solo tienen sentido en familias que se miden (carnes, lácteos,
-  // cereales…). Ver requiereCantidad() en utils/cantidades.
+  // Solo tienen sentido en familias que se miden. Ver requiereCantidad().
   cantidad?: number
   unidad?: string
 }
@@ -44,7 +43,6 @@ interface DespensaCtx {
   quitar: (nombre: string) => void
   vaciar: () => void
   tieneIngrediente: (nombre: string) => boolean
-  // Vuelve a una despensa anterior tal cual, para el deshacer.
   restaurarDespensa: (anterior: IngredienteDespensa[]) => void
 }
 
@@ -78,9 +76,8 @@ function leerCacheLocal(): IngredienteDespensa[] {
 }
 
 export function DespensaProvider({ children }: { children: ReactNode }) {
-  // El cache local pinta la UI al instante; el backend es la fuente de verdad
-  // compartida. Si el backend viene vacío, se sube lo que hubiera en este
-  // dispositivo (migración única) devolviendo null desde hidratar.
+  // El cache local pinta al instante; el backend es la fuente de verdad. Si
+  // llega vacío, hidratar devuelve null para subir lo de este dispositivo.
   const [despensa, cambiarDespensa] = useEstadoCompartido<IngredienteDespensa[], IngredienteDespensaDTO[]>({
     nombre: 'la despensa',
     inicial: leerCacheLocal,
@@ -188,8 +185,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     })
   }, [cambiarDespensa])
 
-  // Plato hecho: lo gastado sale de la despensa y lo que sobra se queda con el
-  // stock rebajado. Va en un solo cambio para que no se guarden N versiones.
+  // En un solo cambio, para no guardar N versiones seguidas.
   const consumir = useCallback((consumos: ConsumoIngrediente[]) => {
     if (consumos.length === 0) return
     const porNombre = new Map(consumos.map((c) => [c.nombre, c]))

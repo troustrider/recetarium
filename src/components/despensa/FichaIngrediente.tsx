@@ -18,10 +18,8 @@ interface Props {
   onClose: () => void
 }
 
-// Ficha de ingrediente en hoja inferior: concentra todas las acciones
-// que antes eran iconos sueltos en el chip. La hoja lleva alto máximo y scroll
-// propio porque con el teclado del móvil abierto no cabe entera y los campos
-// de abajo quedarían inalcanzables.
+// Ficha de ingrediente en hoja inferior. Lleva alto máximo y scroll propio
+// porque con el teclado del móvil abierto los campos de abajo no se alcanzan.
 function FichaIngrediente({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props) {
   return (
     <AnimatePresence>

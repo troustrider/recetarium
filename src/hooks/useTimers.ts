@@ -26,9 +26,8 @@ export interface TimerSpec {
 export function useTimers() {
   const [timers, setTimers] = useState<Timer[]>([])
 
-  // El tick lee el estado por ref y calcula fuera del updater de setState:
-  // dentro del updater, la alarma podía sonar dos veces y salir dos
-  // notificaciones, porque React puede reejecutarlo.
+  // El tick lee por ref y calcula fuera del updater de setState: React puede
+  // reejecutarlo, y dentro sonaba la alarma dos veces.
   const timersRef = useRef(timers)
   useEffect(() => { timersRef.current = timers }, [timers])
 

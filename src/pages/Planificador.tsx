@@ -386,9 +386,8 @@ interface FilaDiaProps {
 function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, onGuarnicion, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
 
-  // La fila hace de bandeja y va un nivel por debajo del chip: si comparten color,
-  // el chip no tiene con qué destacar. gray-900 es además el nivel de tarjeta del
-  // resto de la app (gray-800 es el de inputs).
+  // La fila hace de bandeja y va un nivel por debajo del chip: con el mismo
+  // color, el chip no tiene con qué destacar.
   return (
     <div
       ref={setNodeRef}
@@ -533,9 +532,8 @@ function Planificador() {
     [cocinando, despensa]
   )
 
-  // Destocar el gorro no devuelve nada a la despensa: lo que se comió, comido
-  // está. Para recuperar el stock hay que deshacer desde el aviso, que sí
-  // rebobina despensa y plan juntos.
+  // Destocar el gorro no devuelve nada a la despensa. Para recuperar el stock
+  // hay que deshacer desde el aviso, que rebobina despensa y plan juntos.
   function alCocinar(dia: Dia, entrada: EntradaPlan) {
     if (entrada.cocinada) marcarCocinada(dia, entrada.id, false)
     else setCocinando({ dia, entrada })
@@ -555,7 +553,6 @@ function Planificador() {
     ? pendientes.find((p) => `pendiente:${p.receta.id}` === activeDragId) ?? null
     : null
 
-  // Encontrar la entrada activa para el overlay
   const entradaActiva = activeDragId && !pendienteDrag
     ? (() => {
         for (const dia of dias) {
@@ -589,7 +586,6 @@ function Planificador() {
       if (pendiente) añadir(hastaDia, pendiente.receta, pendiente.raciones)
       return
     }
-    // Encontrar el día de origen
     for (const dia of dias) {
       if (plan[dia].some((e) => e.id === entradaId)) {
         mover(dia, hastaDia, entradaId)

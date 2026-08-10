@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
 
-// Mantiene la pantalla encendida mientras el modo está activo (Wake Lock API:
-// Android Chrome, iOS Safari 16.4+). Re-adquiere el lock al volver del segundo
-// plano, porque el sistema lo suelta al bloquear o cambiar de pestaña. Si la API
-// no existe, no hace nada: es una mejora, no un requisito.
+// Mantiene la pantalla encendida mientras el modo está activo (Android Chrome,
+// iOS Safari 16.4+). Re-adquiere el lock al volver del segundo plano, porque el
+// sistema lo suelta al bloquear. Sin la API no hace nada: es una mejora.
 export function useWakeLock(activo: boolean) {
   useEffect(() => {
     if (!activo || !('wakeLock' in navigator)) return

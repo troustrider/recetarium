@@ -1,24 +1,19 @@
-// Caducidad orientativa al dar de alta un ingrediente. La verdura y la fruta
-// se venden a granel y sin fecha impresa, así que nadie la apuntaba y el aviso
-// de "caduca pronto" no llegaba a saltar justo en lo que antes se echa a
-// perder. Se rellena una fecha estimada desde el día del alta, editable: es un
-// punto de partida, no un dato del envase.
-//
-// Los días son vida útil en casa desde la compra, con el producto guardado
-// donde toca (nevera lo perecedero, fresco y seco el resto).
+// Caducidad orientativa al dar de alta un ingrediente: la verdura y la fruta se
+// venden a granel y sin fecha impresa. Es un punto de partida editable, no un
+// dato del envase. Los días son vida útil en casa desde la compra, con el
+// producto bien guardado (nevera lo perecedero, fresco y seco el resto).
 
 import { nucleoOrdenado } from './despensa'
 import { normalizar } from './ingredientes'
 
-// Nada que venga en envase cerrado con su propia fecha, ni lo que dura años.
-// Estimarlo solo produciría avisos falsos.
+// Envase cerrado con su propia fecha, o cosas que duran años: estimarlo solo
+// produciría avisos falsos.
 const FAMILIAS_SIN_ESTIMAR = new Set([
   'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', 'frutos secos', 'hogar',
 ])
 
-// Suelo por familia, para el ingrediente que no esté en la tabla de abajo. Las
-// familias que faltan (cereales, legumbres, otros) solo estiman si el
-// ingrediente concreto aparece en la tabla.
+// Suelo para el ingrediente que no esté en la tabla de abajo. Las familias que
+// faltan solo estiman si el ingrediente concreto sí aparece en ella.
 const DIAS_POR_FAMILIA: Record<string, number> = {
   verduras: 7,
   frutas: 7,
@@ -28,9 +23,8 @@ const DIAS_POR_FAMILIA: Record<string, number> = {
   huevos: 21,
 }
 
-// Por ingrediente, cuando se aparta de su familia. Dentro de "verduras" hay
-// dos órdenes de magnitud entre los canónigos (3 días) y el ajo (90), que es
-// justo lo que hace inútil estimar solo por familia.
+// Por ingrediente, cuando se aparta de su familia: dentro de "verduras" van dos
+// órdenes de magnitud entre los canónigos (3 días) y el ajo (90).
 const DIAS_POR_INGREDIENTE: Record<string, number> = {
   // Hoja, brotes y hierbas: lo primero que se va
   canonigos: 3, brotes: 3, germinados: 3, rucula: 4, espinaca: 4,
@@ -68,8 +62,7 @@ const DIAS_POR_INGREDIENTE: Record<string, number> = {
 }
 
 // Las claves se escriben en lenguaje natural y se reducen con el mismo
-// tokenizador que los nombres de entrada, para que plurales y acentos casen sin
-// tener que escribirlas ya normalizadas.
+// tokenizador que los nombres de entrada, para que plurales y acentos casen.
 const TABLA = new Map(
   Object.entries(DIAS_POR_INGREDIENTE).map(([nombre, dias]) => [nucleoOrdenado(nombre).join(' '), dias])
 )

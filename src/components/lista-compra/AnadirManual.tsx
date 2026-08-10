@@ -8,9 +8,8 @@ interface Props {
   onAdd: (item: Ingrediente) => void
 }
 
-// Mismas secciones que la despensa para que un extra agrupe con lo que ya
-// traen las recetas. "Hogar" no es comida: lo comprado en esa sección sale de
-// la lista sin pasar por la despensa.
+// Mismas secciones que la despensa, para que un extra agrupe con lo que traen
+// las recetas. Lo de "Hogar" sale de la lista sin pasar por la despensa.
 const SECCIONES = FAMILIAS
 const UNIDADES = ['ud', 'g', 'ml', 'paquete', 'lata', 'manojo']
 
@@ -25,9 +24,8 @@ function AnadirManual({ onAdd }: Props) {
   const [familia, setFamilia] = useState('otros')
   const [familiaManual, setFamiliaManual] = useState(false)
 
-  // Sección deducida del nombre: "detergente" va a Hogar y "lentejas" a
-  // Legumbres porque el recetario ya sabe su familia. Si el usuario toca el
-  // selector, manda su elección.
+  // Sección deducida del nombre, porque el recetario ya sabe la familia. Si el
+  // usuario toca el selector, manda su elección.
   function deducirFamilia(valor: string): string {
     if (!valor.trim()) return 'otros'
     if (esDeHogar({ nombre: valor })) return FAMILIA_HOGAR

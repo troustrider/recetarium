@@ -1,9 +1,7 @@
-// Escalado de las cantidades escritas dentro del texto de un paso.
-//
-// Sintaxis: las cantidades escalables se marcan entre llaves — "sofríe {1 cebolla} 8 min".
-// Solo escala lo marcado. Los tiempos (8 min), las temperaturas (74°C), los tamaños de
-// utensilio (sartén de 24 cm) y las proporciones (vez y media de agua) quedan fuera de
-// las llaves y nunca se tocan: multiplicarlos sería un error de cocina, no de aritmética.
+// Escalado de las cantidades escritas dentro del texto de un paso. Se marcan
+// entre llaves — "sofríe {1 cebolla} 8 min" — y solo escala lo marcado: tiempos,
+// temperaturas, tamaños de utensilio y proporciones quedan fuera, porque
+// multiplicarlos sería un error de cocina, no de aritmética.
 
 import { formatNumero } from './ingredientes'
 
@@ -24,9 +22,9 @@ export function tieneCantidadesEscalables(pasos: string[]): boolean {
   return pasos.some((p) => new RegExp(MARCA.source).test(p))
 }
 
-// Unidades contables que hay que concordar en número al escalar. "g" y "ml" no varían.
-// Las piezas que fabrica el propio plato (albóndigas, bolas...) también se marcan y escalan:
-// sin eso, al doblar comensales sale el doble de masa repartida en las mismas piezas.
+// Unidades contables que hay que concordar en número al escalar ("g" y "ml" no
+// varían). Incluye las piezas que fabrica el propio plato (albóndigas, bolas):
+// si no, al doblar comensales sale el doble de masa en las mismas piezas.
 const PLURALIZABLES = ['cucharada', 'cucharadita', 'vaso', 'diente', 'loncha', 'rodaja', 'rebanada', 'puñado', 'lata', 'paquete', 'hoja', 'tira', 'pizca', 'gota', 'litro',
   'albóndiga', 'bola', 'bolita', 'brocheta', 'hamburguesa', 'croqueta', 'tortita', 'muffin', 'pincho', 'rollito', 'hueco', 'filete']
 

@@ -77,9 +77,8 @@ function DetalleReceta() {
     return [...mapa.entries()]
   }, [full])
 
-  // La edición reciente se ofrece por el aviso compartido, no con un cartel
-  // propio: un solo deshacer en toda la app. `alCerrar` limpia `ultimaEdicion`
-  // para que la oferta no reaparezca al volver a entrar en la receta.
+  // Por el aviso compartido y no con un cartel propio: un solo deshacer en toda
+  // la app. `alCerrar` limpia `ultimaEdicion` para que no reaparezca al volver.
   useEffect(() => {
     if (!ultimaEdicion || ultimaEdicion.id !== id) return
     if (registradaRef.current === ultimaEdicion) return
