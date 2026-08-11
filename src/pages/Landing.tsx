@@ -4,6 +4,9 @@ import useDarkMode from '../hooks/useDarkMode'
 import Marca from '../components/shared/Marca'
 import { signIn } from '../auth'
 import { useSesion } from '../context/SesionContext'
+import MosaicoLanding from '../components/shared/MosaicoLanding'
+import MuestraTarjeta from '../components/shared/MuestraTarjeta'
+import { MUESTRA } from '../data/muestraLanding'
 
 function SunIcon() {
   return (
@@ -60,17 +63,30 @@ function Landing() {
   const unico = METODOS.length === 1
 
   return (
-    <div className="min-h-dvh bg-stone-50 dark:bg-gray-950 flex flex-col items-center justify-center px-4 py-10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="relative min-h-dvh overflow-hidden bg-stone-50 dark:bg-gray-950 flex flex-col items-center justify-center px-4 py-10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      <MosaicoLanding />
+
+      {/* Muestra del producto. Solo desde lg: por debajo no hay sitio sin
+          apretar la tarjeta, y el fondo ya enseña las fotos. */}
+      <MuestraTarjeta
+        receta={MUESTRA[0]}
+        className="hidden lg:block absolute left-[8%] xl:left-[14%] top-1/2 -translate-y-[70%] -rotate-6"
+      />
+      <MuestraTarjeta
+        receta={MUESTRA[2]}
+        className="hidden lg:block absolute right-[8%] xl:right-[14%] top-1/2 -translate-y-[30%] rotate-6"
+      />
+
       <button
         onClick={toggle}
-        className="fixed top-4 right-4 p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="fixed z-20 top-4 right-4 p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'}
         style={{ top: 'calc(env(safe-area-inset-top) + 1rem)' }}
       >
         {dark ? <SunIcon /> : <MoonIcon />}
       </button>
 
-      <div className="relative w-full max-w-md">
+      <div className="relative z-10 w-full max-w-md">
         {/* Resplandor cálido detrás de la marca. Decorativo, y por debajo de
             todo el texto para no tocar el contraste. */}
         <div

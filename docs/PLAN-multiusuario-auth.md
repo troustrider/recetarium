@@ -15,15 +15,33 @@ La app es multiusuario, con acceso por invitación, hogares que comparten estado
 común sobre el que cada hogar puede tener recetas privadas y sus propias favoritas. Suite: 10
 ficheros y 105 tests de backend, 19 y 277 de frontend.
 
-**Lo único que queda de este plan:**
+**No queda nada pendiente de este plan.**
 
-- Quitar `recetas.favorita`, que se dejó un despliegue como red por si había que volver atrás.
-  Un comando: `sql/2026-08-favorita-columna-fuera.sql`. No corre prisa y no molesta a nadie.
-- Borrar `APP_KEY` de las variables de Vercel. Ya no la lee nadie; es una credencial huérfana.
+- [x] `APP_KEY` borrada de las variables de Vercel
+- [x] `recetas.favorita` fuera, en las dos ramas. Al quitarla apareció que
+      `server/scripts/chef-recetas.mjs` la insertaba, así que el script del chef se habría
+      roto en la siguiente receta que añadieras. Corregido
+- [x] `sql/schema.sql` al día: siete tablas, `recetas.hogar_id` y `favoritas` incluidas
+- [x] **Landing opción C** implementada, ver abajo
 
-**Y dos cosas que no son de este plan pero salieron de él**, guardadas en memoria para que no
-se caigan: evaluar la migración a Clerk por las vulnerabilidades de `better-auth`, y la landing
-opción C.
+Lo único que sigue abierto no es de este plan: **evaluar la migración a Clerk** por las
+vulnerabilidades de `better-auth`, en memoria para que no se caiga.
+
+### Landing opción C
+
+Mosaico de las fotos reales del recetario desenfocadas como textura, más dos tarjetas de
+muestra flotando a los lados desde `lg`, que imitan las del catálogo.
+
+Dos decisiones que conviene no reabrir:
+
+- **La muestra va como constante** en `src/data/muestraLanding.ts`, no desde la API. La
+  landing es lo único visible sin sesión y todos los endpoints de recetas la exigen desde la
+  fase 4: abrir uno público para decorar una pantalla desharía eso. La lista está curada a
+  mano porque unas treinta recetas tienen foto de relleno y ahí no pueden salir.
+- **El texto no va sobre fotografía.** Encima del mosaico hay una capa del color de fondo de
+  la app al 92% de opacidad más un degradado, así que el contraste de la tarjeta es el mismo
+  que tendría sobre fondo plano. Verificado en claro y oscuro; era la condición para poder
+  usar fotos aquí.
 
 ---
 

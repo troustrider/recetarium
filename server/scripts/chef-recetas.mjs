@@ -267,10 +267,10 @@ async function guardar(r) {
     return { accion: 'UPDATE', ...row }
   }
   const [row] = await sql`
-    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, ingredientes, pasos, consejos,
+    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, ingredientes, pasos, consejos,
       precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo,
       hierro, sin_gluten, micros)
-    VALUES (${r.nombre}, ${r.categoria ?? null}, ${r.tiempoPreparacion}, false, ${ing}, ${pas}, ${con},
+    VALUES (${r.nombre}, ${r.categoria ?? null}, ${r.tiempoPreparacion}, ${ing}, ${pas}, ${con},
       ${r.precioPorPorcion}, ${r.porciones}, ${cid}, ${r.calorias ?? null}, ${r.proteinas ?? null},
       ${r.carbohidratos ?? null}, ${r.grasas ?? null}, ${r.tipo ?? 'principal'},
       ${f.hierro}, ${f.sinGluten}, ${mic})
