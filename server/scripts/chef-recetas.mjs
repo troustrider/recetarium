@@ -137,7 +137,7 @@ export function validar(r, { estricto = true } = {}) {
     // En cortes finos o carne deshecha, la señal visual sustituye legítimamente al termómetro.
     const RE_PUNTO_CARNE = /jugo salga transparente|(?:sin|no qued[ae]n?) (?:zonas? )?ro(?:sas?|jas?|sad[oa]s?)|sin que quede ro|se desha[gc]a al|se deshilache|se deshebre/i
     // La charcutería va curada o cocida de fábrica: no hay temperatura interna que alcanzar.
-    const CURADOS = /jam[oó]n|spek|bacon|chorizo|panceta|pancetta|guanciale|salchich[oó]n|sobrasada|rookworst|lomo embuchado|cecina|salami|fuet/i
+    const CURADOS = /jam[oó]n|spek|bacon|chorizo|panceta|pancetta|guanciale|salchich[oó]n|sobrasada|rookworst|lomo embuchado|cecina|salami|fuet|rookvlees|mortadela|pastrami|corned beef|en lonchas/i
     const carne = (r.ingredientes ?? []).some((i) => i.familia === 'carnes' && !CURADOS.test(i.nombre))
     if (carne && !RE_TEMP.test(texto) && !RE_PUNTO_CARNE.test(texto))
       e.push('lleva carne y ningún paso da temperatura interna ni su señal equivalente')

@@ -53,7 +53,7 @@ Vale para cualquier modo. Los pasos 1 y 2 no se saltan.
 
 ## Modos
 
-Se detectan por la petición y pueden encadenarse (nevera → alta).
+Se detectan por la petición y pueden encadenarse (nevera → alta, tanda → revisión).
 
 ### 1. Nevera — "tengo pollo, calabacín y arroz"
 
@@ -67,7 +67,13 @@ Filtra primero lo existente por SQL (tiempo, precio, macros, tipo, categoria). S
 
 Genera el JSON completo según `contrato-receta.md` (léelo, no lo cites de memoria). Enséñaselo y espera confirmación si no la dio ya sobre esa receta exacta. Inserta por API con `x-app-key`, o por Neon MCP si la API no es viable. Verifica con GET/SELECT y confirma nombre e id.
 
-### 4. Revisión — "esta receta está floja", "arregla la de X"
+### 4. Tanda — "mete 25 desayunos", "el recetario está corto de postres"
+
+Lote de recetas nuevas para tapar un hueco del recetario. **No es el modo Alta repetido N veces**: aquí Karim trae un hueco, no una receta, y el trabajo empieza por medir el hueco.
+
+La regla del modo: **no se diseña una tanda sin auditar antes el bloque que va a crecer**, o la tanda repite lo que ya sobra. Seis fases —auditar, cerrar el encargo, diseñar la estructura, escanear fichas, implementar, cerrar la deuda—, con Karim aprobando el diseño completo antes de que se escriba la primera receta. Protocolo, SQL y reglas en `references/tandas.md`.
+
+### 5. Revisión — "esta receta está floja", "arregla la de X"
 
 Para subir recetas antiguas al estándar actual. Buena parte de las que ya están en la BD tienen pasos de una línea sin tiempos ni cantidades, y hay principales por debajo de los 35 g de proteína.
 
@@ -80,11 +86,11 @@ Para subir recetas antiguas al estándar actual. Buena parte de las que ya está
 
 Si Karim pide revisar varias, hazlo de una en una y confirma cada una. Nunca un UPDATE masivo.
 
-### 5. Estándar — "sube el listón", "endurece los criterios"
+### 6. Estándar — "sube el listón", "endurece los criterios"
 
 Cuando cambia una norma de calidad, cambian tres cosas a la vez y en el mismo turno: la prosa de la referencia que toque, el script `chef-recetas.mjs`, y la BD. El detalle y el porqué están en `validador.md`; el resumen es que **no se endurece el estándar sin volver a auditar lo que ya estaba guardado**, o el recetario queda a dos velocidades.
 
-### 6. Consulta — "¿puedo cambiar el mirin por vinagre?", "¿por qué se me corta la salsa?"
+### 7. Consulta — "¿puedo cambiar el mirin por vinagre?", "¿por qué se me corta la salsa?"
 
 No hace falta receta ni BD. Responde con la clasificación de riesgo de `sustituciones.md` (nivel, qué cambia, cómo compensar) o con la causa técnica de `tecnica.md`. Directo y corto.
 
@@ -111,5 +117,6 @@ Español, directo, sin relleno. Pocas propuestas (2-4) y concretas, no listados 
 | `contrato-receta.md` | Antes de generar cualquier JSON, y para el checklist final |
 | `precios-nl.md` | Al estimar `precioPorPorcion` |
 | `nutricion-ficha.md` | Al declarar macros y **siempre que uses un ingrediente nuevo** |
+| `tandas.md` | Siempre que la petición sea un lote de recetas nuevas, no una sola |
 | `validador.md` | Antes de escribir un lote, y siempre que cambies un criterio de calidad |
 | `acceso-datos.md` | Para leer o escribir en la BD |
