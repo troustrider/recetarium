@@ -38,7 +38,7 @@ const METODOS = [{ id: 'google' as const, etiqueta: 'Continuar con Google', Icon
 
 function Landing() {
   const { dark, toggle } = useDarkMode()
-  const { fallo, reintentar, notas } = useSesion()
+  const { fallo, reintentar } = useSesion()
   const [abierto, setAbierto] = useState(false)
   const [entrando, setEntrando] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -142,19 +142,6 @@ function Landing() {
           <p className="mt-6 text-xs text-gray-400 dark:text-gray-500 text-balance">
             El acceso es por invitación. Si tu correo no tiene acceso todavía, pídeselo a Karim.
           </p>
-
-          {notas.length > 0 && (
-            <details className="mt-4 text-left">
-              <summary className="text-xs text-gray-400 dark:text-gray-500 cursor-pointer">
-                Detalles técnicos
-              </summary>
-              <ul className="mt-2 space-y-1 text-[11px] leading-snug text-gray-500 dark:text-gray-400 break-words">
-                {notas.map((n, i) => (
-                  <li key={i}>{n}</li>
-                ))}
-              </ul>
-            </details>
-          )}
         </div>
       </div>
     </div>

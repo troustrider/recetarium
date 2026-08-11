@@ -1,5 +1,4 @@
 import { cabeceraSesion } from '../auth'
-import { apuntar } from '../diagnostico'
 
 export interface UsuarioDTO {
   id: string
@@ -18,15 +17,7 @@ export async function getYo(): Promise<UsuarioDTO | null> {
   const cabecera = cabeceraSesion()
   if (!cabecera.Authorization) return null
   const res = await fetch(`${BASE}/yo`, { headers: cabecera })
-  if (res.status === 401 || res.status === 403) {
-    // Huella del token, no el token: longitud y si trae firma pegada. Better
-    // Auth firma la cookie de sesión, y si lo que entrega el cliente es la
-    // forma firmada no coincide con neon_auth.session.token.
-    const t = cabecera.Authorization.slice(7)
-    const cuerpo = await res.json().catch(() => ({}) as { error?: string })
-    apuntar(`/yo devolvió ${res.status} (${cuerpo.error ?? 'sin detalle'}); token de ${t.length} car., ${t.includes('.') ? 'con firma' : 'sin firma'}`)
-    return null
-  }
+  if (res.status === 401 || res.status === 403) return null
   if (!res.ok) throw new Error(`Error ${res.status}`)
   return res.json() as Promise<UsuarioDTO>
 }

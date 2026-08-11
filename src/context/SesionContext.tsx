@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { capturarToken, olvidarToken, tokenGuardado, authClient } from '../auth'
-import { apuntar, notasDiagnostico } from '../diagnostico'
 import { getYo, cerrarSesionServidor, type UsuarioDTO } from '../api/yo'
 
 // Tres estados y no dos. La app se abre desde el icono del móvil y comprobar la
@@ -18,9 +17,6 @@ interface Sesion {
   // La API caída no es lo mismo que no haber entrado: una lleva a reintentar y
   // la otra a la landing.
   fallo: boolean
-  // Notas del arranque, en estado y no leídas del módulo: se apuntan dentro del
-  // efecto, y sin un repintado detrás no se verían nunca.
-  notas: string[]
   salir: () => Promise<void>
   reintentar: () => void
 }
@@ -31,7 +27,6 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<Estado>(() => (tokenGuardado() ? 'comprobando' : 'fuera'))
   const [usuario, setUsuario] = useState<UsuarioDTO | null>(null)
   const [fallo, setFallo] = useState(false)
-  const [notas, setNotas] = useState<string[]>([])
   const [intento, setIntento] = useState(0)
 
   useEffect(() => {
@@ -40,20 +35,16 @@ export function SesionProvider({ children }: { children: ReactNode }) {
       try {
         // Al volver del login la cookie todavía vale, y es el único momento en
         // que se puede leer el token. Si no hay, esto no hace nada.
-        const token = await capturarToken()
-        apuntar(`token al arrancar: ${token ? `sí, ${token.length} car.` : 'no'}`)
+        await capturarToken()
         const yo = await getYo()
         if (!vigente) return
         setUsuario(yo)
         setEstado(yo ? 'dentro' : 'fuera')
         if (!yo) olvidarToken()
-      } catch (e) {
+      } catch {
         if (!vigente) return
-        apuntar(`arranque: ${e instanceof Error ? `${e.name} ${e.message}` : String(e)}`)
         setFallo(true)
         setEstado('fuera')
-      } finally {
-        if (vigente) setNotas([...notasDiagnostico()])
       }
     })()
     return () => {
@@ -83,7 +74,7 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <SesionContext.Provider value={{ estado, usuario, fallo, notas, salir, reintentar }}>
+    <SesionContext.Provider value={{ estado, usuario, fallo, salir, reintentar }}>
       {children}
     </SesionContext.Provider>
   )

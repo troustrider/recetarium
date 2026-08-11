@@ -1,6 +1,5 @@
 import { createAuthClient } from '@neondatabase/neon-js/auth'
 import { BetterAuthReactAdapter } from '@neondatabase/neon-js/auth/react/adapters'
-import { apuntar } from './diagnostico'
 
 // La URL del servicio de auth es pública (viaja en el bundle), pero no tiene
 // valor por defecto a propósito: apuntar producción a la rama de pruebas por un
@@ -41,16 +40,17 @@ export function olvidarToken(): void {
 export async function capturarToken(): Promise<string | null> {
   const guardado = tokenGuardado()
   if (guardado) return guardado
+  // La cookie del servicio de auth puede no estar disponible, y eso no es un
+  // error: significa que no hay sesión que capturar.
   try {
-    const { data, error } = await authClient.getSession()
+    const { data } = await authClient.getSession()
     const token = data?.session?.token
     if (token) {
       localStorage.setItem(CLAVE_TOKEN, token)
       return token
     }
-    apuntar(error ? `getSession: ${error.status ?? ''} ${error.message ?? JSON.stringify(error)}` : 'getSession: sin sesión')
-  } catch (e) {
-    apuntar(`getSession lanzó: ${e instanceof Error ? `${e.name} ${e.message}` : String(e)}`)
+  } catch {
+    return null
   }
   return null
 }

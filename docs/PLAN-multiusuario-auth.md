@@ -516,8 +516,37 @@ esto al final de la fase cuesta el triple.
 - [x] Desplegado y verificado en producción: landing sin sesión y sin los cromos de la app,
       cero errores de consola con la CSP puesta, Fraunces y Bricolage cargando, cabeceras
       de seguridad presentes, y el botón redirige a Google contra la URL de producción
-- [ ] **Volver a probar el arranque en frío en el iPhone**, ahora con el token propio.
-      Es lo único que falta para cerrar la fase
+- [x] **Arranque en frío verificado en el iPhone**: se cierra la app del todo, se reabre
+      desde el icono y entra directa al catálogo. La sesión sobrevive
+
+**Fase 2 terminada.**
+
+### El token del cliente es un JWT, no un token opaco
+
+Costó dos rondas y conviene que quede escrito. `authClient.getSession()` devuelve en
+`session.token` un **JWT firmado** (~840 caracteres, tres segmentos), no el valor opaco de
+`neon_auth.session.token`. Por eso el provisionado da una URL de JWKS.
+
+`requireUser` distingue las dos formas: tres segmentos se verifican con `jose` contra el
+JWKS (la clave se descarga una vez y se cachea); cualquier otra cosa se busca en
+`neon_auth.session`, que es lo que usan los tests, porque emitir un JWT válido exigiría la
+clave privada del servicio.
+
+La URL del JWKS se deriva de `VITE_NEON_AUTH_URL`, que Vercel expone también a la función
+serverless. Así no hay una segunda variable que se pueda desincronizar de la primera.
+
+**Trampa en la que caí:** leer la implementación genérica de `getJWTToken` en `better-auth`
+y concluir que devolvía un token opaco. En el servicio gestionado de Neon no es así. Lo que
+lo resolvió fue instrumentar el cliente y mirar la longitud y la forma reales del token.
+
+### Cosas pendientes que salieron de la fase 2
+
+- **Dos arranques para estrenar despliegue.** El service worker sirve el bundle cacheado en
+  el primer arranque tras un despliegue; hay que cerrar y abrir dos veces. Afecta a
+  cualquier actualización futura, también a Cloe.
+- **Sesiones que se acumulan.** Cada vuelta del login crea una fila en
+  `neon_auth.session`; unas pocas pruebas dejaron 31 activas. Caducan solas, pero ensucian
+  la pantalla de accesos y conviene una limpieza de las caducadas.
 
 > **Orden que no se puede invertir.** `VITE_NEON_AUTH_URL` tiene que apuntar a la auth de
 > la MISMA rama que la base de datos que valida el token. Si el bundle mira a pruebas y la
