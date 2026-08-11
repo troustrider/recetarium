@@ -1,5 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
-import { capturarToken, olvidarToken, tokenGuardado, authClient } from '../auth'
+import {
+  capturarToken,
+  olvidarToken,
+  tokenGuardado,
+  authClient,
+  huboIntentoDeEntrada,
+  limpiarIntentoDeEntrada,
+} from '../auth'
 import { getYo, cerrarSesionServidor, type UsuarioDTO } from '../api/yo'
 
 // Tres estados y no dos. La app se abre desde el icono del móvil y comprobar la
@@ -17,6 +24,8 @@ interface Sesion {
   // La API caída no es lo mismo que no haber entrado: una lleva a reintentar y
   // la otra a la landing.
   fallo: boolean
+  // Volvió de Google pero el navegador no dejó guardar la sesión.
+  bloqueada: boolean
   salir: () => Promise<void>
   reintentar: () => void
 }
@@ -27,6 +36,7 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<Estado>(() => (tokenGuardado() ? 'comprobando' : 'fuera'))
   const [usuario, setUsuario] = useState<UsuarioDTO | null>(null)
   const [fallo, setFallo] = useState(false)
+  const [bloqueada, setBloqueada] = useState(false)
   const [intento, setIntento] = useState(0)
 
   useEffect(() => {
@@ -35,7 +45,19 @@ export function SesionProvider({ children }: { children: ReactNode }) {
       try {
         // Al volver del login la cookie todavía vale, y es el único momento en
         // que se puede leer el token. Si no hay, esto no hace nada.
-        await capturarToken()
+        const token = await capturarToken()
+
+        // Volvió de Google pero el navegador no dejó leer la sesión: callejón
+        // sin salida. Sin esto la app regresa a la landing en silencio, y quien
+        // lo sufre solo ve que "no funciona" y lo intenta una y otra vez.
+        if (!token && huboIntentoDeEntrada()) {
+          if (!vigente) return
+          setBloqueada(true)
+          setEstado('fuera')
+          return
+        }
+        if (token) limpiarIntentoDeEntrada()
+
         const yo = await getYo()
         if (!vigente) return
         setUsuario(yo)
@@ -69,12 +91,14 @@ export function SesionProvider({ children }: { children: ReactNode }) {
 
   const reintentar = useCallback(() => {
     setFallo(false)
+    setBloqueada(false)
+    limpiarIntentoDeEntrada()
     setEstado(tokenGuardado() ? 'comprobando' : 'fuera')
     setIntento((n) => n + 1)
   }, [])
 
   return (
-    <SesionContext.Provider value={{ estado, usuario, fallo, salir, reintentar }}>
+    <SesionContext.Provider value={{ estado, usuario, fallo, bloqueada, salir, reintentar }}>
       {children}
     </SesionContext.Provider>
   )

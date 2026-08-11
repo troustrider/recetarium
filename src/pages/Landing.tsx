@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import useDarkMode from '../hooks/useDarkMode'
 import Marca from '../components/shared/Marca'
-import { signIn } from '../auth'
+import { signIn, marcarIntentoDeEntrada } from '../auth'
 import { useSesion } from '../context/SesionContext'
 import MosaicoLanding from '../components/shared/MosaicoLanding'
 import MuestraTarjeta from '../components/shared/MuestraTarjeta'
@@ -41,7 +41,7 @@ const METODOS = [{ id: 'google' as const, etiqueta: 'Continuar con Google', Icon
 
 function Landing() {
   const { dark, toggle } = useDarkMode()
-  const { fallo, reintentar } = useSesion()
+  const { fallo, bloqueada, reintentar } = useSesion()
   const [abierto, setAbierto] = useState(false)
   const [entrando, setEntrando] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -53,6 +53,7 @@ function Landing() {
       // Conserva el destino: un enlace a una receta abierto sin sesión aterriza
       // en esa receta después de entrar, no en el catálogo.
       const destino = window.location.pathname + window.location.search
+      marcarIntentoDeEntrada()
       await signIn.social({ provider: proveedor, callbackURL: destino === '/' ? '/' : destino })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se ha podido iniciar sesión')
@@ -171,6 +172,20 @@ function Landing() {
             <p className="mt-4 text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2">
               {error}
             </p>
+          )}
+
+          {bloqueada && (
+            <div className="mt-4 text-left text-sm text-amber-900 dark:text-amber-100 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2.5 space-y-2">
+              <p className="font-semibold">Entraste en Google, pero el navegador no guardó la sesión.</p>
+              <p className="opacity-90">
+                Suele ser el bloqueo de seguimiento entre sitios de Safari. En el iPhone:
+                Ajustes › Apps › Safari › desactiva <strong>Impedir seguimiento entre sitios</strong>,
+                y vuelve a intentarlo.
+              </p>
+              <button onClick={reintentar} className="font-semibold underline underline-offset-2">
+                Ya está, reintentar
+              </button>
+            </div>
           )}
 
           {fallo && (
