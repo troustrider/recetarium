@@ -66,8 +66,7 @@ function Landing() {
     <div className="relative min-h-dvh overflow-hidden bg-stone-50 dark:bg-gray-950 flex flex-col items-center justify-center px-4 py-10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <MosaicoLanding />
 
-      {/* Muestra del producto. Solo desde lg: por debajo no hay sitio sin
-          apretar la tarjeta, y el fondo ya enseña las fotos. */}
+      {/* Muestra del producto a los lados, desde lg. */}
       <MuestraTarjeta
         receta={MUESTRA[0]}
         className="hidden lg:block absolute left-[8%] xl:left-[14%] top-1/2 -translate-y-[70%] -rotate-6"
@@ -76,6 +75,22 @@ function Landing() {
         receta={MUESTRA[2]}
         className="hidden lg:block absolute right-[8%] xl:right-[14%] top-1/2 -translate-y-[30%] rotate-6"
       />
+
+      {/* Y en móvil, que es la vía de entrada principal, un abanico asomando por
+          abajo. Sin esto la muestra del producto solo existía en escritorio.
+          Va cortado por el borde inferior a propósito: sugiere que hay más sin
+          añadir nada que tocar a una pantalla cuyo único trabajo es que pulses
+          entrar, y sin el deslizamiento horizontal, que en iOS se pelea con el
+          gesto de volver atrás. El recorte lo hace el overflow-hidden del
+          contenedor, así que no genera scroll. */}
+      <div
+        aria-hidden
+        className="lg:hidden absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-end"
+      >
+        <MuestraTarjeta receta={MUESTRA[0]} className="-rotate-[9deg] origin-bottom" />
+        <MuestraTarjeta receta={MUESTRA[2]} className="-ml-24 z-10" />
+        <MuestraTarjeta receta={MUESTRA[4]} className="-ml-24 rotate-[9deg] origin-bottom" />
+      </div>
 
       <button
         onClick={toggle}

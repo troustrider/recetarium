@@ -205,6 +205,11 @@ function Layout({ children }: { children: ReactNode }) {
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </motion.button>
 
+            {/* Solo en móvil: en escritorio el avatar ya viene detrás del
+                divisor del tema, pero aquí el hamburguesa se cuela en medio y la
+                cuenta se quedaba pegada a él sin separación. */}
+            <span aria-hidden className="sm:hidden w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
+
             {/* La cuenta es lo último: identidad al borde, y en móvil es donde
                 cae el pulgar. Cambia de forma además de sitio, círculo con foto
                 frente a iconos de contorno. Su desplegable no repite la
