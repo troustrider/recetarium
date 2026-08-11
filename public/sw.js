@@ -4,7 +4,7 @@
 // Los ficheros del build llevan hash en el nombre y aquí no se conocen, así que
 // no hay precache: se cachea sobre la marcha lo que se va pidiendo. Basta con
 // haber abierto la app una vez con red.
-const VERSION = 'v2'
+const VERSION = 'v3'
 const SHELL = `recetarium-shell-${VERSION}`
 const ASSETS = `recetarium-assets-${VERSION}`
 const API = `recetarium-api-${VERSION}`
