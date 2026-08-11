@@ -26,16 +26,18 @@ router.get('/', requireUser, (req, res) => res.json(req.usuario))
  * @swagger
  * /yo/sesion:
  *   delete:
- *     summary: Cerrar sesión en este dispositivo
- *     description: Borra la fila de sesión, así que la revocación es inmediata.
+ *     summary: Cerrar sesión
+ *     description: >
+ *       Borra las sesiones del usuario, así que la revocación es inmediata. Se
+ *       cierran todas y no solo la de este dispositivo, porque el cliente manda
+ *       un JWT y no el identificador de la fila.
  *     tags: [Auth]
  *     responses:
  *       204: { description: Sesión cerrada }
  *       401: { description: Sesión inválida o caducada }
  */
 router.delete('/sesion', requireUser, async (req, res) => {
-  const token = req.get('authorization').slice(7).trim()
-  await sql`DELETE FROM neon_auth.session WHERE token = ${token}`
+  await sql`DELETE FROM neon_auth.session WHERE "userId" = ${req.usuario.id}`
   res.status(204).end()
 })
 

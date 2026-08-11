@@ -1,3 +1,4 @@
+import { createRemoteJWKSet, jwtVerify } from 'jose'
 import sql from './db.js'
 
 // Passphrase compartida para escrituras. Si APP_KEY no está configurada
@@ -19,13 +20,32 @@ export function requireKey(req, res, next) {
 function tokenDe(req) {
   const cabecera = req.get('authorization') ?? ''
   if (!cabecera.startsWith('Bearer ')) return ''
-  const bruto = decodeURIComponent(cabecera.slice(7).trim())
-  // Better Auth firma la cookie de sesión, así que el cliente puede entregar el
-  // token como "token.firma". Lo que se guarda en neon_auth.session.token es
-  // solo la primera parte. Verificar la firma no añadiría nada aquí: el token ya
-  // es un secreto de alta entropía y la búsqueda en base de datos es la
-  // verificación.
-  return bruto.split('.')[0]
+  return decodeURIComponent(cabecera.slice(7).trim())
+}
+
+// Neon Auth entrega en session.token un JWT firmado, no un token opaco: por eso
+// el provisionado devuelve una URL de JWKS. La clave pública se descarga una vez
+// y jose la cachea, así que verificar no cuesta una petición por llamada.
+//
+// La URL sale de la misma variable que usa el frontend. Es la de la rama
+// correspondiente, y así no hay una segunda variable que se pueda desincronizar.
+const URL_AUTH = process.env.NEON_AUTH_URL ?? process.env.VITE_NEON_AUTH_URL
+let jwks = null
+
+function clavesJwt() {
+  if (!URL_AUTH) throw new Error('Falta NEON_AUTH_URL o VITE_NEON_AUTH_URL')
+  jwks ??= createRemoteJWKSet(new URL(`${URL_AUTH.replace(/\/$/, '')}/.well-known/jwks.json`))
+  return jwks
+}
+
+async function usuarioDeJwt(token) {
+  const { payload } = await jwtVerify(token, clavesJwt())
+  const id = payload.sub
+  if (!id) return null
+  const [fila] = await sql`
+    SELECT id, email, name, banned FROM neon_auth."user" WHERE id = ${id}
+  `
+  return fila ?? null
 }
 
 // Neon Auth guarda usuarios y sesiones en el esquema neon_auth de esta misma
@@ -76,7 +96,19 @@ export async function requireUser(req, res, next) {
   const token = tokenDe(req)
   if (!token) return res.status(401).json({ error: 'Sesión requerida' })
 
-  const usuario = await sesionDe(token)
+  // Dos formas de credencial. El cliente manda el JWT del servicio de auth; los
+  // tests, y cualquier llamada directa, pueden usar el token de una fila de
+  // neon_auth.session, que se valida contra la base de datos.
+  let usuario = null
+  if (token.split('.').length === 3) {
+    try {
+      usuario = await usuarioDeJwt(token)
+    } catch (e) {
+      return res.status(401).json({ error: `Token no verificable: ${e.code ?? e.name}` })
+    }
+  } else {
+    usuario = await sesionDe(token)
+  }
   if (!usuario) return res.status(401).json({ error: 'Sesión inválida o caducada' })
   if (usuario.banned) return res.status(403).json({ error: 'Cuenta suspendida' })
 

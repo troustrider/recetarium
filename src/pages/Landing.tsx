@@ -4,7 +4,6 @@ import useDarkMode from '../hooks/useDarkMode'
 import Marca from '../components/shared/Marca'
 import { signIn } from '../auth'
 import { useSesion } from '../context/SesionContext'
-import { notasDiagnostico } from '../diagnostico'
 
 function SunIcon() {
   return (
@@ -39,11 +38,10 @@ const METODOS = [{ id: 'google' as const, etiqueta: 'Continuar con Google', Icon
 
 function Landing() {
   const { dark, toggle } = useDarkMode()
-  const { fallo, reintentar } = useSesion()
+  const { fallo, reintentar, notas } = useSesion()
   const [abierto, setAbierto] = useState(false)
   const [entrando, setEntrando] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const notas = notasDiagnostico()
 
   async function entrar(proveedor: 'google') {
     setEntrando(true)

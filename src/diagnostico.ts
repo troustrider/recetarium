@@ -1,7 +1,11 @@
 // Recoge lo que falla al arrancar para poder leerlo desde el propio móvil. Sin
 // esto, un fallo que solo ocurre en la PWA de iOS no hay forma de verlo: no hay
 // consola a la que asomarse.
-const notas: string[] = []
+// Se sube a mano en cada despliegue de depuración. Sirve para saber si el móvil
+// está ejecutando el código nuevo o una copia del service worker.
+const VERSION = 'diag-3'
+
+const notas: string[] = [`build ${VERSION}`]
 
 export function apuntar(nota: string): void {
   if (notas.length < 12) notas.push(nota)

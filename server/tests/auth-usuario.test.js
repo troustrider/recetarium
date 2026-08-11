@@ -68,24 +68,21 @@ describe('requireUser', () => {
     expect((await get('/yo', 'no-existe')).status).toBe(401)
   })
 
-  it('acepta el token con la firma pegada, como lo entrega el cliente', async () => {
-    const email = `firmado-${Date.now()}@test.dev`
-    const { token } = await crearUsuario(email)
-    await invitar(email, HOGAR_COMPARTIDO)
-
-    // Better Auth firma la cookie: "token.firma". En neon_auth.session solo
-    // está la primera parte.
-    const res = await get('/yo', `${token}.una-firma-cualquiera`)
-    expect(res.status).toBe(200)
-    expect((await res.json()).email).toBe(email)
+  // El cliente manda un JWT firmado por el servicio de auth, que aquí no se
+  // puede emitir sin su clave privada. Lo que sí se cubre es que la rama del JWT
+  // rechaza lo que no verifica, en vez de colarlo o reventar con un 500.
+  it('rechaza un JWT que no verifica', async () => {
+    const res = await get('/yo', 'eyJhbGciOiJFZERTQSJ9.eyJzdWIiOiJmYWxzbyJ9.firma-invalida')
+    expect(res.status).toBe(401)
+    expect((await res.json()).error).toMatch(/no verificable/i)
   })
 
-  it('acepta el token url-encoded', async () => {
+  it('acepta el token opaco url-encoded', async () => {
     const email = `encoded-${Date.now()}@test.dev`
     const { token } = await crearUsuario(email)
     await invitar(email, HOGAR_COMPARTIDO)
 
-    const res = await get('/yo', encodeURIComponent(`${token}.firma=`))
+    const res = await get('/yo', encodeURIComponent(token))
     expect(res.status).toBe(200)
   })
 
