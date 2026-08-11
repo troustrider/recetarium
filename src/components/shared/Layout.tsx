@@ -176,26 +176,41 @@ function Layout({ children }: { children: ReactNode }) {
               )}
             </motion.button>
 
-            {/* Dark mode */}
+            {/* Divisor de escritorio, entre el carrito y la cuenta. */}
+            <span aria-hidden className="hidden sm:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
+
+            {/* Dark mode. El tema no es una utilidad de la tarea como el
+                carrito ni identidad como la cuenta: es un ajuste de la propia
+                interfaz, y por eso va suelto en la esquina.
+                En escritorio se manda al final con order, apartado del grupo. En
+                móvil el último sitio es del avatar, que es donde cae el pulgar,
+                así que ahí el tema abre la fila. */}
             <motion.button
               onClick={toggle}
-              className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="sm:order-last sm:ml-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
               aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'}
               whileTap={{ scale: 0.85 }}
             >
               {dark ? <SunIcon /> : <MoonIcon />}
             </motion.button>
 
-            {/* El carrito y el tema son utilidades de la tarea; la cuenta es
-                identidad y guarda "cerrar sesión", así que se separa con un
-                divisor y cambia de forma: círculo con foto en vez de icono de
-                contorno.
+            {/* Divisor de móvil, entre el tema y el bloque de menú y cuenta. */}
+            <span aria-hidden className="sm:hidden w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
 
-                Va también en móvil, y no dentro del hamburguesa, porque ese menú
-                repite lo que ya está en la nav inferior. Aquí el desplegable
-                solo lleva la sesión y "Accesos". */}
-            <span aria-hidden className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
+            {/* Hamburger — solo mobile */}
+            <motion.button
+              onClick={() => setMobileOpen((o) => !o)}
+              className="sm:hidden p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Menú"
+              whileTap={{ scale: 0.88 }}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </motion.button>
 
+            {/* La cuenta es lo último: identidad al borde, y en móvil es donde
+                cae el pulgar. Cambia de forma además de sitio, círculo con foto
+                frente a iconos de contorno. Su desplegable no repite la
+                navegación, que ya está en la barra inferior. */}
             <div className="relative">
               <motion.button
                 onClick={() => setCuentaOpen((o) => !o)}
@@ -253,16 +268,6 @@ function Layout({ children }: { children: ReactNode }) {
                 )}
               </AnimatePresence>
             </div>
-
-            {/* Hamburger — solo mobile */}
-            <motion.button
-              onClick={() => setMobileOpen((o) => !o)}
-              className="sm:hidden p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Menú"
-              whileTap={{ scale: 0.88 }}
-            >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </motion.button>
           </div>
         </div>
 
