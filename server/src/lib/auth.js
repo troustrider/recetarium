@@ -43,7 +43,7 @@ async function usuarioDeJwt(token) {
   const id = payload.sub
   if (!id) return null
   const [fila] = await sql`
-    SELECT id, email, name, banned FROM neon_auth."user" WHERE id = ${id}
+    SELECT id, email, name, image, banned FROM neon_auth."user" WHERE id = ${id}
   `
   return fila ?? null
 }
@@ -53,7 +53,7 @@ async function usuarioDeJwt(token) {
 // un servicio externo. session.token tiene índice único, así que es un acierto.
 async function sesionDe(token) {
   const [fila] = await sql`
-    SELECT u.id, u.email, u.name, u.banned
+    SELECT u.id, u.email, u.name, u.image, u.banned
     FROM neon_auth.session s
     JOIN neon_auth."user" u ON u.id = s."userId"
     WHERE s.token = ${token} AND s."expiresAt" > now()
@@ -122,6 +122,7 @@ export async function requireUser(req, res, next) {
     id: usuario.id,
     email: usuario.email,
     nombre: usuario.name,
+    imagen: usuario.image,
     hogarId: miembro.hogarId,
     rol: miembro.rol,
   }

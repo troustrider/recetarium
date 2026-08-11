@@ -4,6 +4,7 @@ export interface UsuarioDTO {
   id: string
   email: string
   nombre: string | null
+  imagen: string | null
   hogarId: string
   rol: 'admin' | 'usuario'
 }

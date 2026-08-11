@@ -68,13 +68,7 @@ function AdminSesiones() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="font-display font-bold text-2xl text-gray-900 dark:text-gray-100">Accesos</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Quién ha entrado, desde dónde y con qué. Con tres personas usando la app, una IP que
-          no reconozcas es motivo suficiente para mirar.
-        </p>
-      </header>
+      <h1 className="font-display font-bold text-2xl text-gray-900 dark:text-gray-100">Accesos</h1>
 
       {datos.ipsNuevas.length > 0 && (
         <div className="rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-900/20 p-4">
