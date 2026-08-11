@@ -87,9 +87,9 @@ function Landing() {
         aria-hidden
         className="lg:hidden absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-end"
       >
-        <MuestraTarjeta receta={MUESTRA[0]} className="-rotate-[9deg] origin-bottom" />
-        <MuestraTarjeta receta={MUESTRA[2]} className="-ml-24 z-10" />
-        <MuestraTarjeta receta={MUESTRA[4]} className="-ml-24 rotate-[9deg] origin-bottom" />
+        <MuestraTarjeta receta={MUESTRA[0]} prioritaria className="-rotate-[9deg] origin-bottom" />
+        <MuestraTarjeta receta={MUESTRA[2]} prioritaria className="-ml-24 z-10" />
+        <MuestraTarjeta receta={MUESTRA[4]} prioritaria className="-ml-24 rotate-[9deg] origin-bottom" />
       </div>
 
       <button

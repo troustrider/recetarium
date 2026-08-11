@@ -5,14 +5,31 @@ import type { MuestraReceta } from '../../data/muestraLanding'
 // landing va por delante de los providers, así que no puede depender de nada que
 // hable con la API. Copia el aspecto de RecetaCard para que lo que se enseña sea
 // de verdad lo que hay dentro.
-function MuestraTarjeta({ receta, className = '' }: { receta: MuestraReceta; className?: string }) {
+// prioritaria para las que se ven de entrada (el abanico del móvil, que es la
+// vía de entrada principal). Las de escritorio van diferidas porque por debajo
+// de lg están ocultas y no hace falta descargarlas.
+function MuestraTarjeta({
+  receta,
+  className = '',
+  prioritaria = false,
+}: {
+  receta: MuestraReceta
+  className?: string
+  prioritaria?: boolean
+}) {
   return (
     <div
       aria-hidden
       className={`w-56 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl shadow-black/10 dark:shadow-black/40 overflow-hidden ${className}`}
     >
       <div className="relative h-32 overflow-hidden">
-        <img src={receta.imagen} alt="" className="w-full h-full object-cover" loading="lazy" />
+        <img
+          src={receta.imagen}
+          alt=""
+          className="w-full h-full object-cover"
+          loading={prioritaria ? 'eager' : 'lazy'}
+          decoding="async"
+        />
         <span className="absolute top-2.5 left-2.5 flex items-center gap-1.5 bg-black/55 backdrop-blur-md text-white/90 text-[9px] font-bold uppercase tracking-widest pl-2 pr-2.5 py-1 rounded-md">
           <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
           {receta.categoria}
