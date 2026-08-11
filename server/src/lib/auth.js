@@ -18,7 +18,14 @@ export function requireKey(req, res, next) {
 // el cuerpo.
 function tokenDe(req) {
   const cabecera = req.get('authorization') ?? ''
-  return cabecera.startsWith('Bearer ') ? cabecera.slice(7).trim() : ''
+  if (!cabecera.startsWith('Bearer ')) return ''
+  const bruto = decodeURIComponent(cabecera.slice(7).trim())
+  // Better Auth firma la cookie de sesión, así que el cliente puede entregar el
+  // token como "token.firma". Lo que se guarda en neon_auth.session.token es
+  // solo la primera parte. Verificar la firma no añadiría nada aquí: el token ya
+  // es un secreto de alta entropía y la búsqueda en base de datos es la
+  // verificación.
+  return bruto.split('.')[0]
 }
 
 // Neon Auth guarda usuarios y sesiones en el esquema neon_auth de esta misma

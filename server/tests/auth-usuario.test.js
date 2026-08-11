@@ -68,6 +68,27 @@ describe('requireUser', () => {
     expect((await get('/yo', 'no-existe')).status).toBe(401)
   })
 
+  it('acepta el token con la firma pegada, como lo entrega el cliente', async () => {
+    const email = `firmado-${Date.now()}@test.dev`
+    const { token } = await crearUsuario(email)
+    await invitar(email, HOGAR_COMPARTIDO)
+
+    // Better Auth firma la cookie: "token.firma". En neon_auth.session solo
+    // está la primera parte.
+    const res = await get('/yo', `${token}.una-firma-cualquiera`)
+    expect(res.status).toBe(200)
+    expect((await res.json()).email).toBe(email)
+  })
+
+  it('acepta el token url-encoded', async () => {
+    const email = `encoded-${Date.now()}@test.dev`
+    const { token } = await crearUsuario(email)
+    await invitar(email, HOGAR_COMPARTIDO)
+
+    const res = await get('/yo', encodeURIComponent(`${token}.firma=`))
+    expect(res.status).toBe(200)
+  })
+
   it('rechaza una sesión caducada', async () => {
     const { id, token } = await crearUsuario(`caducada-${Date.now()}@test.dev`)
     await sql`UPDATE neon_auth.session SET "expiresAt" = now() - interval '1 hour' WHERE "userId" = ${id}`
