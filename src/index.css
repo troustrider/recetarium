@@ -44,6 +44,28 @@
 }
 
 @layer base {
+  /* El lienzo del navegador hereda el fondo de <html>. Sin declararlo es blanco,
+     y asoma por todas partes: en el rebote elástico de iOS (lateral y diagonal),
+     por detrás de las barras fijas mientras rebotan, y en el hueco que deja
+     min-h-dvh cuando la barra del navegador se recoge. En claro no se nota; en
+     oscuro es una franja blanca. */
+  html {
+    background-color: var(--color-stone-50);
+    /* El rebote horizontal no aporta nada aquí y es justo el gesto que destapa
+       el lienzo. El vertical se deja: es el scroll normal. */
+    overscroll-behavior-x: none;
+  }
+
+  html.dark {
+    background-color: var(--color-gray-950);
+  }
+
+  body {
+    /* clip y no hidden: hidden haría del body un contenedor de scroll y
+       rompería el sticky del header. clip solo recorta. */
+    overflow-x: clip;
+  }
+
   /* Smooth color transitions only while toggling dark mode (.theme-anim is
      added temporarily by useDarkMode). A permanent universal transition rule
      makes every re-render/animation repaint for 150ms extra — jank on mobile. */
