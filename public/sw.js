@@ -4,13 +4,20 @@
 // Los ficheros del build llevan hash en el nombre y aquí no se conocen, así que
 // no hay precache: se cachea sobre la marcha lo que se va pidiendo. Basta con
 // haber abierto la app una vez con red.
-const VERSION = 'v3'
+const VERSION = 'v4'
 const SHELL = `recetarium-shell-${VERSION}`
 const ASSETS = `recetarium-assets-${VERSION}`
 const API = `recetarium-api-${VERSION}`
 const NUESTRAS = [SHELL, ASSETS, API]
 
-const ESENCIALES = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/favicon.svg']
+const ESENCIALES = [
+  '/',
+  '/manifest.webmanifest',
+  '/manifest-oscuro.webmanifest',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/favicon.svg',
+]
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
