@@ -667,8 +667,10 @@ el hogar se puede influir desde la petición, la fase no está terminada.
       Marcar favorita **no** es editar, así que cualquiera puede marcarse las del común
 - [x] Invitaciones desde la interfaz, en la pantalla de Accesos
 - [x] `server/tests/catalogo-hogar.test.js`: 9 tests. Suite: 10 ficheros, 105 tests
-- [ ] `recetas.favorita` sigue en la tabla como red de un despliegue.
-      `sql/2026-08-favorita-columna-fuera.sql` la quita cuando esto lleve un rato en vivo
+- [x] `recetas.favorita` retirada en las dos ramas
+      (`sql/2026-08-favorita-columna-fuera.sql`). Al quitarla apareció que
+      `server/scripts/chef-recetas.mjs` la insertaba: el script del chef se habría roto en la
+      siguiente receta añadida. Corregido
 
 ### Dos decisiones que conviene no reabrir
 
