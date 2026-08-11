@@ -568,14 +568,41 @@ lo resolvió fue instrumentar el cliente y mirar la longitud y la forma reales d
 
 Cambio corto, efecto grande: aquí la app pasa a ser multiusuario de verdad.
 
-- `hogarDe(req)` deja de devolver la constante y resuelve el hogar del usuario de la
-  sesión vía `miembros`. Un único fichero.
-- `requireKey` se sustituye por `requireUser` en las 13 rutas.
-- `src/api/auth.ts`: `authedFetch` pasa a `credentials: 'include'` y, ante un 401,
-  redirige a `/login` en vez de lanzar un `window.prompt`. Fuera `localStorage`.
-- Se elimina `APP_KEY` del código y de las variables de Vercel.
+- [x] `hogarDe(req)` sale de `req.usuario.hogarId`. **Lanza** si no hay sesión en vez de
+      caer en un hogar por defecto: un fallo ruidoso en una ruta mal configurada es
+      preferible a servir en silencio los datos del hogar equivocado.
+- [x] `requireUser` sustituye a `requireKey` en las 13 rutas.
+- [x] **Los cuatro endpoints de estado exigen sesión también en lectura**, no solo en
+      escritura. Esto se adelanta de la fase 4 porque era un fallo de corrección, no de
+      seguridad: con los `GET` abiertos, un usuario con hogar propio leería la despensa del
+      hogar 1 y escribiría en la suya.
+- [x] `src/api/http.ts` **(nuevo)**: un único `apiFetch` que pone el token y, ante un 401
+      sobrevenido, olvida el token y recarga para que la puerta haga el resto. `client.ts` y
+      `estado.ts` pasan por ahí; fuera el `src/api/auth.ts` de la passphrase.
+      `yo.ts` no lo usa a propósito: ahí un 401 es la respuesta normal de "no has entrado",
+      y recargar sería un bucle.
+- [x] `APP_KEY` fuera del código y de `.env.example`. **Queda borrarla en Vercel**, donde ya
+      no la lee nadie.
+- [x] Tests: `auth.test.js` reescrito por completo. Los helpers crean sesiones de verdad en
+      `neon_auth` y el `setup` global purga lo creado, para que ningún fichero tenga que
+      acordarse. Suite: 9 ficheros, 96 tests.
 
-### Verificación obligatoria
+### Verificación obligatoria: hecha, y automatizada
+
+En `auth.test.js` hay dos tests que la cubren y quedan como red permanente:
+
+- Un usuario de otro hogar pide `/despensa` y recibe `[]`, no la del hogar 1. Y lo que
+  escribe no toca la ajena.
+- Intentar nombrar otro hogar desde la petición (`?hogar=`, `?hogarId=`, `?hogar_id=`) se
+  ignora: sigue devolviendo lo del hogar de la sesión.
+
+Más los de siempre: sin sesión, 401 en las 8 escrituras y en las 4 lecturas de estado; con
+un token inventado, 401; y la sesión se valida antes que el cuerpo, así que un payload
+inválido sin sesión sigue siendo 401 y no 400.
+
+El catálogo sigue leyéndose sin sesión; eso lo cierra la fase 4.
+
+### Nota histórica
 
 Crear un segundo usuario de prueba en la rama de test, y comprobar **con la API directa,
 no con la UI**, que no puede leer ni escribir el estado del hogar 1. Si en algún endpoint

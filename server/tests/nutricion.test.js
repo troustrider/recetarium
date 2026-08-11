@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { arrancarServidor, api, recetaValida } from './helpers.js'
+import { arrancarServidor, api, crearSesion, recetaValida } from './helpers.js'
 import { estimarMacros, fichaNutricional } from '../src/lib/nutricion.js'
 
 let servidor
@@ -7,7 +7,7 @@ let http
 
 beforeAll(async () => {
   servidor = await arrancarServidor()
-  http = api(servidor.base)
+  http = api(servidor.base, (await crearSesion()).token)
 })
 
 afterAll(() => servidor.cerrar())

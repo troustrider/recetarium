@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { arrancarServidor, api, recetaValida } from './helpers.js'
+import { arrancarServidor, api, crearSesion, recetaValida } from './helpers.js'
 
 let servidor
 let http
@@ -9,7 +9,7 @@ const UUID_INEXISTENTE = '00000000-0000-0000-0000-000000000000'
 
 beforeAll(async () => {
   servidor = await arrancarServidor()
-  http = api(servidor.base)
+  http = api(servidor.base, (await crearSesion()).token)
 })
 
 afterAll(async () => {

@@ -1,10 +1,13 @@
 // Dueño del estado de la app (plan, despensa, extras, pendientes).
 //
-// Hasta la fase 3 de docs/PLAN-multiusuario-auth.md no hay sesión y todo el
-// mundo escribe en el mismo hogar. Cuando llegue el login, este es el único
-// sitio que cambia: el resto del backend ya pide el dueño aquí.
-export const HOGAR_POR_DEFECTO = '00000000-0000-0000-0000-000000000001'
-
-export function hogarDe() {
-  return HOGAR_POR_DEFECTO
+// Sale de la sesión, nunca de la petición. Si el cliente pudiera influir en qué
+// hogar se lee o se escribe, bastaría con cambiar un número para ver la despensa
+// de otro: es el fallo número uno en apps multiusuario caseras.
+//
+// Lanza en vez de caer en un hogar por defecto. Un fallo ruidoso en una ruta mal
+// configurada es preferible a servir en silencio los datos del hogar equivocado.
+export function hogarDe(req) {
+  const hogarId = req.usuario?.hogarId
+  if (!hogarId) throw new Error('hogarDe() sin sesión: falta requireUser en esta ruta')
+  return hogarId
 }

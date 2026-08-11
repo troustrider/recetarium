@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import * as c from '../controllers/estadoController.js'
-import { requireKey } from '../lib/auth.js'
+import { requireUser } from '../lib/auth.js'
 
 const router = Router()
 
@@ -18,9 +18,9 @@ const router = Router()
  *     responses:
  *       200: { description: Guardado }
  *       400: { description: Inválido }
- *       401: { description: Clave incorrecta o ausente }
+ *       401: { description: Sesión requerida }
  */
-router.get('/', c.getExtras)
-router.put('/', requireKey, c.putExtras)
+router.get('/', requireUser, c.getExtras)
+router.put('/', requireUser, c.putExtras)
 
 export default router

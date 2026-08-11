@@ -1,4 +1,7 @@
 import app from '../src/app.js'
+import sql from '../src/lib/db.js'
+
+const HOGAR_COMPARTIDO = '00000000-0000-0000-0000-000000000001'
 
 export async function arrancarServidor() {
   const server = app.listen(0)
@@ -10,22 +13,77 @@ export async function arrancarServidor() {
   }
 }
 
-export function api(base) {
-  const conClave = (options = {}) => ({
+// Toda la API pide sesión, así que los tests necesitan una. Se escribe a mano en
+// neon_auth porque no hay forma de completar un login real desde aquí, y con
+// token opaco porque emitir un JWT válido exigiría la clave privada del servicio
+// gestionado. requireUser acepta las dos formas.
+// Lo que crean los helpers se apunta aquí y lo purga el afterAll global de
+// setup.js, para no repetir la misma limpieza en cada fichero de test.
+const creados = { usuarios: [], hogares: [] }
+
+export async function limpiarCreados() {
+  if (creados.usuarios.length) {
+    await sql`DELETE FROM miembros WHERE usuario_id = ANY(${creados.usuarios}::uuid[])`
+    await sql`DELETE FROM neon_auth.session WHERE "userId" = ANY(${creados.usuarios}::uuid[])`
+    await sql`DELETE FROM neon_auth."user" WHERE id = ANY(${creados.usuarios}::uuid[])`
+    creados.usuarios.length = 0
+  }
+  if (creados.hogares.length) {
+    await sql`DELETE FROM hogares WHERE id = ANY(${creados.hogares}::uuid[])`
+    creados.hogares.length = 0
+  }
+}
+
+export async function crearSesion({ rol = 'admin', hogarId = HOGAR_COMPARTIDO } = {}) {
+  const email = `helper-${crypto.randomUUID()}@test.dev`
+  const [u] = await sql`
+    INSERT INTO neon_auth."user" (id, name, email, "emailVerified", "createdAt", "updatedAt")
+    VALUES (gen_random_uuid(), 'Helper', ${email}, true, now(), now())
+    RETURNING id
+  `
+  const token = `helper-${crypto.randomUUID()}`
+  await sql`
+    INSERT INTO neon_auth.session (id, token, "userId", "expiresAt", "createdAt", "updatedAt")
+    VALUES (gen_random_uuid(), ${token}, ${u.id}, now() + interval '1 day', now(), now())
+  `
+  await sql`INSERT INTO miembros (usuario_id, hogar_id, rol) VALUES (${u.id}, ${hogarId}, ${rol})`
+  creados.usuarios.push(u.id)
+
+  return {
+    token,
+    usuarioId: u.id,
+    email,
+    hogarId,
+    borrar: async () => {
+      await sql`DELETE FROM miembros WHERE usuario_id = ${u.id}`
+      await sql`DELETE FROM neon_auth.session WHERE "userId" = ${u.id}`
+      await sql`DELETE FROM neon_auth."user" WHERE id = ${u.id}`
+    },
+  }
+}
+
+export async function crearHogar(nombre = 'Hogar de pruebas') {
+  const [h] = await sql`INSERT INTO hogares (nombre) VALUES (${nombre}) RETURNING id`
+  creados.hogares.push(h.id)
+  return { id: h.id, borrar: () => sql`DELETE FROM hogares WHERE id = ${h.id}` }
+}
+
+export function api(base, token) {
+  const con = (options = {}) => ({
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(process.env.APP_KEY ? { 'x-app-key': process.env.APP_KEY } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   })
 
   return {
-    get: (ruta) => fetch(`${base}${ruta}`),
-    post: (ruta, body) => fetch(`${base}${ruta}`, conClave({ method: 'POST', body: JSON.stringify(body) })),
-    put: (ruta, body) => fetch(`${base}${ruta}`, conClave({ method: 'PUT', body: JSON.stringify(body) })),
-    patch: (ruta) => fetch(`${base}${ruta}`, conClave({ method: 'PATCH' })),
-    del: (ruta) => fetch(`${base}${ruta}`, conClave({ method: 'DELETE' })),
+    get: (ruta) => fetch(`${base}${ruta}`, con()),
+    post: (ruta, body) => fetch(`${base}${ruta}`, con({ method: 'POST', body: JSON.stringify(body) })),
+    put: (ruta, body) => fetch(`${base}${ruta}`, con({ method: 'PUT', body: JSON.stringify(body) })),
+    patch: (ruta) => fetch(`${base}${ruta}`, con({ method: 'PATCH' })),
+    del: (ruta) => fetch(`${base}${ruta}`, con({ method: 'DELETE' })),
     crudo: (ruta, options) => fetch(`${base}${ruta}`, options),
   }
 }

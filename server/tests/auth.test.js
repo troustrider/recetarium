@@ -1,30 +1,36 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest'
-import { arrancarServidor, api, recetaValida } from './helpers.js'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { arrancarServidor, api, crearSesion, crearHogar, recetaValida } from './helpers.js'
+
+// Sustituye a los tests de la passphrase compartida. Lo que hay que garantizar
+// ahora no es que una clave abra la puerta, sino que la sesión decide qué hogar
+// se toca y que nadie ve el de otro.
 
 let servidor
-let http
 let base
-const CLAVE_ORIGINAL = process.env.APP_KEY
+let sesion
+let http
 
-beforeAll(async () => {
-  servidor = await arrancarServidor()
-  base = servidor.base
-  http = api(base)
-})
-
-afterAll(() => servidor.cerrar())
-afterEach(() => { process.env.APP_KEY = CLAVE_ORIGINAL })
+const RUTAS_ESTADO = ['/plan', '/despensa', '/extras', '/pendientes']
 
 const ESCRITURAS = [
   { metodo: 'POST', ruta: '/recetas', body: recetaValida() },
   { metodo: 'PUT', ruta: '/recetas/00000000-0000-0000-0000-000000000000', body: recetaValida() },
   { metodo: 'PATCH', ruta: '/recetas/00000000-0000-0000-0000-000000000000/favorita' },
   { metodo: 'DELETE', ruta: '/recetas/00000000-0000-0000-0000-000000000000' },
-  { metodo: 'PUT', ruta: '/plan', body: [] },
-  { metodo: 'PUT', ruta: '/despensa', body: [] },
-  { metodo: 'PUT', ruta: '/extras', body: [] },
-  { metodo: 'PUT', ruta: '/pendientes', body: [] },
+  ...RUTAS_ESTADO.map((ruta) => ({ metodo: 'PUT', ruta, body: [] })),
 ]
+
+beforeAll(async () => {
+  servidor = await arrancarServidor()
+  base = servidor.base
+  sesion = await crearSesion()
+  http = api(base, sesion.token)
+})
+
+afterAll(async () => {
+  await sesion.borrar()
+  await servidor.cerrar()
+})
 
 function peticion({ metodo, ruta, body }, headers = {}) {
   return fetch(`${base}${ruta}`, {
@@ -34,49 +40,101 @@ function peticion({ metodo, ruta, body }, headers = {}) {
   })
 }
 
-describe('requireKey', () => {
-  it('rechaza toda escritura sin la clave', async () => {
+describe('requireUser en la API', () => {
+  it('rechaza toda escritura sin sesión', async () => {
     for (const escritura of ESCRITURAS) {
       const res = await peticion(escritura)
       expect(res.status, `${escritura.metodo} ${escritura.ruta}`).toBe(401)
-      expect(await res.json()).toEqual({ error: 'Clave incorrecta o ausente' })
+      expect((await res.json()).error).toMatch(/sesión/i)
     }
   })
 
-  it('rechaza una clave incorrecta', async () => {
+  it('rechaza un token inventado', async () => {
     for (const escritura of ESCRITURAS) {
-      const res = await peticion(escritura, { 'x-app-key': 'clave-que-no-es' })
+      const res = await peticion(escritura, { Authorization: 'Bearer no-existe' })
       expect(res.status, `${escritura.metodo} ${escritura.ruta}`).toBe(401)
     }
   })
 
-  it('deja pasar con la clave correcta', async () => {
+  it('valida la sesión antes que el cuerpo: payload inválido sin sesión sigue siendo 401', async () => {
+    const res = await peticion({ metodo: 'POST', ruta: '/recetas', body: { basura: true } })
+    expect(res.status).toBe(401)
+  })
+
+  it('deja pasar con sesión válida', async () => {
     for (const escritura of ESCRITURAS) {
-      const res = await peticion(escritura, { 'x-app-key': process.env.APP_KEY })
+      const res = await peticion(escritura, { Authorization: `Bearer ${sesion.token}` })
       expect(res.status, `${escritura.metodo} ${escritura.ruta}`).not.toBe(401)
     }
-    // La receta creada por el POST de arriba no debe quedarse en la BD.
     const recetas = await (await http.get('/recetas')).json()
     for (const r of recetas.filter((x) => x.nombre === 'Receta de prueba')) {
       await http.del(`/recetas/${r.id}`)
     }
   })
 
-  it('valida la clave antes que el cuerpo: payload inválido sin clave sigue siendo 401', async () => {
-    const res = await peticion({ metodo: 'POST', ruta: '/recetas', body: { basura: true } })
-    expect(res.status).toBe(401)
+  it('el estado tampoco se lee sin sesión', async () => {
+    for (const ruta of RUTAS_ESTADO) {
+      const res = await fetch(`${base}${ruta}`)
+      expect(res.status, ruta).toBe(401)
+    }
   })
 
-  it('sin APP_KEY configurada deja las escrituras abiertas', async () => {
-    delete process.env.APP_KEY
-    const res = await peticion({ metodo: 'PUT', ruta: '/plan', body: [] })
-    expect(res.status).toBe(200)
+  it('el catálogo se lee sin sesión, que es un cambio de la fase 4', async () => {
+    expect((await fetch(`${base}/recetas`)).status).toBe(200)
+  })
+})
+
+describe('aislamiento entre hogares', () => {
+  it('cada hogar ve su propio estado, y no el del otro', async () => {
+    const otroHogar = await crearHogar('Hogar aislado')
+    const otra = await crearSesion({ rol: 'usuario', hogarId: otroHogar.id })
+    const suyo = api(base, otra.token)
+
+    try {
+      const despensaCompartida = [
+        { nombre: 'secreto del hogar 1', familia: 'otros', estado: 'lleno' },
+      ]
+      expect((await http.put('/despensa', despensaCompartida)).status).toBe(200)
+
+      // El vecino no ve nada de lo anterior, aunque pida la misma ruta.
+      const suya = await (await suyo.get('/despensa')).json()
+      expect(suya).toEqual([])
+
+      // Y lo que escribe no toca el hogar ajeno.
+      expect((await suyo.put('/despensa', [{ nombre: 'lo mio', familia: 'otros', estado: 'poco' }])).status).toBe(200)
+      const mia = await (await http.get('/despensa')).json()
+      expect(mia.map((d) => d.nombre)).toEqual(['secreto del hogar 1'])
+    } finally {
+      await http.put('/despensa', [])
+      await otra.borrar()
+      await otroHogar.borrar()
+    }
   })
 
-  it('las lecturas nunca piden clave', async () => {
-    for (const ruta of ['/recetas', '/plan', '/despensa', '/extras', '/pendientes']) {
-      const res = await http.get(ruta)
-      expect(res.status, ruta).toBe(200)
+  it('el hogar no se puede influir desde la petición', async () => {
+    const otroHogar = await crearHogar('Hogar que no es mio')
+    const otra = await crearSesion({ rol: 'usuario', hogarId: otroHogar.id })
+    const suyo = api(base, otra.token)
+
+    try {
+      await http.put('/plan', [
+        { dia: 'Lunes', recetaId: '00000000-0000-0000-0000-000000000000', raciones: 2 },
+      ])
+
+      // Cualquier intento de nombrar otro hogar debe ser ignorado.
+      for (const intento of [
+        `/plan?hogar=${'00000000-0000-0000-0000-000000000001'}`,
+        `/plan?hogarId=${'00000000-0000-0000-0000-000000000001'}`,
+        '/plan?hogar_id=00000000-0000-0000-0000-000000000001',
+      ]) {
+        const res = await suyo.get(intento)
+        expect(res.status, intento).toBe(200)
+        expect(await res.json(), intento).toEqual([])
+      }
+    } finally {
+      await http.put('/plan', [])
+      await otra.borrar()
+      await otroHogar.borrar()
     }
   })
 })

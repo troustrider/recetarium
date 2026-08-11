@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import * as c from '../controllers/recetasController.js'
-import { requireKey } from '../lib/auth.js'
+import { requireUser } from '../lib/auth.js'
 
 const router = Router()
 
@@ -84,7 +84,7 @@ router.get('/:id', c.getById)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', requireKey, c.create)
+router.post('/', requireUser, c.create)
 
 /**
  * @swagger
@@ -123,7 +123,7 @@ router.post('/', requireKey, c.create)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/:id', requireKey, c.update)
+router.put('/:id', requireUser, c.update)
 
 /**
  * @swagger
@@ -150,7 +150,7 @@ router.put('/:id', requireKey, c.update)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.patch('/:id/favorita', requireKey, c.toggleFavorita)
+router.patch('/:id/favorita', requireUser, c.toggleFavorita)
 
 /**
  * @swagger
@@ -173,7 +173,7 @@ router.patch('/:id/favorita', requireKey, c.toggleFavorita)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.delete('/:id', requireKey, c.remove)
+router.delete('/:id', requireUser, c.remove)
 
 /**
  * @swagger
@@ -200,6 +200,6 @@ router.delete('/:id', requireKey, c.remove)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/:id/restaurar', requireKey, c.restore)
+router.post('/:id/restaurar', requireUser, c.restore)
 
 export default router

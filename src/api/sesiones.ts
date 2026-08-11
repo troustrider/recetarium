@@ -1,4 +1,4 @@
-import { cabeceraSesion } from '../auth'
+import { apiJson } from './http'
 
 export interface SesionDTO {
   id: string
@@ -33,13 +33,4 @@ export interface PanelSesiones {
   dias: number
 }
 
-const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
-
-export async function getPanelSesiones(dias = 7): Promise<PanelSesiones> {
-  const res = await fetch(`${BASE}/admin/sesiones?dias=${dias}`, { headers: cabeceraSesion() })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? `Error ${res.status}`)
-  }
-  return res.json() as Promise<PanelSesiones>
-}
+export const getPanelSesiones = (dias = 7) => apiJson<PanelSesiones>(`/admin/sesiones?dias=${dias}`)

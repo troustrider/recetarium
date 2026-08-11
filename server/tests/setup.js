@@ -17,3 +17,9 @@ if (!process.env.DATABASE_URL.includes(ENDPOINT_PRUEBAS)) {
       'Abortado para no escribir sobre producción.'
   )
 }
+
+// Los helpers apuntan los usuarios y hogares que crean; esto los purga al
+// terminar cada fichero, para que ningún test tenga que acordarse.
+const { afterAll } = await import('vitest')
+const { limpiarCreados } = await import('./helpers.js')
+afterAll(limpiarCreados)

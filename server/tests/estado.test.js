@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { arrancarServidor, api } from './helpers.js'
+import { arrancarServidor, api, crearSesion } from './helpers.js'
 
 let servidor
 let http
@@ -7,7 +7,7 @@ const original = {}
 
 beforeAll(async () => {
   servidor = await arrancarServidor()
-  http = api(servidor.base)
+  http = api(servidor.base, (await crearSesion()).token)
   for (const ruta of ['/plan', '/despensa', '/extras', '/pendientes']) {
     original[ruta] = await (await http.get(ruta)).json()
   }

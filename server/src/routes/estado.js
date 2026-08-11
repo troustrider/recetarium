@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import * as c from '../controllers/estadoController.js'
-import { requireKey } from '../lib/auth.js'
+import { requireUser } from '../lib/auth.js'
 
 const router = Router()
 
@@ -22,9 +22,9 @@ const router = Router()
  *       400:
  *         description: Plan inválido
  *       401:
- *         description: Clave incorrecta o ausente
+ *         description: Sesión requerida
  */
-router.get('/', c.getPlan)
-router.put('/', requireKey, c.putPlan)
+router.get('/', requireUser, c.getPlan)
+router.put('/', requireUser, c.putPlan)
 
 export default router

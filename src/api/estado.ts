@@ -1,4 +1,4 @@
-import { authedFetch } from './auth'
+import { apiJson, jsonBody } from './http'
 import type { Ingrediente } from '../types/receta'
 
 export interface EntradaPlanDTO {
@@ -23,80 +23,17 @@ export interface PendientePlanDTO {
   raciones: number
 }
 
-const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
-const URL_PLAN = `${BASE}/plan`
-const URL_PENDIENTES = `${BASE}/pendientes`
-const URL_EXTRAS = `${BASE}/extras`
-const URL_DESPENSA = `${BASE}/despensa`
+const guardar = (ruta: string, datos: unknown) =>
+  apiJson<unknown>(ruta, { method: 'PUT', ...jsonBody(datos) }).then(() => undefined)
 
-export async function getPlan(): Promise<EntradaPlanDTO[]> {
-  const res = await fetch(URL_PLAN)
-  if (!res.ok) throw new Error(`Error ${res.status}`)
-  return res.json() as Promise<EntradaPlanDTO[]>
-}
+export const getPlan = () => apiJson<EntradaPlanDTO[]>('/plan')
+export const savePlan = (plan: EntradaPlanDTO[]) => guardar('/plan', plan)
 
-export async function savePlan(plan: EntradaPlanDTO[]): Promise<void> {
-  const res = await authedFetch(URL_PLAN, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(plan),
-  })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? `Error ${res.status}`)
-  }
-}
+export const getPendientes = () => apiJson<PendientePlanDTO[]>('/pendientes')
+export const savePendientes = (p: PendientePlanDTO[]) => guardar('/pendientes', p)
 
-export async function getPendientes(): Promise<PendientePlanDTO[]> {
-  const res = await fetch(URL_PENDIENTES)
-  if (!res.ok) throw new Error(`Error ${res.status}`)
-  return res.json() as Promise<PendientePlanDTO[]>
-}
+export const getDespensa = () => apiJson<IngredienteDespensaDTO[]>('/despensa')
+export const saveDespensa = (d: IngredienteDespensaDTO[]) => guardar('/despensa', d)
 
-export async function savePendientes(pendientes: PendientePlanDTO[]): Promise<void> {
-  const res = await authedFetch(URL_PENDIENTES, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(pendientes),
-  })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? `Error ${res.status}`)
-  }
-}
-
-export async function getDespensa(): Promise<IngredienteDespensaDTO[]> {
-  const res = await fetch(URL_DESPENSA)
-  if (!res.ok) throw new Error(`Error ${res.status}`)
-  return res.json() as Promise<IngredienteDespensaDTO[]>
-}
-
-export async function saveDespensa(despensa: IngredienteDespensaDTO[]): Promise<void> {
-  const res = await authedFetch(URL_DESPENSA, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(despensa),
-  })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? `Error ${res.status}`)
-  }
-}
-
-export async function getExtras(): Promise<Ingrediente[]> {
-  const res = await fetch(URL_EXTRAS)
-  if (!res.ok) throw new Error(`Error ${res.status}`)
-  return res.json() as Promise<Ingrediente[]>
-}
-
-export async function saveExtras(extras: Ingrediente[]): Promise<void> {
-  const res = await authedFetch(URL_EXTRAS, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(extras),
-  })
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? `Error ${res.status}`)
-  }
-}
+export const getExtras = () => apiJson<Ingrediente[]>('/extras')
+export const saveExtras = (e: Ingrediente[]) => guardar('/extras', e)

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { arrancarServidor, api, recetaValida } from './helpers.js'
+import { arrancarServidor, api, crearSesion, recetaValida } from './helpers.js'
 
 // La guarnición va en su propio bloque para no contaminar la ficha del plato.
 // Lo que más importa aquí es el gluten: un arroz o una pasta de guarnición no
@@ -11,7 +11,7 @@ const creadas = new Set()
 
 beforeAll(async () => {
   servidor = await arrancarServidor()
-  http = api(servidor.base)
+  http = api(servidor.base, (await crearSesion()).token)
 })
 
 afterAll(async () => {

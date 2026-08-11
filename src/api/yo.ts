@@ -11,6 +11,9 @@ export interface UsuarioDTO {
 
 const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
+// No usa apiFetch a propósito: ese recarga la página ante un 401, y aquí un 401
+// es la respuesta normal de "no has entrado". Recargar sería un bucle.
+//
 // Devuelve null cuando no hay sesión válida, y solo lanza cuando algo se ha
 // roto de verdad: al arrancar la app hay que distinguir "no has entrado" de
 // "la API está caída", porque la primera lleva a la landing y la segunda no.

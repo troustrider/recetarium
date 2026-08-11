@@ -1,18 +1,6 @@
 import { createRemoteJWKSet, jwtVerify } from 'jose'
 import sql from './db.js'
 
-// Passphrase compartida para escrituras. Si APP_KEY no está configurada
-// (p. ej. en local), el middleware deja pasar para no romper el desarrollo.
-//
-// Se elimina en la fase 3 de docs/PLAN-multiusuario-auth.md, cuando requireUser
-// lo sustituya en las 13 rutas. Hasta entonces es lo único que protege la API.
-export function requireKey(req, res, next) {
-  const expected = process.env.APP_KEY
-  if (!expected) return next()
-  if (req.get('x-app-key') === expected) return next()
-  return res.status(401).json({ error: 'Clave incorrecta o ausente' })
-}
-
 // El token de sesión viaja en Authorization: Bearer, no en cookie. El servicio
 // de auth vive en otro host (*.neonauth.aws.neon.tech), así que su cookie nunca
 // llega hasta aquí. El cliente saca el token de getSession(), que lo devuelve en

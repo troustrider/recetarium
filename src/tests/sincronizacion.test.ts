@@ -66,7 +66,7 @@ describe('guardado fallido', () => {
   })
 
   it('un 401 por clave incorrecta también se registra', async () => {
-    guardar.mockRejectedValue(new Error('Clave incorrecta o ausente'))
+    guardar.mockRejectedValue(new Error('Sesión inválida o caducada'))
     const { result } = await hidratado()
     act(() => result.current[1](['tomate']))
 

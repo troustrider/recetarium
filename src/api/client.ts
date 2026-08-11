@@ -1,61 +1,37 @@
 import type { Receta } from '../types/receta'
-import { authedFetch } from './auth'
+import { apiFetch, apiJson, jsonBody } from './http'
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 type Filtros = { categoria?: string; sabor?: string }
-
-const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
-const URL_RECETAS = `${BASE}/recetas`
-
-async function manejarRespuesta<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error ?? `Error ${res.status}`)
-  }
-  return res.json() as Promise<T>
-}
 
 export async function getRecetas(filtros?: Filtros): Promise<Receta[]> {
   const params = new URLSearchParams()
   if (filtros?.categoria) params.set('categoria', filtros.categoria)
   if (filtros?.sabor) params.set('sabor', filtros.sabor)
   const query = params.toString() ? `?${params}` : ''
-  const res = await fetch(`${URL_RECETAS}${query}`)
-  return manejarRespuesta<Receta[]>(res)
+  return apiJson<Receta[]>(`/recetas${query}`)
 }
 
 export async function getReceta(id: string): Promise<Receta> {
-  const res = await fetch(`${URL_RECETAS}/${id}`)
-  return manejarRespuesta<Receta>(res)
+  return apiJson<Receta>(`/recetas/${id}`)
 }
 
 export async function createReceta(data: RecetaFormData): Promise<Receta> {
-  const res = await authedFetch(URL_RECETAS, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-  return manejarRespuesta<Receta>(res)
+  return apiJson<Receta>('/recetas', { method: 'POST', ...jsonBody(data) })
 }
 
 export async function updateReceta(id: string, data: RecetaFormData): Promise<Receta> {
-  const res = await authedFetch(`${URL_RECETAS}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-  return manejarRespuesta<Receta>(res)
+  return apiJson<Receta>(`/recetas/${id}`, { method: 'PUT', ...jsonBody(data) })
 }
 
 export async function toggleFavorita(id: string): Promise<Receta> {
-  const res = await authedFetch(`${URL_RECETAS}/${id}/favorita`, { method: 'PATCH' })
-  return manejarRespuesta<Receta>(res)
+  return apiJson<Receta>(`/recetas/${id}/favorita`, { method: 'PATCH' })
 }
 
 export async function deleteReceta(id: string): Promise<void> {
-  const res = await authedFetch(`${URL_RECETAS}/${id}`, { method: 'DELETE' })
+  const res = await apiFetch(`/recetas/${id}`, { method: 'DELETE' })
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
+    const body = await res.json().catch(() => ({}) as { error?: string })
     throw new Error(body.error ?? `Error ${res.status}`)
   }
 }
@@ -63,6 +39,5 @@ export async function deleteReceta(id: string): Promise<void> {
 // El borrado es lógico, así que la receta vuelve con su mismo id y las entradas
 // del plan que la referencian siguen valiendo.
 export async function restoreReceta(id: string): Promise<Receta> {
-  const res = await authedFetch(`${URL_RECETAS}/${id}/restaurar`, { method: 'POST' })
-  return manejarRespuesta<Receta>(res)
+  return apiJson<Receta>(`/recetas/${id}/restaurar`, { method: 'POST' })
 }
