@@ -1,6 +1,23 @@
 # API
 
-Base URL: `/api/v1/recetas`
+Base URL: `/api/v1`. Esta página cubre el recurso de recetas; el resto de endpoints
+(estado del hogar, sesión y administración) están tabulados en [design.md](design.md) y con
+detalle en Swagger UI, en `/api/docs`.
+
+## Acceso
+
+**Todos los endpoints exigen sesión.** El token va en la cabecera `Authorization: Bearer`.
+Sin ella la respuesta es `401`.
+
+Sobre el catálogo hay además permisos por rol:
+
+| Operación | Quién puede |
+|---|---|
+| Leer | Cualquiera con sesión. Ve el catálogo común más las recetas privadas de su hogar |
+| Crear | Cualquiera. Un admin crea en el catálogo común salvo que mande `privada: true`; el resto solo recetas de su hogar |
+| Editar y borrar en el catálogo común | Solo `admin`, si no `403` |
+| Editar y borrar una receta privada | Solo su hogar. Si es de otro, `404` y no `403`, para no filtrar que existe |
+| Marcar favorita | Cualquiera que vea la receta. Es del hogar, no de la receta |
 
 ## Endpoints
 
@@ -109,3 +126,7 @@ La validación se aplica en los endpoints POST y PUT. Los campos obligatorios so
 ## Persistencia
 
 Los datos se almacenan en PostgreSQL (Neon). La capa de servicio (`recetasService.js`) es la única que conoce este detalle: rutas y controladores son agnósticos a la fuente de datos.
+
+`favorita` y `privada` no son columnas de la receta: el servicio los deriva del hogar que
+pregunta, así que la misma receta sale con `favorita` distinta para cada hogar sin que el
+contrato cambie de forma.

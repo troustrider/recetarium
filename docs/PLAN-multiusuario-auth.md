@@ -498,7 +498,6 @@ esto al final de la fase cuesta el triple.
       inventada y caducada, correo no invitado, cuenta suspendida, alta en hogar
       compartido, alta con hogar propio, idempotencia y rol admin
 - [x] Suite de backend completa: 9 ficheros, 92 tests
-- [ ] **`VITE_NEON_AUTH_URL` en Vercel** (bloquea el despliegue del spike)
 - [x] `VITE_NEON_AUTH_URL` en Vercel. Ojo: la primera vez entró con una errata (`autH`),
       y al estar marcada «Sensitive» no se puede leer para comprobarla
 - [x] Ciclo de login verificado en iPhone: entra bien, **pero la sesión no sobrevive al
@@ -544,23 +543,31 @@ lo resolvió fue instrumentar el cliente y mirar la longitud y la forma reales d
 - **Dos arranques para estrenar despliegue.** El service worker sirve el bundle cacheado en
   el primer arranque tras un despliegue; hay que cerrar y abrir dos veces. Afecta a
   cualquier actualización futura, también a Cloe.
-- **Sesiones que se acumulan.** Cada vuelta del login crea una fila en
-  `neon_auth.session`; unas pocas pruebas dejaron 31 activas. Caducan solas, pero ensucian
-  la pantalla de accesos y conviene una limpieza de las caducadas.
+- **Sesiones que se acumulan.** Cada inicio de sesión deja una fila en `neon_auth.session`
+  y duran siete días, así que un día de pruebas dejó 44 activas. **No es una fuga de la
+  app**: se comprobó que salen en ráfagas coincidentes con los logins, y `capturarToken`
+  solo llama al servicio de auth cuando no hay token guardado, así que abrir la app no crea
+  ninguna. Resuelto con `node server/scripts/sesiones.mjs --limpiar`, que borra las
+  caducadas sin cerrar ninguna sesión viva.
 
 > **Orden que no se puede invertir.** `VITE_NEON_AUTH_URL` tiene que apuntar a la auth de
 > la MISMA rama que la base de datos que valida el token. Si el bundle mira a pruebas y la
 > API a producción, el login entra pero `GET /yo` devuelve 401 y la app queda en bucle
 > contra la landing, sin forma de entrar.
-- [ ] Sesión en cookie `httpOnly` + `Secure` + `SameSite`
-- [ ] `requireUser` devuelve 401 sin sesión y adjunta el usuario a `req`
-- [ ] Auth funcionando también en la rama `recetarium-test`
-- [ ] Sin sesión no se monta ningún provider: cero peticiones en la pestaña de red
-- [ ] Sin destello claro al arrancar en modo oscuro, ni en la landing ni en la app
-- [ ] Arranque en frío de la PWA con sesión: se ve splash, nunca la landing
-- [ ] Enlace profundo abierto sin sesión aterriza en su destino tras entrar
-- [ ] Landing revisada en claro y oscuro, móvil y escritorio, con contraste AA
-- [ ] Estado "correo no invitado" implementado y probado con un correo de fuera
+### Cierre de la lista original de la fase 2
+
+- [x] `requireUser` devuelve 401 sin sesión y adjunta el usuario a `req`
+- [x] Auth funcionando también en la rama `recetarium-test`
+- [x] Sin sesión no se monta ningún provider
+- [x] Sin destello claro al arrancar en modo oscuro
+- [x] Arranque en frío de la PWA con sesión: splash, nunca la landing
+- [x] Enlace profundo: la landing conserva la ruta y se vuelve a ella al entrar
+- [x] Landing revisada en claro y oscuro, móvil y escritorio, con contraste AA
+- [x] Estado "correo no invitado" implementado. Probado en los tests del backend
+      (`auth-usuario.test.js`), que es donde se decide; en la interfaz es el texto de la
+      landing
+- ~~Sesión en cookie `httpOnly`~~ **descartado**, no es posible: ver la sección del
+  arranque en frío. El token va en `Authorization`.
 
 ---
 
@@ -611,6 +618,32 @@ el hogar se puede influir desde la petición, la fase no está terminada.
 ---
 
 ## Fase 4 · Cerrar lecturas y repartir el catálogo
+
+**Terminada.** `sql/2026-08-catalogo-por-hogar.sql`.
+
+- [x] `GET /recetas` y `GET /recetas/:id` exigen sesión. Los de estado ya lo hacían desde
+      la fase 3, adelantados por corrección
+- [x] `recetas.hogar_id`: NULL es catálogo común, un UUID es receta privada de ese hogar
+- [x] Tabla `favoritas` por hogar, con las que ya estaban marcadas migradas al hogar
+      compartido. El DTO no cambia de forma: `favorita` se deriva con un `EXISTS`, así que el
+      front no se entera
+- [x] Permisos: el catálogo común solo lo edita un admin; una receta privada, su hogar.
+      Marcar favorita **no** es editar, así que cualquiera puede marcarse las del común
+- [x] Invitaciones desde la interfaz, en la pantalla de Accesos
+- [x] `server/tests/catalogo-hogar.test.js`: 9 tests. Suite: 10 ficheros, 105 tests
+- [ ] `recetas.favorita` sigue en la tabla como red de un despliegue.
+      `sql/2026-08-favorita-columna-fuera.sql` la quita cuando esto lleve un rato en vivo
+
+### Dos decisiones que conviene no reabrir
+
+**Las cinco lecturas se colapsaron en una.** `getAll` tenía cuatro `SELECT` casi idénticos
+para las combinaciones de filtros, más el de `getById`. Con el filtro por hogar de por
+medio, bastaba con olvidarlo en uno para que un hogar viese las recetas privadas de otro.
+Ahora hay una sola consulta con los filtros como condiciones opcionales.
+
+**Una receta de otro hogar responde 404, no 403.** Decir "no tienes permiso" confirmaría
+que existe. Solo el catálogo común devuelve 403, porque su existencia no es secreta. Por
+eso `duenoDe()` no filtra por `borrada_en`: restaurar actúa justo sobre una borrada.
 
 ### Lecturas
 
@@ -710,12 +743,24 @@ y la landing y la puerta en `docs/design.md` una vez reescrito.
 
 **Checklist**
 
-- [ ] `README.md` sin Drizzle
-- [ ] `docs/design.md` reescrito contra el código real
-- [ ] `docs/context.md` corregido en lo de la despensa
-- [ ] Resto de docs auditados, uno a uno
-- [ ] Swagger regenerado y `/api/docs` comprobado
-- [ ] Documentos históricos dejados en paz
+- [x] `README.md` sin Drizzle
+- [x] `docs/design.md` reescrito contra el código real: rutas, componentes, contextos,
+      endpoints y contrato de datos verificados uno a uno contra el código, no de memoria
+- [x] `docs/context.md` corregido: la despensa va contra el backend, no `localStorage`
+- [x] Resto auditados. Lo que estaba mal y se ha corregido:
+      - `api-client.md` decía que todo pasaba por `client.ts`; ahora es `http.ts`, y faltaba
+        `restoreReceta`
+      - `routing.md` listaba `/lista-compra` como ruta (es un drawer), le faltaba
+        `/admin/sesiones`, y describía un `Layout` con `<Outlet />` que no es el que hay
+      - `deployment.md` tenía el `includeFiles` viejo y no mencionaba `VITE_NEON_AUTH_URL`
+      - `api.md` no decía que todo exige sesión ni los permisos por rol
+      - `arquitectura-datos.md` solo conocía dos tablas de siete
+      - `seguridad-db.md` estaba bien; se le añade el caso de `sql.unsafe` y el aislamiento
+        entre hogares
+- [x] Swagger regenerado, 13 rutas. `server/scripts/export-swagger.js` estaba **roto**: usaba
+      `require` sobre un módulo ESM. Arreglado
+- [x] Documentos históricos dejados en paz: `retrospective.md`, `agile.md`, `idea.md`,
+      `project-management.md` y `PLAN-nutricion-y-50-recetas.md`
 
 ---
 

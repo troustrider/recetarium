@@ -98,6 +98,139 @@
             "example": [
               "Batir los huevos"
             ]
+          },
+          "precioPorPorcion": {
+            "type": "number",
+            "example": 2.5
+          },
+          "porciones": {
+            "type": "integer",
+            "example": 2
+          },
+          "calorias": {
+            "type": "integer",
+            "example": 520
+          },
+          "proteinas": {
+            "type": "number",
+            "example": 38.5
+          },
+          "carbohidratos": {
+            "type": "number",
+            "example": 45
+          },
+          "grasas": {
+            "type": "number",
+            "example": 18
+          },
+          "hierro": {
+            "type": "number",
+            "example": 4.6,
+            "readOnly": true,
+            "description": "mg/porción. Lo calcula el servidor desde los ingredientes."
+          },
+          "sinGluten": {
+            "type": "boolean",
+            "nullable": true,
+            "example": false,
+            "readOnly": true,
+            "description": "null si algún ingrediente no tiene ficha: ahí no se puede afirmar que no lleve."
+          },
+          "micros": {
+            "type": "object",
+            "readOnly": true,
+            "description": "Micronutrientes por porción, calculados desde los ingredientes.",
+            "properties": {
+              "fibra": {
+                "type": "number",
+                "example": 6.2
+              },
+              "azucares": {
+                "type": "number",
+                "example": 8.1
+              },
+              "saturadas": {
+                "type": "number",
+                "example": 4.3
+              },
+              "sal": {
+                "type": "number",
+                "example": 1.94,
+                "description": "La de los ingredientes; no cuenta la añadida al cocinar."
+              },
+              "hierroHemo": {
+                "type": "number",
+                "example": 1.8,
+                "description": "Parte del hierro que es hemo (carne, pescado)."
+              },
+              "vitaminaC": {
+                "type": "integer",
+                "example": 42
+              },
+              "calcio": {
+                "type": "integer",
+                "example": 180
+              },
+              "b12": {
+                "type": "number",
+                "example": 1.4
+              },
+              "folato": {
+                "type": "integer",
+                "example": 96
+              },
+              "gluten": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "fuentes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "nombre": {
+                          "type": "string",
+                          "example": "salsa de soja"
+                        },
+                        "certeza": {
+                          "type": "string",
+                          "enum": [
+                            "si",
+                            "depende"
+                          ]
+                        },
+                        "sustituto": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "tamari sin gluten"
+                        }
+                      }
+                    }
+                  },
+                  "evitable": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              },
+              "estimadoDe": {
+                "type": "string",
+                "enum": [
+                  "completo",
+                  "parcial"
+                ]
+              }
+            }
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "principal",
+              "postre",
+              "desayuno",
+              "entrante"
+            ],
+            "example": "principal"
           }
         }
       },
@@ -146,6 +279,33 @@
             "items": {
               "type": "string"
             }
+          },
+          "precioPorPorcion": {
+            "type": "number"
+          },
+          "porciones": {
+            "type": "integer"
+          },
+          "calorias": {
+            "type": "integer"
+          },
+          "proteinas": {
+            "type": "number"
+          },
+          "carbohidratos": {
+            "type": "number"
+          },
+          "grasas": {
+            "type": "number"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "principal",
+              "postre",
+              "desayuno",
+              "entrante"
+            ]
           }
         }
       },
@@ -166,6 +326,126 @@
     }
   },
   "paths": {
+    "/despensa": {
+      "get": {
+        "summary": "Despensa del hogar (ingredientes en casa)",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de ingredientes con estado y caducidad opcional"
+          }
+        }
+      },
+      "put": {
+        "summary": "Guardar la despensa del hogar",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Guardado"
+          },
+          "400": {
+            "description": "Inválido"
+          },
+          "401": {
+            "description": "Sesión requerida"
+          }
+        }
+      }
+    },
+    "/plan": {
+      "get": {
+        "summary": "Obtener el plan semanal compartido",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Plan semanal (array de entradas)"
+          }
+        }
+      },
+      "put": {
+        "summary": "Guardar el plan semanal compartido",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Plan guardado"
+          },
+          "400": {
+            "description": "Plan inválido"
+          },
+          "401": {
+            "description": "Sesión requerida"
+          }
+        }
+      }
+    },
+    "/extras": {
+      "get": {
+        "summary": "Ítems manuales compartidos de la lista de la compra",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de ítems extra"
+          }
+        }
+      },
+      "put": {
+        "summary": "Guardar los ítems manuales",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Guardado"
+          },
+          "400": {
+            "description": "Inválido"
+          },
+          "401": {
+            "description": "Sesión requerida"
+          }
+        }
+      }
+    },
+    "/pendientes": {
+      "get": {
+        "summary": "Recetas compradas pendientes de planificar",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de recetas pendientes"
+          }
+        }
+      },
+      "put": {
+        "summary": "Guardar las recetas pendientes de planificar",
+        "tags": [
+          "Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Guardado"
+          },
+          "400": {
+            "description": "Inválido"
+          },
+          "401": {
+            "description": "Sesión requerida"
+          }
+        }
+      }
+    },
     "/recetas": {
       "get": {
         "summary": "Listar todas las recetas",
@@ -350,7 +630,7 @@
         }
       },
       "delete": {
-        "summary": "Eliminar una receta",
+        "summary": "Eliminar una receta (borrado lógico, se puede restaurar)",
         "tags": [
           "Recetas"
         ],
@@ -417,6 +697,179 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/recetas/{id}/restaurar": {
+      "post": {
+        "summary": "Devolver al catálogo una receta borrada, con su mismo id",
+        "tags": [
+          "Recetas"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Receta restaurada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe o no estaba borrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/sesiones": {
+      "get": {
+        "summary": "Quién ha iniciado sesión, desde qué IP y con qué dispositivo",
+        "description": "Solo administradores. Devuelve sesiones recientes, resumen por usuario e IPs vistas por primera vez.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limite",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 500
+            }
+          },
+          {
+            "in": "query",
+            "name": "dias",
+            "schema": {
+              "type": "integer",
+              "default": 7,
+              "maximum": 90
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sesiones",
+            "resumen por usuario e IPs nuevas": null
+          },
+          "401": {
+            "description": "Sesión requerida"
+          },
+          "403": {
+            "description": "Solo para administradores"
+          }
+        }
+      }
+    },
+    "/admin/invitados": {
+      "get": {
+        "summary": "Lista blanca de acceso, y los hogares disponibles",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitaciones y hogares"
+          },
+          "403": {
+            "description": "Solo para administradores"
+          }
+        }
+      },
+      "post": {
+        "summary": "Invitar un correo",
+        "description": "hogarId nulo crea un hogar propio en el primer inicio de sesión.",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "201": {
+            "description": "Invitación guardada"
+          },
+          "400": {
+            "description": "Correo",
+            "rol u hogar inválidos": null
+          },
+          "403": {
+            "description": "Solo para administradores"
+          }
+        }
+      }
+    },
+    "/admin/invitados/{email}": {
+      "delete": {
+        "summary": "Retirar una invitación que nadie haya usado",
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "204": {
+            "description": "Retirada"
+          },
+          "403": {
+            "description": "Solo para administradores"
+          },
+          "404": {
+            "description": "No hay invitación pendiente para ese correo"
+          }
+        }
+      }
+    },
+    "/yo": {
+      "get": {
+        "summary": "Quién soy, según el token de sesión",
+        "description": "Fuente de verdad de la sesión al arrancar la app. En la PWA de iOS la cookie del servicio de auth no sobrevive al cierre, así que el cliente guarda el token y pregunta aquí: este backend valida contra neon_auth.session, que está en su misma base de datos.\n",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario",
+            "hogar y rol": null
+          },
+          "401": {
+            "description": "Sesión inválida o caducada"
+          },
+          "403": {
+            "description": "Sin acceso"
+          }
+        }
+      }
+    },
+    "/yo/sesion": {
+      "delete": {
+        "summary": "Cerrar sesión",
+        "description": "Borra las sesiones del usuario, así que la revocación es inmediata. Se cierran todas y no solo la de este dispositivo, porque el cliente manda un JWT y no el identificador de la fila.\n",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "204": {
+            "description": "Sesión cerrada"
+          },
+          "401": {
+            "description": "Sesión inválida o caducada"
           }
         }
       }

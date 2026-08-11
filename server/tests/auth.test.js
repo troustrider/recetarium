@@ -79,8 +79,9 @@ describe('requireUser en la API', () => {
     }
   })
 
-  it('el catálogo se lee sin sesión, que es un cambio de la fase 4', async () => {
-    expect((await fetch(`${base}/recetas`)).status).toBe(200)
+  it('el catálogo tampoco se lee sin sesión', async () => {
+    expect((await fetch(`${base}/recetas`)).status).toBe(401)
+    expect((await fetch(`${base}/recetas/00000000-0000-0000-0000-000000000000`)).status).toBe(401)
   })
 })
 

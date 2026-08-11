@@ -2,12 +2,17 @@
 
 ## Cómo está organizado
 
-El frontend se comunica con el backend a través de `src/api/client.ts`. Todas las llamadas a la API pasan por ahí — los hooks no usan `fetch` directamente.
+Todas las llamadas a la API pasan por `src/api/http.ts`. Los hooks y las páginas no usan `fetch` directamente, y los módulos por dominio (`client.ts` para recetas, `estado.ts`, `yo.ts`, `sesiones.ts`, `invitados.ts`) se apoyan en él.
+
+`apiFetch` hace dos cosas que antes decidía cada sitio por su cuenta: pone la cabecera `Authorization` con el token de sesión, y ante un 401 sobrevenido (sesión caducada o revocada con la app abierta) olvida el token y recarga, para que la puerta lleve a la landing sin que ninguna pantalla tenga que saber de sesiones.
+
+`yo.ts` es la excepción deliberada: no usa `apiFetch` porque ahí un 401 es la respuesta normal de "no has entrado", y recargar sería un bucle.
 
 ```
 Hook (useRecetas, useReceta)
   → src/api/client.ts
-    → fetch → Express /api/v1/recetas
+    → src/api/http.ts  (token de sesión, manejo del 401)
+      → fetch → Express /api/v1/recetas
 ```
 
 ## URL base
@@ -33,6 +38,7 @@ Todas las funciones son `async` y devuelven tipos de `src/types/receta.ts`. Si l
 | `updateReceta(id, data)` | PUT | `/recetas/:id` | `Receta` |
 | `toggleFavorita(id)` | PATCH | `/recetas/:id/favorita` | `Receta` |
 | `deleteReceta(id)` | DELETE | `/recetas/:id` | `void` |
+| `restoreReceta(id)` | POST | `/recetas/:id/restaurar` | `Receta` |
 
 `getRecetas` acepta un objeto `{ categoria?, sabor? }` que se convierte en query params.
 
@@ -46,4 +52,4 @@ Los hooks gestionan tres estados:
 
 ## Tipos
 
-Los tipos del contrato de datos están en `src/types/receta.ts` y son los mismos que usa el backend. El cliente usa `Omit<Receta, 'id' | 'favorita'>` para los datos de creación y edición, ya que esos campos los asigna el servidor.
+Los tipos del contrato de datos están en `src/types/receta.ts` y son los mismos que usa el backend. El cliente usa `Omit<Receta, 'id' | 'favorita'>` para los datos de creación y edición, ya que esos campos los asigna el servidor. `favorita` y `privada` no son columnas de la receta: el servidor los deriva del hogar que pregunta.

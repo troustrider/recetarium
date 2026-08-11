@@ -29,7 +29,7 @@ const router = Router()
  *               items:
  *                 $ref: '#/components/schemas/Receta'
  */
-router.get('/', c.getAll)
+router.get('/', requireUser, c.getAll)
 
 /**
  * @swagger
@@ -56,7 +56,7 @@ router.get('/', c.getAll)
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/:id', c.getById)
+router.get('/:id', requireUser, c.getById)
 
 /**
  * @swagger

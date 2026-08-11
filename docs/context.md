@@ -40,7 +40,7 @@ Ver [`docs/hooks.md`](./hooks.md#uselistacompra) para el detalle de cada valor.
 
 ## DespensaContext
 
-Gestiona el inventario de ingredientes que el usuario tiene en casa. Persiste en `localStorage`. Lo consume la página de despensa y el planificador.
+Gestiona el inventario de ingredientes que hay en casa. Se sincroniza con el backend a través de `useEstadoCompartido`, así que es el mismo en todos los dispositivos del hogar. Lo consume la página de despensa y el planificador.
 
 **Provider:** `<DespensaProvider>` — montado en `main.tsx`.
 

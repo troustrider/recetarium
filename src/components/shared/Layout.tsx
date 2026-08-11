@@ -181,21 +181,19 @@ function Layout({ children }: { children: ReactNode }) {
 
             {/* Dark mode. El tema no es una utilidad de la tarea como el
                 carrito ni identidad como la cuenta: es un ajuste de la propia
-                interfaz, y por eso va suelto en la esquina.
-                En escritorio se manda al final con order, apartado del grupo. En
-                móvil el último sitio es del avatar, que es donde cae el pulgar,
-                así que ahí el tema abre la fila. */}
+                interfaz, y va apartado entre divisores. El último sitio es del
+                avatar, en las dos vistas. */}
             <motion.button
               onClick={toggle}
-              className="sm:order-last sm:ml-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
               aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'}
               whileTap={{ scale: 0.85 }}
             >
               {dark ? <SunIcon /> : <MoonIcon />}
             </motion.button>
 
-            {/* Divisor de móvil, entre el tema y el bloque de menú y cuenta. */}
-            <span aria-hidden className="sm:hidden w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
+            {/* Divisor entre el tema y el bloque de menú y cuenta. */}
+            <span aria-hidden className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
 
             {/* Hamburger — solo mobile */}
             <motion.button

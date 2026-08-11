@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ShieldAlert, Smartphone, Monitor, Tablet } from 'lucide-react'
 import { getPanelSesiones, type PanelSesiones } from '../api/sesiones'
+import Invitaciones from '../components/admin/Invitaciones'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 
@@ -69,6 +70,8 @@ function AdminSesiones() {
   return (
     <div className="space-y-6">
       <h1 className="font-display font-bold text-2xl text-gray-900 dark:text-gray-100">Accesos</h1>
+
+      <Invitaciones />
 
       {datos.ipsNuevas.length > 0 && (
         <div className="rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50 dark:bg-amber-900/20 p-4">

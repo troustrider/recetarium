@@ -4,6 +4,14 @@ import sql from '../lib/db.js'
 // neon_auth.session. Con tres usuarios previstos, cualquier IP que no reconozcas
 // es señal: eso es lo que esta vista tiene que hacer evidente.
 
+// Cada inicio de sesión deja una fila y duran siete días, así que unas semanas
+// de uso normal acumulan bastantes y el recuento de la pantalla de accesos deja
+// de decir nada. Borrar las caducadas no cierra ninguna sesión viva.
+export async function limpiarCaducadas() {
+  const filas = await sql`DELETE FROM neon_auth.session WHERE "expiresAt" <= now() RETURNING id`
+  return filas.length
+}
+
 export async function listarSesiones(limite = 100) {
   return sql`
     SELECT

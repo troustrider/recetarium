@@ -2,6 +2,7 @@
 //
 //   node server/scripts/sesiones.mjs            producción, últimos 7 días
 //   node server/scripts/sesiones.mjs --dias 30
+//   node server/scripts/sesiones.mjs --limpiar  borra las caducadas y luego informa
 //   node server/scripts/sesiones.mjs --test     rama recetarium-test
 //
 // Existe aparte de la pantalla de admin porque el día que sospeches de un
@@ -14,7 +15,9 @@ config({ path: usarTest ? 'server/.env.test' : 'server/.env' })
 
 // Importación dinámica: el servicio abre la conexión al cargarse, y necesita
 // que dotenv haya resuelto ya a qué base de datos apunta.
-const { listarSesiones, resumenPorUsuario, ipsNuevas } = await import('../src/services/sesionesService.js')
+const { listarSesiones, resumenPorUsuario, ipsNuevas, limpiarCaducadas } = await import(
+  '../src/services/sesionesService.js'
+)
 
 function opcion(nombre, porDefecto) {
   const i = args.indexOf(`--${nombre}`)
@@ -51,6 +54,11 @@ const dias = opcion('dias', 7)
 const limite = opcion('limite', 50)
 
 console.log(`\nBase de datos: ${usarTest ? 'recetarium-test' : 'PRODUCCIÓN'}\n`)
+
+if (args.includes('--limpiar')) {
+  const borradas = await limpiarCaducadas()
+  console.log(`Sesiones caducadas borradas: ${borradas}\n`)
+}
 
 const resumen = await resumenPorUsuario()
 if (!resumen.length) {

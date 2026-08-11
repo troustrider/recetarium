@@ -23,9 +23,9 @@ App web fullstack para centralizar recetas y generar listas de la compra. Fronte
 
 - Gestión completa de recetas (crear, editar, eliminar)
 - Generación de lista de la compra unificada desde varias recetas
-- Base de datos PostgreSQL en Neon con Drizzle ORM
+- Base de datos PostgreSQL en Neon, con ramas para pruebas
 - API REST documentada con Swagger UI
-- Schema de BD definido en TypeScript — los errores de tipo se detectan en compilación, no en runtime
+- Acceso por invitación: cada hogar tiene su despensa, su plan y su lista, sobre un catálogo común
 
 ---
 
@@ -43,7 +43,7 @@ App web fullstack para centralizar recetas y generar listas de la compra. Fronte
 |---------|-----|
 | Node.js + Express | Servidor HTTP y API REST |
 | @neondatabase/serverless | Driver de PostgreSQL compatible con entornos serverless |
-| Drizzle ORM | Schema tipado y migraciones en TypeScript |
+| jose | Verificación de los JWT de sesión contra el JWKS de Neon Auth |
 
 | Auxiliares | Uso |
 |------------|-----|
@@ -68,7 +68,7 @@ recetarium/
 │   └── src/
 │       ├── config/       # Variables de entorno
 │       ├── controllers/  # Validación y orquestación HTTP
-│       ├── lib/          # Clientes de BD (Neon, Drizzle, schema)
+│       ├── lib/          # Cliente de BD, auth y cálculo nutricional
 │       ├── routes/       # Mapeo verbos HTTP → controladores
 │       └── services/     # Lógica de negocio pura
 └── docs/

@@ -161,12 +161,18 @@ describe('contrato de campos al editar', () => {
     expect((await (await http.get(`/recetas/${creada.id}`)).json()).favorita).toBe(true)
   })
 
-  it('sigue pudiendo desmarcarse enviando favorita explícita', async () => {
+  // Antes favorita era una columna de la receta y un PUT con favorita: false la
+  // desmarcaba. Ya no: es del hogar, vive en su propia tabla y solo la cambia el
+  // PATCH. Editar una receta común no puede tocar lo que otro hogar marcó.
+  it('editar ignora el campo favorita, que solo cambia con el PATCH', async () => {
     const creada = await crear({ nombre: 'Se desmarca' })
     await http.patch(`/recetas/${creada.id}/favorita`)
 
     const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Se desmarca', favorita: false }))).json()
-    expect(editada.favorita).toBe(false)
+    expect(editada.favorita).toBe(true)
+
+    const desmarcada = await (await http.patch(`/recetas/${creada.id}/favorita`)).json()
+    expect(desmarcada.favorita).toBe(false)
   })
 
   it('las columnas NOT NULL se conservan al editar sin enviarlas', async () => {

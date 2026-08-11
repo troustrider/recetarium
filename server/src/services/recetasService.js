@@ -1,75 +1,57 @@
 import sql from '../lib/db.js'
 import { fichaNutricional, estimarMacros } from '../lib/nutricion.js'
 
-export async function getAll({ categoria, sabor } = {}) {
-  if (categoria && sabor) {
-    return sql`
-      SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
-             r.tiempo_preparacion AS "tiempoPreparacion",
-             r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-             r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
-             r.calorias, r.proteinas::float AS proteinas,
-             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-             r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion
-      FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-      WHERE r.borrada_en IS NULL AND r.categoria = ${categoria} AND c.name = ${sabor}
-      ORDER BY r.nombre
-    `
-  }
-  if (categoria) {
-    return sql`
-      SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
-             r.tiempo_preparacion AS "tiempoPreparacion",
-             r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-             r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
-             r.calorias, r.proteinas::float AS proteinas,
-             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-             r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion
-      FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-      WHERE r.borrada_en IS NULL AND r.categoria = ${categoria}
-      ORDER BY r.nombre
-    `
-  }
-  if (sabor) {
-    return sql`
-      SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
-             r.tiempo_preparacion AS "tiempoPreparacion",
-             r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-             r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
-             r.calorias, r.proteinas::float AS proteinas,
-             r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-             r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion
-      FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-      WHERE r.borrada_en IS NULL AND c.name = ${sabor}
-      ORDER BY r.nombre
-    `
-  }
+// Una sola consulta para todas las combinaciones de filtros. Antes eran cuatro
+// casi idénticas, y con el filtro por hogar de por medio bastaría con olvidarlo
+// en una para que un hogar viese las recetas privadas de otro.
+//
+// hogar_id NULL es el catálogo común; un UUID, una receta privada de ese hogar.
+// favorita ya no es una columna de la receta: se deriva por hogar, así que el
+// DTO no cambia de forma y el front no se entera.
+const CAMPOS = sql.unsafe(`
+  r.id, r.nombre, r.categoria, c.name AS sabor,
+  r.tiempo_preparacion AS "tiempoPreparacion",
+  r.imagen, r.ingredientes, r.pasos, r.consejos,
+  r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
+  r.calorias, r.proteinas::float AS proteinas,
+  r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
+  r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion,
+  r.hogar_id IS NOT NULL AS privada
+`)
+
+export async function getAll(hogarId, { categoria, sabor } = {}) {
   return sql`
-    SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
-           r.tiempo_preparacion AS "tiempoPreparacion",
-           r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-           r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
-           r.calorias, r.proteinas::float AS proteinas,
-           r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-           r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion
+    SELECT ${CAMPOS},
+           EXISTS (SELECT 1 FROM favoritas f WHERE f.receta_id = r.id AND f.hogar_id = ${hogarId}) AS favorita
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
     WHERE r.borrada_en IS NULL
+      AND (r.hogar_id IS NULL OR r.hogar_id = ${hogarId})
+      AND (${categoria ?? null}::text IS NULL OR r.categoria = ${categoria ?? null})
+      AND (${sabor ?? null}::text IS NULL OR c.name = ${sabor ?? null})
     ORDER BY r.nombre
   `
 }
 
-export async function getById(id) {
+export async function getById(hogarId, id) {
   const [row] = await sql`
-    SELECT r.id, r.nombre, r.categoria, c.name AS sabor,
-           r.tiempo_preparacion AS "tiempoPreparacion",
-           r.favorita, r.imagen, r.ingredientes, r.pasos, r.consejos,
-           r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
-           r.calorias, r.proteinas::float AS proteinas,
-           r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-           r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion
+    SELECT ${CAMPOS},
+           EXISTS (SELECT 1 FROM favoritas f WHERE f.receta_id = r.id AND f.hogar_id = ${hogarId}) AS favorita
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
-    WHERE r.borrada_en IS NULL AND r.id = ${id}
+    WHERE r.borrada_en IS NULL
+      AND r.id = ${id}
+      AND (r.hogar_id IS NULL OR r.hogar_id = ${hogarId})
   `
+  return row ?? null
+}
+
+// Para decidir permisos hace falta saber de quién es la receta, y eso no puede
+// depender de que sea visible: una receta privada de otro hogar no existe para
+// quien pregunta, pero tampoco se le puede decir "no tienes permiso" en vez de
+// "no existe", que filtraría que existe.
+// Sin filtrar por borrada_en: restaurar actúa justo sobre una receta borrada, y
+// filtrarla aquí haría que restaurar respondiera siempre 404.
+export async function duenoDe(id) {
+  const [row] = await sql`SELECT hogar_id AS "hogarId" FROM recetas WHERE id = ${id}`
   return row ?? null
 }
 
@@ -101,34 +83,38 @@ async function getCategoryId(sabor) {
   return cat.id
 }
 
-export async function create(data) {
-  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
+// duenoId null crea en el catálogo común; con un hogar, una receta privada de
+// ese hogar. hogarId es siempre quien pregunta, para devolver la receta ya con
+// su favorita resuelta.
+export async function create(hogarId, duenoId, data) {
+  const { nombre, sabor, categoria, tiempoPreparacion, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
   // Siempre de los ingredientes, nunca del payload: no tiene sentido dejar que
   // alguien los declare a mano.
   const ficha = fichaNutricional({ ingredientes, porciones: porciones ?? 1 })
   const guarnicion = guarnicionConFicha(data.guarnicion, porciones ?? 1)
   const [row] = await sql`
-    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, favorita, imagen, ingredientes, pasos, consejos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo, hierro, sin_gluten, micros, guarnicion)
+    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, imagen, ingredientes, pasos, consejos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo, hierro, sin_gluten, micros, guarnicion, hogar_id)
     VALUES (
-      ${nombre}, ${categoria ?? null}, ${tiempoPreparacion}, ${favorita ?? false},
+      ${nombre}, ${categoria ?? null}, ${tiempoPreparacion},
       ${imagen ?? null}, ${JSON.stringify(ingredientes)}, ${JSON.stringify(pasos)}, ${JSON.stringify(consejos ?? [])},
       ${precioPorPorcion ?? 1}, ${porciones ?? 1}, ${categoryId},
       ${calorias ?? null}, ${proteinas ?? null}, ${carbohidratos ?? null}, ${grasas ?? null}, ${tipo ?? 'principal'},
       ${ficha.hierro}, ${ficha.sinGluten}, ${JSON.stringify(ficha.micros)},
-      ${guarnicion ? JSON.stringify(guarnicion) : null}
+      ${guarnicion ? JSON.stringify(guarnicion) : null},
+      ${duenoId}
     )
     RETURNING id
   `
-  return getById(row.id)
+  return getById(hogarId, row.id)
 }
 
-export async function update(id, data) {
-  const { nombre, sabor, categoria, tiempoPreparacion, favorita, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
+export async function update(hogarId, id, data) {
+  const { nombre, sabor, categoria, tiempoPreparacion, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
   // porciones se conserva con COALESCE si el payload no la trae: la ficha divide
   // por la que quede en la fila, no por 1.
-  const raciones = porciones ?? (await getById(id))?.porciones ?? 1
+  const raciones = porciones ?? (await getById(hogarId, id))?.porciones ?? 1
   const ficha = fichaNutricional({ ingredientes, porciones: raciones })
   const guarnicion = guarnicionConFicha(data.guarnicion, raciones)
   const result = await sql`
@@ -136,7 +122,6 @@ export async function update(id, data) {
       nombre = ${nombre},
       categoria = ${categoria ?? null},
       tiempo_preparacion = ${tiempoPreparacion},
-      favorita = COALESCE(${favorita ?? null}, favorita),
       imagen = ${imagen ?? null},
       ingredientes = ${JSON.stringify(ingredientes)},
       pasos = ${JSON.stringify(pasos)},
@@ -157,17 +142,23 @@ export async function update(id, data) {
     RETURNING id
   `
   if (result.length === 0) return null
-  return getById(id)
+  return getById(hogarId, id)
 }
 
-export async function toggleFavorita(id) {
-  const result = await sql`
-    UPDATE recetas SET favorita = NOT favorita
-    WHERE id = ${id}
-    RETURNING id
-  `
-  if (result.length === 0) return null
-  return getById(id)
+// Marcar favorita es del hogar, no de la receta: antes era una columna de
+// recetas y marcarla se la marcaba a todo el mundo.
+export async function toggleFavorita(hogarId, id) {
+  const receta = await getById(hogarId, id)
+  if (!receta) return null
+  if (receta.favorita) {
+    await sql`DELETE FROM favoritas WHERE hogar_id = ${hogarId} AND receta_id = ${id}`
+  } else {
+    await sql`
+      INSERT INTO favoritas (hogar_id, receta_id) VALUES (${hogarId}, ${id})
+      ON CONFLICT DO NOTHING
+    `
+  }
+  return getById(hogarId, id)
 }
 
 // Borrado lógico: la fila se queda para que restaurar devuelva la receta con su
