@@ -510,8 +510,19 @@ esto al final de la fase cuesta el triple.
 - [x] Menú de cuenta: avatar en escritorio, final del hamburguesa en móvil, sin quinta
       pestaña en la nav inferior
 - [x] Correo de Cloe en `invitados` del hogar compartido (rama de pruebas)
-- [ ] **Volver a probar el arranque en frío en el iPhone**, ahora con el token propio
-- [ ] Replicar tablas, invitaciones y configuración de auth en la rama de producción
+- [x] Producción lista: Neon Auth provisionado (`ep-winter-scene-abiwxo8p`, **distinta de la
+      de pruebas**), tablas `miembros` e `invitados`, alta libre desactivada, origen de
+      confianza, y Karim (admin) y Cloe invitados al hogar compartido
+- [x] Desplegado y verificado en producción: landing sin sesión y sin los cromos de la app,
+      cero errores de consola con la CSP puesta, Fraunces y Bricolage cargando, cabeceras
+      de seguridad presentes, y el botón redirige a Google contra la URL de producción
+- [ ] **Volver a probar el arranque en frío en el iPhone**, ahora con el token propio.
+      Es lo único que falta para cerrar la fase
+
+> **Orden que no se puede invertir.** `VITE_NEON_AUTH_URL` tiene que apuntar a la auth de
+> la MISMA rama que la base de datos que valida el token. Si el bundle mira a pruebas y la
+> API a producción, el login entra pero `GET /yo` devuelve 401 y la app queda en bucle
+> contra la landing, sin forma de entrar.
 - [ ] Sesión en cookie `httpOnly` + `Secure` + `SameSite`
 - [ ] `requireUser` devuelve 401 sin sesión y adjunta el usuario a `req`
 - [ ] Auth funcionando también en la rama `recetarium-test`
