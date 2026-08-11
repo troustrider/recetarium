@@ -1,4 +1,4 @@
--- Fase 1 del plan multiusuario (docs/PLAN-multiusuario-auth.md), paso 2 de 2.
+-- Fase 1 del plan multiusuario, paso 2 de 2.
 --
 -- Quita la columna id y pasa la clave primaria a hogar_id.
 --

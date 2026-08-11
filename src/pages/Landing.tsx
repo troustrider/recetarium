@@ -79,7 +79,9 @@ function Landing() {
 
       <button
         onClick={toggle}
-        className="fixed z-20 top-4 right-4 p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        // 44px de zona de toque, no 32: aquí es un control solo y con sitio, y
+        // el móvil es la vía de entrada principal. El icono no cambia de tamaño.
+        className="fixed z-20 top-4 right-4 w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'}
         style={{ top: 'calc(env(safe-area-inset-top) + 1rem)' }}
       >
@@ -99,9 +101,19 @@ function Landing() {
             <Marca tamano={56} />
           </div>
 
-          <h1 className="mt-5 font-display font-bold text-3xl tracking-tight text-gray-900 dark:text-gray-50">
-            Recetarium
-          </h1>
+          {/* La etiqueta va pegada al wordmark y no en una esquina flotante:
+              así se lee como parte del nombre, que es lo que es ahora mismo, y
+              no como un aviso que compita con el botón de entrar. Reutiliza el
+              tratamiento de las demás etiquetas de la app (versalitas
+              espaciadas en naranja), así que no introduce estilo nuevo. */}
+          <div className="mt-5 flex items-baseline justify-center gap-2">
+            <h1 className="font-display font-bold text-3xl tracking-tight text-gray-900 dark:text-gray-50">
+              Recetarium
+            </h1>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 bg-orange-100/70 dark:bg-orange-500/15 rounded-md px-1.5 py-0.5">
+              beta
+            </span>
+          </div>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 text-balance">
             Vuestro recetario, la despensa y la compra de la semana, en el mismo sitio.
           </p>

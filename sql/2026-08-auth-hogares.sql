@@ -1,4 +1,4 @@
--- Fase 2 del plan multiusuario (docs/PLAN-multiusuario-auth.md).
+-- Fase 2 del plan multiusuario.
 -- Une los usuarios de Neon Auth con los hogares, y la lista blanca de acceso.
 --
 -- Los usuarios viven en neon_auth.user, que gestiona Neon. No se les pone

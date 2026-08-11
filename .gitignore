@@ -44,3 +44,6 @@ recetas_live.json
 
 # Volcados de estado de producción antes de migrar
 sql/backups/
+
+# Documentos de planificacion: notas de trabajo, no van al repo publico
+docs/PLAN-*.md

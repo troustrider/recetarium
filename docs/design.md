@@ -27,8 +27,11 @@ de Google. El alta ocurre sola en el primer inicio de sesión.
 La unidad de propiedad es el **hogar**, no el usuario: varias personas pueden compartir
 despensa, plan y lista. El catálogo de recetas es común a todos.
 
-Los detalles, y las trampas encontradas por el camino, en
-[PLAN-multiusuario-auth.md](PLAN-multiusuario-auth.md).
+El token de sesión se guarda en `localStorage` y no en una cookie. No es una preferencia: el
+servicio de auth corre en otro dominio, y en una PWA instalada en iOS su cookie no sobrevive
+al cierre de la app, así que la sesión se perdía en cada arranque. La contrapartida se acota
+con la CSP (`script-src` sin `unsafe-inline`, ver `vercel.json`), con revocación inmediata al
+borrar la fila de sesión, y con el aviso de IPs nuevas en la pantalla de accesos.
 
 ## Frontend
 
@@ -157,7 +160,7 @@ ingredientes, nunca del payload.
 | Plan, despensa, extras, pendientes | Neon, `app_estado`, una fila por hogar |
 | Usuarios y sesiones | Neon, esquema `neon_auth`, gestionado por Neon Auth |
 | Quién es de qué hogar | Neon, `miembros`. Lista blanca en `invitados` |
-| Token de sesión | Cliente, `localStorage` (ver el plan para el motivo) |
+| Token de sesión | Cliente, `localStorage`. Ver «Acceso» para el motivo |
 | Preferencia de tema | Cliente, `localStorage`, aplicada antes del primer pintado |
 | Filtros activos y estado de formularios | Cliente, estado local |
 | Lista de la compra generada | Cliente, calculada en `useListaCompra` |

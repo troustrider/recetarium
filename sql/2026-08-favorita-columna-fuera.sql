@@ -1,4 +1,4 @@
--- Cierre de la fase 4 (docs/PLAN-multiusuario-auth.md).
+-- Cierre de la fase 4.
 --
 -- favorita paso a la tabla favoritas, por hogar. La columna se quedo un
 -- despliegue como red por si habia que volver atras; a partir de aqui es una

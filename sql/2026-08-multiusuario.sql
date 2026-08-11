@@ -1,4 +1,4 @@
--- Fase 1 del plan multiusuario (docs/PLAN-multiusuario-auth.md), paso 1 de 2.
+-- Fase 1 del plan multiusuario, paso 1 de 2.
 --
 -- El estado de la app deja de ser una fila única global y pasa a pertenecer a
 -- un hogar. Todavía sin login: el backend usa el hogar por defecto.

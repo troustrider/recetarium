@@ -1,4 +1,4 @@
--- Fase 4 del plan multiusuario (docs/PLAN-multiusuario-auth.md).
+-- Fase 4 del plan multiusuario.
 --
 -- El catálogo sigue siendo común, pero cada hogar puede tener sus propias
 -- recetas, y las favoritas dejan de ser una bandera global.
