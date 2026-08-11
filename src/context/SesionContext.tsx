@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import { capturarToken, olvidarToken, tokenGuardado, authClient } from '../auth'
+import { apuntar } from '../diagnostico'
 import { getYo, cerrarSesionServidor, type UsuarioDTO } from '../api/yo'
 
 // Tres estados y no dos. La app se abre desde el icono del móvil y comprobar la
@@ -41,8 +42,9 @@ export function SesionProvider({ children }: { children: ReactNode }) {
         setUsuario(yo)
         setEstado(yo ? 'dentro' : 'fuera')
         if (!yo) olvidarToken()
-      } catch {
+      } catch (e) {
         if (!vigente) return
+        apuntar(`arranque: ${e instanceof Error ? `${e.name} ${e.message}` : String(e)}`)
         setFallo(true)
         setEstado('fuera')
       }
