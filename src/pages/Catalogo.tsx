@@ -1,19 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import { useListaCompraContext, useDespensa } from '../context'
 import { faltantes } from '../utils/despensa'
+import { normalizar } from '../utils/ingredientes'
 import useFiltros, { type Orden } from '../hooks/useFiltros'
 import type { Receta } from '../types/receta'
 import RecetaCard from '../components/recetas/RecetaCard'
 import AbanicoRecetas from '../components/recetas/AbanicoRecetas'
+import IndiceAlfabetico from '../components/recetas/IndiceAlfabetico'
 import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 
 const POR_TANDA = 24
+const MAX_FALTAN = 3
+const MIN_PARA_INDICE = 30
+
+function inicialDe(nombre: string): string {
+  const c = normalizar(nombre).charAt(0).toUpperCase()
+  return c >= 'A' && c <= 'Z' ? c : '#'
+}
 
 function prngDesde(seed: number): () => number {
   let a = seed >>> 0
@@ -123,6 +133,13 @@ function Catalogo() {
       : base
   }, [recetasFiltradas, q, soloDisponibles, faltanPorReceta])
 
+  const candidatasAzar = useMemo(() => {
+    const principales = resultados.filter((r) => (r.tipo ?? 'principal') === 'principal')
+    if (!faltanPorReceta) return principales
+    const cerca = principales.filter((r) => (faltanPorReceta.get(r.id) ?? 99) <= MAX_FALTAN)
+    return cerca.length > 0 ? cerca : principales
+  }, [resultados, faltanPorReceta])
+
   const [visibles, setVisibles] = useState(POR_TANDA)
   const centinela = useRef<HTMLDivElement>(null)
 
@@ -131,6 +148,75 @@ function Catalogo() {
     setResultadosPrevios(resultados)
     setVisibles(POR_TANDA)
   }
+
+  // Índice alfabético: solo tiene sentido cuando el orden es el nombre y hay
+  // catálogo suficiente como para que desplazarse a mano canse.
+  const secciones = useMemo(() => {
+    if (orden !== 'nombre' || resultados.length < MIN_PARA_INDICE) return null
+    const m = new Map<string, number>()
+    resultados.forEach((r, i) => {
+      const letra = inicialDe(r.nombre)
+      if (!m.has(letra)) m.set(letra, i)
+    })
+    return m.size > 1 ? m : null
+  }, [resultados, orden])
+
+  const [letraActiva, setLetraActiva] = useState<string | null>(null)
+
+  // flushSync para que la tanda ampliada esté ya en el DOM antes de buscar el
+  // encabezado. El salto es sin animación: con 268 recetas el scroll suave
+  // tarda segundos.
+  const irALetra = useCallback(
+    (letra: string) => {
+      const i = secciones?.get(letra)
+      if (i == null) return
+      flushSync(() => setVisibles((v) => (i < v ? v : Math.ceil((i + 1) / POR_TANDA) * POR_TANDA)))
+      document.getElementById(`letra-${letra}`)?.scrollIntoView({ block: 'start' })
+    },
+    [secciones]
+  )
+
+  useEffect(() => {
+    if (!secciones) return
+    let pedido = false
+    const calcular = () => {
+      pedido = false
+      const cabeceras = document.querySelectorAll<HTMLElement>('[data-letra]')
+      let actual: string | null = cabeceras[0]?.dataset.letra ?? null
+      for (const h of cabeceras) {
+        if (h.getBoundingClientRect().top > 140) break
+        actual = h.dataset.letra ?? actual
+      }
+      setLetraActiva(actual)
+    }
+    const alScroll = () => {
+      if (pedido) return
+      pedido = true
+      requestAnimationFrame(calcular)
+    }
+    alScroll()
+    window.addEventListener('scroll', alScroll, { passive: true })
+    return () => window.removeEventListener('scroll', alScroll)
+  }, [secciones, visibles])
+
+  type Elemento =
+    | { tipo: 'letra'; letra: string }
+    | { tipo: 'receta'; receta: Receta; index: number }
+
+  const elementos = useMemo<Elemento[]>(() => {
+    const tanda = resultados.slice(0, visibles)
+    const salida: Elemento[] = []
+    let previa = ''
+    tanda.forEach((receta, index) => {
+      if (secciones) {
+        const letra = inicialDe(receta.nombre)
+        if (letra !== previa) salida.push({ tipo: 'letra', letra })
+        previa = letra
+      }
+      salida.push({ tipo: 'receta', receta, index })
+    })
+    return salida
+  }, [resultados, visibles, secciones])
 
   useEffect(() => {
     if (visibles >= resultados.length) return
@@ -240,10 +326,14 @@ function Catalogo() {
 
               <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden">
                 <motion.button
-                  onClick={() => cargarAleatorias(resultados.filter((r) => (r.tipo ?? 'principal') === 'principal'), 5, racionesAzar)}
+                  onClick={() => cargarAleatorias(candidatasAzar, 5, racionesAzar)}
                   className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
                   whileTap={{ scale: 0.95 }}
-                  title="Añade 5 recetas al azar a la lista"
+                  title={
+                    conDespensa
+                      ? `Añade 5 recetas a las que no os falten más de ${MAX_FALTAN} ingredientes`
+                      : 'Añade 5 recetas al azar a la lista'
+                  }
                 >
                   <Dices className="w-4 h-4" />
                   Sorpréndeme
@@ -275,20 +365,43 @@ function Catalogo() {
             <>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <AnimatePresence>
-                  {resultados.slice(0, visibles).map((receta, i) => (
-                    <RecetaCard
-                      key={receta.id}
-                      receta={receta}
-                      index={i}
-                      onClick={abrirReceta}
-                      onToggleFavorita={toggleFavorita}
-                      faltan={faltanPorReceta?.get(receta.id)}
-                      onToggleLista={toggleReceta}
-                      enLista={estaSeleccionada(receta.id)}
-                    />
-                  ))}
+                  {elementos.map((el) =>
+                    el.tipo === 'letra' ? (
+                      <div
+                        key={`letra-${el.letra}`}
+                        id={`letra-${el.letra}`}
+                        data-letra={el.letra}
+                        className="col-span-full sticky z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-1
+                                   top-[calc(env(safe-area-inset-top)+4rem)]
+                                   scroll-mt-[calc(env(safe-area-inset-top)+5rem)]
+                                   bg-stone-50/85 dark:bg-gray-950/85 backdrop-blur-sm"
+                      >
+                        <span className="font-display text-sm font-bold tracking-[0.2em] text-orange-600 dark:text-orange-400">
+                          {el.letra}
+                        </span>
+                      </div>
+                    ) : (
+                      <RecetaCard
+                        key={el.receta.id}
+                        receta={el.receta}
+                        index={el.index}
+                        onClick={abrirReceta}
+                        onToggleFavorita={toggleFavorita}
+                        faltan={faltanPorReceta?.get(el.receta.id)}
+                        onToggleLista={toggleReceta}
+                        enLista={estaSeleccionada(el.receta.id)}
+                      />
+                    )
+                  )}
                 </AnimatePresence>
               </div>
+              {secciones && (
+                <IndiceAlfabetico
+                  letras={[...secciones.keys()]}
+                  activa={letraActiva}
+                  onSeleccionar={irALetra}
+                />
+              )}
               {visibles < resultados.length && (
                 <div ref={centinela} className="flex justify-center pt-2">
                   <button
