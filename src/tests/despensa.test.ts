@@ -37,6 +37,13 @@ describe('despensaCubre — falsos negativos que rompían la disponibilidad', ()
     expect(despensaCubre('cabbage', 'repollo')).toBe(true)
     expect(despensaCubre('coles', 'repollos')).toBe(true)
   })
+
+  it('la col de la despensa cubre las variedades que solo cambian de adjetivo', () => {
+    expect(despensaCubre('col', 'col blanca')).toBe(true)
+    expect(despensaCubre('col', 'coles blancas')).toBe(true)
+    expect(despensaCubre('col', 'repollo verde')).toBe(true)
+    expect(despensaCubre('col blanca', 'repollo')).toBe(true)
+  })
 })
 
 describe('despensaCubre — no debe inventar disponibilidad', () => {
@@ -51,6 +58,8 @@ describe('despensaCubre — no debe inventar disponibilidad', () => {
     expect(despensaCubre('harina', 'harina de almendra')).toBe(false)
     expect(despensaCubre('repollo', 'col rizada congelada')).toBe(false)
     expect(despensaCubre('cabbage', 'col china')).toBe(false)
+    expect(despensaCubre('col blanca', 'col china')).toBe(false)
+    expect(despensaCubre('col blanca', 'col rizada congelada')).toBe(false)
   })
 
   it('ingredientes sin relación no casan', () => {

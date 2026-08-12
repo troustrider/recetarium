@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizar, canonUnidad, claveIngrediente, formatNumero, formatCantidad } from '../utils/ingredientes'
+import { normalizar, canonNombre, canonUnidad, claveIngrediente, formatNumero, formatCantidad } from '../utils/ingredientes'
 
 describe('normalizar', () => {
   it('quita acentos, espacios y mayúsculas', () => {
@@ -46,6 +46,21 @@ describe('canonUnidad', () => {
 
   it('deja pasar tal cual una unidad que no conoce', () => {
     expect(canonUnidad('masa', 'bloque')).toBe('bloque')
+  })
+})
+
+describe('canonNombre', () => {
+  it('unifica los nombres de la col para que la lista no la duplique', () => {
+    expect(canonNombre('col blanca')).toBe('col')
+    expect(canonNombre('Repollo')).toBe('col')
+    expect(canonNombre('coles blancas')).toBe('col')
+    expect(claveIngrediente(canonNombre('col blanca'), 'g')).toBe(claveIngrediente(canonNombre('repollo'), 'g'))
+  })
+
+  it('no toca las variedades que sí son otro producto', () => {
+    expect(canonNombre('col china')).toBe('col china')
+    expect(canonNombre('col rizada congelada')).toBe('col rizada congelada')
+    expect(canonNombre('pechuga de pollo')).toBe('pechuga de pollo')
   })
 })
 

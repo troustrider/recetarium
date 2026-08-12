@@ -1,4 +1,4 @@
-import { normalizar, canonUnidad } from './ingredientes'
+import { normalizar, canonNombre, canonUnidad } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
 import { ALIAS_TOKENS } from './alias'
 import type { Receta } from '../types/receta'
@@ -70,7 +70,7 @@ const cacheNucleo = new Map<string, Set<string>>()
 
 function tokens(nombre: string): string[] {
   return memoizar(cacheTokens, nombre, () =>
-    normalizar(nombre)
+    normalizar(canonNombre(nombre))
       .replace(/[()]/g, ' ')
       .split(/[\s,]+/)
       .map((t) => t.trim())

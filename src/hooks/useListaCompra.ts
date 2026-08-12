@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Receta, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
-import { claveIngrediente, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
+import { claveIngrediente, canonNombre, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
 import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
@@ -129,7 +129,8 @@ function useListaCompra() {
 
     for (const { receta, raciones, conGuarnicion } of seleccionadas) {
       for (const ing of ingredientesDe(receta, conGuarnicion)) {
-        const clave = claveIngrediente(ing.nombre, ing.unidad)
+        const nombre = canonNombre(ing.nombre)
+        const clave = claveIngrediente(nombre, ing.unidad)
         const existente = mapa.get(clave)
         const cantidad = ing.cantidad * (raciones / racionesBase(receta))
         if (existente) {
@@ -143,7 +144,8 @@ function useListaCompra() {
         } else {
           mapa.set(clave, {
             ...ing,
-            unidad: canonUnidad(ing.nombre, ing.unidad),
+            nombre,
+            unidad: canonUnidad(nombre, ing.unidad),
             cantidad,
             recetas: [receta.nombre],
             desglose: [{ receta: receta.nombre, cantidad }],

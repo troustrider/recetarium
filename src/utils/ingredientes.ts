@@ -1,4 +1,5 @@
 import type { Ingrediente, Receta } from '../types/receta'
+import { ALIAS_NOMBRES } from './alias'
 
 export function ingredientesDe(
   receta: Pick<Receta, 'ingredientes' | 'guarnicion'>,
@@ -10,6 +11,10 @@ export function ingredientesDe(
 
 export function normalizar(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
+}
+
+export function canonNombre(nombre: string): string {
+  return ALIAS_NOMBRES[normalizar(nombre)] ?? nombre
 }
 
 const UNIDAD_CANON: Record<string, string> = {
