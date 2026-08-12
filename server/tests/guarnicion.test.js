@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { arrancarServidor, api, crearSesion, recetaValida } from './helpers.js'
 
-// La guarnición va en su propio bloque para no contaminar la ficha del plato.
-// Lo que más importa aquí es el gluten: un arroz o una pasta de guarnición no
-// pueden marcar el plato entero como con gluten si no la preparas.
-
 let servidor
 let http
 const creadas = new Set()
@@ -27,8 +23,6 @@ async function crear(extra = {}) {
   return receta
 }
 
-// "pasta" está en la tabla de nutrientes marcada con gluten, que es justo lo
-// que este test necesita comprobar que NO se contagia al plato.
 const GUARNICION = {
   nombre: 'Pasta al ajillo',
   ingredientes: [{ nombre: 'pasta', cantidad: 200, unidad: 'g', familia: 'cereales' }],
@@ -59,9 +53,7 @@ describe('guarnición', () => {
     const sinElla = await crear({ nombre: 'Arroz limpio' })
     const conElla = await crear({ nombre: 'Arroz con pasta', guarnicion: GUARNICION })
 
-    // El plato es el mismo en los dos: arroz, sin gluten.
     expect(conElla.sinGluten).toBe(sinElla.sinGluten)
-    // Y la guarnición sí lo declara por su cuenta.
     expect(conElla.guarnicion.sinGluten).toBe(false)
   })
 

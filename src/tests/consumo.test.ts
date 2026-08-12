@@ -2,9 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { consumoAlCocinar } from '../utils/consumo'
 import type { Receta } from '../types/receta'
 
-// Vaciar la despensa al cocinar es destructivo y encima compartido con la
-// pareja: lo que se fija aquí es sobre todo lo que NO debe borrarse.
-
 function receta(ingredientes: Receta['ingredientes'], porciones = 2): Receta {
   return {
     id: 'r1', nombre: 'Test', categoria: 'test', sabor: 'salado', tiempoPreparacion: 10,

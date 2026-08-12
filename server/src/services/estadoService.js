@@ -1,8 +1,5 @@
 import sql from '../lib/db.js'
 
-// Las cuatro columnas de estado de app_estado. La lista es literal a propósito:
-// el nombre de columna se interpola en el SQL con sql.unsafe, así que no puede
-// venir nunca de la petición.
 const CAMPOS = ['plan', 'despensa', 'extras', 'pendientes']
 
 function columna(campo) {
@@ -16,8 +13,6 @@ export async function getCampo(hogarId, campo) {
   return row?.[campo] ?? []
 }
 
-// El upsert vale también como alta: un hogar recién creado no tiene fila y la
-// primera escritura se la crea con el resto de campos a su default.
 export async function setCampo(hogarId, campo, valor) {
   const col = columna(campo)
   const [row] = await sql`

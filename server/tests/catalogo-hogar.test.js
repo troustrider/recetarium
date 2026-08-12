@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { arrancarServidor, api, crearSesion, crearHogar, recetaValida } from './helpers.js'
 
-// El catálogo es común y solo lo edita un admin. Cada hogar puede además tener
-// sus propias recetas, que nadie más ve. Y las favoritas son del hogar, no de la
-// receta: antes eran una columna y marcarlas se las marcaba a todo el mundo.
-
 let servidor
 let base
 let admin // admin del hogar compartido
@@ -39,7 +35,6 @@ describe('recetas privadas por hogar', () => {
   it('un admin crea en el catálogo común por defecto', async () => {
     const receta = await crearComun('Comun de prueba')
     expect(receta.privada).toBe(false)
-    // El vecino, que es de otro hogar, también la ve.
     const suyas = await (await vecino.get('/recetas')).json()
     expect(suyas.some((r) => r.id === receta.id)).toBe(true)
   })
@@ -50,11 +45,9 @@ describe('recetas privadas por hogar', () => {
     const receta = await res.json()
     expect(receta.privada).toBe(true)
 
-    // No aparece en el catálogo de otro hogar.
     const delAdmin = await (await admin.get('/recetas')).json()
     expect(delAdmin.some((r) => r.id === receta.id)).toBe(false)
 
-    // Y pedirla por id da 404, no 403: no se filtra que existe.
     expect((await admin.get(`/recetas/${receta.id}`)).status).toBe(404)
   })
 
@@ -77,7 +70,6 @@ describe('permisos de edición', () => {
 
     expect((await vecino.del(`/recetas/${receta.id}`)).status).toBe(403)
 
-    // Sigue intacta.
     const sigue = await (await admin.get(`/recetas/${receta.id}`)).json()
     expect(sigue.nombre).toBe('Comun intocable')
   })
@@ -121,7 +113,6 @@ describe('favoritas por hogar', () => {
 
     const desmarcada = await (await admin.patch(`/recetas/${receta.id}/favorita`)).json()
     expect(desmarcada.favorita).toBe(false)
-    // El vecino sigue con la suya marcada.
     expect((await (await vecino.get(`/recetas/${receta.id}`)).json()).favorita).toBe(true)
   })
 

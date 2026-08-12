@@ -2,11 +2,6 @@ import type { ReactNode } from 'react'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-// El deshacer es "vuelve a escribir el estado de antes". Lo que se comprueba
-// aquí es que la ranura única se comporta (una acción tapa a la anterior, se
-// caduca sola, no se puede deshacer dos veces) y que restaurar de verdad
-// devuelve la despensa a como estaba.
-
 const api = vi.hoisted(() => ({
   getDespensa: vi.fn().mockResolvedValue([]),
   saveDespensa: vi.fn().mockResolvedValue(undefined),
@@ -50,7 +45,6 @@ describe('ranura de deshacer', () => {
     expect(deshacer).toHaveBeenCalledTimes(1)
     expect(result.current.pendiente).toBeNull()
 
-    // Segundo intento sin nada pendiente: no vuelve a deshacer.
     act(() => result.current.ejecutar())
     expect(deshacer).toHaveBeenCalledTimes(1)
   })
@@ -72,17 +66,14 @@ describe('ranura de deshacer', () => {
     const alCerrar = vi.fn()
     const { result } = renderHook(() => useDeshacer(), { wrapper: soloDeshacer })
 
-    // Cerrar a mano.
     act(() => result.current.registrar('Receta editada', () => {}, alCerrar))
     act(() => result.current.descartar())
     expect(alCerrar).toHaveBeenCalledTimes(1)
 
-    // Que llegue otra acción también retira la anterior.
     act(() => result.current.registrar('Receta editada', () => {}, alCerrar))
     act(() => result.current.registrar('Semana vaciada', () => {}))
     expect(alCerrar).toHaveBeenCalledTimes(2)
 
-    // Deshacer de verdad no es "retirar sin usar": ahí no se avisa.
     act(() => result.current.registrar('Receta editada', () => {}, alCerrar))
     act(() => result.current.ejecutar())
     expect(alCerrar).toHaveBeenCalledTimes(2)

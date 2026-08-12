@@ -1,18 +1,7 @@
-// Seed idempotente: rellena macros de las recetas existentes (backfill) e
-// inserta recetas nuevas que aún no estén (match por nombre, sin distinguir
-// mayúsculas/acentos). Re-ejecutable sin duplicar.
-//
-//   node --env-file=.env server/seed-recetas.mjs
-//   (o)  DATABASE_URL=... node server/seed-recetas.mjs
-//
-// Reglas de las nuevas: fácil, barato, rápido y >= 30 g de proteína por
-// porción (salvo el bowl de avena, que también ronda los 30). Macros por porción.
-
 import { neon } from '@neondatabase/serverless'
 
 const sql = neon(process.env.DATABASE_URL)
 
-// — Backfill de las 20 existentes (macros por porción, estimados) —
 const BACKFILL = [
   ['a1b2c3d4-0012-4000-8000-000000000012', 280, 4, 32, 16],   // Brownies
   ['a1b2c3d4-0009-4000-8000-000000000009', 380, 14, 34, 20],  // Croquetas jamón
@@ -38,9 +27,7 @@ const BACKFILL = [
 
 const ing = (nombre, cantidad, unidad, familia) => ({ nombre, cantidad, unidad, familia })
 
-// — Recetas nuevas —
 const NUEVAS = [
-  // ----- Las 7 ya diseñadas -----
   {
     nombre: 'Shakshuka', categoria: 'mediterranea', sabor: 'salado', tiempoPreparacion: 25,
     precioPorPorcion: 2.2, porciones: 2, calorias: 420, proteinas: 31, carbohidratos: 18, grasas: 26,
@@ -149,7 +136,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Japón -----
   {
     nombre: 'Gyudon', categoria: 'japonesa', sabor: 'umami', tiempoPreparacion: 20,
     precioPorPorcion: 2.8, porciones: 2, calorias: 560, proteinas: 34, carbohidratos: 64, grasas: 16,
@@ -240,7 +226,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- China -----
   {
     nombre: 'Mapo tofu', categoria: 'china', sabor: 'umami', tiempoPreparacion: 25,
     precioPorPorcion: 2.4, porciones: 2, calorias: 520, proteinas: 33, carbohidratos: 46, grasas: 22,
@@ -302,7 +287,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Corea -----
   {
     nombre: 'Bibimbap', categoria: 'coreana', sabor: 'salado', tiempoPreparacion: 30,
     precioPorPorcion: 2.9, porciones: 2, calorias: 600, proteinas: 33, carbohidratos: 66, grasas: 20,
@@ -349,7 +333,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Sudeste asiático -----
   {
     nombre: 'Larb de pollo', categoria: 'tailandesa', sabor: 'acido', tiempoPreparacion: 20,
     precioPorPorcion: 2.2, porciones: 2, calorias: 420, proteinas: 38, carbohidratos: 26, grasas: 18,
@@ -394,7 +377,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Mediterránea: griega y turca -----
   {
     nombre: 'Souvlaki de pollo', categoria: 'griega', sabor: 'salado', tiempoPreparacion: 25,
     precioPorPorcion: 2.5, porciones: 2, calorias: 520, proteinas: 44, carbohidratos: 30, grasas: 24,
@@ -467,7 +449,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Italiana / española / fusión -----
   {
     nombre: 'Pasta al tonno proteica', categoria: 'italiana', sabor: 'salado', tiempoPreparacion: 20,
     precioPorPorcion: 1.9, porciones: 2, calorias: 580, proteinas: 38, carbohidratos: 70, grasas: 14,
@@ -527,7 +508,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Tanda extra: lo más simple y barato (precios reales Lidl/Dirk) -----
   {
     nombre: 'Huevos revueltos con kwark', categoria: 'desayuno', sabor: 'salado', tiempoPreparacion: 10,
     precioPorPorcion: 0.9, porciones: 1, calorias: 380, proteinas: 34, carbohidratos: 6, grasas: 24,
@@ -687,7 +667,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Tanda extra 2: simples y baratas, incluyendo LatAm, África y Medio Oriente -----
   {
     nombre: 'Ensalada de garbanzos y atún', categoria: 'mediterranea', sabor: 'acido', tiempoPreparacion: 10,
     precioPorPorcion: 1.2, porciones: 2, calorias: 380, proteinas: 32, carbohidratos: 34, grasas: 14,
@@ -860,7 +839,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- Tanda extra 3: 100% asegurado en Lidl / Dirk / Jumbo / Albert Heijn -----
   {
     nombre: 'Boloñesa rápida con pasta', categoria: 'italiana', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
     precioPorPorcion: 1.6, porciones: 2, calorias: 580, proteinas: 34, carbohidratos: 64, grasas: 18,
@@ -1034,7 +1012,6 @@ const NUEVAS = [
     ],
   },
 
-  // ----- 20 recetas Dirk (Rotterdam Noord): baratas, fáciles, 30-40+g proteína/porción -----
   {
     nombre: 'Wraps de shoarma de pollo con salsa de ajo', categoria: 'rapida', sabor: 'salado', tiempoPreparacion: 20, tipo: 'principal',
     precioPorPorcion: 2.0, porciones: 2, calorias: 620, proteinas: 44, carbohidratos: 48, grasas: 24,
@@ -1330,9 +1307,6 @@ async function run() {
   console.log(`Backfill: ${backfilled} recetas actualizadas (${BACKFILL.length - backfilled} ya tenían macros).`)
 
   const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
-  // El dedup cuenta también las borradas: una receta que se borró a propósito no
-  // vuelve por sembrar. Pero se avisa de cuáles son, que si no el "ya existían"
-  // de abajo las tapa y no hay forma de saber por qué no apareció.
   const existentes = await sql`SELECT nombre, borrada_en FROM recetas`
   const set = new Set(existentes.map((r) => norm(r.nombre)))
   const borradas = new Set(existentes.filter((r) => r.borrada_en).map((r) => norm(r.nombre)))

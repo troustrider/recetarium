@@ -1,9 +1,3 @@
-// Service worker: shell, assets y recetas para poder cocinar sin cobertura, más
-// el clic en notificación.
-//
-// Los ficheros del build llevan hash en el nombre y aquí no se conocen, así que
-// no hay precache: se cachea sobre la marcha lo que se va pidiendo. Basta con
-// haber abierto la app una vez con red.
 const VERSION = 'v4'
 const SHELL = `recetarium-shell-${VERSION}`
 const ASSETS = `recetarium-assets-${VERSION}`
@@ -22,7 +16,6 @@ const ESENCIALES = [
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(SHELL)
-      // addAll aborta entero si falla uno; un icono no vale una instalación rota.
       .then((c) => Promise.all(ESENCIALES.map((u) => c.add(u).catch(() => {}))))
       .then(() => self.skipWaiting())
   )
@@ -43,8 +36,6 @@ async function redPrimero(request, cache) {
       (await caches.open(cache)).put(request, res.clone())
       return res
     }
-    // Un 5xx (o el proxy caído) vale tanto como no tener red. Un 4xx no: si la
-    // receta ya no existe, no se sirve una copia vieja como si existiera.
     if (res && res.status >= 500) return (await caches.match(request)) ?? res
     return res
   } catch (err) {
@@ -69,7 +60,6 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(request.url)
   if (url.origin !== self.location.origin) return
 
-  // La navegación siempre intenta red primero: así una versión nueva entra sola.
   if (request.mode === 'navigate') {
     e.respondWith(
       fetch(request).catch(async () => {
@@ -80,14 +70,11 @@ self.addEventListener('fetch', (e) => {
     return
   }
 
-  // Manda lo de red; sin ella, la última copia para consultar en la cocina.
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(redPrimero(request, API))
     return
   }
 
-  // Nombres con hash, así que lo cacheado nunca queda viejo. En desarrollo no
-  // existe /assets/, de modo que esto no toca el HMR.
   if (url.pathname.startsWith('/assets/') || ESENCIALES.includes(url.pathname)) {
     e.respondWith(cachePrimero(request, ASSETS))
   }

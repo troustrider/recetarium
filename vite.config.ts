@@ -13,8 +13,6 @@ export default defineConfig({
       '/api': 'http://localhost:3001',
     },
   },
-  // El service worker solo se puede probar sobre el build: en desarrollo no
-  // existe /assets/ y el proxy hace falta para que la API sea del mismo origen.
   preview: {
     port: 4173,
     proxy: {

@@ -40,7 +40,6 @@ function validarDespensa(despensa) {
     if (typeof d.familia !== 'string' || !d.familia.trim()) return `despensa[${i}].familia es obligatorio`
     if (!ESTADOS_DESPENSA.includes(d.estado)) return `despensa[${i}].estado debe ser uno de: ${ESTADOS_DESPENSA.join(', ')}`
     if (d.caducidad != null && !/^\d{4}-\d{2}-\d{2}$/.test(d.caducidad)) return `despensa[${i}].caducidad debe ser una fecha YYYY-MM-DD`
-    // Cantidad y unidad van juntas o no van.
     if (d.cantidad != null && (typeof d.cantidad !== 'number' || !Number.isFinite(d.cantidad) || d.cantidad < 0)) {
       return `despensa[${i}].cantidad debe ser un número >= 0`
     }

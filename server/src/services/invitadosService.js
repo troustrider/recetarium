@@ -15,8 +15,6 @@ export async function listar() {
   `
 }
 
-// hogarId null significa "créale un hogar propio al entrar". Es un upsert para
-// que reinvitar a alguien corrija el destino en vez de fallar.
 export async function invitar({ email, hogarId, rol }) {
   const [fila] = await sql`
     INSERT INTO invitados (email, hogar_id, rol)
@@ -27,8 +25,6 @@ export async function invitar({ email, hogarId, rol }) {
   return fila
 }
 
-// Solo las que nadie ha usado. Retirar el acceso a quien ya entró no es borrar
-// la invitación: su sitio está en miembros, y eso es otra operación.
 export async function retirar(email) {
   const filas = await sql`
     DELETE FROM invitados WHERE email = ${email.toLowerCase()} AND usado_en IS NULL RETURNING email

@@ -1,19 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 
-// Deshacer de una sola ranura: la última acción destructiva deja aquí cómo
-// revertirse y el aviso de abajo la ofrece unos segundos. Restaurar es siempre
-// "escribe otra vez el estado anterior", así que sirve igual para plan,
-// despensa y lista.
-//
-// Sin pila, a propósito: con el estado compartido entre dos móviles, una pila
-// acabaría revirtiendo cosas que el otro ya había tocado.
-
 interface Accion {
   id: number
   mensaje: string
   deshacer: () => void
-  // Si la oferta se retira sin usarse (caduca, se cierra, llega otra acción).
-  // Quien tenga su propio estado de deshacer lo limpia aquí.
   alCerrar?: () => void
 }
 
@@ -31,8 +21,6 @@ const VIDA_MS = 8000
 export function DeshacerProvider({ children }: { children: ReactNode }) {
   const [pendiente, setPendiente] = useState<Accion | null>(null)
 
-  // Espejo en ref: los callbacks quedan estables y el temporizador no arrastra
-  // cierres caducos.
   const vivaRef = useRef<Accion | null>(null)
 
   const descartar = useCallback(() => {
@@ -48,8 +36,6 @@ export function DeshacerProvider({ children }: { children: ReactNode }) {
     setPendiente(accion)
   }, [])
 
-  // La llamada va fuera del setState: en StrictMode el updater se ejecuta dos
-  // veces y deshacer dos veces no es idempotente.
   const ejecutar = useCallback(() => {
     const viva = vivaRef.current
     if (!viva) return

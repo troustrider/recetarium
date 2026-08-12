@@ -2,10 +2,6 @@ import type { ReactNode } from 'react'
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Operaciones de la despensa: alta, vuelta de la compra (reponer), edición y
-// el ciclo cache local / backend. Es lo que el refactor de los contextos va a
-// mover de sitio, así que aquí queda congelado lo que hace hoy.
-
 const api = vi.hoisted(() => ({
   getDespensa: vi.fn().mockResolvedValue([]),
   saveDespensa: vi.fn().mockResolvedValue(undefined),
@@ -213,7 +209,6 @@ describe('quitar y vaciar', () => {
   })
 
   it('quitar NO usa el matcher: un plural no encuentra el ingrediente', async () => {
-    // Asimetría conocida con añadir(), que sí deduplica por matcher.
     const { result } = await montar()
     act(() => result.current.añadir('tomate', 'verduras'))
     act(() => result.current.quitar('tomates'))
@@ -301,8 +296,6 @@ describe('cache local y backend', () => {
   })
 
   it('BUG: un guardado fallido no deja rastro para el usuario', async () => {
-    // saveDespensa().catch(() => {}) se traga el error: la UI sigue mostrando
-    // el cambio como si estuviera compartido con el otro dispositivo.
     api.saveDespensa.mockRejectedValue(new Error('sin red'))
     const { result } = await montar()
     act(() => result.current.añadir('tomate', 'verduras'))

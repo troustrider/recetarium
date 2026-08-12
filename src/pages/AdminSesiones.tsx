@@ -5,8 +5,6 @@ import Invitaciones from '../components/admin/Invitaciones'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 
-// En iOS todos los navegadores son WebKit y se anuncian aparte: Chrome es CriOS
-// y Firefox es FxiOS. Sin eso, un iPhone con Chrome sale como desconocido.
 function dispositivo(agente: string | null) {
   if (!agente) return { texto: 'desconocido', Icono: Monitor }
   const so = /iPhone/i.test(agente) ? 'iPhone'

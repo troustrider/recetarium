@@ -23,8 +23,6 @@ function ListaCompraDrawer({ open, onClose }: Props) {
   const vacia = listaCompra.length === 0 && enDespensa.length === 0
   const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
 
-  // Cerrar la compra toca cuatro estados a la vez (despensa, lista, pendientes y
-  // carro), así que el deshacer los rebobina juntos o no sirve de nada.
   function rebobinarTodo() {
     const despensaAntes = despensa
     const listaAntes = instantanea()
@@ -47,8 +45,6 @@ function ListaCompraDrawer({ open, onClose }: Props) {
       .filter((i) => !esDeHogar(i))
       .forEach((i) => reponer(i.nombre, i.familia, i.cantidad, i.unidad))
 
-    // Si aún queda algo por comprar en la lista, es una compra parcial: solo
-    // sacamos lo marcado y dejamos el resto intacto.
     const quedaPorComprar = listaCompra.some((i) => !comprados.has(i.clave))
     if (quedaPorComprar) {
       aGuardar.forEach((i) => {
@@ -60,8 +56,6 @@ function ListaCompraDrawer({ open, onClose }: Props) {
       return
     }
 
-    // Se ha comprado todo lo pendiente: las recetas quedan pendientes de
-    // colocar en el planificador y se vacía la lista.
     marcarPendientes(seleccionadas.map(({ receta, raciones }) => ({ receta, raciones })))
     vaciar()
     limpiar()

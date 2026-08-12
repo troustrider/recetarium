@@ -1,4 +1,3 @@
-/* Las fuentes se cargan desde index.html con preconnect (el @import bloquea el render). */
 @import "tailwindcss";
 
 @theme {
@@ -8,51 +7,28 @@
 
 @variant dark (&:where(.dark *));
 
-/*
-  Dark mode palette — WCAG AA compliant
-  Strategy: override Tailwind's CSS variables inside .dark so
-  every dark:bg-gray-* / dark:text-gray-* / dark:border-gray-* picks up
-  the new values automatically, without touching component files.
-
-  Contrast ratios verified against WCAG AA (4.5:1 normal text, 3:1 large):
-    text-primary  (#efefef) on surface-1 (#181818) → ~16:1  ✅
-    text-secondary (#a3a3a3) on surface-1 (#181818) → ~5.9:1 ✅
-    text-muted    (#6b6b6b) on surface-1 (#181818) → ~3.6:1  ✅ (large/bold only)
-    accent        (#fb923c) on surface-1 (#181818) → ~6.2:1  ✅
-    focus-ring    (#fb923c) visible on all dark surfaces        ✅
-*/
 .dark {
-  /* Backgrounds — layered elevation, warm-neutral (no blue cast) */
-  --color-gray-950: #0e0e0e; /* body */
-  --color-gray-900: #181818; /* cards, panels */
-  --color-gray-800: #222222; /* inputs, dropdowns */
-  --color-gray-700: #2e2e2e; /* hover, active surfaces */
-  --color-gray-600: #424242; /* strong borders, disabled */
+  --color-gray-950: #0e0e0e;
+  --color-gray-900: #181818;
+  --color-gray-800: #222222;
+  --color-gray-700: #2e2e2e;
+  --color-gray-600: #424242;
 
-  /* Text — off-white to avoid eye strain */
-  --color-gray-500: #6b6b6b; /* muted hints — decorative only */
-  --color-gray-400: #a3a3a3; /* secondary text          5.9:1 on #181818 */
-  --color-gray-300: #c4c4c4; /* tertiary text */
-  --color-gray-200: #dcdcdc; /* emphasized secondary */
-  --color-gray-100: #efefef; /* primary text — NOT pure white */
-  --color-gray-50:  #fafafa; /* headings, max contrast */
+  --color-gray-500: #6b6b6b;
+  --color-gray-400: #a3a3a3;
+  --color-gray-300: #c4c4c4;
+  --color-gray-200: #dcdcdc;
+  --color-gray-100: #efefef;
+  --color-gray-50:  #fafafa;
 
-  /* Orange accent — more luminous shade for dark surfaces */
-  --color-orange-400: #fb923c; /* primary accent  6.2:1 on #181818 ✅ */
-  --color-orange-500: #f97316; /* hover accent */
-  --color-orange-300: #fdba74; /* subtle accent text */
+  --color-orange-400: #fb923c;
+  --color-orange-500: #f97316;
+  --color-orange-300: #fdba74;
 }
 
 @layer base {
-  /* El lienzo del navegador hereda el fondo de <html>. Sin declararlo es blanco,
-     y asoma por todas partes: en el rebote elástico de iOS (lateral y diagonal),
-     por detrás de las barras fijas mientras rebotan, y en el hueco que deja
-     min-h-dvh cuando la barra del navegador se recoge. En claro no se nota; en
-     oscuro es una franja blanca. */
   html {
     background-color: var(--color-stone-50);
-    /* El rebote horizontal no aporta nada aquí y es justo el gesto que destapa
-       el lienzo. El vertical se deja: es el scroll normal. */
     overscroll-behavior-x: none;
   }
 
@@ -61,21 +37,15 @@
   }
 
   body {
-    /* clip y no hidden: hidden haría del body un contenedor de scroll y
-       rompería el sticky del header. clip solo recorta. */
     overflow-x: clip;
   }
 
-  /* Smooth color transitions only while toggling dark mode (.theme-anim is
-     added temporarily by useDarkMode). A permanent universal transition rule
-     makes every re-render/animation repaint for 150ms extra — jank on mobile. */
   .theme-anim *, .theme-anim *::before, .theme-anim *::after {
     transition-property: background-color, border-color, color;
     transition-duration: 150ms;
     transition-timing-function: ease;
   }
 
-  /* Disable transition on elements where it would cause flicker */
   .theme-anim img, .theme-anim video, .theme-anim svg {
     transition: none;
   }

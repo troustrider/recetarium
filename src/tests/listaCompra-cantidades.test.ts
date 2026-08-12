@@ -3,9 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import useListaCompra from '../hooks/useListaCompra'
 import type { Receta } from '../types/receta'
 
-// La lista de la compra tiene que enfrentar lo que piden las recetas con lo
-// que hay guardado en la despensa, no solo mirar si el ingrediente existe.
-
 const { despensa } = vi.hoisted(() => ({
   despensa: [
     { nombre: 'pollo', familia: 'carnes', estado: 'lleno', cantidad: 300, unidad: 'g' },
@@ -38,9 +35,7 @@ describe('useListaCompra — cantidades de la despensa', () => {
     act(() => result.current.toggleReceta(receta))
 
     const comprar = new Map(result.current.listaCompra.map((i) => [i.nombre, i]))
-    // 500 g piden, 300 g hay
     expect(comprar.get('pechuga de pollo')).toMatchObject({ cantidad: 200, yaTengo: 300 })
-    // no hay nada de brócoli
     expect(comprar.get('brócoli')).toMatchObject({ cantidad: 200 })
     expect(comprar.get('brócoli')?.yaTengo).toBeUndefined()
 
@@ -50,20 +45,16 @@ describe('useListaCompra — cantidades de la despensa', () => {
   })
 
   it('escala con las raciones antes de restar', () => {
-    // La receta esta escrita para 2 raciones, asi que 4 son dos veces.
     const { result } = renderHook(() => useListaCompra())
     act(() => result.current.toggleReceta(receta))
     act(() => result.current.setRaciones('r1', 4))
 
     const pollo = result.current.listaCompra.find((i) => i.nombre === 'pechuga de pollo')
     expect(pollo).toMatchObject({ cantidad: 700, yaTengo: 300 })
-    // 600 g de arroz siguen cabiendo en el kilo
     expect(result.current.enDespensa.map((i) => i.nombre)).toContain('arroz')
   })
 })
 
-// En la tienda no hay medio pepino: la resta contra la despensa daba 1½ − 1 =
-// ½ y así salía en la lista.
 describe('useListaCompra — lo que va por piezas', () => {
   const conPepino = (cantidad: number, unidad = 'ud'): Receta => ({
     ...receta, id: 'r2', ingredientes: [{ nombre: 'pepino', cantidad, unidad, familia: 'verduras' }],

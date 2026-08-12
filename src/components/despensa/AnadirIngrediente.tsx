@@ -17,8 +17,6 @@ interface Props {
   onClose: () => void
 }
 
-// Menú de añadir en hoja inferior: nombre con sugerencias del recetario,
-// familia y caducidad opcional. Queda abierto para añadir varios seguidos.
 function AnadirIngrediente({ abierto, onClose }: Props) {
   const { despensa, añadir } = useDespensa()
   const conocidos = useIngredientesConocidos()
@@ -26,13 +24,9 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
   const [nombre, setNombre] = useState('')
   const [familia, setFamilia] = useState('otros')
   const [caducidad, setCaducidad] = useState('')
-  // Hasta que se toca el campo manda la estimación, que se recalcula sola al
-  // cambiar el nombre o la familia.
   const [caducidadTocada, setCaducidadTocada] = useState(false)
   const [cantidad, setCantidad] = useState('')
   const [unidad, setUnidad] = useState(unidadPorDefecto('otros'))
-  // Familias que no se miden (salsas, especias…) esconden la cantidad hasta
-  // que se pide a mano.
   const [cantidadManual, setCantidadManual] = useState(false)
 
   const nq = normalizar(nombre)

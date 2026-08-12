@@ -1,8 +1,3 @@
-// Aviso de fin de temporizador sin depender de assets externos (CSP-safe):
-// un beep sintetizado con WebAudio + vibración en Android. El AudioContext se
-// desbloquea con el gesto de arrancar el primer temporizador, así que los
-// avisos posteriores suenan aunque salten desde el tick del intervalo.
-
 let ctx: AudioContext | null = null
 
 export function desbloquearAudio() {

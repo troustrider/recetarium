@@ -8,7 +8,6 @@ function Invitaciones() {
   const [invitados, setInvitados] = useState<InvitadoDTO[]>([])
   const [hogares, setHogares] = useState<HogarDTO[]>([])
   const [email, setEmail] = useState('')
-  // '' es hogar propio; un uuid, meterle en ese hogar.
   const [destino, setDestino] = useState('')
   const [admin, setAdmin] = useState(false)
   const [error, setError] = useState<string | null>(null)

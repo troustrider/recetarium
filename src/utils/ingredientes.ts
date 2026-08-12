@@ -1,11 +1,5 @@
-// Normalización y formato de ingredientes para la lista de la compra: evita
-// duplicados por mayúsculas, acentos, plurales o abreviaturas de unidad, y hace
-// legibles las cantidades (½ limón, 2 huevos, sal al gusto).
-
 import type { Ingrediente, Receta } from '../types/receta'
 
-// Único sitio que decide si la guarnición cuenta: lista, consumo y precio pasan
-// todos por aquí para que no puedan discrepar.
 export function ingredientesDe(
   receta: Pick<Receta, 'ingredientes' | 'guarnicion'>,
   conGuarnicion?: boolean
@@ -18,14 +12,12 @@ export function normalizar(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
 }
 
-// Abreviaturas y plurales de unidad → forma canónica.
 const UNIDAD_CANON: Record<string, string> = {
   cda: 'cucharada', cdas: 'cucharada', cucharadas: 'cucharada',
   cdta: 'cucharadita', cdtas: 'cucharadita', cucharaditas: 'cucharadita',
   dientes: 'diente', hojas: 'hoja', lonchas: 'loncha', rodajas: 'rodaja',
   rebanadas: 'rebanada', unidad: 'ud', unidades: 'ud', uds: 'ud',
   gr: 'g', grs: 'g', gramos: 'g', mililitros: 'ml',
-  // normalizar() quita la ñ, así que la clave llega sin ella.
   punado: 'puñado', punados: 'puñado',
   pizcas: 'pizca', gotas: 'gota', tiras: 'tira', latas: 'lata', paquetes: 'paquete',
   vasos: 'vaso',
@@ -40,13 +32,10 @@ export function canonUnidad(nombre: string, unidad: string): string {
   return UNIDAD_CANON[k] ?? k
 }
 
-// Clave estable para agrupar y para el estado de "comprado".
 export function claveIngrediente(nombre: string, unidad: string): string {
   return `${normalizar(nombre)}__${canonUnidad(nombre, unidad)}`
 }
 
-// Unidades que en la tienda no se parten. La receta sí puede pedir ½; lo que
-// sube a pieza entera es solo lo que hay que meter en el carro.
 const PIEZAS = new Set(['ud', 'lata', 'paquete'])
 
 export function cantidadDeCompra(cantidad: number, unidad: string): number {

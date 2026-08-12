@@ -1,14 +1,3 @@
-// Rellena recetas.imagen con fotos de Unsplash, con guardrail de relevancia.
-// Uso: UNSPLASH_ACCESS_KEY=xxx node scripts/fill-recipe-images.mjs [--dry]
-//
-// Guardrail (evita fotos que no son el plato):
-//   1) Traduce el nombre ES -> keywords EN (Unsplash indexa en inglés).
-//   2) Pide 10 candidatos y EXIGE que los metadatos (alt/description/tags) de la
-//      foto contengan el ingrediente/plato principal. Si ninguno cumple, deja
-//      NULL (la tarjeta cae al watermark tipográfico, que es intencional).
-//   3) Deduplica: no repite la misma foto en dos recetas.
-// Idempotente: solo procesa imagen NULL y actualiza una a una.
-
 import { neon } from '@neondatabase/serverless'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -34,9 +23,6 @@ const sql = neon(process.env.DATABASE_URL)
 const RENDER = '&w=800&q=80&fit=crop&crop=entropy'
 const deaccent = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '')
 
-// Platos con nombre propio: su nombre ES el término distintivo. Si aparece uno,
-// se convierte en el PRIMARY exigido a la foto (mucho más preciso que la
-// proteína genérica). El valor es la frase EN que debe estar en los metadatos.
 const DISH = {
   bibimbap: 'bibimbap', katsudon: 'katsudon', gyudon: 'gyudon', oyakodon: 'oyakodon',
   bulgogi: 'bulgogi', mapo: 'mapo tofu', ramen: 'ramen', gyozas: 'gyoza', gyoza: 'gyoza',
@@ -49,15 +35,11 @@ const DISH = {
   maafe: 'peanut stew', sundubu: 'sundubu jjigae', lomo: 'lomo saltado', frittata: 'frittata',
   fajitas: 'fajitas', burrito: 'burrito', gratinado: 'gratin', gratinados: 'gratin',
   graten: 'gratin', tzatziki: 'tzatziki',
-  // Platos cuyo distintivo se perdía al traducir (leche->STOP, griega sin alias):
   griega: 'greek salad', frita: 'fried custard',
-  // Tanda nueva (udon, indonesio y varios): el nombre propio es el término preciso.
   udon: 'udon', rendang: 'rendang', gado: 'gado gado', soto: 'soto ayam',
   mie: 'mie goreng', tikka: 'tikka masala', dal: 'dal', falafel: 'falafel',
   harira: 'harira', char: 'char siu', chow: 'chow mein', ropa: 'ropa vieja',
 }
-// Ingredientes/formas ES -> EN. Marcan keywords secundarias y, si no hay plato
-// distintivo, el primero traducido es el PRIMARY.
 const LEX = {
   albondigas: 'meatballs', arroz: 'rice', caldoso: 'rice', bacalao: 'cod', atun: 'tuna',
   salmon: 'salmon', pescado: 'fish', pavo: 'turkey', pollo: 'chicken', jamon: 'ham',
@@ -89,8 +71,6 @@ const STOP = new Set(['de', 'del', 'con', 'y', 'en', 'al', 'a', 'la', 'el', 'los
   'fresco', 'especiado', 'desmechado', 'picada', 'picante', 'espanola', 'perla',
   'krapow', 'goreng', 'pao', 'sis', 'jjigae', 'leche'])
 
-// Devuelve { query, primary, keywords } o null si no se traduce nada útil.
-// primary = plato distintivo si lo hay; si no, el primer ingrediente traducido.
 function analyze(nombre) {
   const raw = deaccent(nombre).toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(Boolean)
   const kws = []
@@ -120,8 +100,6 @@ const meta = (p) => deaccent([
   p.description, p.alt_description, ...(p.tags || []).map((t) => t.title),
 ].filter(Boolean).join(' ').toLowerCase()).replace(/[-_]/g, ' ')
 
-// Elige la mejor foto: debe contener el término principal; puntúa por keywords
-// extra; descarta las ya usadas. Devuelve null si ninguna es relevante.
 function pick(cands, { primary, keywords }, used) {
   let best = null, bestScore = 0
   for (const p of cands) {
@@ -140,9 +118,6 @@ for (const r of await sql`SELECT imagen FROM recetas WHERE imagen IS NOT NULL AN
   if (m) used.add(m[0].replace('photo-', ''))
 }
 
-// Prioridad: ids forzados al frente (--priority), luego disponibles con la
-// despensa (faltan 0), luego por nº de ingredientes que faltan, luego alfabético.
-// --only <ids> restringe a esos ids (para reprocesar recetas concretas).
 const arg = (flag) => { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : null }
 const onlyIds = arg('--only')?.split(',').map((s) => s.trim()).filter(Boolean) ?? null
 const priorityIds = new Set((arg('--priority')?.split(',').map((s) => s.trim()) ?? []).filter(Boolean))

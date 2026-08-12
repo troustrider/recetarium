@@ -31,8 +31,6 @@ function validar(data) {
     else if (data.consejos.some((c) => typeof c !== 'string' || !c.trim()))
       errores.push('cada consejo debe ser un texto no vacío')
   }
-  // La guarnición es opcional, pero si viene tiene que venir entera: sin
-  // ingredientes no hay nada que comprar ni que sumar a la ficha.
   if (data.guarnicion != null) {
     const g = data.guarnicion
     if (typeof g !== 'object' || Array.isArray(g)) {
@@ -60,16 +58,9 @@ function validar(data) {
   return errores
 }
 
-// Los ids son UUID en la BD: sin este filtro, Postgres revienta al castear y
-// un id mal escrito acaba en 500 en vez de en 404.
 const RE_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const noEncontrada = (res) => res.status(404).json({ error: 'Receta no encontrada' })
 
-// Quién puede tocar qué. Una receta del catálogo común solo la edita un admin;
-// una privada, quien la tiene.
-//
-// Si la receta no existe o es de otro hogar, la respuesta es 404 y no 403: decir
-// "no tienes permiso" confirmaría que existe.
 async function permisoSobre(req, res) {
   const dueno = await recetasService.duenoDe(req.params.id)
   if (!dueno) {
@@ -105,8 +96,6 @@ export async function create(req, res) {
   const errores = validar(req.body)
   if (errores.length > 0) return res.status(400).json({ errores })
   const hogarId = hogarDe(req)
-  // Un admin escribe en el catálogo común salvo que pida lo contrario. Quien no
-  // lo es solo puede crear recetas suyas, diga lo que diga el payload.
   const comun = req.usuario.rol === 'admin' && req.body.privada !== true
   const nueva = await recetasService.create(hogarId, comun ? null : hogarId, req.body)
   res.status(201).json(nueva)
@@ -122,8 +111,6 @@ export async function update(req, res) {
   res.json(actualizada)
 }
 
-// Favorita no es editar la receta: cualquiera puede marcarse las suyas, también
-// las del catálogo común. Basta con que la vea.
 export async function toggleFavorita(req, res) {
   if (!RE_UUID.test(req.params.id)) return noEncontrada(res)
   const receta = await recetasService.toggleFavorita(hogarDe(req), req.params.id)

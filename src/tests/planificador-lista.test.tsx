@@ -3,11 +3,6 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Receta } from '../types/receta'
 
-// El puente plan -> lista de la compra es el sitio con más piezas móviles de la
-// app: un efecto sin deps completas, tres refs mutables y un Set con lo que el
-// planificador metió en la lista para no borrar lo que puso el usuario a mano.
-// Estos tests fijan ese contrato antes de tocarlo.
-
 const api = vi.hoisted(() => ({
   getPlan: vi.fn().mockResolvedValue([]),
   savePlan: vi.fn().mockResolvedValue(undefined),
@@ -47,7 +42,6 @@ vi.mock('../context/RecetasContext', () => ({
   useRecetasContext: () => ({ recetas: CATALOGO, loading: false }),
 }))
 
-// Importaciones después de los mocks para que los contextos los recojan.
 const { DespensaProvider, useDespensa } = await import('../context/DespensaContext')
 const { ListaCompraProvider, useListaCompraContext } = await import('../context/ListaCompraContext')
 const { PendientesPlanProvider, usePendientesPlan } = await import('../context/PendientesPlanContext')
@@ -76,8 +70,6 @@ function montar() {
   )
 }
 
-// La hidratación pisa lo que haya en local cuando llega (ver el describe del
-// final). Para probar el resto del contrato hay que dejarla aterrizar primero.
 async function montarHidratado() {
   const montado = montar()
   await waitFor(() => expect(api.getPlan).toHaveBeenCalled())
@@ -188,7 +180,6 @@ describe('raciones y límites del plan', () => {
   })
 
   it('la lista NO acota por arriba: acepta más raciones que el plan', async () => {
-    // Asimetría conocida: el tope de 4 es solo del planificador.
     const { result } = await montarHidratado()
     act(() => result.current.lista.toggleReceta(POLLO))
     act(() => result.current.lista.setRaciones('r1', 10))
@@ -378,9 +369,6 @@ describe('hidratación del plan desde el backend', () => {
   })
 })
 
-// Encontrado escribiendo estos tests: la respuesta del backend llegaba y
-// sustituía lo que hubiera en pantalla, así que todo lo tocado durante la carga
-// se perdía sin aviso. Ahora lo local gana y se sube.
 describe('la hidratación no pisa lo que el usuario hizo mientras cargaba', () => {
   it('lo añadido al plan antes de que responda el backend se conserva y se sube', async () => {
     let responder: (dtos: unknown[]) => void = () => {}

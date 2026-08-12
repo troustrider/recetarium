@@ -2,13 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { precioDe, buscarPrecio, costeCompra, PRECIOS } from '../utils/precios'
 import { convertir } from '../utils/cantidades'
 
-// El precio de la lista tiene que salir de lo que se compra de verdad, y no
-// puede inventarse lo que no sabe.
-
-// Los tests no fijan cuanto vale el pollo: los precios cambian y la tabla se
-// actualiza sola por el script. Lo que se fija es el comportamiento.
 const euros = (nombre: string) => buscarPrecio(nombre)!.euros
-// precioDe redondea a centimos; la expectativa tiene que redondear igual.
 const centimos = (n: number) => Math.round(n * 100) / 100
 
 describe('buscarPrecio', () => {
@@ -23,8 +17,6 @@ describe('buscarPrecio', () => {
   })
 
   it('el corte concreto no se cobra a precio de otro', () => {
-    // El error que este orden evita: que una entrada generica de pollo pisara
-    // a los contramuslos y los cobrase a precio de pechuga.
     expect(buscarPrecio('contramuslos de pollo')?.nombre).toBe('contramuslos de pollo')
     expect(buscarPrecio('pechuga de pollo')?.nombre).toBe('pechuga de pollo')
   })
@@ -52,12 +44,9 @@ describe('precioDe', () => {
   })
 
   it('traduce las unidades de cocina', () => {
-    // 2 cucharadas = 30 ml de un precio por litro
     expect(precioDe({ nombre: 'aceite de oliva', cantidad: 2, unidad: 'cucharada' }))
       .toBe(centimos(euros('aceite de oliva') * 0.03))
-    // 4 dientes = 20 g de un precio por kilo
     expect(precioDe({ nombre: 'ajo', cantidad: 4, unidad: 'diente' })).toBe(centimos(euros('ajo') * 0.02))
-    // 1 puñado = 25 g
     expect(precioDe({ nombre: 'perejil', cantidad: 1, unidad: 'puñado' })).toBe(centimos(euros('perejil') * 0.025))
   })
 
@@ -77,7 +66,6 @@ describe('precioDe', () => {
   })
 
   it('null también cuando la unidad no se sabe traducir', () => {
-    // Los huevos van por ud y no hay forma honesta de valorar "medio puñado".
     expect(precioDe({ nombre: 'huevos', cantidad: 1, unidad: 'puñado' })).toBeNull()
   })
 })
@@ -109,17 +97,12 @@ describe('costeCompra', () => {
 
 describe('la despensa sigue con su aritmética estricta', () => {
   it('convertir no aprendió las equivalencias de cocina', () => {
-    // Si esto deja de ser null, el reparto de stock de la despensa empieza a
-    // inventarse conversiones y descuadra lo que hay en casa.
     expect(convertir(2, 'cucharada', 'ml')).toBeNull()
     expect(convertir(1, 'diente', 'g')).toBeNull()
     expect(convertir(1, 'puñado', 'g')).toBeNull()
   })
 })
 
-// La tabla la editan tres manos: yo, Karim al volver de la compra, y la skill
-// del chef. Estas comprobaciones son las que evitan que una edicion torcida
-// entre en produccion sin que salte nada.
 describe('integridad de la tabla', () => {
   const UNIDADES = ['g', 'kg', 'ml', 'cl', 'l', 'ud']
 
@@ -156,7 +139,6 @@ describe('integridad de la tabla', () => {
   })
 
   it('ningún precio es absurdo para comida de supermercado', () => {
-    // Red contra el dedazo: 90 €/kg no existe en Dirk ni en Lidl.
     const porKilo = PRECIOS.filter((p) => p.unidad === 'kg')
     expect(porKilo.filter((p) => p.euros > 60).map((p) => p.nombre)).toEqual([])
   })

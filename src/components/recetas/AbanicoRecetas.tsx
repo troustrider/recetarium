@@ -17,8 +17,6 @@ function geometria(w: number): Geo {
   return { cardW: 142, spread: 42, rot: 6 }
 }
 
-// Fondo neutro para las cards que no están a un solo ingrediente de poderse cocinar.
-// El color por sabor se reserva para señalar "falta 1" — así el color significa algo.
 const NEUTRAL_BG = '#15181e'
 
 interface Props {
@@ -68,8 +66,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
     setActive((a) => Math.max(0, Math.min(recetas.length - 1, a + delta)))
   }
 
-  // Selección por posición del cursor: barrer el ratón elige la card de esa zona,
-  // aunque esté parcialmente tapada por sus vecinas.
   function onPointerMove(e: React.PointerEvent) {
     if (!hoverCapable.current) return
     let rect = rectRef.current
@@ -130,7 +126,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
           const conColor = faltan === 1  // color por sabor solo cuando falta 1 ingrediente
           const bg = conColor ? luz.bg : NEUTRAL_BG
           const bloom = conColor ? luz.bloom : 'transparent'
-          // Halo en el color del sabor: sobrevive al atenuado de las laterales.
           const glow = conColor ? `0 0 0 1px ${luz.dot}66, 0 0 20px -2px ${luz.dot}55` : ''
           const slot = i - centerIndex   // posición fija en el abanico
           const d = i - active           // distancia a la card activa (solo estética)

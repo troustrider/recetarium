@@ -8,12 +8,9 @@ function listar(nombres: string[]) {
   return `${nombres.slice(0, -1).join(', ')} y ${nombres[nombres.length - 1]}`
 }
 
-// Un guardado que falla ya no desaparece en silencio: la app deja de fingir que
-// el cambio está compartido con el otro dispositivo y ofrece reintentar.
 function AvisoSincronizacion() {
   const { guardando, fallos } = useSyncExternalStore(suscribir, leer, leer)
 
-  // Volver a tener red es el momento obvio para reintentar solo.
   useEffect(() => {
     const alVolver = () => { void reintentarTodo() }
     window.addEventListener('online', alVolver)

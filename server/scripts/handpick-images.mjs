@@ -1,9 +1,3 @@
-// Curación asistida para platos-estrella que el traductor automático no acierta
-// pero Unsplash SÍ tiene. Cada entrada fija la query en inglés y el/los términos
-// que el metadato de la foto DEBE contener (guardrail intacto). Solo toca
-// recetas con imagen NULL. Idempotente y deduplicado.
-// Uso: UNSPLASH_ACCESS_KEY=xxx node scripts/handpick-images.mjs [--dry]
-
 import { neon } from '@neondatabase/serverless'
 import { readFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -26,7 +20,6 @@ const deaccent = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '')
 const meta = (p) => deaccent([p.description, p.alt_description, ...(p.tags || []).map((t) => t.title)]
   .filter(Boolean).join(' ').toLowerCase()).replace(/[-_]/g, ' ')
 
-// nombre exacto -> { q: query inglesa, terms: [todos deben aparecer en el metadato] }
 const PICKS = {
   'Bulgogi': { q: 'bulgogi beef korean', terms: ['bulgogi'] },
   'Gyudon': { q: 'gyudon beef rice bowl', terms: ['beef'] },

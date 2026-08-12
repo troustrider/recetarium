@@ -23,9 +23,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
 
   useWakeLock(true)
 
-  // Bloquea el scroll de fondo mientras el modo ocupa la pantalla. Va en <html>
-  // y no solo en <body>: en iOS el elemento que scrollea es <html>, y sin esto
-  // el gesto arrastra la pantalla completa y asoma la app de debajo.
   useEffect(() => {
     const raiz = document.documentElement
     const prevBody = document.body.style.overflow

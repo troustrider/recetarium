@@ -1,10 +1,5 @@
 import { MUESTRA } from '../../data/muestraLanding'
 
-// Fondo de la landing: las fotos del recetario, desenfocadas, como textura.
-//
-// El texto NO va sobre fotografía. Encima hay una capa opaca del color de fondo
-// de la app, así que el contraste de la tarjeta es el mismo que tendría sobre el
-// fondo plano. Es la condición que se puso para poder usar fotos aquí.
 function MosaicoLanding() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -14,8 +9,6 @@ function MosaicoLanding() {
             key={r.nombre}
             src={r.imagen}
             alt=""
-            // Sin lazy: es lo primero que se ve, diferirlo solo retrasa el
-            // pintado. En MuestraTarjeta sí va, porque se oculta por debajo de lg.
             fetchPriority="low"
             decoding="async"
             className="w-full h-full object-cover opacity-70 dark:opacity-40"

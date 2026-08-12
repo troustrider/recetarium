@@ -7,8 +7,6 @@ export interface IngredienteConocido {
   familia: string
 }
 
-// Ingredientes únicos del recetario: nombre consistente con las recetas
-// y familia autorrellenada, para sugerencias al añadir a la despensa.
 function useIngredientesConocidos(): IngredienteConocido[] {
   const { recetas } = useRecetasContext()
   return useMemo(() => {

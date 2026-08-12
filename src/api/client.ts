@@ -36,8 +36,6 @@ export async function deleteReceta(id: string): Promise<void> {
   }
 }
 
-// El borrado es lógico, así que la receta vuelve con su mismo id y las entradas
-// del plan que la referencian siguen valiendo.
 export async function restoreReceta(id: string): Promise<Receta> {
   return apiJson<Receta>(`/recetas/${id}/restaurar`, { method: 'POST' })
 }

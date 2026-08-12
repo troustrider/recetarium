@@ -41,7 +41,6 @@ function Despensa() {
   const [confirmarVaciar, setConfirmarVaciar] = useState(false)
   const [mostrarAñadir, setMostrarAñadir] = useState(false)
 
-  // La confirmación de vaciado caduca sola si no se remata.
   useEffect(() => {
     if (!confirmarVaciar) return
     const t = setTimeout(() => setConfirmarVaciar(false), 4000)
@@ -95,7 +94,6 @@ function Despensa() {
 
   const enLista = (nombre: string) => listaCompra.some((i) => mismoIngrediente(i.nombre, nombre))
 
-  // Solo lo marcado como comprado y que aún no esté en la despensa.
   const importables = listaCompra.filter(
     (i) => comprados.has(i.clave) && !estaEnDespensa(i.nombre, despensa)
   )

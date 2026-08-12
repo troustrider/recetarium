@@ -3,11 +3,6 @@ import express from 'express'
 import sql from '../src/lib/db.js'
 import { requireUser, requireAdmin } from '../src/lib/auth.js'
 
-// Los usuarios y las sesiones viven en neon_auth, que gestiona Neon. Aquí se
-// escriben a mano porque no hay forma de iniciar sesión de verdad desde un test,
-// y porque es justo lo que verifica el middleware: que un token de esa tabla
-// resuelve al usuario y a su hogar.
-
 const HOGAR_COMPARTIDO = '00000000-0000-0000-0000-000000000001'
 const creados = { usuarios: [], invitados: [], hogares: [] }
 
@@ -68,9 +63,6 @@ describe('requireUser', () => {
     expect((await get('/yo', 'no-existe')).status).toBe(401)
   })
 
-  // El cliente manda un JWT firmado por el servicio de auth, que aquí no se
-  // puede emitir sin su clave privada. Lo que sí se cubre es que la rama del JWT
-  // rechaza lo que no verifica, en vez de colarlo o reventar con un 500.
   it('rechaza un JWT que no verifica', async () => {
     const res = await get('/yo', 'eyJhbGciOiJFZERTQSJ9.eyJzdWIiOiJmYWxzbyJ9.firma-invalida')
     expect(res.status).toBe(401)

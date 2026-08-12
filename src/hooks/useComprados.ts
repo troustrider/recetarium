@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 
 const STORAGE_KEY = 'recetarium:comprados'
 
-// Ítems ya echados al carro. Efímero por viaje al súper, por dispositivo.
 export function useComprados() {
   const [comprados, setComprados] = useState<Set<string>>(() => {
     try {

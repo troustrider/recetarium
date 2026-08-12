@@ -1,19 +1,3 @@
-// Da acceso a alguien. Sin fila en invitados no se entra, aunque se tenga
-// cuenta de Google.
-//
-//   node server/scripts/invitar.mjs cloe@ejemplo.com --compartido
-//   node server/scripts/invitar.mjs amigo@ejemplo.com --propio
-//   node server/scripts/invitar.mjs otro@ejemplo.com --hogar <uuid>
-//   node server/scripts/invitar.mjs karim@ejemplo.com --compartido --admin
-//   ... --test    para la rama recetarium-test
-//   ... --quitar  para retirar una invitación no usada
-//
-// --compartido mete a la persona en el hogar de Karim y Cloe: ve la misma
-// despensa, el mismo plan y la misma lista. --propio le crea el suyo, vacío,
-// en su primer inicio de sesión.
-//
-// Existe como script y no como fichero SQL porque un correo es dato personal y
-// este repositorio es público.
 import { config } from 'dotenv'
 
 const args = process.argv.slice(2)

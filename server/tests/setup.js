@@ -2,9 +2,6 @@ import { config } from 'dotenv'
 
 config({ path: 'server/.env.test', override: true })
 
-// Estos tests escriben de verdad: crean y borran recetas y machacan la fila
-// única de app_estado. Si DATABASE_URL no apunta a la rama de pruebas de Neon,
-// abortan antes de tocar nada.
 const ENDPOINT_PRUEBAS = 'ep-gentle-field-abm7rrx3'
 
 if (!process.env.DATABASE_URL) {
@@ -18,8 +15,6 @@ if (!process.env.DATABASE_URL.includes(ENDPOINT_PRUEBAS)) {
   )
 }
 
-// Los helpers apuntan los usuarios y hogares que crean; esto los purga al
-// terminar cada fichero, para que ningún test tenga que acordarse.
 const { afterAll } = await import('vitest')
 const { limpiarCreados } = await import('./helpers.js')
 afterAll(limpiarCreados)

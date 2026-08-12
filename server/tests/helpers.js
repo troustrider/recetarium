@@ -13,12 +13,6 @@ export async function arrancarServidor() {
   }
 }
 
-// Toda la API pide sesión, así que los tests necesitan una. Se escribe a mano en
-// neon_auth porque no hay forma de completar un login real desde aquí, y con
-// token opaco porque emitir un JWT válido exigiría la clave privada del servicio
-// gestionado. requireUser acepta las dos formas.
-// Lo que crean los helpers se apunta aquí y lo purga el afterAll global de
-// setup.js, para no repetir la misma limpieza en cada fichero de test.
 const creados = { usuarios: [], hogares: [] }
 
 export async function limpiarCreados() {

@@ -48,8 +48,6 @@ describe('unidadMedible', () => {
   })
 
   it('acepta cl aunque el selector de la despensa no lo ofrezca', () => {
-    // UNIDADES_DESPENSA (lo que ve el usuario) no incluye cl, pero la tabla de
-    // conversión y el validador del backend sí lo aceptan.
     expect(unidadMedible('cl')).toBe(true)
     expect([...UNIDADES_DESPENSA]).not.toContain('cl')
   })

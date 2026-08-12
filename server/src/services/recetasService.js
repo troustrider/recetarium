@@ -1,13 +1,6 @@
 import sql from '../lib/db.js'
 import { fichaNutricional, estimarMacros } from '../lib/nutricion.js'
 
-// Una sola consulta para todas las combinaciones de filtros. Antes eran cuatro
-// casi idénticas, y con el filtro por hogar de por medio bastaría con olvidarlo
-// en una para que un hogar viese las recetas privadas de otro.
-//
-// hogar_id NULL es el catálogo común; un UUID, una receta privada de ese hogar.
-// favorita ya no es una columna de la receta: se deriva por hogar, así que el
-// DTO no cambia de forma y el front no se entera.
 const CAMPOS = sql.unsafe(`
   r.id, r.nombre, r.categoria, c.name AS sabor,
   r.tiempo_preparacion AS "tiempoPreparacion",
@@ -44,19 +37,11 @@ export async function getById(hogarId, id) {
   return row ?? null
 }
 
-// Para decidir permisos hace falta saber de quién es la receta, y eso no puede
-// depender de que sea visible: una receta privada de otro hogar no existe para
-// quien pregunta, pero tampoco se le puede decir "no tienes permiso" en vez de
-// "no existe", que filtraría que existe.
-// Sin filtrar por borrada_en: restaurar actúa justo sobre una receta borrada, y
-// filtrarla aquí haría que restaurar respondiera siempre 404.
 export async function duenoDe(id) {
   const [row] = await sql`SELECT hogar_id AS "hogarId" FROM recetas WHERE id = ${id}`
   return row ?? null
 }
 
-// Ficha propia, con los mismos gramajes por ración que el plato: así la del
-// plato sigue siendo la del plato solo y la app puede sumar aparte.
 function guarnicionConFicha(guarnicion, porciones) {
   if (!guarnicion) return null
   const entrada = { ingredientes: guarnicion.ingredientes, porciones }
@@ -83,14 +68,9 @@ async function getCategoryId(sabor) {
   return cat.id
 }
 
-// duenoId null crea en el catálogo común; con un hogar, una receta privada de
-// ese hogar. hogarId es siempre quien pregunta, para devolver la receta ya con
-// su favorita resuelta.
 export async function create(hogarId, duenoId, data) {
   const { nombre, sabor, categoria, tiempoPreparacion, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
-  // Siempre de los ingredientes, nunca del payload: no tiene sentido dejar que
-  // alguien los declare a mano.
   const ficha = fichaNutricional({ ingredientes, porciones: porciones ?? 1 })
   const guarnicion = guarnicionConFicha(data.guarnicion, porciones ?? 1)
   const [row] = await sql`
@@ -112,8 +92,6 @@ export async function create(hogarId, duenoId, data) {
 export async function update(hogarId, id, data) {
   const { nombre, sabor, categoria, tiempoPreparacion, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
-  // porciones se conserva con COALESCE si el payload no la trae: la ficha divide
-  // por la que quede en la fila, no por 1.
   const raciones = porciones ?? (await getById(hogarId, id))?.porciones ?? 1
   const ficha = fichaNutricional({ ingredientes, porciones: raciones })
   const guarnicion = guarnicionConFicha(data.guarnicion, raciones)
@@ -145,8 +123,6 @@ export async function update(hogarId, id, data) {
   return getById(hogarId, id)
 }
 
-// Marcar favorita es del hogar, no de la receta: antes era una columna de
-// recetas y marcarla se la marcaba a todo el mundo.
 export async function toggleFavorita(hogarId, id) {
   const receta = await getById(hogarId, id)
   if (!receta) return null
@@ -161,8 +137,6 @@ export async function toggleFavorita(hogarId, id) {
   return getById(hogarId, id)
 }
 
-// Borrado lógico: la fila se queda para que restaurar devuelva la receta con su
-// mismo id, que es por donde la referencian el plan y las pendientes.
 export async function remove(id) {
   const result = await sql`
     UPDATE recetas SET borrada_en = now()

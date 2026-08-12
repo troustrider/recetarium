@@ -13,12 +13,8 @@ import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 
-// El catálogo pasa de las 250 recetas: pintarlas todas de golpe son cientos de
-// tarjetas animadas y sus imágenes, y cualquier repintado posterior arrastra
-// con todas. Se pintan por tandas conforme se baja.
 const POR_TANDA = 24
 
-// PRNG determinista (mulberry32) para barajar sin ensuciar el render.
 function prngDesde(seed: number): () => number {
   let a = seed >>> 0
   return () => {
@@ -79,13 +75,8 @@ function Catalogo() {
     [recetas]
   )
 
-  // Semilla fresca en cada montaje: al entrar a la página sale un conjunto distinto
   const [seedAbanico] = useState(() => Math.floor(Math.random() * 2 ** 32))
 
-  // "Recetas de hoy" — cocinables primero (0 faltan), luego falta 1, 2… pero el
-  // orden DENTRO de cada nivel es aleatorio en cada visita, no siempre las mismas.
-  // El barajado va sembrado en vez de con Math.random() para que el memo sea
-  // puro: el orden cambia por montaje, no entre repintados del mismo montaje.
   const hoy = useMemo(() => {
     const aleatorio = prngDesde(seedAbanico)
     const barajar = <T,>(arr: T[]): T[] => {
@@ -135,17 +126,12 @@ function Catalogo() {
   const [visibles, setVisibles] = useState(POR_TANDA)
   const centinela = useRef<HTMLDivElement>(null)
 
-  // Cada cambio de filtros empieza otra vez por arriba. En el render y no en un
-  // efecto: así no se llega a pintar la tanda vieja sobre los resultados nuevos.
   const [resultadosPrevios, setResultadosPrevios] = useState(resultados)
   if (resultadosPrevios !== resultados) {
     setResultadosPrevios(resultados)
     setVisibles(POR_TANDA)
   }
 
-  // Se pinta la tanda siguiente cuando el final se acerca a la pantalla. Por
-  // scroll y no con IntersectionObserver: el observer no dispara en algunos
-  // navegadores embebidos y el catálogo se quedaría clavado en la primera tanda.
   useEffect(() => {
     if (visibles >= resultados.length) return
     let pedido = false

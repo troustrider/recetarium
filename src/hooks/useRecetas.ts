@@ -49,7 +49,6 @@ function useRecetas() {
   }
 
   async function actualizar(id: string, data: RecetaFormData, anterior?: RecetaFormData): Promise<boolean> {
-    // Versión previa, que pasa el formulario, para deshacer la edición.
     const previa = anterior
       ?? (() => {
         const r = state.recetas.find((x) => x.id === id)
@@ -102,8 +101,6 @@ function useRecetas() {
     }
   }
 
-  // Devuelve al catálogo una receta borrada. El id es el de antes, así que lo
-  // que la referenciaba (plan, pendientes, favoritas) vuelve a encontrarla.
   async function restaurar(id: string): Promise<boolean> {
     try {
       const receta = await restoreReceta(id)
@@ -118,7 +115,6 @@ function useRecetas() {
     }
   }
 
-  // Estable: llega como prop a las RecetaCard memoizadas.
   const alternarFavorita = useCallback(async (id: string): Promise<boolean> => {
     setState((prev) => ({
       ...prev,

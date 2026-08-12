@@ -1,18 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { inicioGuardado, finGuardado, registrarFallo, limpiarFallo } from '../utils/sincronizacion'
 
-// Ciclo de un trozo del estado compartido (plan, despensa, extras, pendientes):
-// se carga al montar, se guarda con debounce y se revalida al volver a la
-// pestaña o cada minuto. La carga nunca pisa lo que el usuario haya tocado.
-//
-// El setter que devuelve es lo que marca el estado como tocado: cualquier
-// setEstado que se salte el hook rompe esa garantía.
-
 const INTERVALO_REVALIDACION = 60_000
 
-// Huella con las claves en orden: Postgres guarda el estado en jsonb y las
-// devuelve reordenadas, así que comparar el JSON tal cual daría "ha cambiado"
-// con el mismo contenido y repintaría la app cada minuto.
 function huella(valor: unknown): string {
   if (Array.isArray(valor)) return `[${valor.map(huella).join(',')}]`
   if (valor !== null && typeof valor === 'object') {
@@ -27,19 +17,13 @@ function huella(valor: unknown): string {
 }
 
 interface Opciones<T, DTO> {
-  // Cómo se llama esto para el usuario si falla el guardado ("la despensa").
   nombre: string
   inicial: T | (() => T)
   cargar: () => Promise<DTO>
   guardar: (dto: DTO) => Promise<void>
   serializar: (estado: T) => DTO
-  // Qué hacer con lo que llega del backend. Devolver null significa "no hay
-  // nada que aplicar, sube lo que hay en local" (backend vacío la primera vez).
   hidratar: (dto: DTO, actual: T) => T | null
-  // Falso mientras falten datos para poder hidratar (p. ej. el catálogo de
-  // recetas, necesario para rehidratar el plan por id).
   listo?: boolean
-  // Efecto local en cada cambio, antes de cualquier guardado (cache offline).
   alCambiar?: (estado: T) => void
   retardo?: number
 }
@@ -62,27 +46,19 @@ export function useEstadoCompartido<T, DTO>({
   const saltarGuardadoRef = useRef(false)
   const tocadoRef = useRef(false)
 
-  // Versión local contra versión confirmada en backend. Mientras la local vaya
-  // por delante hay cambios sin guardar y una revalidación los pisaría.
   const versionRef = useRef(0)
   const guardadaRef = useRef(0)
   const pendienteDeGuardar = () => versionRef.current > guardadaRef.current
 
-  // Cambian de identidad en cada render; así se llaman siempre las últimas sin
-  // meterlas en las deps de los efectos.
   const fns = useRef({ cargar, guardar, serializar, hidratar, alCambiar })
   useEffect(() => {
     fns.current = { cargar, guardar, serializar, hidratar, alCambiar }
   })
 
-  // Guarda lo último que hay en pantalla, no un DTO congelado: un reintento
-  // tardío sube el estado actual. Por ref para no encadenar closures viejas.
   const enviarRef = useRef<() => Promise<void>>(async () => {})
 
   const enviar = useCallback(async (): Promise<void> => {
     inicioGuardado()
-    // La versión se lee antes de subir: si el usuario toca algo mientras el
-    // guardado va en vuelo, esto no la da por confirmada.
     const version = versionRef.current
     try {
       await fns.current.guardar(fns.current.serializar(estadoRef.current))
@@ -110,8 +86,6 @@ export function useEstadoCompartido<T, DTO>({
         if (tocadoRef.current) return subirLocal()
         const siguiente = fns.current.hidratar(dto, estadoRef.current)
         if (siguiente === null) return subirLocal()
-        // Si no cambia nada, no se arma el salto: si no, se lo comería el
-        // primer cambio del usuario en vez del guardado de la hidratación.
         if (siguiente === estadoRef.current) return
         saltarGuardadoRef.current = true
         setEstado(siguiente)
@@ -122,8 +96,6 @@ export function useEstadoCompartido<T, DTO>({
     return () => { cancelado = true }
   }, [listo, enviar])
 
-  // Trae lo del otro dispositivo, solo si aquí no hay nada pendiente de subir:
-  // entre dos versiones gana la de quien está editando ahora mismo.
   const revalidar = useCallback(async () => {
     if (!hidratadoRef.current || pendienteDeGuardar()) return
     let dto: DTO
@@ -135,7 +107,6 @@ export function useEstadoCompartido<T, DTO>({
     if (pendienteDeGuardar()) return
     const siguiente = fns.current.hidratar(dto, estadoRef.current)
     if (siguiente === null || siguiente === estadoRef.current) return
-    // Hidratar devuelve objetos nuevos aunque el contenido sea el mismo.
     const { serializar: ser } = fns.current
     if (huella(ser(siguiente)) === huella(ser(estadoRef.current))) return
     saltarGuardadoRef.current = true

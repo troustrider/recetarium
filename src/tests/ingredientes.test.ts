@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { normalizar, canonUnidad, claveIngrediente, formatNumero, formatCantidad } from '../utils/ingredientes'
 
-// claveIngrediente es la que agrupa la lista de la compra y la que guarda el
-// estado de "comprado". Si cambia su forma, se pierden los marcados.
-
 describe('normalizar', () => {
   it('quita acentos, espacios y mayúsculas', () => {
     expect(normalizar('  Brócoli  ')).toBe('brocoli')
@@ -12,8 +9,6 @@ describe('normalizar', () => {
   })
 
   it('también quita la eñe', () => {
-    // No es un descuido: las claves de UNIDAD_CANON y los alias se escriben ya
-    // sin ñ porque todo pasa por aquí antes.
     expect(normalizar('piña')).toBe('pina')
     expect(normalizar('puñado')).toBe('punado')
   })
@@ -46,8 +41,6 @@ describe('canonUnidad', () => {
   })
 
   it('pero el plural "pizcas" se queda en pizca, no en "al gusto"', () => {
-    // La comprobación de pizca va antes que la tabla de plurales, así que solo
-    // atrapa el singular. Asimetría conocida.
     expect(canonUnidad('orégano', 'pizcas')).toBe('pizca')
   })
 
@@ -72,8 +65,6 @@ describe('claveIngrediente', () => {
   })
 
   it('mantiene el formato nombre__unidad', () => {
-    // El estado de comprados persiste esta cadena: cambiar el separador
-    // invalida lo que el usuario ya había marcado.
     expect(claveIngrediente('pechuga de pollo', 'g')).toBe('pechuga de pollo__g')
   })
 })

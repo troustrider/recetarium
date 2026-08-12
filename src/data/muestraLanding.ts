@@ -1,11 +1,3 @@
-// Muestra para la landing. Va como constante y no desde la API a propósito: la
-// landing es lo único que se ve sin sesión, y todos los endpoints de recetas
-// exigen sesión. Abrir uno público para decorar una pantalla sería deshacer lo
-// que se cerró en la fase 4.
-//
-// La selección es curada, no un SELECT cualquiera: unas treinta recetas del
-// catálogo tienen foto de relleno porque Unsplash no tiene el plato, y aquí no
-// pueden salir. Si alguna deja de gustar, se cambia esta lista y ya.
 export interface MuestraReceta {
   nombre: string
   categoria: string

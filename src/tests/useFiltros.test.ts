@@ -56,7 +56,6 @@ describe('useFiltros', () => {
     act(() => { result.current.setFiltros((f) => ({ ...f, ingrediente: 'pata' })) })
     expect(result.current.recetasFiltradas).toHaveLength(1)
     expect(result.current.recetasFiltradas[0].nombre).toBe('Tortilla')
-    // singular casa con el plural de la receta vía tokens
     act(() => { result.current.setFiltros((f) => ({ ...f, ingrediente: 'huevo' })) })
     expect(result.current.recetasFiltradas).toHaveLength(1)
     act(() => { result.current.setFiltros((f) => ({ ...f, ingrediente: 'salmón' })) })

@@ -26,7 +26,6 @@ export default defineConfig([
     },
   },
   {
-    // los contextos exportan provider + hook juntos; sin fast refresh ahí es asumible
     files: ['src/context/**'],
     rules: {
       'react-refresh/only-export-components': 'off',

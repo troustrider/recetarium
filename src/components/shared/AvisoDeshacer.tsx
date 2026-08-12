@@ -2,8 +2,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Undo2, X } from 'lucide-react'
 import { useDeshacer } from '../../context/DeshacerContext'
 
-// Mismo hueco y misma silueta que el aviso de sincronización: en móvil por
-// encima de la barra inferior, centrado y sin tapar el contenido.
 function AvisoDeshacer() {
   const { pendiente, ejecutar, descartar } = useDeshacer()
 

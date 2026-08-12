@@ -1,8 +1,3 @@
-// Extrae duraciones cronometrables del texto de un paso. El Modo cocina las
-// convierte en temporizadores. Los pasos de la BD escriben el tiempo como
-// número + unidad ("12 min", "25-30 min", "30 s", "3 horas"); la regla de
-// calidad del skill de chef garantiza que toda acción con tiempo lo declare así.
-
 export interface Duracion {
   segundos: number
   etiqueta: string
@@ -14,8 +9,6 @@ const FACTOR: Record<string, number> = {
   h: 3600, hora: 3600, horas: 3600,
 }
 
-// Número (con rango opcional) seguido de una unidad de tiempo. Las alternativas
-// largas van antes que las cortas para que "segundos" gane a "s".
 const RE = /(\d+)(?:\s*[-–]\s*(\d+))?\s*(segundos|segundo|seg|minutos|minuto|min|horas|hora|s|h)\b/gi
 
 export function parseDuraciones(paso: string): Duracion[] {
@@ -25,7 +18,6 @@ export function parseDuraciones(paso: string): Duracion[] {
     const alto = m[2] ? parseInt(m[2], 10) : null
     const factor = FACTOR[m[3].toLowerCase()] ?? 60
     const corta = factor === 3600 ? 'h' : factor === 60 ? 'min' : 's'
-    // Rango: cronometra el mínimo para avisar antes y comprobar el punto.
     out.push({
       segundos: bajo * factor,
       etiqueta: alto ? `${bajo}-${alto} ${corta}` : `${bajo} ${corta}`,

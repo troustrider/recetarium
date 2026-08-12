@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-// Actualiza un precio de src/data/precios.json sin abrir el fichero a mano.
-// Pensado para usarlo al volver de la compra, y para que la skill del chef
-// haga lo mismo por la misma puerta en vez de editar JSON a pelo.
-//
-//   npm run precio -- "pechuga de pollo" 9.49 kg Dirk "bandeja 500 g · 4,75 €"
-//   npm run precio -- --listar-sin-contrastar
-//
-// Reglas: no crea entradas nuevas por sorpresa (hay que pasar --nueva), no
-// acepta unidades que el motor no sabe convertir, y avisa si el precio cambia
-// mas de la mitad, que suele ser un dedazo.
 
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'

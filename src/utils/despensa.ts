@@ -1,8 +1,3 @@
-// Matching entre nombres de ingrediente (despensa ↔ recetas ↔ lista). La
-// despensa se escribe a mano ("aceite oliva") y las recetas usan nombres
-// precisos ("aceite de oliva"), así que se compara por conjuntos de tokens
-// —sin conectores, acentos ni plurales— con contención en ambas direcciones.
-
 import { normalizar, canonUnidad } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
 import { ALIAS_TOKENS } from './alias'
@@ -15,9 +10,6 @@ export const FAMILIAS = [
   'cereales', 'legumbres', 'frutos secos', 'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', FAMILIA_HOGAR, 'otros',
 ]
 
-// Se compran con la lista pero no son ingredientes: al marcarlos como
-// comprados salen de la lista sin entrar en la despensa. La familia manda; las
-// pistas por nombre solo ahorran elegir la sección a mano.
 const PISTAS_HOGAR = [
   'detergente', 'suavizante', 'lejia', 'lavavajillas', 'friegasuelos', 'limpiacristales',
   'quitagrasas', 'ambientador', 'insecticida', 'estropajo', 'bayeta', 'fregona',
@@ -34,11 +26,8 @@ export function esDeHogar(item: { nombre: string; familia?: string }): boolean {
   return PISTAS_HOGAR.some((p) => n.includes(p))
 }
 
-// Conectores sin valor semántico ("aceite DE oliva", "huevo Y queso").
 const STOPWORDS = new Set(['de', 'del', 'la', 'el', 'al', 'con', 'en', 'y', 'a', 'para', 'sin', 'o'])
 
-// No cambian la identidad del ingrediente: "brócoli congelado" sigue siendo
-// brócoli. Se ignoran para la contención pero NO para la igualdad (dedup).
 const DESCRIPTORES = new Set([
   'fresco', 'fresca', 'congelado', 'congelada', 'congelados', 'congeladas',
   'seco', 'seca', 'molido', 'molida', 'picado', 'picada', 'rallado', 'rallada',
@@ -48,13 +37,8 @@ const DESCRIPTORES = new Set([
   'planos', 'finas', 'fina', 'variadas',
 ])
 
-// Cabezas cuyo calificador denota otro producto: aceite de oliva ≠ de girasol,
-// leche ≠ de coco. Un genérico de la despensa NO cubre al específico de receta.
 const CABEZAS_AMBIGUAS_NOMBRES = ['aceite', 'leche', 'salsa', 'vino', 'vinagre', 'caldo', 'harina', 'pasta', 'crema', 'col']
 
-// Raíz común de singular y plural, no el singular real: "-es" es ambiguo en
-// español ("limones" viene de limón, "tomates" de tomate) y sin diccionario no
-// se distingue. Quitando también la "e" final, ambas formas caen en el mismo sitio.
 function singular(t: string): string {
   if (t.length > 4 && t.endsWith('ces')) return `${t.slice(0, -3)}z` // nueces → nuez
   let s = t
@@ -63,8 +47,6 @@ function singular(t: string): string {
   return s.length > 3 && s.endsWith('e') ? s.slice(0, -1) : s
 }
 
-// Las tablas de arriba se escriben en singular natural, pero los tokens llegan
-// reducidos a raíz: se derivan con la misma función para que sigan casando.
 const ALIAS_RAIZ = new Map(Object.entries(ALIAS_TOKENS).map(([k, v]) => [singular(k), singular(v)]))
 const CABEZAS_AMBIGUAS = new Set(CABEZAS_AMBIGUAS_NOMBRES.map(singular))
 
@@ -72,9 +54,6 @@ function aplicarAlias(token: string): string {
   return ALIAS_RAIZ.get(token) ?? token
 }
 
-// Calcular disponibilidad son cientos de recetas × sus ingredientes × la
-// despensa entera, y tokenizar es normalizar + regex + singular + alias.
-// Cacheado por nombre pasa a ser un Map.get; los valores no se mutan.
 const TOPE_CACHE = 4000
 
 function memoizar<V>(cache: Map<string, V>, clave: string, calcular: () => V): V {
@@ -89,8 +68,6 @@ function memoizar<V>(cache: Map<string, V>, clave: string, calcular: () => V): V
 const cacheTokens = new Map<string, string[]>()
 const cacheNucleo = new Map<string, Set<string>>()
 
-// Normalizados, sin conectores, en singular y con los alias resueltos
-// ("ketjap" → "kecap"), para que sinónimos y variantes de escritura casen.
 function tokens(nombre: string): string[] {
   return memoizar(cacheTokens, nombre, () =>
     normalizar(nombre)
@@ -103,8 +80,6 @@ function tokens(nombre: string): string[] {
   )
 }
 
-// Tokens sin descriptores: la identidad del ingrediente para decidir si uno
-// cubre a otro.
 function nucleo(nombre: string): Set<string> {
   return memoizar(cacheNucleo, nombre, () => {
     const t = tokens(nombre)
@@ -113,8 +88,6 @@ function nucleo(nombre: string): Set<string> {
   })
 }
 
-// En español la cabeza va primero ("harina de maíz" es harina): el primer token
-// identifica el producto y los siguientes solo lo matizan.
 export function nucleoOrdenado(nombre: string): string[] {
   return [...nucleo(nombre)]
 }
@@ -125,23 +98,17 @@ function esSuperset(a: Set<string>, b: Set<string>): boolean {
   return true
 }
 
-// Contención en ambas direcciones: la despensa puede ser más específica ("arroz
-// jasmine" cubre "arroz") o más genérica ("pollo" cubre "pechuga de pollo"),
-// salvo cuando el genérico es una cabeza ambigua.
 export function despensaCubre(enDespensa: string, deReceta: string): boolean {
   const p = nucleo(enDespensa)
   const r = nucleo(deReceta)
   if (p.size === 0 || r.size === 0) return normalizar(enDespensa) === normalizar(deReceta)
   if (esSuperset(p, r)) return true // iguales o despensa más específica
   if (esSuperset(r, p)) {
-    // despensa más genérica: bloquear si es una cabeza que cambia de producto
     return !(p.size === 1 && CABEZAS_AMBIGUAS.has([...p][0]))
   }
   return false
 }
 
-// Simétrico, para deduplicar despensa y cruzar con la lista. Igualdad de tokens
-// completos (con descriptores) para no fundir "arroz" con "arroz integral".
 export function mismoIngrediente(a: string, b: string): boolean {
   const ta = tokens(a)
   const tb = new Set(tokens(b))
@@ -152,7 +119,6 @@ export function estaEnDespensa(nombre: string, despensa: { nombre: string }[]): 
   return despensa.some((d) => mismoIngrediente(d.nombre, nombre))
 }
 
-// Los "al gusto" (sal, pimienta, pizcas) se asumen básicos de casa y no cuentan.
 export function faltantes(receta: Receta, despensa: { nombre: string }[]): string[] {
   return receta.ingredientes
     .filter((ing) => canonUnidad(ing.nombre, ing.unidad) !== 'al gusto')
@@ -160,12 +126,6 @@ export function faltantes(receta: Receta, despensa: { nombre: string }[]): strin
     .map((ing) => ing.nombre)
 }
 
-// Cobertura de un ingrediente de la lista de compra por la despensa:
-//   cubierto — hay bastante, no se compra
-//   parcial  — hay algo, se compra solo la diferencia
-//   poco     — hay, pero sin cantidad fiable (marcado "poco" o caducando):
-//              se compra entero avisando de que queda algo en casa
-//   no       — no hay
 export type CoberturaDespensa = 'cubierto' | 'parcial' | 'poco' | 'no'
 
 export interface ItemCompra {
@@ -188,20 +148,11 @@ interface ItemDespensa {
   unidad?: string
 }
 
-// Reparte el stock entre los ingredientes de la lista, en orden. Uno de
-// despensa ("pollo") puede cubrir varias entradas ("pechuga", "muslo"): se le
-// va descontando para no contarlo dos veces. Sin cantidad guardada, o con
-// unidad incomparable ("2 cucharadas" contra "500 ml"), manda el estado.
 export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]): Reparto[] {
   const restante = despensa.map((d) =>
     typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
   )
 
-  // Al mismo item le pueden servir varios de la despensa ("tomate" y "tomate
-  // frito"). Gana, por este orden: con stock utilizable, mismo nombre antes que
-  // pariente, lleno antes que "poco", y lejos de caducar antes que encima.
-  // Agotado es solo "había cantidad y ya no queda"; sin cantidad apuntada manda
-  // el estado.
   const agotado = (d: ItemDespensa, stock: number | null, item: ItemCompra) => {
     if (stock == null) return false
     const disponible = convertir(stock, d.unidad!, item.unidad)
@@ -237,7 +188,6 @@ export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]):
     }
     if (disponible <= 0) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
 
-    // La caducidad obliga a reponer aunque el stock diera de sobra.
     if (disponible >= item.cantidad) {
       if (caducaPronto(d)) return { cobertura: 'poco', aComprar: item.cantidad, yaTengo: 0 }
       restante[idx] = redondear(stock! - convertir(item.cantidad, item.unidad, d.unidad!)!)

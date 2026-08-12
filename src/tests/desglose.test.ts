@@ -5,9 +5,6 @@ import { textoLista } from '../utils/compartirLista'
 import type { Receta } from '../types/receta'
 import type { IngredienteAgrupado } from '../hooks/useListaCompra'
 
-// La carne que va a varios platos se compra junta pero se congela por
-// separado: hace falta saber cuánto es de cada plato para embolsarlo.
-
 const { despensa } = vi.hoisted(() => ({ despensa: [] as { nombre: string; familia: string; estado: string; cantidad?: number; unidad?: string }[] }))
 
 vi.mock('../context/DespensaContext', () => ({ useDespensa: () => ({ despensa }) }))
@@ -108,7 +105,6 @@ describe('lista de la compra con desglose', () => {
   })
 
   it('las raciones cuentan personas: doblarlas dobla el plato', () => {
-    // Las recetas estan escritas para 2, asi que 4 raciones son dos veces.
     const { result } = renderHook(() => useListaCompra())
     act(() => result.current.toggleReceta(RAMEN))
     act(() => result.current.toggleReceta(KATSU))
@@ -121,7 +117,6 @@ describe('lista de la compra con desglose', () => {
   })
 
   it('pedir las raciones para las que esta escrita no la multiplica', () => {
-    // El bug: pedir 2 raciones de un plato para 2 traia comida para 4.
     const { result } = renderHook(() => useListaCompra())
     act(() => result.current.toggleReceta(RAMEN))
     act(() => result.current.setRaciones('r1', 2))
@@ -213,9 +208,6 @@ describe('desglose con parte ya en la despensa', () => {
   })
 })
 
-// El coste sale del precio por porción de cada receta, no de los ingredientes
-// que quedan por comprar. Es lo que cuesta cocinarlo de cero, y por eso la
-// cabecera del drawer lo dice así en vez de venderlo como el ticket.
 describe('coste estimado: qué mide y qué no', () => {
   afterEach(() => { despensa.length = 0 })
 

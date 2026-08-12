@@ -23,8 +23,6 @@ const LINKS_EXTRA = [
 
 const ALL_LINKS = [...LINKS_MAIN, ...LINKS_EXTRA]
 
-// Nav inferior móvil: las cuatro zonas de uso diario al alcance del pulgar.
-// "Lista" no es una ruta: abre el drawer de la lista de la compra.
 const LINKS_BOTTOM = [
   { to: '/', label: 'Catálogo', Icono: BookOpen },
   { to: '/despensa', label: 'Despensa', Icono: ShoppingBasket },

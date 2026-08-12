@@ -4,7 +4,6 @@ import { SlidersHorizontal, X } from 'lucide-react'
 import type { Sabor } from '../../types/receta'
 import type { Filtros } from '../../hooks/useFiltros'
 
-// Gradientes idénticos a los de las recipe cards — el panel "muestra" el sabor
 const SABORES: { valor: Sabor; label: string; gradient: string; dot: string }[] = [
   { valor: 'salado', label: 'Salado',  gradient: 'linear-gradient(135deg,#041524 0%,#0c3553 55%,#1e6fa1 100%)', dot: '#38bdf8' },
   { valor: 'dulce',  label: 'Dulce',   gradient: 'linear-gradient(135deg,#2d0412 0%,#7f1d45 55%,#e11d60 100%)', dot: '#fb7185' },

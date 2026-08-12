@@ -3,9 +3,6 @@ import { despensaCubre, mismoIngrediente, estaEnDespensa, faltantes, repartirDes
 import { convertir, requiereCantidad } from '../utils/cantidades'
 import type { Receta } from '../types/receta'
 
-// Estos tests fijan el matching despensa↔receta. Si vuelven a rojo, el
-// catálogo de recetas quedó desalineado con cómo se escribe la despensa.
-
 describe('despensaCubre — falsos negativos que rompían la disponibilidad', () => {
   it('ignora el conector "de" ("aceite oliva" ↔ "aceite de oliva")', () => {
     expect(despensaCubre('aceite oliva', 'aceite de oliva')).toBe(true)
@@ -50,10 +47,8 @@ describe('despensaCubre — no debe inventar disponibilidad', () => {
   })
 
   it('una cabeza ambigua genérica no cubre el específico', () => {
-    // tener "leche" a secas no da por buena "leche de coco"
     expect(despensaCubre('leche', 'leche de coco')).toBe(false)
     expect(despensaCubre('harina', 'harina de almendra')).toBe(false)
-    // repollo/col/cabbage son lo mismo, pero no son col rizada ni col china
     expect(despensaCubre('repollo', 'col rizada congelada')).toBe(false)
     expect(despensaCubre('cabbage', 'col china')).toBe(false)
   })
@@ -173,9 +168,6 @@ describe('repartirDespensa — con cantidades, resta lo que hay en casa', () => 
   })
 })
 
-// Varios ingredientes de la despensa pueden cubrir al mismo item de la lista.
-// Quedarse con el primero hacía que un bote de tomate frito acabándose mandara
-// sobre los 18 tomates de al lado, y la lista pedía tomates para siempre.
 describe('repartirDespensa — con varios candidatos gana el que de verdad sirve', () => {
   it('el nombre exacto manda sobre el pariente que se está acabando', () => {
     const despensa = [
@@ -246,9 +238,6 @@ describe('cantidades — conversión y familias que la necesitan', () => {
   })
 })
 
-// Encontrado en la Fase 1: la regla de plurales trata "-es" como terminación de
-// plural siempre, así que se come la "e" final del singular. Afecta a todo lo
-// acabado en -e y a los plurales en -ces.
 describe('singular — plurales que el matcher no reconoce', () => {
   it('casa los plurales regulares', () => {
     expect(mismoIngrediente('huevo', 'huevos')).toBe(true)

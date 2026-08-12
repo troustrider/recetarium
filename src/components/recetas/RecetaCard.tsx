@@ -5,15 +5,12 @@ import type { Receta } from '../../types/receta'
 import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
 import { prefetchDetalleReceta } from '../../utils/prefetch'
 
-// Una sola consulta para todo el catálogo, no una por tarjeta.
 const HOVER_CAPAZ =
   typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? false : false
 
 const CLASES_TARJETA =
   'bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:border dark:border-gray-800 transition-shadow duration-300'
 
-// Tilt 3D aislado en su propio componente: en táctil no se monta, y así el
-// catálogo no arrastra dos springs por tarjeta animando para nadie.
 function Tilt({ children }: { children: ReactNode }) {
   const mvX = useMotionValue(0)
   const mvY = useMotionValue(0)
@@ -193,6 +190,4 @@ function Plano({ children }: { children: ReactNode }) {
   return <div className={CLASES_TARJETA}>{children}</div>
 }
 
-// Memoizada: el catálogo tiene ~120 cards con animaciones; sin esto, cualquier
-// cambio en la lista de la compra las re-renderiza todas.
 export default memo(RecetaCard)

@@ -1,10 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-// Los temporizadores del Modo cocina. La cuenta atrás va contra una marca de
-// fin absoluta, no acumulando ticks, para no derivar cuando el navegador
-// estrangula el intervalo en segundo plano.
-
 const alarma = vi.hoisted(() => ({ desbloquearAudio: vi.fn(), sonarAlarma: vi.fn() }))
 const notif = vi.hoisted(() => ({
   pedirPermisoNotificaciones: vi.fn().mockResolvedValue(true),
@@ -59,7 +55,6 @@ describe('arranque y cuenta atrás', () => {
     const { result } = renderHook(() => useTimers())
     act(() => result.current.toggle(spec('0-0', 120)))
 
-    // Simula el navegador estrangulando el intervalo: un solo salto grande.
     avanzar(45)
     expect(result.current.timers[0].restante).toBe(75)
   })

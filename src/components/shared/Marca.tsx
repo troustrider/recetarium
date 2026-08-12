@@ -1,8 +1,5 @@
 import { ChefHat } from 'lucide-react'
 
-// La misma marca del header, escalable. Conserva el naranja, el rounded-xl y la
-// sombra teñida para que la landing y el splash se lean como la misma app antes
-// de haber entrado en ella.
 function Marca({ tamano = 56 }: { tamano?: number }) {
   return (
     <div

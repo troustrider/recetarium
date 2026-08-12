@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { arrancarServidor, api, crearSesion, crearHogar, recetaValida } from './helpers.js'
 
-// Sustituye a los tests de la passphrase compartida. Lo que hay que garantizar
-// ahora no es que una clave abra la puerta, sino que la sesión decide qué hogar
-// se toca y que nadie ve el de otro.
-
 let servidor
 let base
 let sesion
@@ -97,11 +93,9 @@ describe('aislamiento entre hogares', () => {
       ]
       expect((await http.put('/despensa', despensaCompartida)).status).toBe(200)
 
-      // El vecino no ve nada de lo anterior, aunque pida la misma ruta.
       const suya = await (await suyo.get('/despensa')).json()
       expect(suya).toEqual([])
 
-      // Y lo que escribe no toca el hogar ajeno.
       expect((await suyo.put('/despensa', [{ nombre: 'lo mio', familia: 'otros', estado: 'poco' }])).status).toBe(200)
       const mia = await (await http.get('/despensa')).json()
       expect(mia.map((d) => d.nombre)).toEqual(['secreto del hogar 1'])
@@ -122,7 +116,6 @@ describe('aislamiento entre hogares', () => {
         { dia: 'Lunes', recetaId: '00000000-0000-0000-0000-000000000000', raciones: 2 },
       ])
 
-      // Cualquier intento de nombrar otro hogar debe ser ignorado.
       for (const intento of [
         `/plan?hogar=${'00000000-0000-0000-0000-000000000001'}`,
         `/plan?hogarId=${'00000000-0000-0000-0000-000000000001'}`,

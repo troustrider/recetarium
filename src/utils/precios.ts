@@ -1,9 +1,3 @@
-// Precio de la lista final de la compra, no de las recetas: así no cuenta lo
-// que ya está en casa ni se pierde lo añadido a mano.
-//
-// Regla que no se negocia: un ingrediente sin precio conocido NO se estima por
-// encima. Se devuelve aparte para poder decirlo.
-
 import tabla from '../data/precios.json'
 import { normalizar, canonUnidad } from './ingredientes'
 import { convertir } from './cantidades'
@@ -16,17 +10,12 @@ export interface EntradaPrecio {
   fuente: string
   revisado: string
   formato?: string
-  // Se vende al peso pero las recetas lo cuentan por piezas ("2 contramuslos").
   gramosPorUd?: number
 }
 
 export const PRECIOS: EntradaPrecio[] = tabla.precios
 export const CADENAS: string[] = tabla.meta.cadenas
 
-// Equivalencias aproximadas de las unidades de cocina. Aquí y no en convertir()
-// a propósito: esa es la aritmética del stock y tiene que seguir negándose a
-// comparar "2 cucharadas" con "500 ml", donde una equivalencia inventada
-// descuadra la despensa. Para poner precio, aproximar cuesta céntimos.
 const COCINA: Record<string, { g?: number; ml?: number }> = {
   cucharada: { g: 12, ml: 15 },
   cucharadita: { g: 4, ml: 5 },
@@ -51,8 +40,6 @@ function dimension(unidad: string): 'g' | 'ml' | 'ud' | null {
   return null
 }
 
-// La entrada más específica gana: una genérica de "pollo" no puede pisar a
-// "contramuslos de pollo" y cobrarlos a precio de pechuga.
 export function buscarPrecio(nombre: string): EntradaPrecio | null {
   const exacta = PRECIOS.find((p) => mismoIngrediente(p.nombre, nombre))
   if (exacta) return exacta
@@ -68,10 +55,8 @@ export interface ItemPrecio {
   unidad: string
 }
 
-// null = no se puede poner precio (sin entrada, o unidad que no se sabe traducir).
 export function precioDe(item: ItemPrecio): number | null {
   const unidad = canonUnidad(item.nombre, item.unidad)
-  // Sal, pimienta y las pizcas no se compran cada semana.
   if (unidad === 'al gusto') return 0
 
   const entrada = buscarPrecio(item.nombre)
@@ -80,8 +65,6 @@ export function precioDe(item: ItemPrecio): number | null {
   const dim = dimension(entrada.unidad)
   if (!dim) return null
 
-  // A la unidad pequeña (g, ml, ud) antes de multiplicar. Al revés no vale:
-  // convertir() redondea a dos decimales y 25 g en kg salen 0,03, precio inflado.
   const porBase = convertir(1, entrada.unidad, dim)
   if (porBase == null || porBase === 0) return null
   const eurosPorBase = entrada.euros / porBase
@@ -99,7 +82,6 @@ function enUnidadBase(
   const directa = convertir(cantidad, unidad, dim)
   if (directa != null) return directa
 
-  // "2 contramuslos" de algo que se vende por kilo.
   if (normalizar(unidad) === 'ud' && dim === 'g' && entrada.gramosPorUd) {
     return cantidad * entrada.gramosPorUd
   }

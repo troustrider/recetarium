@@ -1,20 +1,9 @@
-// Quién ha iniciado sesión, desde qué IP y con qué dispositivo.
-//
-//   node server/scripts/sesiones.mjs            producción, últimos 7 días
-//   node server/scripts/sesiones.mjs --dias 30
-//   node server/scripts/sesiones.mjs --limpiar  borra las caducadas y luego informa
-//   node server/scripts/sesiones.mjs --test     rama recetarium-test
-//
-// Existe aparte de la pantalla de admin porque el día que sospeches de un
-// acceso raro puede que no quieras (o no puedas) entrar por la app.
 import { config } from 'dotenv'
 
 const args = process.argv.slice(2)
 const usarTest = args.includes('--test')
 config({ path: usarTest ? 'server/.env.test' : 'server/.env' })
 
-// Importación dinámica: el servicio abre la conexión al cargarse, y necesita
-// que dotenv haya resuelto ya a qué base de datos apunta.
 const { listarSesiones, resumenPorUsuario, ipsNuevas, limpiarCaducadas } = await import(
   '../src/services/sesionesService.js'
 )
@@ -26,8 +15,6 @@ function opcion(nombre, porDefecto) {
   return Number.isFinite(n) && n > 0 ? n : porDefecto
 }
 
-// El user agent completo es ilegible en una tabla; lo que importa es reconocer
-// el aparato de un vistazo.
 function dispositivo(agente) {
   if (!agente) return 'desconocido'
   const so = /iPhone/i.test(agente) ? 'iPhone'
@@ -37,9 +24,6 @@ function dispositivo(agente) {
     : /Windows/i.test(agente) ? 'Windows'
     : /Linux/i.test(agente) ? 'Linux'
     : 'otro'
-  // En iOS todos los navegadores son WebKit por dentro y se anuncian aparte:
-  // Chrome es CriOS y Firefox es FxiOS. Sin esto, el iPhone de Karim (Chrome)
-  // saldría como desconocido, que es justo el aparato que hay que reconocer.
   const nav = /Edg(iOS)?\//.test(agente) ? 'Edge'
     : /CriOS\/|Chrome\//.test(agente) ? 'Chrome'
     : /FxiOS\/|Firefox\//.test(agente) ? 'Firefox'

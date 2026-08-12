@@ -20,14 +20,9 @@ export interface TimerSpec {
   segundos: number
 }
 
-// Varios temporizadores a la vez (arroz + salsa). La cuenta atrás se calcula
-// desde una marca de fin absoluta (finAt), no acumulando ticks, para no derivar
-// cuando el navegador estrangula el intervalo en segundo plano.
 export function useTimers() {
   const [timers, setTimers] = useState<Timer[]>([])
 
-  // El tick lee por ref y calcula fuera del updater de setState: React puede
-  // reejecutarlo, y dentro sonaba la alarma dos veces.
   const timersRef = useRef(timers)
   useEffect(() => { timersRef.current = timers }, [timers])
 
@@ -69,8 +64,6 @@ export function useTimers() {
     return () => clearInterval(int)
   }, [])
 
-  // Tap sobre un chip: crea y arranca; si ya existe, alterna play/pausa; si ya
-  // terminó, lo rearma. Idempotente por id (stepIndex + índice de duración).
   const toggle = useCallback((spec: TimerSpec) => {
     desbloquearAudio()
     void pedirPermisoNotificaciones()

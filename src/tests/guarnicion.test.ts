@@ -3,10 +3,6 @@ import { ingredientesDe } from '../utils/ingredientes'
 import { consumoAlCocinar } from '../utils/consumo'
 import type { Receta } from '../types/receta'
 
-// La guarnición solo cuenta si se pide. `ingredientesDe` es el único sitio que
-// lo decide, así que aquí se fija que respeta el interruptor y que sin él la
-// receta se comporta exactamente igual que antes de existir la guarnición.
-
 const RECETA: Receta = {
   id: 'r1',
   nombre: 'Pollo al curry',

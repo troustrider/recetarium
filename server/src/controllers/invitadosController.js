@@ -15,8 +15,6 @@ export async function postInvitado(req, res) {
     return res.status(400).json({ error: 'Correo no válido' })
   }
   if (!ROLES.includes(rol)) return res.status(400).json({ error: `rol debe ser uno de: ${ROLES.join(', ')}` })
-  // null es un destino válido y significa "hogar propio", así que se distingue
-  // de un uuid mal escrito en vez de tratar todo lo que no sea uuid como null.
   if (hogarId !== null && hogarId !== undefined && !RE_UUID.test(hogarId)) {
     return res.status(400).json({ error: 'hogarId debe ser un uuid o null' })
   }

@@ -2,9 +2,6 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 
-// Dos proyectos: el frontend en jsdom y el backend en node. Los worktrees de
-// agentes viven en .claude/ y traen copias viejas de src/: quedan fuera por los
-// include anclados y por el exclude explícito.
 export default defineConfig({
   test: {
     projects: [
@@ -27,8 +24,6 @@ export default defineConfig({
           setupFiles: ['./server/tests/setup.js'],
           include: ['server/tests/**/*.test.js'],
           exclude: ['**/node_modules/**', '.claude/**', 'dist/**'],
-          // Cada fichero toca la fila única de app_estado o crea recetas:
-          // en paralelo se pisarían entre ellos.
           fileParallelism: false,
           testTimeout: 20000,
         },

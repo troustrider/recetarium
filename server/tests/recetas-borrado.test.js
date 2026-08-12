@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { arrancarServidor, api, crearSesion, recetaValida } from './helpers.js'
 
-// El borrado es lógico para poder deshacerlo. Lo que importa es que la receta
-// desaparezca del catálogo pero vuelva con SU MISMO id: el plan y las
-// pendientes guardan sus entradas por recetaId, y con un id nuevo volverían
-// desenganchadas de la semana.
-
 let servidor
 let http
 

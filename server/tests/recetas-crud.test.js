@@ -131,9 +131,6 @@ describe('CRUD de recetas', () => {
   })
 
   it('ordena por bytes, no por alfabeto español', async () => {
-    // ORDER BY r.nombre usa la colación de la BD, que es byte a byte: "Salmón"
-    // cae detrás de "Salmorejo" y "Ñoquis" o "İskender" van al final del todo,
-    // no bajo la N o la I. Es lo que ve el catálogo.
     const recetas = await (await http.get('/recetas')).json()
     const nombres = recetas.map((r) => r.nombre)
     expect(nombres).toEqual([...nombres].sort())
@@ -143,16 +140,12 @@ describe('CRUD de recetas', () => {
 
 describe('contrato de campos al editar', () => {
   it('devuelve el precio como precioPorPorcion y como número', async () => {
-    // Salía sin alias (precio_por_porcion), asi que el frontend lo leía como
-    // undefined: el coste estimado de la lista siempre daba cero.
     const creada = await crear({ nombre: 'Con precio', precioPorPorcion: 3.75 })
     expect(creada.precioPorPorcion).toBe(3.75)
     expect(creada).not.toHaveProperty('precio_por_porcion')
   })
 
   it('editar una receta favorita NO la desmarca', async () => {
-    // El formulario manda RecetaFormData, que excluye favorita a propósito;
-    // el UPDATE la conserva en vez de darla por false.
     const creada = await crear({ nombre: 'Favorita que se conserva' })
     await http.patch(`/recetas/${creada.id}/favorita`)
 
@@ -161,9 +154,6 @@ describe('contrato de campos al editar', () => {
     expect((await (await http.get(`/recetas/${creada.id}`)).json()).favorita).toBe(true)
   })
 
-  // Antes favorita era una columna de la receta y un PUT con favorita: false la
-  // desmarcaba. Ya no: es del hogar, vive en su propia tabla y solo la cambia el
-  // PATCH. Editar una receta común no puede tocar lo que otro hogar marcó.
   it('editar ignora el campo favorita, que solo cambia con el PATCH', async () => {
     const creada = await crear({ nombre: 'Se desmarca' })
     await http.patch(`/recetas/${creada.id}/favorita`)
@@ -184,9 +174,6 @@ describe('contrato de campos al editar', () => {
   })
 
   it('los macros sí se vacían al editar sin enviarlos', async () => {
-    // No es asimetría accidental: el formulario gestiona los macros, así que
-    // dejar el campo en blanco tiene que poder borrarlos. Precio, porciones y
-    // tipo llevan COALESCE porque son columnas NOT NULL.
     const creada = await crear({ nombre: 'Vacia macros', calorias: 500, proteinas: 30 })
     expect(creada.calorias).toBe(500)
     const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Vacia macros' }))).json()

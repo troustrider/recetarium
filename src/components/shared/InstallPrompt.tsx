@@ -20,23 +20,17 @@ function esIOS() {
     || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 }
 
-// En iOS solo Safari puede instalar la PWA con notificaciones (Chrome = CriOS,
-// Firefox = FxiOS, Edge = EdgiOS).
 function esIOSNoSafari() {
   return esIOS() && /crios|fxios|edgios|opt\//i.test(navigator.userAgent)
 }
 
 type Modo = 'android' | 'ios-safari' | 'ios-otro' | null
 
-// Banner de instalación. Android y Chrome de escritorio disparan
-// beforeinstallprompt y se instala de un toque; iOS no tiene esa API y se guía
-// a mano, avisando de que solo va desde Safari.
 function descartadoOInstalada() {
   return !!localStorage.getItem(DISMISS_KEY) || esStandalone()
 }
 
 function InstallPrompt() {
-  // iOS se decide en el primer render; Android llega después por el evento.
   const [modo, setModo] = useState<Modo>(() => {
     if (descartadoOInstalada() || !esIOS()) return null
     return esIOSNoSafari() ? 'ios-otro' : 'ios-safari'

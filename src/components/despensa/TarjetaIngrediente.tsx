@@ -13,8 +13,6 @@ interface Props {
   onClick: () => void
 }
 
-// La tarjeta "envejece" con la caducidad: neutra de lejos, ámbar a 2-3 días,
-// roja cuando caduca hoy/mañana o ya caducó.
 const TINTES = {
   rojo: 'bg-red-50 border-red-300 hover:border-red-400 dark:bg-red-900/20 dark:border-red-800 dark:hover:border-red-700',
   ambar: 'bg-amber-50 border-amber-300 hover:border-amber-400 dark:bg-amber-900/20 dark:border-amber-800 dark:hover:border-amber-700',

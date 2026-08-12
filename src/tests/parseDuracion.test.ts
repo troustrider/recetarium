@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { parseDuraciones, formatReloj } from '../utils/parseDuracion'
 
-// De aquí salen los temporizadores del Modo cocina. Un falso positivo pone un
-// cronómetro absurdo; un falso negativo deja al usuario sin aviso.
-
 describe('parseDuraciones', () => {
   it('lee minutos, segundos y horas', () => {
     expect(parseDuraciones('Cuece 12 min')).toEqual([{ segundos: 720, etiqueta: '12 min' }])
@@ -20,7 +17,6 @@ describe('parseDuraciones', () => {
   })
 
   it('cronometra el mínimo de un rango pero conserva el rango en la etiqueta', () => {
-    // Avisar antes permite comprobar el punto en vez de pasarse.
     expect(parseDuraciones('Sofríe 25-30 min')).toEqual([{ segundos: 1500, etiqueta: '25-30 min' }])
     expect(parseDuraciones('Sofríe 8 – 10 min')).toEqual([{ segundos: 480, etiqueta: '8-10 min' }])
   })

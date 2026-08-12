@@ -1,14 +1,4 @@
 #!/usr/bin/env node
-// Recalcula los macros declarados de recetas concretas a partir de su lista de
-// ingredientes y nutrientes.json, que es la misma fuente que usa el gate de
-// `audit`. Solo toca las cuatro columnas de macros; no altera pasos, consejos,
-// ingredientes ni imagen.
-//
-//   node scripts/sanear-macros.mjs --dry  <id> [<id> ...]
-//   node scripts/sanear-macros.mjs        <id> [<id> ...]
-//
-// Con --dry enseña el antes y el despues sin escribir. Usalo siempre primero:
-// cambiar macros en lote es de las cosas que no se ven al revisar la app.
 import 'dotenv/config'
 import { neon } from '@neondatabase/serverless'
 import { estimarMacros } from '../src/lib/nutricion.js'

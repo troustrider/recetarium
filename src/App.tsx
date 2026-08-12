@@ -18,7 +18,6 @@ const AdminSesiones = lazy(() => import('./pages/AdminSesiones'))
 function App() {
   const location = useLocation()
 
-  // Con el shell persistente, el scroll no se reinicia solo entre rutas.
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])

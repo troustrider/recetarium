@@ -24,8 +24,6 @@ jobs:
       - name: Lint
         run: npx eslint . --max-warnings=0
 
-      # Solo el proyecto web. El de server pega contra una rama real de Neon y
-      # necesitaria la credencial como secret, asi que se queda en local.
       - name: Tests
         run: npx vitest run --project web
 

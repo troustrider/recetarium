@@ -3,9 +3,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { leer, reintentarTodo, reiniciarSincronizacion } from '../utils/sincronizacion'
 
-// Antes, un guardado fallido moría en un .catch(() => {}) y la app seguía
-// enseñando el cambio como si estuviera compartido con el otro dispositivo.
-
 const cargar = vi.fn()
 const guardar = vi.fn()
 
@@ -96,10 +93,6 @@ describe('guardado fallido', () => {
   })
 })
 
-// Postgres guarda el estado en jsonb y devuelve las claves reordenadas
-// ({nombre, familia, estado} vuelve como {estado, nombre, familia}). Comparar
-// el JSON tal cual daba "ha cambiado" con el mismo contenido, y cada vuelta a
-// la pestaña repintaba la despensa entera y reseteaba el catálogo.
 describe('revalidar al volver a la pestaña', () => {
   type Item = { nombre: string; familia: string; estado: string }
 
@@ -194,7 +187,6 @@ describe('reintentar', () => {
     act(() => result.current[1](['tomate']))
     await waitFor(() => expect(leer().fallos).toHaveLength(1))
 
-    // El usuario sigue tocando la despensa mientras no hay red.
     act(() => result.current[1](['tomate', 'arroz']))
     await waitFor(() => expect(guardar).toHaveBeenCalledTimes(2))
 

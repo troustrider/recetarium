@@ -141,7 +141,6 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
     if (!form.nombre.trim()) nuevosErrores.nombre = 'El nombre es obligatorio'
     if (form.ingredientes.length === 0) nuevosErrores.ingredientes = 'Añade al menos un ingrediente'
     if (pasos.length === 0) nuevosErrores.pasos = 'Añade al menos un paso'
-    // El servidor rechaza una guarnición a medias, así que se avisa aquí antes.
     if (form.guarnicion) {
       if (!form.guarnicion.nombre.trim()) nuevosErrores.guarnicion = 'Ponle nombre a la guarnición'
       else if (form.guarnicion.ingredientes.length === 0) nuevosErrores.guarnicion = 'Añade al menos un ingrediente a la guarnición'

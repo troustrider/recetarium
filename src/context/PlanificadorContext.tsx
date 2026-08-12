@@ -14,9 +14,7 @@ export interface EntradaPlan {
   id: string
   receta: Receta
   raciones: number
-  // Plato ya hecho: sale de la lista de la compra y su chip queda en gris.
   cocinada?: boolean
-  // Entra también en la compra y en el gasto de despensa.
   conGuarnicion?: boolean
 }
 
@@ -78,7 +76,6 @@ const PlanificadorContext = createContext<PlanificadorCtx | null>(null)
 export function PlanificadorProvider({ children }: { children: ReactNode }) {
   const { recetas, loading } = useRecetasContext()
 
-  // Se hidrata por id contra el catálogo, así que espera a tenerlo cargado.
   const [plan, cambiarPlan] = useEstadoCompartido<Plan, EntradaPlanDTO[]>({
     nombre: 'el plan de la semana',
     inicial: PLAN_VACIO,
@@ -103,13 +100,11 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     const totales = new Map<string, { receta: Receta; raciones: number; conGuarnicion: boolean }>()
     for (const dia of DIAS) {
       for (const { receta, raciones, cocinada, conGuarnicion } of plan[dia]) {
-        // Lo ya cocinado ni se compra ni se cuenta.
         if (cocinada) continue
         const prev = totales.get(receta.id)
         totales.set(receta.id, {
           receta,
           raciones: (prev?.raciones ?? 0) + raciones,
-          // Puede estar dos días, uno con guarnición y otro sin: basta uno.
           conGuarnicion: (prev?.conGuarnicion ?? false) || !!conGuarnicion,
         })
       }
@@ -123,7 +118,6 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       setGuarnicionLista(receta.id, conGuarnicion)
     }
 
-    // Solo quita de la lista lo que el planificador había añadido antes
     for (const prevId of planIdsRef.current) {
       if (!totales.has(prevId)) {
         const entrada = seleccionadasRef.current.find((e) => e.receta.id === prevId)
@@ -134,7 +128,6 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     planIdsRef.current = new Set(totales.keys())
   }, [plan]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Una pendiente deja de serlo en cuanto entra en el plan, por la vía que sea.
   useEffect(() => {
     if (pendientes.length === 0) return
     const enPlan = new Set<string>()
@@ -198,7 +191,6 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     cambiarPlan(PLAN_VACIO)
   }, [cambiarPlan])
 
-  // Rellena los 7 días con una receta al azar cada uno (mismas raciones).
   const autollenar = useCallback((recetas: Receta[], raciones: number) => {
     if (recetas.length === 0) return
     const nuevo = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan

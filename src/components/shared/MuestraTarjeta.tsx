@@ -1,13 +1,6 @@
 import { Clock } from 'lucide-react'
 import type { MuestraReceta } from '../../data/muestraLanding'
 
-// Una tarjeta como las del catálogo, pero estática y sin datos ni contexto: la
-// landing va por delante de los providers, así que no puede depender de nada que
-// hable con la API. Copia el aspecto de RecetaCard para que lo que se enseña sea
-// de verdad lo que hay dentro.
-// prioritaria para las que se ven de entrada (el abanico del móvil, que es la
-// vía de entrada principal). Las de escritorio van diferidas porque por debajo
-// de lg están ocultas y no hace falta descargarlas.
 function MuestraTarjeta({
   receta,
   className = '',

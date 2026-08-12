@@ -1,12 +1,5 @@
 import sql from '../lib/db.js'
 
-// Neon Auth apunta la IP y el user agent de cada inicio de sesión en
-// neon_auth.session. Con tres usuarios previstos, cualquier IP que no reconozcas
-// es señal: eso es lo que esta vista tiene que hacer evidente.
-
-// Cada inicio de sesión deja una fila y duran siete días, así que unas semanas
-// de uso normal acumulan bastantes y el recuento de la pantalla de accesos deja
-// de decir nada. Borrar las caducadas no cierra ninguna sesión viva.
 export async function limpiarCaducadas() {
   const filas = await sql`DELETE FROM neon_auth.session WHERE "expiresAt" <= now() RETURNING id`
   return filas.length
@@ -29,8 +22,6 @@ export async function listarSesiones(limite = 100) {
   `
 }
 
-// Una IP nueva para un usuario que siempre entra desde las mismas dos es más
-// informativo que el total de sesiones, así que el resumen va por usuario.
 export async function resumenPorUsuario() {
   return sql`
     SELECT
@@ -47,8 +38,6 @@ export async function resumenPorUsuario() {
   `
 }
 
-// IPs vistas por primera vez en la ventana indicada. Es la consulta que de
-// verdad avisa: una IP que nunca había aparecido para ese usuario.
 export async function ipsNuevas(dias = 7) {
   return sql`
     WITH primera_vez AS (

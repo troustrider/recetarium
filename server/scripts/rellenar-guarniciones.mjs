@@ -1,17 +1,3 @@
-// Rellena el campo `guarnicion` de las recetas que ya declaraban un
-// acompañamiento en `consejos`, y saca a guarnición el pan de los platos donde
-// el pan no es el plato ni ingrediente estructural.
-//
-// Toca SOLO las columnas que hacen falta, nunca por PUT: la API reemplaza el
-// recurso entero y un fallo de un campo se llevaría por delante consejos y
-// macros curados de 30 recetas. La ficha de la guarnición la calcula el mismo
-// nutricion.js que usa el servidor, así que sale idéntica a la de un alta.
-//
-//   node --env-file=.env server/scripts/rellenar-guarniciones.mjs          (simulacro)
-//   node --env-file=.env server/scripts/rellenar-guarniciones.mjs --aplicar
-//
-// Idempotente: salta las que ya tienen guarnición salvo --forzar.
-
 import sql from '../src/lib/db.js'
 import { fichaNutricional, estimarMacros } from '../src/lib/nutricion.js'
 
@@ -20,8 +6,6 @@ const FORZAR = process.argv.includes('--forzar')
 
 const v = (nombre, cantidad, unidad = 'g', familia = 'verduras') => ({ nombre, cantidad, unidad, familia })
 
-// Cantidades para 2 raciones, que es la base de todo el recetario. Los nombres
-// son los que ya usa el catálogo, para que precio y nutrición resuelvan.
 const ARROZ = { nombre: 'Arroz blanco', ingredientes: [v('arroz', 160, 'g', 'cereales')], pasos: ['Cocer 12 min en agua con sal y escurrir.'] }
 const BROCOLI = { nombre: 'Brócoli al vapor', ingredientes: [v('brócoli', 300)], pasos: ['Cocer al vapor 4-5 min, hasta que ceda al pinchar pero siga verde.'] }
 const ESPINACAS = { nombre: 'Espinacas salteadas', ingredientes: [v('espinacas', 200), v('ajo', 1, 'diente')], pasos: ['Saltear el ajo laminado 30 s y añadir la espinaca hasta que rompa, 2 min.'] }
@@ -32,8 +16,6 @@ const PEPINO_VINAGRE = { nombre: 'Pepino en vinagre', ingredientes: [v('pepino',
 const AGUACATE = { nombre: 'Aguacate en gajos', ingredientes: [v('aguacate', 1, 'ud', 'frutas')], pasos: ['Cortar en gajos y aliñar con lima y sal.'] }
 const PITA = { nombre: 'Pan de pita', ingredientes: [v('pan de pita', 2, 'ud', 'cereales')], pasos: ['Tostar 1-2 min por lado, hasta que infle.'] }
 
-// —— Platos donde el pan es acompañamiento, no plato ni ligante ——
-// Sale de `ingredientes`, así que el plato deja de constar como con gluten.
 const SACAR_PAN = [
   'Souvlaki de pollo',
   'Souvlaki de cerdo con tzatziki',
@@ -42,9 +24,6 @@ const SACAR_PAN = [
   'Ćevapi con ajvar y cebolla',
 ]
 
-// —— Platos que ya declaraban el acompañamiento en consejos ——
-// Cuando el consejo ofrecía alternativas se elige una, que el campo pide algo
-// concreto y comprable.
 const GUARNICIONES = {
   'Ají de gallina con arroz': { nombre: 'Lechuga aliñada al limón', ingredientes: [v('lechuga', 100), v('limón', 0.5, 'ud', 'frutas')], pasos: ['Aliñar con limón, aceite y sal.'] },
   'Albóndigas de ternera al curry de coco': BROCOLI,
@@ -74,10 +53,6 @@ const GUARNICIONES = {
   'İskender kebab casero': ENSALADA_TOMATE,
 }
 
-// —— Lote 2: guarnición declarada solo en prosa ——
-// Ya la decían en `consejos`, pero un texto no se compra ni se descuenta de la
-// despensa. Cuando el consejo ofrecía varias, se elige una y se le ponen
-// cantidades. Todo lo usado es T1 de Dirk/Lidl.
 const COBAN = { nombre: 'Ensalada çoban', ingredientes: [v('tomate', 2, 'ud'), v('pepino', 1, 'ud'), v('cebolla', 0.5, 'ud')], pasos: ['Cortar todo en dados de 1 cm y aliñar con limón, aceite y sal.'] }
 const REPOLLO_LIMA = { nombre: 'Repollo con lima', ingredientes: [v('repollo', 200), v('lima', 1, 'ud', 'frutas')], pasos: ['Cortar en juliana muy fina y aliñar con el zumo de lima y sal 10 min antes de servir.'] }
 const PATATA = { nombre: 'Patata cocida', ingredientes: [v('patata', 400)], pasos: ['Cocer en agua con sal 20 min desde el hervor, hasta que el cuchillo entre sin resistencia.'] }
@@ -86,9 +61,6 @@ const PAN_MOJAR = { nombre: 'Pan para mojar', ingredientes: [v('pan', 150, 'g', 
 const ESPARRAGOS = { nombre: 'Espárragos al vapor', ingredientes: [v('espárragos', 250)], pasos: ['Cocer al vapor 5 min, hasta que el tallo ceda pero la punta siga firme.'] }
 const LECHUGA_ENVOLVER = { nombre: 'Hojas de lechuga para envolver', ingredientes: [v('lechuga', 150)], pasos: ['Separar las hojas enteras, lavar y secar bien para que no aguen el relleno.'] }
 const PIMIENTOS_ASADOS = { nombre: 'Pimientos asados', ingredientes: [v('pimiento rojo', 2, 'ud')], pasos: ['Asar a 220°C 25 min girando a mitad, tapar 10 min para que sude, pelar y aliñar con aceite y sal.'] }
-// El consejo del poke pide edamame, pero no está en el catálogo ni en la tabla de
-// nutrientes: entraría sin ficha y dejaría la guarnición sin macros. Se queda en
-// pepino y aguacate, que son los otros dos que el propio consejo nombra.
 const POKE_TOPPING = { nombre: 'Pepino y aguacate', ingredientes: [v('pepino', 1, 'ud'), v('aguacate', 1, 'ud', 'frutas')], pasos: ['Cortar el pepino en medias lunas y el aguacate en dados, y repartir por encima al servir.'] }
 
 Object.assign(GUARNICIONES, {
@@ -140,9 +112,6 @@ Object.assign(GUARNICIONES, {
   'Mujadara con pollo y yogur': { nombre: 'Yogur al lado', ingredientes: [v('yogur griego', 200, 'g', 'lácteos')], pasos: ['Servir frío en un cuenco aparte, con una pizca de sal.'] },
 })
 
-// —— Lote 3: el consejo dice qué falta para ser comida completa ——
-// Aquí la guarnición no es adorno: es lo que cierra el plato, y en dos casos es
-// además la palanca de proteína que el canon no deja meter dentro.
 Object.assign(GUARNICIONES, {
   'Curry de pollo y brócoli con leche de coco': ARROZ,
   'Gratén de pollo y brócoli': PATATA,
@@ -187,7 +156,6 @@ for (const [nombre, base] of Object.entries(GUARNICIONES)) {
   const porciones = receta.porciones || 2
   const guarnicion = conFicha(base, porciones)
 
-  // Si el pan era acompañamiento, sale del plato y su ficha se recalcula sin él.
   const sacaPan = SACAR_PAN.includes(nombre)
   const ingredientes = sacaPan
     ? receta.ingredientes.filter((i) => !/^pan de pita$/i.test(i.nombre))

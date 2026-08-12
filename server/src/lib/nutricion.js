@@ -1,9 +1,3 @@
-// Estimación de la ficha nutricional de una receta desde sus ingredientes.
-//
-// En src/lib y no en scripts/ porque lo usan los dos lados: el validador del
-// chef para contrastar lo declarado, y el servicio de recetas para calcular
-// hierro, gluten y micros en cada alta y edición. Nada aquí toca la BD.
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
@@ -15,13 +9,10 @@ export const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCas
 
 const FICHAS = new Map(Object.entries(TABLA.ingredientes).map(([k, v]) => [norm(k), v]))
 const SIN_FICHA_OK = new Set(TABLA.ignorar.map(norm))
-// Unidades cuyo peso depende tanto del producto que sin override no se puede estimar.
 const UNIDAD_NECESITA_FICHA = new Set(['ud', 'lata', 'paquete', 'loncha', 'rodaja', 'rebanada', 'tira', 'vaso'])
 
-// Micronutrientes: se suman igual que los macros, (gramos * valor / 100) / porciones.
 const MICROS = ['fib', 'az', 'sat', 'sal', 'fe', 'vc', 'ca', 'b12', 'fol']
 
-/** Gramos de producto que aporta un ingrediente, o null si no se puede saber. */
 function gramos(ing, ficha) {
   const u = ing.unidad
   if (u === 'g' || u === 'ml') return ing.cantidad
@@ -31,14 +22,6 @@ function gramos(ing, ficha) {
   return typeof base === 'number' ? ing.cantidad * base : null
 }
 
-/**
- * Macros y micros por ración estimados desde `ingredientes`.
- * `desconocidos` lista lo que no se ha podido valorar: si trae algo, el resultado no es
- * comparable y el gate se abstiene en vez de acusar en falso.
- * El gluten no depende de la cantidad, así que se detecta aunque la unidad no se pueda
- * convertir a gramos; lo que sí lo invalida es un ingrediente sin ficha (`sinFicha`),
- * porque de ese no sabemos si lleva trigo.
- */
 export function estimarMacros(r) {
   const desconocidos = []
   const sinFicha = []
@@ -81,7 +64,6 @@ export function estimarMacros(r) {
     gluten: {
       hay: fuentesGluten.length > 0,
       fuentes: fuentesGluten,
-      // Solo es "evitable" si toda fuente tiene un sustituto sin gluten conocido.
       evitable: fuentesGluten.length > 0 && fuentesGluten.every((f) => f.sustituto),
       cierto: sinFicha.length === 0,
     },
@@ -90,13 +72,6 @@ export function estimarMacros(r) {
 
 const red = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d
 
-/**
- * Ficha lista para persistir: `hierro` y `sinGluten` van a columna (se filtra y ordena
- * por ellos) y el resto a `micros` jsonb. `sinGluten` es null cuando algún ingrediente no
- * tiene ficha: ahí no se puede afirmar que la receta no lleve gluten.
- *
- * La sal es la que traen los ingredientes; no cuenta la que se añada al cocinar.
- */
 export function fichaNutricional(r) {
   const e = estimarMacros(r)
   return {

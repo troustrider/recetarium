@@ -18,7 +18,6 @@ interface ListaCompraContextValue {
   addExtra: (item: Ingrediente) => void
   removeExtra: (clave: string) => void
   descartar: (clave: string) => void
-  // Los tres trozos de estado de la lista, para poder deshacer de golpe.
   instantanea: () => InstantaneaLista
   restaurarLista: (anterior: InstantaneaLista) => void
 }

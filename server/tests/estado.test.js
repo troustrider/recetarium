@@ -64,7 +64,6 @@ describe('validación del plan', () => {
   })
 
   it('no valida que la receta exista: el id fantasma se guarda igual', async () => {
-    // El frontend lo filtra al hidratar; el backend no comprueba la FK.
     const plan = [{ dia: 'Lunes', recetaId: 'no-existe-en-absoluto', raciones: 1 }]
     expect((await http.put('/plan', plan)).status).toBe(200)
     expect(await (await http.get('/plan')).json()).toEqual(plan)
@@ -91,7 +90,6 @@ describe('validación de la despensa', () => {
   })
 
   it('acepta una fecha imposible mientras cumpla el patrón', async () => {
-    // La validación es puramente sintáctica: 2026-99-99 pasa.
     expect((await http.put('/despensa', [{ ...item, caducidad: '2026-99-99' }])).status).toBe(200)
   })
 
@@ -103,7 +101,6 @@ describe('validación de la despensa', () => {
   })
 
   it('acepta unidad sin cantidad', async () => {
-    // Asimetría conocida: la unidad suelta no se valida contra la lista.
     expect((await http.put('/despensa', [{ ...item, unidad: 'inventada' }])).status).toBe(200)
   })
 

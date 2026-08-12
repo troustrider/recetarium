@@ -37,7 +37,6 @@ const SABOR_TEXT: Record<Sabor, string> = {
   acido:  'text-lime-400',
 }
 
-// ——— Chip draggable ———
 interface ChipProps {
   entrada: EntradaPlan
   dia: Dia
@@ -176,7 +175,6 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, onGuarnicion, ov
   )
 }
 
-// ——— Chip de receta comprada pendiente de planificar ———
 interface PendienteChipProps {
   pendiente: PendientePlan
   onElegirDia: () => void
@@ -219,7 +217,6 @@ function PendienteChip({ pendiente, onElegirDia, onDescartar, overlay = false }:
   )
 }
 
-// ——— Modal para elegir día de una pendiente ———
 interface SelectorDiaProps {
   pendiente: PendientePlan
   dias: readonly Dia[]
@@ -266,7 +263,6 @@ function SelectorDia({ pendiente, dias, onSeleccionar, onCerrar }: SelectorDiaPr
   )
 }
 
-// ——— Confirmación de plato hecho ———
 interface ConfirmarCocinadaProps {
   entrada: EntradaPlan
   consumos: ConsumoIngrediente[]
@@ -275,8 +271,6 @@ interface ConfirmarCocinadaProps {
 }
 
 function ConfirmarCocinada({ entrada, consumos, onConfirmar, onCerrar }: ConfirmarCocinadaProps) {
-  // El matching entre despensa y receta es aproximado: se enseña lo que se va
-  // a vaciar y se puede desmarcar lo que no toca.
   const [excluidos, setExcluidos] = useState<Set<string>>(new Set())
 
   const alternar = (nombre: string) =>
@@ -371,7 +365,6 @@ function ConfirmarCocinada({ entrada, consumos, onConfirmar, onCerrar }: Confirm
   )
 }
 
-// ——— Fila de día droppable ———
 interface FilaDiaProps {
   dia: Dia
   entradas: EntradaPlan[]
@@ -386,8 +379,6 @@ interface FilaDiaProps {
 function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, onGuarnicion, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
 
-  // La fila hace de bandeja y va un nivel por debajo del chip: con el mismo
-  // color, el chip no tiene con qué destacar.
   return (
     <div
       ref={setNodeRef}
@@ -440,7 +431,6 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, on
   )
 }
 
-// ——— Modal selector ———
 interface SelectorProps {
   dia: Dia
   recetas: Receta[]
@@ -508,7 +498,6 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
   )
 }
 
-// ——— Página principal ———
 function Planificador() {
   const { plan, dias, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
   const { recetas } = useRecetasContext()
@@ -532,8 +521,6 @@ function Planificador() {
     [cocinando, despensa]
   )
 
-  // Destocar el gorro no devuelve nada a la despensa. Para recuperar el stock
-  // hay que deshacer desde el aviso, que rebobina despensa y plan juntos.
   function alCocinar(dia: Dia, entrada: EntradaPlan) {
     if (entrada.cocinada) marcarCocinada(dia, entrada.id, false)
     else setCocinando({ dia, entrada })
@@ -580,7 +567,6 @@ function Planificador() {
     const entradaId = active.id as string
     const hastaDia = over.id as Dia
     if (!dias.includes(hastaDia)) return
-    // Pendiente de planificar soltada sobre un día
     if (entradaId.startsWith('pendiente:')) {
       const pendiente = pendientes.find((p) => `pendiente:${p.receta.id}` === entradaId)
       if (pendiente) añadir(hastaDia, pendiente.receta, pendiente.raciones)

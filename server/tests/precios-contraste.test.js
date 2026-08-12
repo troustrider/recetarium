@@ -2,12 +2,6 @@ import { describe, it, expect, beforeAll } from 'vitest'
 import sql from '../src/lib/db.js'
 import { precioDe, buscarPrecio, PRECIOS } from '../../src/utils/precios.ts'
 
-// La tabla de precios se contrasta contra los 269 precioPorPorcion que el chef
-// ya curó: son 269 puntos de datos independientes. Si la suma de ingredientes
-// de una receta se aleja mucho de su precio curado, o está mal una entrada de
-// la tabla o está mal el precio de la receta. Este test fija el nivel de
-// cobertura y de acuerdo alcanzado, para que no se degrade sin que salte.
-
 let recetas = []
 
 beforeAll(async () => {
@@ -100,8 +94,6 @@ describe('contraste contra los precios curados por el chef', () => {
     const sospechosas = filas.filter((f) => Math.abs(f.desvio) > 0.4)
 
     console.log(`\nrecetas con desvío > 40%: ${sospechosas.length}`)
-    // Sale el id porque de aquí se construye a mano el UPDATE de producción:
-    // ningún script escribe en la base de datos compartida por su cuenta.
     for (const f of sospechosas) {
       const signo = f.desvio > 0 ? '+' : ''
       console.log(`  ${f.id} ${signo}${(100 * f.desvio).toFixed(0).padStart(4)}% ${f.curado} -> ${f.calculado} ${f.nombre}`)
@@ -110,8 +102,6 @@ describe('contraste contra los precios curados por el chef', () => {
   })
 })
 
-// Qué merece la pena contrastar en tienda: lo que más euros mueve en el
-// recetario entero. Sale ordenado para poder anotarlo en una compra normal.
 describe('qué contrastar en Dirk y Lidl', () => {
   it('lista los ingredientes que más pesan en el gasto', () => {
     const porNombre = new Map()

@@ -30,8 +30,6 @@ function motivo(item: { estado: string; caducidad?: string }): string {
   return 'queda poco'
 }
 
-// Aviso al abrir la app: ingredientes en "poco" o a punto de caducar que aún
-// no están en la lista de la compra. Recuerda lo descartado para no insistir.
 function AvisoDespensa() {
   const { despensa } = useDespensa()
   const { listaCompra, addExtra } = useListaCompraContext()
@@ -46,7 +44,6 @@ function AvisoDespensa() {
     [despensa, listaCompra]
   )
 
-  // Abierto mientras haya algún candidato que aún no se haya descartado.
   const abierto = candidatos.some((c) => !vistos.includes(c.nombre))
 
   function recordarVistos() {

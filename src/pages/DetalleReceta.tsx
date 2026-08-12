@@ -12,7 +12,6 @@ import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
 
-// Comensales para los que está escrita la receta cuando no lo declara.
 const PORCIONES_POR_DEFECTO = 2
 
 function formatMultiplicador(m: number) {
@@ -60,7 +59,6 @@ function DetalleReceta() {
   const [comensales, setComensales] = useState(PORCIONES_POR_DEFECTO)
   const [cocinaOpen, setCocinaOpen] = useState(false)
 
-  // Cabecera al instante desde la lista ya cargada; el detalle completo llega por fetch.
   const cached = useMemo(() => recetas.find((r) => r.id === id) ?? null, [recetas, id])
   const receta = fetched ?? cached
   const full = fetched ?? (cached && cached.ingredientes.length > 0 ? cached : null)
@@ -77,8 +75,6 @@ function DetalleReceta() {
     return [...mapa.entries()]
   }, [full])
 
-  // Por el aviso compartido y no con un cartel propio: un solo deshacer en toda
-  // la app. `alCerrar` limpia `ultimaEdicion` para que no reaparezca al volver.
   useEffect(() => {
     if (!ultimaEdicion || ultimaEdicion.id !== id) return
     if (registradaRef.current === ultimaEdicion) return
@@ -95,8 +91,6 @@ function DetalleReceta() {
     return <LoadingSpinner />
   }
 
-  // Sin confirmación previa: el borrado es lógico y el aviso lo deshace, que es
-  // menos fricción que un modal y protege igual.
   async function handleEliminar() {
     const { id: borradaId, nombre } = receta!
     const ok = await eliminar(borradaId)
@@ -107,7 +101,6 @@ function DetalleReceta() {
 
   const porcionesBase = receta.porciones ?? PORCIONES_POR_DEFECTO
   const multiplicador = comensales / porcionesBase
-  // Las recetas migradas marcan sus cantidades y escalan solas; las antiguas siguen con el aviso.
   const pasosEscalan = tieneCantidadesEscalables(full?.pasos ?? [])
 
   return (

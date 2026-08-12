@@ -12,8 +12,6 @@ export function textoLista(items: IngredienteAgrupado[]): string {
     lineas.push(familia.toUpperCase())
     for (const i of items.filter((x) => x.familia === familia)) {
       lineas.push(`- ${capitalize(i.nombre)}: ${formatCantidad(i.cantidad, i.unidad)}`)
-      // El desglose viaja con la lista: al volver de la compra sirve para
-      // embolsar cada plato por separado antes de congelar.
       if (i.desglose && i.desglose.length > 1) {
         const partes = i.desglose.map((d) => `${d.receta} ${formatCantidad(d.cantidad, i.unidad)}`)
         lineas.push(`  · congelar en: ${partes.join(' · ')}`)
@@ -24,8 +22,6 @@ export function textoLista(items: IngredienteAgrupado[]): string {
   return lineas.join('\n').trim()
 }
 
-// Comparte la lista por el menú nativo (WhatsApp, etc. en móvil) o, si no
-// está disponible (escritorio), la copia al portapapeles.
 export async function compartirLista(items: IngredienteAgrupado[]): Promise<void> {
   const texto = textoLista(items)
   if (navigator.share) {

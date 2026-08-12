@@ -1,8 +1,3 @@
-// Vuelca la especificación a docs/swagger.json.
-//
-//   node server/scripts/export-swagger.js
-//
-// Iba con require sobre un módulo ESM, así que no funcionaba.
 import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'

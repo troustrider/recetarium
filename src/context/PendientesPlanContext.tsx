@@ -21,8 +21,6 @@ const PendientesPlanContext = createContext<PendientesPlanCtx | null>(null)
 export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   const { recetas, loading } = useRecetasContext()
 
-  // Recetas compradas que faltan por colocar. Se hidratan por id contra el
-  // catálogo, así que hay que esperar a tenerlo.
   const [pendientes, setPendientes] = useEstadoCompartido<PendientePlan[], PendientePlanDTO[]>({
     nombre: 'las recetas compradas',
     inicial: [],

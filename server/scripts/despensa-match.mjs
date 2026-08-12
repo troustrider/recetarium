@@ -1,7 +1,3 @@
-// Port fiel de src/utils/despensa.ts (+ deps de ingredientes.ts y alias.ts)
-// para poder calcular disponibilidad de recetas desde scripts de Node.
-// Mantener sincronizado si cambia la lógica del front.
-
 const ALIAS_TOKENS = {
   ketjap: 'kecap', langostino: 'gamba', gambon: 'gamba',
   culantro: 'cilantro', palta: 'aguacate', choclo: 'maiz',
@@ -68,7 +64,6 @@ function despensaCubre(enDespensa, deReceta) {
   return false
 }
 
-// Nº de ingredientes de la receta que la despensa no cubre (ignora "al gusto").
 export function faltan(receta, despensa) {
   return (receta.ingredientes || [])
     .filter((ing) => canonUnidad(ing.nombre, ing.unidad) !== 'al gusto')

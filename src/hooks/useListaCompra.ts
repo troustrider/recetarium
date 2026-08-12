@@ -13,17 +13,13 @@ export interface IngredienteAgrupado extends Ingrediente {
   esExtra?: boolean
   clave: string
   quedaPoco?: boolean
-  // Parte que ya cubre la despensa: `cantidad` es solo lo que falta comprar.
   yaTengo?: number
-  // Cuánto de lo que se compra va a cada plato, para congelar por raciones.
-  // Solo en lo que se congela en piezas y va a más de un plato.
   desglose?: ParteReceta[]
 }
 
 export interface EntradaLista {
   receta: Receta
   raciones: number
-  /** Comprar también lo de la guarnición. Lo marca el planificador o la propia lista. */
   conGuarnicion?: boolean
 }
 
@@ -33,19 +29,14 @@ export interface InstantaneaLista {
   descartados: Set<string>
 }
 
-// Cuánta gente come con la receta tal cual está escrita. `raciones` cuenta
-// personas, no veces que se cocina: pedir 2 raciones de un plato escrito para 2
-// es hacerlo una vez, no dos.
 export function racionesBase(receta: Pick<Receta, 'porciones'>): number {
   return receta.porciones && receta.porciones > 0 ? receta.porciones : 2
 }
 
 function useListaCompra() {
   const [seleccionadas, setSeleccionadas] = useState<EntradaLista[]>([])
-  // Claves quitadas a mano de la lista (ítems de receta que no se quieren comprar).
   const [descartados, setDescartados] = useState<Set<string>>(new Set())
 
-  // Ítems manuales: compartidos en backend (los ve también la pareja).
   const [extras, setExtras] = useEstadoCompartido<Ingrediente[], Ingrediente[]>({
     nombre: 'la lista de la compra',
     inicial: [],
@@ -57,7 +48,6 @@ function useListaCompra() {
 
   const { despensa } = useDespensa()
 
-  // Callbacks estables: RecetaCard está memoizada y los recibe como props.
   const toggleReceta = useCallback((receta: Receta) => {
     setSeleccionadas((prev) =>
       prev.some((e) => e.receta.id === receta.id)
@@ -114,7 +104,6 @@ function useListaCompra() {
     setDescartados((prev) => new Set(prev).add(clave))
   }, [])
 
-  // La lista son tres trozos de estado, así que el deshacer los devuelve juntos.
   const instantanea = useCallback(
     (): InstantaneaLista => ({ seleccionadas, extras, descartados }),
     [seleccionadas, extras, descartados]
@@ -135,10 +124,6 @@ function useListaCompra() {
     [seleccionadas]
   )
 
-  // Lo cubierto por la despensa se aparta a `enDespensa` (recuperable con un
-  // toque, por si el matching se equivoca), lo que hay a medias entra rebajado y
-  // lo que queda poco entra entero pero marcado. Los extras manuales no se
-  // filtran nunca: si se añadieron a mano, se quieren comprar.
   const { listaCompra, enDespensa } = useMemo(() => {
     const mapa = new Map<string, IngredienteAgrupado>()
 
@@ -179,7 +164,6 @@ function useListaCompra() {
     const reparto = repartirDespensa(deReceta, despensa)
 
     comprar.push(...[...mapa.values()].filter((i) => i.esExtra))
-    // Un ingrediente que va a un solo plato ya se lee entero en su cantidad.
     const conDesglose = (item: IngredienteAgrupado, yaCubierto: number): IngredienteAgrupado => {
       if (!seDesglosa(item.familia) || (item.desglose?.length ?? 0) < 2) {
         return { ...item, desglose: undefined }
@@ -187,8 +171,6 @@ function useListaCompra() {
       return { ...item, desglose: repartirPorReceta(item.desglose!, yaCubierto) }
     }
 
-    // Lo que se lleva a la tienda va en piezas enteras; el desglose por plato
-    // se queda con el reparto real, que es lo que luego se congela.
     const enPiezas = (item: IngredienteAgrupado): IngredienteAgrupado => ({
       ...item,
       cantidad: cantidadDeCompra(item.cantidad, item.unidad),
@@ -207,11 +189,8 @@ function useListaCompra() {
     return { listaCompra: comprar.sort(porFamilia), enDespensa: yaHay.sort(porFamilia) }
   }, [seleccionadas, extras, despensa, descartados])
 
-  // Lo que se paga en caja: sale de la lista final, no de las recetas.
   const compra: CosteCompra = useMemo(() => calcularCosteCompra(listaCompra), [listaCompra])
 
-  // Es el value del provider: sin memo, cualquier render de un padre repinta el
-  // catálogo entero.
   return useMemo(
     () => ({
       seleccionadas, listaCompra, enDespensa, extras, coste, compra,

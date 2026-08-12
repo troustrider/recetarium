@@ -13,7 +13,6 @@ export interface IngredienteDespensa {
   familia: string
   estado: EstadoDespensa
   caducidad?: string // YYYY-MM-DD
-  // Solo tienen sentido en familias que se miden. Ver requiereCantidad().
   cantidad?: number
   unidad?: string
 }
@@ -24,7 +23,6 @@ export interface AltaIngrediente {
   unidad?: string
 }
 
-// null borra el campo; undefined lo deja como está.
 export interface CambiosIngrediente {
   nombre?: string
   familia?: string
@@ -61,7 +59,6 @@ function porFamiliaYNombre(a: IngredienteDespensa, b: IngredienteDespensa) {
 function leerCacheLocal(): IngredienteDespensa[] {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]')
-    // Migración desde formato anterior (string[])
     if (stored.length > 0 && typeof stored[0] === 'string') {
       return (stored as string[]).map((nombre) => ({
         nombre: normalizar(nombre),
@@ -76,8 +73,6 @@ function leerCacheLocal(): IngredienteDespensa[] {
 }
 
 export function DespensaProvider({ children }: { children: ReactNode }) {
-  // El cache local pinta al instante; el backend es la fuente de verdad. Si
-  // llega vacío, hidratar devuelve null para subir lo de este dispositivo.
   const [despensa, cambiarDespensa] = useEstadoCompartido<IngredienteDespensa[], IngredienteDespensaDTO[]>({
     nombre: 'la despensa',
     inicial: leerCacheLocal,
@@ -110,7 +105,6 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     )
   }, [cambiarDespensa])
 
-  // Vuelta de la compra: suma al stock existente en vez de ignorar el alta.
   const reponer = useCallback((nombre: string, familia: string, cantidad?: number, unidad?: string) => {
     const norm = normalizar(nombre)
     if (!norm) return
@@ -134,8 +128,6 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
       const actual = prev[idx]
       const copia = [...prev]
       const tieneStock = actual.cantidad != null && unidadMedible(actual.unidad)
-      // Si el que había no llevaba cantidad, la compra se la estrena; si la
-      // llevaba en otra dimensión (g contra ml), no se inventa una suma.
       const sumado = medible && tieneStock ? convertir(cantidad!, unidad!, actual.unidad!) : null
       const repuesto =
         !medible || (tieneStock && sumado == null)
@@ -143,8 +135,6 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
           : tieneStock
             ? { ...actual, estado: 'lleno' as EstadoDespensa, cantidad: redondear(actual.cantidad! + sumado!) }
             : { ...actual, estado: 'lleno' as EstadoDespensa, cantidad, unidad: normalizar(unidad!) }
-      // La fecha que ya hubiera es del envase o la puso alguien a mano: manda
-      // sobre la estimación, que solo estrena a los que no tenían ninguna.
       const estimada = repuesto.caducidad ? null : caducidadEstimada(norm, repuesto.familia)
       copia[idx] = estimada ? { ...repuesto, caducidad: estimada } : repuesto
       return copia
@@ -155,8 +145,6 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     const clave = normalizar(nombre)
     cambiarDespensa((prev) => {
       const nuevoNombre = cambios.nombre != null ? normalizar(cambios.nombre) : null
-      // Un renombrado que choca con otro ingrediente se descarta; el resto de
-      // cambios sí se aplican.
       const chocaria =
         nuevoNombre != null &&
         nuevoNombre !== clave &&
@@ -185,7 +173,6 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     })
   }, [cambiarDespensa])
 
-  // En un solo cambio, para no guardar N versiones seguidas.
   const consumir = useCallback((consumos: ConsumoIngrediente[]) => {
     if (consumos.length === 0) return
     const porNombre = new Map(consumos.map((c) => [c.nombre, c]))

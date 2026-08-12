@@ -35,8 +35,6 @@ function GoogleIcon() {
   )
 }
 
-// Un desplegable de un solo elemento es peor que un botón directo, así que las
-// opciones solo se despliegan cuando hay más de una. Hoy solo hay Google.
 const METODOS = [{ id: 'google' as const, etiqueta: 'Continuar con Google', Icono: GoogleIcon }]
 
 function Landing() {
@@ -50,8 +48,6 @@ function Landing() {
     setEntrando(true)
     setError(null)
     try {
-      // Conserva el destino: un enlace a una receta abierto sin sesión aterriza
-      // en esa receta después de entrar, no en el catálogo.
       const destino = window.location.pathname + window.location.search
       marcarIntentoDeEntrada()
       await signIn.social({ provider: proveedor, callbackURL: destino === '/' ? '/' : destino })
@@ -95,8 +91,6 @@ function Landing() {
 
       <button
         onClick={toggle}
-        // 44px de zona de toque, no 32: aquí es un control solo y con sitio, y
-        // el móvil es la vía de entrada principal. El icono no cambia de tamaño.
         className="fixed z-20 top-4 right-4 w-11 h-11 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={dark ? 'Activar modo claro' : 'Activar modo oscuro'}
         style={{ top: 'calc(env(safe-area-inset-top) + 1rem)' }}

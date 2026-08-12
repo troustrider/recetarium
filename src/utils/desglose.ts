@@ -1,7 +1,3 @@
-// Reparto por plato de un ingrediente que se compra junto: si el pollo de la
-// semana va a dos platos, cuánto es de cada uno para embolsarlo por separado y
-// descongelar solo lo de esa cena.
-
 import { normalizar } from './ingredientes'
 
 export interface ParteReceta {
@@ -9,15 +5,12 @@ export interface ParteReceta {
   cantidad: number
 }
 
-// Se compran en pieza y se congelan por raciones. El resto se guarda entero.
 const FAMILIAS_DESGLOSE = new Set(['carnes', 'pescados'])
 
 export function seDesglosa(familia: string): boolean {
   return FAMILIAS_DESGLOSE.has(normalizar(familia))
 }
 
-// Lo que ya hay en casa cubre los primeros platos y se descuenta en orden, igual
-// que repartirDespensa con el stock. Lo que queda es lo que hay que embolsar.
 export function repartirPorReceta(partes: ParteReceta[], yaCubierto = 0): ParteReceta[] {
   let restante = yaCubierto
   const out: ParteReceta[] = []

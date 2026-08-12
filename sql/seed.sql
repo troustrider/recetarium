@@ -1,7 +1,5 @@
--- Reset
 TRUNCATE TABLE recetas, categories RESTART IDENTITY CASCADE;
 
--- Categories (5 sabores)
 INSERT INTO categories (id, name, description) VALUES
   ('11111111-1111-1111-1111-111111111111', 'salado',  'Platos salados y savory'),
   ('22222222-2222-2222-2222-222222222222', 'dulce',   'Postres y platos dulces'),
@@ -9,7 +7,6 @@ INSERT INTO categories (id, name, description) VALUES
   ('44444444-4444-4444-4444-444444444444', 'umami',   'Platos con sabor umami'),
   ('55555555-5555-5555-5555-555555555555', 'acido',   'Platos con sabor acido');
 
--- Recetas
 INSERT INTO recetas (id, nombre, categoria, tiempo_preparacion, favorita, imagen, precio_por_porcion, porciones, category_id, ingredientes, pasos, consejos) VALUES
 
 ('a1b2c3d4-0001-4000-8000-000000000001',

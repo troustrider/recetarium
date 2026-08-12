@@ -1,8 +1,3 @@
-// Qué sale de la despensa cuando un plato del planificador ya está hecho: la
-// inversa de repartirDespensa(). Dos cautelas para no vaciarla de más: las
-// unidades de cocina ("2 cucharadas") no gastan nada, y un stock con cantidad
-// solo se toca si la unidad es comparable (no se resta "2 ud" de "500 ml").
-
 import { canonUnidad, ingredientesDe } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
 import { despensaCubre } from './despensa'
@@ -12,7 +7,6 @@ import type { Receta } from '../types/receta'
 export interface EntradaCocinada {
   receta: Receta
   raciones: number
-  /** Si el plato se hizo con su guarnición, también se gasta lo suyo. */
   conGuarnicion?: boolean
 }
 
@@ -39,7 +33,6 @@ export function consumoAlCocinar(
   const restante = despensa.map((d) =>
     typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
   )
-  // Insertion order = orden de los ingredientes, que es como se lee en el aviso.
   const tocados = new Map<number, { usadoPor: string[]; agotado: boolean }>()
 
   for (const { receta, raciones, conGuarnicion } of entradas) {
@@ -53,7 +46,6 @@ export function consumoAlCocinar(
 
       const stock = restante[idx]
       const gasto = stock == null ? null : convertir(ing.cantidad * factor, unidad, despensa[idx].unidad!)
-      // Con cantidad guardada pero incomparable no hay nada fiable que hacer.
       if (stock != null && gasto == null) continue
 
       const acc = tocados.get(idx) ?? { usadoPor: [], agotado: false }
