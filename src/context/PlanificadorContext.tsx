@@ -6,6 +6,7 @@ import { usePendientesPlan } from './PendientesPlanContext'
 import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { racionesBase } from '../hooks/useListaCompra'
+import { semanaEquilibrada } from '../utils/semana'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
 export type Dia = typeof DIAS[number]
@@ -193,11 +194,17 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   const autollenar = useCallback((recetas: Receta[], raciones: number) => {
     if (recetas.length === 0) return
+    const semana = semanaEquilibrada(recetas, DIAS.length)
     const nuevo = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
-    for (const dia of DIAS) {
-      const receta = recetas[Math.floor(Math.random() * recetas.length)]
-      nuevo[dia] = [{ id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`, receta, raciones }]
-    }
+    DIAS.forEach((dia, i) => {
+      const receta = semana[i % semana.length]
+      nuevo[dia] = [{
+        id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`,
+        receta,
+        raciones,
+        ...(receta.guarnicion ? { conGuarnicion: true } : {}),
+      }]
+    })
     cambiarPlan(nuevo)
   }, [cambiarPlan])
 

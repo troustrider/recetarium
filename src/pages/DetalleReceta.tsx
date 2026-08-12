@@ -105,8 +105,6 @@ function DetalleReceta() {
   const multiplicador = comensales / porcionesBase
   const enLista = estaSeleccionada(receta.id)
 
-  // Se manda la receta completa, no la cacheada del catálogo: la del catálogo
-  // viene sin ingredientes y entraría en la lista sin nada que comprar.
   function alternarLista(completa: NonNullable<typeof full>) {
     toggleReceta(completa)
     if (!enLista) setRaciones(completa.id, comensales)

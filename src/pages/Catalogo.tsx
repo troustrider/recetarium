@@ -149,8 +149,6 @@ function Catalogo() {
     setVisibles(POR_TANDA)
   }
 
-  // Índice alfabético: solo tiene sentido cuando el orden es el nombre y hay
-  // catálogo suficiente como para que desplazarse a mano canse.
   const secciones = useMemo(() => {
     if (orden !== 'nombre' || resultados.length < MIN_PARA_INDICE) return null
     const m = new Map<string, number>()
@@ -163,9 +161,6 @@ function Catalogo() {
 
   const [letraActiva, setLetraActiva] = useState<string | null>(null)
 
-  // flushSync para que la tanda ampliada esté ya en el DOM antes de buscar el
-  // encabezado. El salto es sin animación: con 268 recetas el scroll suave
-  // tarda segundos.
   const irALetra = useCallback(
     (letra: string) => {
       const i = secciones?.get(letra)

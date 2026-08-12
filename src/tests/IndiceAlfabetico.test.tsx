@@ -4,14 +4,13 @@ import IndiceAlfabetico from '../components/recetas/IndiceAlfabetico'
 
 const LETRAS = ['A', 'B', 'C', 'D', 'E']
 
-// jsdom no hace layout: el carril mide 0 y el cálculo por posición no daría
-// nada. Se le da una geometría de 500 px, 100 por letra.
 function montar() {
   const onSeleccionar = vi.fn()
   const { container } = render(
     <IndiceAlfabetico letras={LETRAS} activa={null} onSeleccionar={onSeleccionar} />
   )
   const carril = container.querySelector('[aria-label="Índice alfabético"]') as HTMLElement
+  // jsdom no hace layout: sin esto el carril mide 0. Son 500 px, 100 por letra.
   carril.getBoundingClientRect = () =>
     ({ top: 100, bottom: 600, height: 500, left: 0, right: 28, width: 28, x: 0, y: 100 }) as DOMRect
   return { carril, onSeleccionar }

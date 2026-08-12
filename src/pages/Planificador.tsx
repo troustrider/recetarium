@@ -18,6 +18,7 @@ import { useRecetasContext, usePendientesPlan, useDeshacer } from '../context'
 import { useDespensa } from '../context/DespensaContext'
 import type { PendientePlan } from '../context/PendientesPlanContext'
 import { consumoAlCocinar, type ConsumoIngrediente } from '../utils/consumo'
+import { faltantes } from '../utils/despensa'
 import { formatCantidad } from '../utils/ingredientes'
 import type { Receta, Sabor } from '../types/receta'
 
@@ -434,15 +435,20 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, on
 interface SelectorProps {
   dia: Dia
   recetas: Receta[]
+  faltanPorReceta: Map<string, number> | null
   onSeleccionar: (receta: Receta) => void
   onCerrar: () => void
 }
 
-function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps) {
+function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar }: SelectorProps) {
   const [busqueda, setBusqueda] = useState('')
-  const filtradas = recetas.filter((r) =>
-    r.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  )
+  const filtradas = useMemo(() => {
+    const lista = recetas.filter((r) => r.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+    if (!faltanPorReceta) return lista
+    return [...lista].sort(
+      (a, b) => (faltanPorReceta.get(a.id) ?? 99) - (faltanPorReceta.get(b.id) ?? 99)
+    )
+  }, [recetas, busqueda, faltanPorReceta])
 
   return (
     <>
@@ -477,20 +483,36 @@ function SelectorReceta({ dia, recetas, onSeleccionar, onCerrar }: SelectorProps
           {filtradas.length === 0 ? (
             <li className="px-4 py-8 text-center text-sm text-gray-400">Sin resultados</li>
           ) : (
-            filtradas.map((receta) => (
-              <motion.li key={receta.id} whileHover={{ backgroundColor: 'rgba(249,115,22,0.05)' }}>
-                <button
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left"
-                  onClick={() => { onSeleccionar(receta); onCerrar() }}
-                >
-                  <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[receta.sabor]}`} />
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{receta.nombre}</p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{receta.categoria}</p>
-                  </div>
-                </button>
-              </motion.li>
-            ))
+            filtradas.map((receta) => {
+              const faltan = faltanPorReceta?.get(receta.id)
+              return (
+                <motion.li key={receta.id} whileHover={{ backgroundColor: 'rgba(249,115,22,0.05)' }}>
+                  <button
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left"
+                    onClick={() => { onSeleccionar(receta); onCerrar() }}
+                  >
+                    <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[receta.sabor]}`} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{receta.nombre}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{receta.categoria}</p>
+                    </div>
+                    {faltan != null && (
+                      <span
+                        className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          faltan === 0
+                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : faltan <= 3
+                              ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400'
+                              : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
+                        }`}
+                      >
+                        {faltan === 0 ? 'la tenéis' : faltan === 1 ? 'falta 1' : `faltan ${faltan}`}
+                      </span>
+                    )}
+                  </button>
+                </motion.li>
+              )
+            })
           )}
         </ul>
       </motion.div>
@@ -515,6 +537,11 @@ function Planificador() {
   )
 
   const totalRecetas = dias.reduce((acc, d) => acc + plan[d].length, 0)
+
+  const faltanPorReceta = useMemo(
+    () => (despensa.length === 0 ? null : new Map(recetas.map((r) => [r.id, faltantes(r, despensa).length]))),
+    [recetas, despensa]
+  )
 
   const consumos = useMemo(
     () => (cocinando ? consumoAlCocinar([cocinando.entrada], despensa) : []),
@@ -592,12 +619,12 @@ function Planificador() {
             onClick={() => {
               const anterior = plan
               autollenar(recetas.filter((r) => (r.tipo ?? 'principal') === 'principal'), 2)
-              registrar('Semana rellenada al azar', () => restaurarPlan(anterior))
+              registrar('Semana equilibrada', () => restaurarPlan(anterior))
             }}
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
-            title="Rellena la semana con recetas al azar"
+            title="Siete platos que reparten la verdura y los micronutrientes, con su guarnición puesta"
           >
             <Dices className="w-3.5 h-3.5" />
             Auto-semana
@@ -693,6 +720,7 @@ function Planificador() {
           <SelectorReceta
             dia={selectorDia}
             recetas={recetas}
+            faltanPorReceta={faltanPorReceta}
             onSeleccionar={(receta) => añadir(selectorDia, receta)}
             onCerrar={() => setSelectorDia(null)}
           />
