@@ -196,6 +196,26 @@ async function leerTodas() {
     WHERE r.borrada_en IS NULL ORDER BY r.nombre`
 }
 
+function guarnicionConFicha(guarnicion, porciones) {
+  if (!guarnicion) return null
+  const entrada = { ingredientes: guarnicion.ingredientes, porciones }
+  const macros = estimarMacros(entrada)
+  const ficha = fichaNutricional(entrada)
+  const red1 = (n) => Math.round(n * 10) / 10
+  return {
+    nombre: guarnicion.nombre,
+    ingredientes: guarnicion.ingredientes,
+    pasos: guarnicion.pasos ?? [],
+    calorias: Math.round(macros.calorias),
+    proteinas: red1(macros.proteinas),
+    carbohidratos: red1(macros.carbohidratos),
+    grasas: red1(macros.grasas),
+    hierro: ficha.hierro,
+    sinGluten: ficha.sinGluten,
+    micros: ficha.micros,
+  }
+}
+
 async function guardar(r) {
   const cid = await categoryId(r.sabor)
   const ing = JSON.stringify(r.ingredientes)
@@ -203,6 +223,8 @@ async function guardar(r) {
   const con = JSON.stringify(r.consejos ?? [])
   const f = fichaNutricional(r)
   const mic = JSON.stringify(f.micros)
+  const gua = guarnicionConFicha(r.guarnicion, r.porciones ?? 1)
+  const guaJson = gua ? JSON.stringify(gua) : null
   if (r.id) {
     const [row] = await sql`
       UPDATE recetas SET nombre = ${r.nombre}, categoria = ${r.categoria ?? null},
@@ -210,7 +232,7 @@ async function guardar(r) {
         consejos = ${con}, category_id = ${cid}, precio_por_porcion = ${r.precioPorPorcion},
         porciones = ${r.porciones}, calorias = ${r.calorias ?? null}, proteinas = ${r.proteinas ?? null},
         carbohidratos = ${r.carbohidratos ?? null}, grasas = ${r.grasas ?? null}, tipo = ${r.tipo ?? 'principal'},
-        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}
+        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}, guarnicion = ${guaJson}
       WHERE id = ${r.id} RETURNING id, nombre`
     if (!row) throw new Error(`id no encontrado: ${r.id}`)
     return { accion: 'UPDATE', ...row }
@@ -218,11 +240,11 @@ async function guardar(r) {
   const [row] = await sql`
     INSERT INTO recetas (nombre, categoria, tiempo_preparacion, ingredientes, pasos, consejos,
       precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo,
-      hierro, sin_gluten, micros)
+      hierro, sin_gluten, micros, guarnicion)
     VALUES (${r.nombre}, ${r.categoria ?? null}, ${r.tiempoPreparacion}, ${ing}, ${pas}, ${con},
       ${r.precioPorPorcion}, ${r.porciones}, ${cid}, ${r.calorias ?? null}, ${r.proteinas ?? null},
       ${r.carbohidratos ?? null}, ${r.grasas ?? null}, ${r.tipo ?? 'principal'},
-      ${f.hierro}, ${f.sinGluten}, ${mic})
+      ${f.hierro}, ${f.sinGluten}, ${mic}, ${guaJson})
     RETURNING id, nombre`
   return { accion: 'INSERT', ...row }
 }

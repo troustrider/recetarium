@@ -5,7 +5,8 @@ El filtro por el que pasa cualquier propuesta: para quién es, qué tiene que cu
 ## Perfil del comensal
 
 - **Karim**, Rotterdam Noord (3036 NA). Nacido y criado en Granada. Cocina entre semana, dos fuegos, sin ayudante.
-- **Cocinas favoritas**: mediterránea (española, griega, italiana, portuguesa), asiática (japonesa, coreana, china, tailandesa, indonesia), LatAm y Oriente Medio. Le gusta la fusión entre ellas.
+- **Cocinas favoritas, primer nivel: turca, griega, coreana y japonesa.** Son las cuatro por las que se empieza cuando pide "sorpréndeme", una tanda, o un plato sin más pistas.
+- **Segundo nivel**: el resto de la mediterránea (española, italiana, portuguesa), el resto de la asiática (china, tailandesa, indonesia), LatAm y Oriente Medio. Le gusta la fusión entre ellas.
 - **No come pescado.** La BD tiene recetas con pescado porque es compartida con Cloe; el filtro aplica solo a lo que se le propone a él.
 - **No le gusta el cordero.** Mismo criterio que el pescado: no se le propone. Cuando el plato canónico es de cordero (Ali nazik, tajine, kibbeh, maqluba), se hace con ternera o mezcla de ternera y cerdo y se declara la desviación. A Cloe sí le gusta, así que en la BD compartida puede haberlo.
 - **No le gusta la cocina india.** No proponérsela (curry masala, korma, tikka, dal). En la BD compartida sí hay, por Cloe.
@@ -34,6 +35,10 @@ Las tres salidas correctas, en este orden:
 3. **Proponer otro plato** de la misma cocina que sí llegue sin deformarse.
 
 Lo que nunca: subir el ingrediente que define el ratio (queso en una emulsión, carne en una masa, tahini en un hummus) para alcanzar la cifra. Ni escribir el número que hace falta.
+
+### El precio: banda habitual, no límite
+
+La banda de 0,80-4,50 €/ración de `precios-nl.md` describe lo que se cocina entre semana, y el validador la trata como aviso, no como error. **Un plato de ocasión puede pasarse a propósito**, siempre que el aviso se declare en la respuesta y el corte caro sea el plato y no un capricho: un galbijjim con costilla de ternera vale para una comida de fin de semana justo porque no es la carne de guisar de siempre. Lo mismo por abajo: un banchan o una masa de harina y azúcar cuestan lo que cuestan y no se inflan con un ingrediente de relleno para entrar en la banda. Lo que no vale es cruzarla en silencio.
 
 ## Fundamento de sabor
 

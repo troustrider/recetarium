@@ -1989,6 +1989,78 @@
       "unidad": "kg",
       "fuente": "estimado",
       "revisado": "2026-08"
+    },
+    {
+      "nombre": "champiñones",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bandeja 250 g"
+    },
+    {
+      "nombre": "costilla de ternera",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "corte del carnicero, trozos de 5 cm"
+    },
+    {
+      "nombre": "costilla de ternera deshuesada",
+      "euros": 19,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "pedida picada al carnicero"
+    },
+    {
+      "nombre": "fideos de boniato",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "dangmyeon, bolsa 500 g, toko"
+    },
+    {
+      "nombre": "pasta de judía negra (chunjang)",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "chunjang, tarrina 500 g, toko"
+    },
+    {
+      "nombre": "tteok",
+      "euros": 6,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa refrigerada 500 g, toko"
+    },
+    {
+      "nombre": "col china",
+      "euros": 1.8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "pieza 800 g"
+    },
+    {
+      "nombre": "ñoquis de patata",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 500 g"
+    },
+    {
+      "nombre": "jamón cocido",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 150 g"
     }
   ]
 }

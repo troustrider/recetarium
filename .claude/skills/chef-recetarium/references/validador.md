@@ -37,7 +37,7 @@ Se ejecuta desde `server/` (necesita `DATABASE_URL` de `server/.env` y el driver
 - `audit` — recorre las recetas de la BD y lista ERROR y aviso por receta.
 - `check` — valida un fichero JSON (array de recetas) sin tocar nada. Es el paso obligatorio antes de enseñar un lote a Karim.
 - `check-doc` — valida los ejemplos JSON de las referencias de la skill. El ejemplo de `contrato-receta.md` es el trozo del prompt que más pesa al escribir una receta: si él se salta una puerta, la enseña saltada. Llegó a fallar cinco. **Ejecútalo siempre que toques ese ejemplo.**
-- `apply` — valida y escribe. `UPDATE` si el objeto trae `id`, `INSERT` si no. **No toca `favorita` ni `imagen`**, al contrario que el `PUT` de la API, que borra lo que se omite. Si cualquier receta del lote falla, no escribe ninguna.
+- `apply` — valida y escribe. `UPDATE` si el objeto trae `id`, `INSERT` si no. **No toca `favorita` ni `imagen`**, al contrario que el `PUT` de la API, que borra lo que se omite. Sí escribe `guarnicion`, con su ficha nutricional calculada igual que en el servidor, y por tanto **un `UPDATE` que omita la guarnición la borra**: en modo revisión se manda la receta entera, guarnición incluida. Si cualquier receta del lote falla, no escribe ninguna.
 - `marcar <json>` — reescribe un lote al formato escalable. Ver la trampa al final.
 - `remarcar [--dry]` — marca las cantidades directamente en la BD, solo sobre recetas ya normalizadas a 2 raciones. Con `--dry` enseña los pasos resultantes sin escribir; úsalo siempre antes, porque un patrón nuevo mal puesto toca cientos de pasos de golpe.
 
@@ -94,6 +94,12 @@ Al endurecer un gate, revisa si dispara sobre texto correcto antes de reescribir
 - Verbos dentro de una subordinada ("mientras cuece el arroz, pica la cebolla") se leían como una cocción sin tiempo. Se ignora la cláusula `mientras ...`.
 - El gate de temperatura interna en carne exigía °C o "jugo transparente", pero en cortes finos y carne deshecha la señal correcta es visual ("sin zonas rojas", "no quede zona rosa"). Se aceptan como equivalentes.
 - El mismo gate saltaba en platos cuya única carne es charcutería (jamón serrano, spek, chorizo, guanciale). Van curados o cocidos de fábrica y no tienen punto interno que alcanzar: quedan exentos.
+
+## El fallo que enseñó a no fiarse del `check` verde
+
+Durante meses `apply` **no escribía la columna `guarnicion`**. `check` la validaba, la puerta de comida completa la daba por buena, y al escribir se perdía sin decir nada: la receta entraba en la BD sin guarnición y suspendía la misma puerta que acababa de pasar. Se detectó porque el `audit` posterior a un `apply` sacó dos ERROR que el `check` previo no tenía.
+
+La lección operativa: **un `apply` no se da por terminado hasta correr `audit` después.** `check` valida el fichero; `audit` valida lo que quedó guardado, y solo el segundo ve los campos que la escritura pierde por el camino.
 
 ## Trampa de `marcar`
 
