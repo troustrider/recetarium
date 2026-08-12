@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Flame, Lightbulb, Scale, Salad } from 'lucide-react'
+import { Check, Flame, Lightbulb, Scale, Salad, ShoppingCart } from 'lucide-react'
 import { useRecetasContext, useDeshacer } from '../context'
+import { useListaCompraContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import IngredienteItem from '../components/recetas/IngredienteItem'
 import FichaMicros from '../components/recetas/FichaMicros'
@@ -53,6 +54,7 @@ function DetalleReceta() {
   const { id } = useParams<{ id: string }>()
   const { recetas, eliminar, restaurar, toggleFavorita, ultimaEdicion, deshacer, descartarDeshacer } = useRecetasContext()
   const { registrar } = useDeshacer()
+  const { toggleReceta, setRaciones, estaSeleccionada } = useListaCompraContext()
   const { receta: fetched, error, recargar } = useReceta(id!)
   const registradaRef = useRef<typeof ultimaEdicion>(null)
   const navigate = useNavigate()
@@ -101,6 +103,14 @@ function DetalleReceta() {
 
   const porcionesBase = receta.porciones ?? PORCIONES_POR_DEFECTO
   const multiplicador = comensales / porcionesBase
+  const enLista = estaSeleccionada(receta.id)
+
+  // Se manda la receta completa, no la cacheada del catálogo: la del catálogo
+  // viene sin ingredientes y entraría en la lista sin nada que comprar.
+  function alternarLista(completa: NonNullable<typeof full>) {
+    toggleReceta(completa)
+    if (!enLista) setRaciones(completa.id, comensales)
+  }
   const pasosEscalan = tieneCantidadesEscalables(full?.pasos ?? [])
 
   return (
@@ -274,6 +284,23 @@ function DetalleReceta() {
             ))
           ) : (
             <SkeletonLineas filas={5} />
+          )}
+
+          {full && (
+            <motion.button
+              onClick={() => alternarLista(full)}
+              className={`flex items-center justify-center gap-2 w-full mt-1 py-3 text-sm font-bold rounded-xl border transition-colors ${
+                enLista
+                  ? 'bg-orange-700 dark:bg-orange-600 border-transparent text-white'
+                  : 'border-gray-200 dark:border-gray-700 text-orange-700 dark:text-orange-400 hover:border-orange-500 dark:hover:border-orange-600'
+              }`}
+              whileTap={{ scale: 0.98 }}
+            >
+              {enLista ? <Check className="w-4 h-4" strokeWidth={2.6} /> : <ShoppingCart className="w-4 h-4" strokeWidth={2.2} />}
+              {enLista
+                ? 'En la lista de la compra'
+                : `Añadir a la lista · ${comensales} ${comensales === 1 ? 'persona' : 'personas'}`}
+            </motion.button>
           )}
         </div>
       </section>
