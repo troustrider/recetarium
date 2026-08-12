@@ -10,7 +10,7 @@
 # 🍳 Recetarium
 > Gestor de recetas personal con lista de la compra unificada
 
-App web fullstack para centralizar recetas y generar listas de la compra. Frontend en React + TypeScript + Vite. Backend en Node.js + Express con PostgreSQL en Neon serverless.
+App web fullstack para centralizar recetas y generar listas de la compra. Frontend en React + TypeScript + Vite. Backend en Node.js + Express con PostgreSQL en Neon serverless. Instalable como PWA y utilizable sin cobertura mientras se cocina.
 
 | Despliegue | URL |
 |------------|-----|
@@ -21,11 +21,28 @@ App web fullstack para centralizar recetas y generar listas de la compra. Fronte
 
 ## Características
 
-- Gestión completa de recetas (crear, editar, eliminar)
-- Generación de lista de la compra unificada desde varias recetas
-- Base de datos PostgreSQL en Neon, con ramas para pruebas
+**Recetario**
+- Catálogo con filtros por sabor, categoría, tiempo, sin gluten y disponibilidad en despensa
+- Alta, edición y borrado lógico: una receta borrada se restaura con su mismo id
+- Ficha nutricional por porción (macros, hierro, gluten y micronutrientes) calculada por el servidor desde los ingredientes
+- Guarnición opcional en bloque propio, con su propia ficha, que solo suma cuando se pide
+- Escalado de cantidades por comensales, también dentro del texto de los pasos
+
+**Cocina y compra**
+- Despensa con cantidades, unidades y caducidad estimada por ingrediente
+- Lista de la compra unificada, que resta lo que ya hay en casa y desglosa cuánto va a cada plato
+- Planificador semanal con drag & drop; marcar un plato como hecho gasta lo suyo de la despensa
+- Deshacer para cualquier acción destructiva, rebobinando todos los estados implicados a la vez
+- Modo cocina con temporizadores por paso, alarma sintetizada y pantalla siempre encendida
+- Precio estimado a partir de una tabla de precios reales de supermercados neerlandeses
+
+**Plataforma**
+- Acceso por invitación con Neon Auth (Google): cada hogar tiene su despensa, su plan y su lista, sobre un catálogo común
+- Estado compartido entre dispositivos, con revalidación periódica y aviso si un guardado falla
+- PWA instalable, con service worker y funcionamiento sin cobertura
+- Pantalla de administración con accesos, IPs nuevas e invitaciones
 - API REST documentada con Swagger UI
-- Acceso por invitación: cada hogar tiene su despensa, su plan y su lista, sobre un catálogo común
+- Base de datos PostgreSQL en Neon, con ramas para pruebas
 
 ---
 
@@ -33,22 +50,29 @@ App web fullstack para centralizar recetas y generar listas de la compra. Fronte
 
 | Frontend | Uso |
 |----------|-----|
-| React | UI declarativa con componentes |
+| React 19 | UI declarativa con componentes |
 | TypeScript | Tipado estático |
-| Vite | Bundler y servidor de desarrollo |
-| Tailwind CSS | Estilos utility-first |
-| React Router | Navegación entre páginas |
+| Vite 8 | Bundler y servidor de desarrollo |
+| Tailwind CSS 4 | Estilos utility-first |
+| React Router 7 | Navegación entre páginas |
+| framer-motion | Animaciones del catálogo y las hojas inferiores |
+| @dnd-kit | Drag & drop del planificador semanal |
+| lucide-react | Iconografía |
 
 | Backend | Uso |
 |---------|-----|
-| Node.js + Express | Servidor HTTP y API REST |
+| Node.js + Express 5 | Servidor HTTP y API REST |
 | @neondatabase/serverless | Driver de PostgreSQL compatible con entornos serverless |
+| @neondatabase/neon-js | Cliente de Neon Auth en el navegador |
 | jose | Verificación de los JWT de sesión contra el JWKS de Neon Auth |
+| swagger-jsdoc | Especificación OpenAPI generada desde las rutas |
 
 | Auxiliares | Uso |
 |------------|-----|
-| Neon | PostgreSQL serverless con branching |
+| Neon | PostgreSQL serverless con branching, y Neon Auth para el login |
 | Vercel | Despliegue de frontend y backend |
+| Vitest | Tests de web y de servidor, este último contra una rama real de Neon |
+| ESLint | Linting con reglas de React Hooks |
 
 ---
 
@@ -65,12 +89,16 @@ recetarium/
 │   ├── types/        # Interfaces y tipos TypeScript
 │   └── utils/        # Funciones auxiliares
 ├── server/
-│   └── src/
-│       ├── config/       # Variables de entorno
-│       ├── controllers/  # Validación y orquestación HTTP
-│       ├── lib/          # Cliente de BD, auth y cálculo nutricional
-│       ├── routes/       # Mapeo verbos HTTP → controladores
-│       └── services/     # Lógica de negocio pura
+│   ├── scripts/      # Mantenimiento: invitaciones, imágenes, auditoría del recetario
+│   ├── src/
+│   │   ├── config/       # Especificación Swagger
+│   │   ├── controllers/  # Validación, permisos y orquestación HTTP
+│   │   ├── lib/          # Cliente de BD, sesión, hogar y cálculo nutricional
+│   │   ├── routes/       # Mapeo verbos HTTP → controladores
+│   │   └── services/     # Lógica de negocio y acceso a datos
+│   └── tests/        # Suite de servidor (rama de pruebas de Neon)
+├── sql/              # Esquema y migraciones aplicadas
+├── public/           # Service worker, manifests, iconos
 └── docs/
 ```
 
@@ -84,8 +112,8 @@ cd recetarium
 npm install
 cd server && npm install
 
-# Crear .env en server/
-echo "PORT=3001" > .env
+# server/.env — conexión a la rama de Neon
+cp .env.example .env
 
 # Arrancar backend (desde server/)
 npm run dev
@@ -95,6 +123,22 @@ cd .. && npm run dev
 ```
 
 Frontend en `http://localhost:5173`. Backend en `http://localhost:3001`.
+
+Hace falta `DATABASE_URL` en `server/.env` y `VITE_NEON_AUTH_URL` en la raíz, apuntando
+las dos a la misma rama de Neon. Sin fila en `invitados` no se entra, aunque se tenga
+cuenta de Google:
+
+```bash
+node server/scripts/invitar.mjs tu@correo.com --propio --admin
+```
+
+## Comprobaciones
+
+```bash
+npm run lint
+npm run test:web      # jsdom, sin red
+npm run test:server   # contra la rama recetarium-test de Neon
+```
 
 ---
 

@@ -37,15 +37,29 @@ Devuelve todas las recetas. Acepta filtros opcionales por query params.
     "nombre": "Pasta carbonara",
     "categoria": "italiana",
     "sabor": "salado",
+    "tipo": "principal",
     "tiempoPreparacion": 25,
+    "porciones": 2,
+    "precioPorPorcion": 1.85,
     "favorita": false,
+    "privada": false,
+    "imagen": "https://images.unsplash.com/...",
     "ingredientes": [
-      { "nombre": "huevo", "cantidad": 2, "unidad": "unidades", "familia": "proteínas" }
+      { "nombre": "huevo", "cantidad": 2, "unidad": "ud", "familia": "proteínas" }
     ],
-    "pasos": ["Cocer la pasta.", "Mezclar con el huevo fuera del fuego."]
+    "pasos": ["Cocer la pasta.", "Mezclar con el huevo fuera del fuego."],
+    "consejos": ["Fuera del fuego, o el huevo cuaja."],
+    "guarnicion": null,
+    "calorias": 620, "proteinas": 31, "carbohidratos": 72, "grasas": 21,
+    "hierro": 3.4, "sinGluten": false, "micros": { "fibra": 4.1, "sal": 1.2 }
   }
 ]
 ```
+
+`favorita` y `privada` se derivan del hogar que pregunta. La ficha nutricional
+(`hierro`, `sinGluten`, `micros`) la calcula el servidor desde los ingredientes en cada
+alta y edición: no se acepta del payload. `sinGluten: null` significa que algún
+ingrediente no tiene ficha, así que no se puede afirmar que la receta no lleve gluten.
 
 ---
 
@@ -102,9 +116,20 @@ Alterna el campo `favorita` de la receta (true → false, false → true).
 
 ### DELETE /api/v1/recetas/:id
 
-Elimina una receta.
+Borrado lógico: la receta desaparece del catálogo, pero su fila se queda.
 
 **Respuesta 204** — sin cuerpo
+**Respuesta 404** — receta no encontrada
+
+---
+
+### POST /api/v1/recetas/:id/restaurar
+
+Devuelve al catálogo una receta borrada, **con su mismo id**. El plan semanal y las
+recetas pendientes referencian por `recetaId`, así que un id nuevo las devolvería
+desenganchadas de la semana.
+
+**Respuesta 200** — la receta restaurada
 **Respuesta 404** — receta no encontrada
 
 ---
@@ -119,7 +144,8 @@ La validación se aplica en los endpoints POST y PUT. Los campos obligatorios so
 - `ingredientes` — array con al menos un elemento; cada ingrediente necesita `nombre`, `cantidad` (número > 0), `unidad` y `familia`
 - `pasos` — array con al menos un string no vacío
 
-`categoria` es opcional.
+`categoria` es opcional. `guarnicion` también, pero si viene tiene que venir entera: sin
+ingredientes no hay nada que comprar ni que sumar a la ficha.
 
 ---
 

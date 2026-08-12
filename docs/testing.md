@@ -1,66 +1,73 @@
 # Testing
 
-## Tests automáticos
+Stack: **Vitest 4**, **React Testing Library** y **jsdom** en el frontend; Vitest contra
+una rama real de Neon en el backend.
 
-Stack: **Vitest** + **React Testing Library** + **jsdom**.
+`vitest.config.ts` define dos proyectos:
 
+| Proyecto | Entorno | Qué cubre |
+|---|---|---|
+| `web` | jsdom, sin red | Lógica de dominio, hooks y componentes del frontend |
+| `server` | node, con base de datos | API, permisos, aislamiento entre hogares y nutrición |
+
+```bash
+npm test              # watch
+npm run test:web      # 20 ficheros
+npm run test:server   # 10 ficheros
+npm run test:coverage
 ```
-npm test            # watch mode
-npm run test:coverage  # cobertura en html
-```
 
-### Archivos de test
+> Vitest a veces recoge solo parte de los ficheros y sale verde igual. Conviene mirar el
+> número de ficheros recogidos y no solo el "passed".
 
-| Archivo | Qué cubre |
+## Proyecto `web`
+
+Corre sin red y no necesita configuración. Cubre sobre todo la lógica que decide qué se
+compra, qué se gasta y qué se enseña:
+
+| Área | Ficheros |
 |---|---|
-| `src/tests/RecetaCard.test.tsx` | Componente visual de tarjeta |
-| `src/tests/useFiltros.test.ts` | Hook de filtrado de recetas |
+| Lista de la compra y despensa | `listaCompra-cantidades`, `despensa`, `despensa-context`, `cantidades`, `consumo`, `desglose`, `ingredientes` |
+| Recetas y escalado | `escalarPasos`, `guarnicion`, `parseDuracion`, `RecetaCard`, `useFiltros`, `useRecetas-deshacer` |
+| Estado compartido y deshacer | `sincronizacion`, `deshacer`, `planificador-lista` |
+| Cocina | `useTimers` |
+| Precios y PWA | `precios`, `caducidad-estimada`, `manifests` |
 
-### RecetaCard (6 tests)
+Algunos fijan contratos que no son evidentes leyendo el código: `ingredientes.test.ts`
+cubre `claveIngrediente`, que agrupa la lista y persiste lo marcado como comprado, así
+que cambiar su forma pierde los marcados del usuario; `manifests.test.ts` comprueba que
+los dos manifests siguen siendo idénticos salvo en el color de fondo.
 
-- Renderiza el nombre en el heading
-- Renderiza el tiempo de preparación
-- Llama a `onClick` al pulsar la tarjeta
-- Llama a `onToggleFavorita` sin propagar el click al artículo (stopPropagation)
-- Muestra `aria-label="Quitar de favoritas"` cuando `favorita: true`
-- Muestra la categoría si existe
+`precios.test.ts` no fija cuánto vale el pollo — los precios cambian y la tabla se
+actualiza con `npm run precio` — sino el comportamiento: que una entrada específica gane
+a la genérica, que lo inconvertible devuelva `null` en vez de inventarse una conversión,
+y que un precio absurdo salte.
 
-### useFiltros (5 tests)
+## Proyecto `server`
 
-- Sin filtros devuelve todas las recetas
-- Filtro por sabor devuelve solo las recetas del sabor elegido
-- Filtro por categoría devuelve solo las recetas de esa categoría
-- Filtro por tiempoMax excluye las recetas más lentas
-- `resetFiltros` restaura el catálogo completo
+Escribe de verdad: crea y borra recetas, usuarios y hogares. Corre contra la rama
+`recetarium-test` de Neon, configurada en `server/.env.test`, que no está en el
+repositorio. `server/tests/setup.js` aborta si `DATABASE_URL` no apunta a esa rama, y
+purga al terminar cada fichero lo que hayan creado los helpers.
 
----
+| Fichero | Qué fija |
+|---|---|
+| `auth.test.js` | La sesión decide qué hogar se toca y nadie ve el de otro |
+| `auth-usuario.test.js` | Un token de `neon_auth.session` resuelve a usuario y hogar; un JWT que no verifica se rechaza |
+| `catalogo-hogar.test.js` | Catálogo común editable solo por admin, recetas privadas invisibles para el resto, favoritas por hogar |
+| `recetas-crud.test.js` | Alta, edición y contrato de la respuesta |
+| `recetas-borrado.test.js` | El borrado lógico devuelve la receta con su mismo id |
+| `estado.test.js` | Plan, despensa, extras y pendientes por hogar |
+| `guarnicion.test.js` | La guarnición no contamina la ficha del plato, sobre todo el gluten |
+| `nutricion.test.js` | Macros, micros y gluten calculados desde los ingredientes |
+| `validacion-recetas.test.js` | Validación de entrada |
+| `precios-contraste.test.js` | La tabla de precios contra los precios curados de las recetas |
 
-## Pruebas manuales
+Toda la API pide sesión, así que los helpers escriben una a mano en `neon_auth` con token
+opaco: no hay forma de completar un login real desde un test, y emitir un JWT válido
+exigiría la clave privada del servicio gestionado. `requireUser` acepta las dos formas.
 
-Fui probando cada cosa en el navegador según la iba desarrollando, con el frontend y el backend corriendo en local.
+## Integración continua
 
-**CRUD de recetas.** Crear, editar y borrar funciona. El formulario no deja guardar si falta el nombre, algún ingrediente o algún paso. Al guardar, va directo al detalle de la receta. Todo persiste al recargar la página.
-
-**Catálogo y filtros.** Los filtros de categoría se generan solos a partir de las recetas que hay. El de sabor cubre los cinco tipos. Se pueden usar los dos filtros a la vez.
-
-**Favoritas.** Las tarjetas se ven igual que en el catálogo, con imágenes incluidas.
-
-**Planificador.** Se pueden poner varias recetas el mismo día. Los botones +/− de raciones funcionan por receta (1 a 4). Se puede arrastrar una receta de un día a otro.
-
-**Despensa.** Se añaden ingredientes con su categoría. Clic cambia entre "lleno" y "poco". Hay un botón para importar todo desde la lista de la compra.
-
-**Lista de la compra.** Los ingredientes de distintas recetas se juntan sumando cantidades. Las raciones multiplican bien.
-
-**Modo oscuro.** El toggle funciona y recuerda la preferencia. Si no hay preferencia guardada, usa la del sistema.
-
-**Estados de carga y error.** Probado cortando el servidor. Aparece el mensaje de error y el botón de reintentar funciona al levantarlo de nuevo.
-
-## Responsive
-
-Probado en móvil, tablet y escritorio. El catálogo pasa de una columna a dos. La navegación colapsa en móvil.
-
-## Bugs encontrados y corregidos
-
-- **Favoritas sin imágenes.** La página tenía sus propias tarjetas con gradientes en lugar de usar `RecetaCard`. Se reemplazó.
-- **Raciones cortadas.** Al sincronizar el planificador con la lista de la compra, las raciones se limitaban a 4 aunque la suma de varios días fuera mayor. Se quitó el límite.
-- **Toggle de favorita no revertía.** En producción (Vercel) el filesystem es de solo lectura, así que cada llamada a `PATCH /favorita` leía siempre `favorita: false` del JSON original y devolvía `true`. Se corrigió con optimistic update en el frontend.
+`.github/workflows/ci.yml` corre lint y el proyecto `web` en cada push. El proyecto
+`server` se queda en local: necesitaría la credencial de la rama de Neon como secret.
