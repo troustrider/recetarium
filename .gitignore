@@ -18,6 +18,9 @@ coverage
 # Volcado local de recetas (export de la BD, no versionar)
 recetas_live.json
 
+# Cache de busquedas de Unsplash: ahorra peticiones entre tandas, no versionar
+server/scripts/unsplash-cache.json
+
 # Environment variables
 .env
 .env.*
@@ -50,3 +53,6 @@ docs/PLAN-*.md
 
 # Contexto interno: explica el codigo para nosotros, no para quien visita el repo
 docs/contexto/
+
+# Copias de conflicto que deja OneDrive al sincronizar desde dos maquinas
+*-DESKTOP-*.*

@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "e065f8a5-2ad5-44d7-864a-93dfc3585c69",
+    "nombre": "Milanesa napolitana con patatas",
+    "query": "breaded cutlet melted cheese tomato plate",
+    "imagen": "https://images.unsplash.com/photo-1734775373504-ff24ea8419b2?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw4NHx8YnJlYWRlZCUyMGN1dGxldCUyMG1lbHRlZCUyMGNoZWVzZSUyMHRvbWF0byUyMHBsYXRlfGVufDF8fHx8MTc4NjY1Mjg1M3ww&ixlib=rb-4.1.0&w=800&h=600&q=80&fit=crop&crop=entropy"
+  },
+  {
+    "id": "a2818c07-44f6-450b-b179-0faa1f075b67",
+    "nombre": "Enchiladas de pollo",
+    "query": "enchiladas tortillas red sauce melted cheese",
+    "imagen": "https://images.unsplash.com/photo-1755144248558-c9cb2d811db5?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwzNXx8ZW5jaGlsYWRhcyUyMHRvcnRpbGxhcyUyMHJlZCUyMHNhdWNlJTIwbWVsdGVkJTIwY2hlZXNlfGVufDF8fHx8MTc4NjY1Mjg1NXww&ixlib=rb-4.1.0&w=800&h=600&q=80&fit=crop&crop=entropy"
+  },
+  {
+    "id": "88b226ad-b248-49b5-8530-b6534b540a88",
+    "nombre": "Frango piri-piri con arroz",
+    "query": "grilled peri peri chicken plate rice",
+    "imagen": "https://images.unsplash.com/photo-1784902540562-9b048bde9ace?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwyfHxncmlsbGVkJTIwcGVyaSUyMHBlcmklMjBjaGlja2VuJTIwcGxhdGUlMjByaWNlfGVufDF8fHx8MTc4NjY1Mjg1N3ww&ixlib=rb-4.1.0&w=800&h=600&q=80&fit=crop&crop=entropy"
+  },
+  {
+    "id": "87cff217-45be-4852-bb12-ac8e56f3a195",
+    "nombre": "Soto ayam",
+    "query": "yellow chicken soup bowl herbs turmeric",
+    "imagen": "https://images.unsplash.com/photo-1625937712842-061738bb1e2a?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHw0fHx5ZWxsb3clMjBjaGlja2VuJTIwc291cCUyMGJvd2wlMjBoZXJicyUyMHR1cm1lcmljfGVufDF8fHx8MTc4NjY1Mjg1OHww&ixlib=rb-4.1.0&w=800&h=600&q=80&fit=crop&crop=entropy"
+  },
+  {
+    "id": "84d25edf-b599-4437-b6ea-0bd8ee130fbe",
+    "nombre": "Polenta con ragú de setas",
+    "query": "polenta with mushroom sauce plate",
+    "imagen": "https://images.unsplash.com/photo-1778851182989-ea3f9d2d280b?ixid=M3w5OTQwNDl8MHwxfHNlYXJjaHwyMHx8cG9sZW50YSUyMHdpdGglMjBtdXNocm9vbSUyMHNhdWNlJTIwcGxhdGV8ZW58MXx8fHwxNzg2NjUyODU5fDA&ixlib=rb-4.1.0&w=800&h=600&q=80&fit=crop&crop=entropy"
+  }
+]
