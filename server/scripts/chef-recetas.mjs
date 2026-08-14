@@ -365,7 +365,9 @@ if (!comoCli) {
   let fallos = 0
   for (const doc of docs) {
     const md = readFileSync(resolve(REFS, doc), 'utf8')
-    const bloques = [...md.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1])
+    const bloques = [...md.matchAll(/```json\r?\n([\s\S]*?)```/g)]
+      .map((m) => m[1])
+      .filter((b) => !b.trimStart().startsWith('"'))
     if (!bloques.length) { console.log(`${doc}: sin bloques json`); continue }
     bloques.forEach((bloque, n) => {
       let receta
