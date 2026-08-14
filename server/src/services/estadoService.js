@@ -19,19 +19,7 @@ export async function setCampo(hogarId, campo, valor) {
     INSERT INTO app_estado (hogar_id, ${col}, updated_at)
     VALUES (${hogarId}, ${JSON.stringify(valor)}, now())
     ON CONFLICT (hogar_id) DO UPDATE SET ${col} = EXCLUDED.${col}, updated_at = now()
-    RETURNING ${col}, updated_at AS "updatedAt"
+    RETURNING ${col}
   `
-  return row
+  return row?.[campo] ?? []
 }
-
-export const getPlan = (hogarId) => getCampo(hogarId, 'plan')
-export const setPlan = (hogarId, plan) => setCampo(hogarId, 'plan', plan)
-
-export const getDespensa = (hogarId) => getCampo(hogarId, 'despensa')
-export const setDespensa = (hogarId, despensa) => setCampo(hogarId, 'despensa', despensa)
-
-export const getPendientes = (hogarId) => getCampo(hogarId, 'pendientes')
-export const setPendientes = (hogarId, pendientes) => setCampo(hogarId, 'pendientes', pendientes)
-
-export const getExtras = (hogarId) => getCampo(hogarId, 'extras')
-export const setExtras = (hogarId, extras) => setCampo(hogarId, 'extras', extras)
