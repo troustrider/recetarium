@@ -8,8 +8,11 @@ import { prefetchDetalleReceta } from '../../utils/prefetch'
 const HOVER_CAPAZ =
   typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? false : false
 
+// En claro la tarjeta blanca cae sobre un fondo stone-50 casi idéntico: sin
+// borde propio se deshilacha contra la página. El modo oscuro ya se recortaba
+// con su borde gray-800, así que aquí se le da el equivalente claro.
 const CLASES_TARJETA =
-  'bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:border dark:border-gray-800 transition-shadow duration-300'
+  'bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm shadow-black/5 hover:shadow-xl dark:shadow-none transition-shadow duration-300'
 
 // El vuelco va en CSS y no en muelles de framer: el catálogo llega a tener
 // cientos de tarjetas montadas a la vez y un motion.div con dos muelles y su
@@ -147,7 +150,7 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
           <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug line-clamp-2 min-h-[2.75rem] group-hover:text-orange-700 dark:group-hover:text-orange-400 transition-colors">
             {nombre}
           </h3>
-          <div className="mt-3 flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
+          <div className="mt-3 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
               {tiempoPreparacion} min
@@ -156,19 +159,19 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
               <span className="text-orange-600 dark:text-orange-400 font-semibold">· {proteinas}g prot</span>
             )}
             {calorias != null && (
-              <span className="text-gray-400 dark:text-gray-500">· {calorias} kcal</span>
+              <span className="text-gray-500 dark:text-gray-500">· {calorias} kcal</span>
             )}
           </div>
 
           {onToggleLista && (
-            <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
-              <span className="text-xs text-gray-400 dark:text-gray-500">Ver receta</span>
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <span className="text-xs text-gray-500 dark:text-gray-500">Ver receta</span>
               <motion.button
                 onClick={(e) => { e.stopPropagation(); onToggleLista(receta) }}
                 className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${
                   enLista
                     ? 'bg-orange-700 dark:bg-orange-600 text-white'
-                    : 'text-orange-700 dark:text-orange-400 border border-gray-200 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-600'
+                    : 'text-orange-700 dark:text-orange-400 border border-gray-300 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-600'
                 }`}
                 whileTap={{ scale: 0.93 }}
               >
