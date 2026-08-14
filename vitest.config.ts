@@ -11,6 +11,10 @@ export default defineConfig({
           name: 'web',
           environment: 'jsdom',
           globals: true,
+          // src/auth.ts lanza al cargarse si falta esta variable, asi que
+          // cualquier test que importe la capa de api de verdad se cae sin
+          // ella. En CI no hay .env; el valor es de mentira a proposito.
+          env: { VITE_NEON_AUTH_URL: 'https://auth.invalido.test/neondb/auth' },
           // Los tests del catalogo montan cientos de recetas y saltan por el
           // indice cargando tandas: con los 5 s por defecto se caian en CI, que
           // corre mas lento que una maquina de desarrollo.
