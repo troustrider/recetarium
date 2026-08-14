@@ -113,26 +113,47 @@ export function useEstadoCompartido<T, DTO>({
     setEstado(siguiente)
   }, [])
 
+  const temporizadorRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const cancelarEspera = () => {
+    if (temporizadorRef.current == null) return
+    clearTimeout(temporizadorRef.current)
+    temporizadorRef.current = null
+  }
+
+  // Los 800 ms de espera se pierden si el móvil cierra la app antes de que salten.
+  // Al ocultarse la pestaña se manda ya lo que quede pendiente.
+  const guardarYa = useCallback(() => {
+    cancelarEspera()
+    if (pendienteDeGuardar()) void enviar()
+  }, [enviar])
+
   useEffect(() => {
     if (!listo) return
     const alVolver = () => { if (!document.hidden) void revalidar() }
-    document.addEventListener('visibilitychange', alVolver)
+    const alCambiarVisibilidad = () => (document.hidden ? guardarYa() : void revalidar())
+    document.addEventListener('visibilitychange', alCambiarVisibilidad)
+    window.addEventListener('pagehide', guardarYa)
     window.addEventListener('focus', alVolver)
     const t = setInterval(alVolver, INTERVALO_REVALIDACION)
     return () => {
-      document.removeEventListener('visibilitychange', alVolver)
+      document.removeEventListener('visibilitychange', alCambiarVisibilidad)
+      window.removeEventListener('pagehide', guardarYa)
       window.removeEventListener('focus', alVolver)
       clearInterval(t)
     }
-  }, [listo, revalidar])
+  }, [listo, revalidar, guardarYa])
 
   useEffect(() => {
     estadoRef.current = estado
     fns.current.alCambiar?.(estado)
     if (!hidratadoRef.current) return
     if (saltarGuardadoRef.current) { saltarGuardadoRef.current = false; return }
-    const t = setTimeout(() => { void enviar() }, retardo)
-    return () => clearTimeout(t)
+    temporizadorRef.current = setTimeout(() => {
+      temporizadorRef.current = null
+      void enviar()
+    }, retardo)
+    return cancelarEspera
   }, [estado, retardo, enviar])
 
   const cambiar = useCallback<Dispatch<SetStateAction<T>>>((accion) => {
