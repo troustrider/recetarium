@@ -173,11 +173,18 @@ describe('contrato de campos al editar', () => {
     expect(editada.porciones).toBe(3)
   })
 
-  it('los macros sí se vacían al editar sin enviarlos', async () => {
-    const creada = await crear({ nombre: 'Vacia macros', calorias: 500, proteinas: 30 })
+  it('los macros también se conservan al editar sin enviarlos', async () => {
+    const creada = await crear({ nombre: 'Conserva macros', calorias: 500, proteinas: 30 })
     expect(creada.calorias).toBe(500)
-    const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Vacia macros' }))).json()
-    expect(editada.calorias).toBeNull()
-    expect(editada.proteinas).toBeNull()
+    const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Conserva macros' }))).json()
+    expect(editada.calorias).toBe(500)
+    expect(editada.proteinas).toBe(30)
+  })
+
+  it('los macros que sí se envían pisan a los guardados', async () => {
+    const creada = await crear({ nombre: 'Pisa macros', calorias: 500, proteinas: 30 })
+    const editada = await (await http.put(`/recetas/${creada.id}`, recetaValida({ nombre: 'Pisa macros', calorias: 700 }))).json()
+    expect(editada.calorias).toBe(700)
+    expect(editada.proteinas).toBe(30)
   })
 })

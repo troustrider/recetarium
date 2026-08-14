@@ -12,9 +12,21 @@ const CAMPOS = sql.unsafe(`
   r.hogar_id IS NOT NULL AS privada
 `)
 
+const CAMPOS_LISTA = sql.unsafe(`
+  r.id, r.nombre, r.categoria, c.name AS sabor,
+  r.tiempo_preparacion AS "tiempoPreparacion",
+  r.imagen, r.ingredientes,
+  r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
+  r.calorias, r.proteinas::float AS proteinas,
+  r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
+  r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros,
+  r.guarnicion - 'pasos' AS guarnicion,
+  r.hogar_id IS NOT NULL AS privada
+`)
+
 export async function getAll(hogarId, { categoria, sabor } = {}) {
   return sql`
-    SELECT ${CAMPOS},
+    SELECT ${CAMPOS_LISTA},
            EXISTS (SELECT 1 FROM favoritas f WHERE f.receta_id = r.id AND f.hogar_id = ${hogarId}) AS favorita
     FROM recetas r INNER JOIN categories c ON r.category_id = c.id
     WHERE r.borrada_en IS NULL
@@ -68,7 +80,7 @@ async function getCategoryId(sabor) {
   return cat.id
 }
 
-export async function create(hogarId, duenoId, data) {
+export async function create(hogarId, hogarDueno, data) {
   const { nombre, sabor, categoria, tiempoPreparacion, imagen, ingredientes, pasos, consejos, precioPorPorcion, porciones, calorias, proteinas, carbohidratos, grasas, tipo } = data
   const categoryId = await getCategoryId(sabor)
   const ficha = fichaNutricional({ ingredientes, porciones: porciones ?? 1 })
@@ -82,7 +94,7 @@ export async function create(hogarId, duenoId, data) {
       ${calorias ?? null}, ${proteinas ?? null}, ${carbohidratos ?? null}, ${grasas ?? null}, ${tipo ?? 'principal'},
       ${ficha.hierro}, ${ficha.sinGluten}, ${JSON.stringify(ficha.micros)},
       ${guarnicion ? JSON.stringify(guarnicion) : null},
-      ${duenoId}
+      ${hogarDueno}
     )
     RETURNING id
   `
@@ -107,10 +119,10 @@ export async function update(hogarId, id, data) {
       category_id = ${categoryId},
       precio_por_porcion = COALESCE(${precioPorPorcion ?? null}, precio_por_porcion),
       porciones = COALESCE(${porciones ?? null}, porciones),
-      calorias = ${calorias ?? null},
-      proteinas = ${proteinas ?? null},
-      carbohidratos = ${carbohidratos ?? null},
-      grasas = ${grasas ?? null},
+      calorias = COALESCE(${calorias ?? null}, calorias),
+      proteinas = COALESCE(${proteinas ?? null}, proteinas),
+      carbohidratos = COALESCE(${carbohidratos ?? null}, carbohidratos),
+      grasas = COALESCE(${grasas ?? null}, grasas),
       tipo = COALESCE(${tipo ?? null}, tipo),
       hierro = ${ficha.hierro},
       sin_gluten = ${ficha.sinGluten},
