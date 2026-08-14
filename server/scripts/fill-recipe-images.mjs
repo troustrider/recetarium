@@ -30,10 +30,10 @@ const slug = (url) => url.match(/photo-[a-z0-9-]+/i)?.[0] ?? null
 const clave = (s) => deaccent(s).replace(/[^a-z0-9]+/g, ' ').trim()
 
 const REVISION_VISUAL = {
-  'Arroz con leche': ['rice pudding bowl cinnamon', ['rice pudding', 'pudding', 'dessert']],
+  'Arroz con leche': ['creamy rice pudding bowl cinnamon stick', ['rice pudding', 'pudding', 'porridge']],
   'Bacalao gratinado con patata y brocoli': ['baked cod with potato gratin dish', ['cod', 'fish', 'gratin']],
-  'Baleadas de huevo, frijoles y queso': ['folded flour tortilla beans cheese', ['tortilla', 'beans']],
-  'Budin de pan': ['bread pudding slice on a plate', ['bread pudding', 'pudding']],
+  'Baleadas de huevo, frijoles y queso': ['bean and cheese filled tortilla folded plate', ['beans', 'cheese']],
+  'Budin de pan': ['baked bread pudding custard dish', ['pudding', 'custard']],
   'Caldo verde con chorizo': ['green kale soup with sausage bowl', ['soup', 'kale']],
   'Chorba argelina de trigo y garbanzos': ['chickpea vegetable soup bowl', ['soup']],
   'Crema catalana': ['creme brulee caramelized sugar ramekin', ['custard', 'creme brulee', 'dessert']],
@@ -41,15 +41,15 @@ const REVISION_VISUAL = {
   'Ensalada de garbanzos y atun': ['chickpea salad bowl tomato tuna', ['salad']],
   'Gallo pinto con huevo': ['rice and beans plate with fried egg', ['rice', 'beans']],
   'Gamja jorim': ['braised potatoes soy glaze bowl', ['potatoes', 'braised']],
-  'Garbanzos salteados con espinacas y huevo': ['cooked chickpeas with spinach in a pan', ['chickpeas', 'spinach']],
+  'Garbanzos salteados con espinacas y huevo': ['chickpeas and spinach cooked dish plate', ['chickpeas', 'spinach']],
   'Gofres proteicos de avena y platano': ['waffles on a plate with banana', ['waffle', 'waffles']],
   'Gratinado de udon con atun y mayo-miso': ['baked noodle casserole melted cheese', ['casserole', 'baked', 'noodles']],
   'Goi cuon de cerdo': ['vietnamese fresh spring rolls rice paper', ['spring roll', 'spring rolls', 'rolls']],
   'Huevos a la flamenca': ['baked eggs in tomato sauce pan vegetables', ['egg', 'eggs']],
   'Huevos benedictinos': ['eggs benedict hollandaise muffin plate', ['benedict', 'poached', 'hollandaise']],
   'Jianbing': ['chinese egg crepe wrap folded', ['crepe', 'pancake', 'wrap']],
-  'Kasha de trigo sarraceno con huevo y setas': ['buckwheat porridge bowl mushrooms', ['buckwheat', 'porridge', 'kasha']],
-  'Larb de pollo': ['thai minced chicken salad herbs lettuce', ['salad', 'minced', 'larb']],
+  'Kasha de trigo sarraceno con huevo y setas': ['savoury porridge bowl with mushrooms and egg', ['porridge', 'mushrooms', 'buckwheat']],
+  'Larb de pollo': ['minced chicken salad with herbs in a bowl', ['salad']],
   'Lasana bolonesa': ['lasagna slice baked layers plate', ['lasagna', 'lasagne']],
   'Leche asada': ['baked milk custard caramel dessert', ['custard', 'flan', 'dessert']],
   'Lentejas de bote con verduras y huevo': ['cooked lentil stew bowl carrots', ['stew', 'soup', 'cooked']],
@@ -57,24 +57,24 @@ const REVISION_VISUAL = {
   'Mangu con los tres golpes': ['mashed plantain plate fried egg cheese', ['plantain', 'mash']],
   'Manzanas asadas con nueces y miel': ['baked apples dessert plate cinnamon', ['baked', 'dessert']],
   'Molletes de frijoles y queso': ['open bread with beans and melted cheese', ['bread', 'toast', 'cheese']],
-  'Papa a la huancaina': ['boiled potato slices yellow sauce plate', ['potato', 'potatoes', 'sauce']],
-  'Papas arrugadas con mojo picon': ['small salted potatoes with red sauce plate', ['potatoes']],
+  'Papa a la huancaina': ['boiled potato slices with creamy yellow sauce', ['potato', 'potatoes']],
+  'Papas arrugadas con mojo picon': ['papas arrugadas with mojo sauce canary islands', ['mojo', 'arrugadas']],
   'Pastel de choclo': ['corn casserole baked in a dish', ['corn', 'casserole', 'pie']],
-  'Peras al vino tinto': ['poached pears in red wine dessert plate', ['pears', 'poached', 'dessert']],
+  'Peras al vino tinto': ['pears poached in red wine served on a plate', ['poached', 'wine']],
   'Pisto con huevos y pavo': ['stewed peppers tomato vegetables with egg pan', ['egg', 'vegetables', 'stew']],
   'Pollo al ajillo con arroz': ['garlic chicken pieces on a plate with rice', ['chicken']],
   'Pollo al ketjap con brocoli': ['chicken in soy sauce with broccoli plate', ['chicken']],
   'Pao de queijo': ['brazilian cheese bread balls on a plate', ['bread', 'buns', 'cheese']],
   'Rosti con Speck, queso y huevo frito': ['potato rosti with fried egg plate', ['rosti', 'potato']],
   'Salmon glaseado con miel y soja': ['cooked glazed salmon fillet on a plate', ['salmon']],
-  'Sloppy joes con pan': ['sloppy joe sandwich minced meat bun', ['sandwich', 'burger', 'bun']],
+  'Sloppy joes con pan': ['messy minced meat sandwich in a bun plate', ['sandwich', 'burger', 'bun']],
   'Solomillo de cerdo con champinones y arroz': ['pork tenderloin mushroom sauce plate', ['pork']],
   'Sopa de pollo con verduras y fideos': ['chicken noodle soup bowl vegetables', ['soup']],
-  'Thit kho trung': ['braised pork belly with eggs clay pot', ['pork', 'egg', 'eggs']],
+  'Thit kho trung': ['vietnamese braised pork with rice and egg', ['pork', 'rice']],
   'Tinga de pollo con arroz': ['shredded chicken tomato sauce with rice plate', ['chicken']],
   'Tofu agridulce con pimiento': ['tofu cubes in sweet and sour sauce peppers', ['tofu']],
-  'Tteokgalbi': ['korean beef patty grilled on a plate', ['patty', 'beef']],
-  'Verduras asadas con garbanzos y feta': ['oven roasted vegetables on a tray', ['roasted']],
+  'Tteokgalbi': ['grilled meat patties on a plate korean', ['patty', 'patties', 'grilled']],
+  'Verduras asadas con garbanzos y feta': ['tray of roasted vegetables from the oven', ['vegetables']],
   'Zabaione con fresas': ['zabaglione custard cream glass strawberries', ['custard', 'cream', 'dessert']],
 }
 
@@ -427,12 +427,20 @@ const RECHAZO = new RegExp(`\\b(${[
   'price', 'harvest', 'harvested', 'crop', 'field', 'farm', 'seeds', 'unpeeled',
 ].join('|')})\\b`)
 
+const SERVIDO = new RegExp(`\\b(${[
+  'plate', 'plated', 'bowl', 'dish', 'served', 'serving', 'meal', 'dinner', 'lunch',
+  'breakfast', 'table', 'garnish', 'garnished', 'sauce', 'cooked', 'baked', 'roasted',
+  'fried', 'stew', 'soup', 'salad', 'sandwich', 'dessert', 'pan', 'skillet', 'pot',
+  'recipe', 'homemade', 'delicious', 'tasty', 'food',
+].join('|')})\\b`)
+
 function pick(cands, { require, terms }, used) {
   let best = null, bestScore = 0
   for (const p of cands) {
     if (used.has(p.id) || used.has(slug(p.raw))) continue
     const m = meta(p)
     if (RECHAZO.test(m)) continue
+    if (!SERVIDO.test(m)) continue
     if (!require.some((r) => m.includes(r))) continue
     const score = terms.filter((k) => m.includes(k)).length
       + (p.width >= p.height ? 0.5 : 0)
