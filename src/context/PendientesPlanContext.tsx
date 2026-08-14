@@ -1,11 +1,11 @@
-import { createContext, useContext, useCallback, useMemo, type ReactNode } from 'react'
-import type { Receta } from '../types/receta'
+import { createContext, useContext, useCallback, useMemo, useRef, type ReactNode } from 'react'
+import type { RecetaListada } from '../types/receta'
 import { useRecetasContext } from './RecetasContext'
 import { getPendientes, savePendientes, type PendientePlanDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 
 export interface PendientePlan {
-  receta: Receta
+  receta: RecetaListada
   raciones: number
 }
 
@@ -21,15 +21,23 @@ const PendientesPlanContext = createContext<PendientesPlanCtx | null>(null)
 export function PendientesPlanProvider({ children }: { children: ReactNode }) {
   const { recetas, loading } = useRecetasContext()
 
+  // Igual que en el plan: una receta borrada que siga en la papelera no debe
+  // desaparecer de los pendientes por reescribir la lista.
+  const huerfanasRef = useRef<PendientePlanDTO[]>([])
+
   const [pendientes, setPendientes] = useEstadoCompartido<PendientePlan[], PendientePlanDTO[]>({
     nombre: 'las recetas compradas',
     inicial: [],
     listo: !loading && recetas.length > 0,
     cargar: getPendientes,
     guardar: savePendientes,
-    serializar: (lista) => lista.map(({ receta, raciones }) => ({ recetaId: receta.id, raciones })),
+    serializar: (lista) => [
+      ...lista.map(({ receta, raciones }) => ({ recetaId: receta.id, raciones })),
+      ...huerfanasRef.current,
+    ],
     hidratar: (dtos) => {
       const byId = new Map(recetas.map((r) => [r.id, r]))
+      huerfanasRef.current = dtos.filter((d) => !byId.has(d.recetaId))
       return dtos.flatMap(({ recetaId, raciones }) => {
         const receta = byId.get(recetaId)
         return receta ? [{ receta, raciones }] : []
