@@ -103,6 +103,11 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
         </motion.button>
       </div>
 
+      {/* Las cartas de los extremos se salen de pantalla a propósito, pero sin
+          recortarlas la página entera se volvía arrastrable de lado. El recorte
+          llega hasta el borde de la pantalla —los márgenes negativos se comen el
+          padding de main— y es solo horizontal, para no cortar ni la carta
+          levantada ni su sombra. */}
       <div
         ref={ref}
         role="listbox"
@@ -117,7 +122,8 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
           if (e.key === 'ArrowLeft') { mover(-1); e.preventDefault() }
           if (e.key === 'Enter') onOpen(recetas[active].id)
         }}
-        className="relative h-[316px] select-none outline-none touch-pan-y"
+        className="relative h-[316px] select-none outline-none touch-pan-y
+                   -mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-clip"
         style={{ perspective: 1300 }}
       >
         {recetas.map((receta, i) => {
