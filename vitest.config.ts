@@ -11,6 +11,10 @@ export default defineConfig({
           name: 'web',
           environment: 'jsdom',
           globals: true,
+          // Los tests del catalogo montan cientos de recetas y saltan por el
+          // indice cargando tandas: con los 5 s por defecto se caian en CI, que
+          // corre mas lento que una maquina de desarrollo.
+          testTimeout: 15000,
           setupFiles: ['./src/tests/setup.ts'],
           include: ['src/**/*.test.{ts,tsx}'],
           exclude: ['**/node_modules/**', '.claude/**', 'dist/**'],
