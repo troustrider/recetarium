@@ -73,6 +73,13 @@ export function precioDe(item: ItemPrecio): number | null {
   return cantidadBase == null ? null : redondearCentimos(cantidadBase * eurosPorBase)
 }
 
+function enGramos(cantidad: number, unidad: string): number | null {
+  const directa = convertir(cantidad, unidad, 'g')
+  if (directa != null) return directa
+  const enBase = COCINA[normalizar(unidad)]?.g
+  return enBase == null ? null : cantidad * enBase
+}
+
 function enUnidadBase(
   cantidad: number,
   unidad: string,
@@ -86,9 +93,20 @@ function enUnidadBase(
     return cantidad * entrada.gramosPorUd
   }
 
-  if (dim === 'ud') return null
+  // La receta pide peso y la tabla cobra por pieza (una lechuga, un pimiento).
+  if (dim === 'ud') {
+    if (!entrada.gramosPorUd) return null
+    const gramos = enGramos(cantidad, unidad)
+    return gramos == null ? null : gramos / entrada.gramosPorUd
+  }
+
   const enBase = COCINA[normalizar(unidad)]?.[dim]
-  return enBase == null ? null : cantidad * enBase
+  if (enBase != null) return cantidad * enBase
+
+  // Último recurso: para cobrar, 1 g y 1 ml cuestan lo mismo. La nata agria se
+  // vende por litro y las recetas la piden en gramos. La despensa sí los
+  // distingue y ahí `convertir` sigue negándose a cruzarlos.
+  return convertir(cantidad, unidad, dim === 'g' ? 'ml' : 'g')
 }
 
 function redondearCentimos(n: number): number {
