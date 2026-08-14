@@ -20,7 +20,7 @@ import type { PendientePlan } from '../context/PendientesPlanContext'
 import { consumoAlCocinar, type ConsumoIngrediente } from '../utils/consumo'
 import { faltantes } from '../utils/despensa'
 import { formatCantidad } from '../utils/ingredientes'
-import type { Receta, Sabor } from '../types/receta'
+import type { RecetaListada, Sabor } from '../types/receta'
 
 const SABOR_STRIP: Record<Sabor, string> = {
   salado: 'bg-sky-500',
@@ -434,9 +434,9 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, on
 
 interface SelectorProps {
   dia: Dia
-  recetas: Receta[]
+  recetas: RecetaListada[]
   faltanPorReceta: Map<string, number> | null
-  onSeleccionar: (receta: Receta) => void
+  onSeleccionar: (receta: RecetaListada) => void
   onCerrar: () => void
 }
 

@@ -7,6 +7,8 @@ import { dirname, join } from 'node:path'
 const RUTA = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'data', 'precios.json')
 const UNIDADES = ['g', 'kg', 'ml', 'cl', 'l', 'ud']
 
+const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase().replace(/\s+/g, ' ')
+
 function leer() {
   return JSON.parse(readFileSync(RUTA, 'utf8'))
 }
@@ -44,11 +46,12 @@ if (!Number.isFinite(importe) || importe <= 0) salir(`precio inválido: ${euros}
 if (!UNIDADES.includes(unidad)) salir(`unidad inválida: ${unidad}. Usa una de: ${UNIDADES.join(', ')}`)
 
 const datos = leer()
-const entrada = datos.precios.find((p) => p.nombre === nombre)
+const entrada = datos.precios.find((p) => norm(p.nombre) === norm(nombre))
 
 if (!entrada && !nueva) {
+  const cabeza = norm(nombre).split(' ')[0]
   const parecidos = datos.precios
-    .filter((p) => p.nombre.includes(nombre.split(' ')[0]))
+    .filter((p) => norm(p.nombre).includes(cabeza))
     .map((p) => p.nombre)
     .slice(0, 5)
   salir(
@@ -67,7 +70,7 @@ if (entrada) {
   entrada.revisado = new Date().toISOString().slice(0, 7)
   if (formato) entrada.formato = formato
   guardar(datos)
-  console.log(`\n  ${nombre}: ${antes} → ${importe} €/${unidad} (${cadena})`)
+  console.log(`\n  ${entrada.nombre}: ${antes} → ${importe} €/${unidad} (${cadena})`)
   if (cambio > 0.5) console.log(`  ojo: cambia un ${(100 * cambio).toFixed(0)}%. Si es un dedazo, vuelve a lanzarlo.`)
   console.log()
 } else {

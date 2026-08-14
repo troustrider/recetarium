@@ -16,20 +16,11 @@ function validarPlan(plan) {
   return null
 }
 
-export async function getPlan(req, res) {
-  const plan = await estadoService.getPlan(hogarDe(req))
-  res.json(plan)
-}
-
-export async function putPlan(req, res) {
-  const error = validarPlan(req.body)
-  if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setPlan(hogarDe(req), req.body)
-  res.json(guardado)
-}
-
 const ESTADOS_DESPENSA = ['lleno', 'poco']
-const UNIDADES_DESPENSA = ['g', 'kg', 'ml', 'cl', 'l', 'ud']
+
+// Misma lista que UNIDADES_DESPENSA en src/utils/cantidades.ts. No se comparte
+// el fichero porque el deploy solo empaqueta server/src (ver vercel.json).
+const UNIDADES_DESPENSA = ['g', 'kg', 'ml', 'l', 'ud']
 
 function validarDespensa(despensa) {
   if (!Array.isArray(despensa)) return 'despensa debe ser un array'
@@ -50,18 +41,6 @@ function validarDespensa(despensa) {
   return null
 }
 
-export async function getDespensa(req, res) {
-  const despensa = await estadoService.getDespensa(hogarDe(req))
-  res.json(despensa)
-}
-
-export async function putDespensa(req, res) {
-  const error = validarDespensa(req.body)
-  if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setDespensa(hogarDe(req), req.body)
-  res.json(guardado)
-}
-
 function validarPendientes(pendientes) {
   if (!Array.isArray(pendientes)) return 'pendientes debe ser un array'
   for (let i = 0; i < pendientes.length; i++) {
@@ -71,18 +50,6 @@ function validarPendientes(pendientes) {
     if (typeof p.raciones !== 'number' || p.raciones < 1) return `pendientes[${i}].raciones debe ser >= 1`
   }
   return null
-}
-
-export async function getPendientes(req, res) {
-  const pendientes = await estadoService.getPendientes(hogarDe(req))
-  res.json(pendientes)
-}
-
-export async function putPendientes(req, res) {
-  const error = validarPendientes(req.body)
-  if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setPendientes(hogarDe(req), req.body)
-  res.json(guardado)
 }
 
 function validarExtras(extras) {
@@ -98,14 +65,31 @@ function validarExtras(extras) {
   return null
 }
 
-export async function getExtras(req, res) {
-  const extras = await estadoService.getExtras(hogarDe(req))
-  res.json(extras)
+const VALIDADORES = {
+  plan: validarPlan,
+  despensa: validarDespensa,
+  pendientes: validarPendientes,
+  extras: validarExtras,
 }
 
-export async function putExtras(req, res) {
-  const error = validarExtras(req.body)
-  if (error) return res.status(400).json({ error })
-  const guardado = await estadoService.setExtras(hogarDe(req), req.body)
-  res.json(guardado)
+function validadorDe(campo) {
+  const validar = VALIDADORES[campo]
+  if (!validar) throw new Error(`Campo de estado sin validador: ${campo}`)
+  return validar
+}
+
+export function leerCampo(campo) {
+  validadorDe(campo)
+  return async (req, res) => {
+    res.json(await estadoService.getCampo(hogarDe(req), campo))
+  }
+}
+
+export function guardarCampo(campo) {
+  const validar = validadorDe(campo)
+  return async (req, res) => {
+    const error = validar(req.body)
+    if (error) return res.status(400).json({ error })
+    res.json(await estadoService.setCampo(hogarDe(req), campo, req.body))
+  }
 }

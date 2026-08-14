@@ -23,8 +23,9 @@ export interface PendientePlanDTO {
   raciones: number
 }
 
+// keepalive para que el PUT sobreviva a que el móvil cierre la app justo después.
 const guardar = (ruta: string, datos: unknown) =>
-  apiJson<unknown>(ruta, { method: 'PUT', ...jsonBody(datos) }).then(() => undefined)
+  apiJson<unknown>(ruta, { method: 'PUT', keepalive: true, ...jsonBody(datos) }).then(() => undefined)
 
 export const getPlan = () => apiJson<EntradaPlanDTO[]>('/plan')
 export const savePlan = (plan: EntradaPlanDTO[]) => guardar('/plan', plan)

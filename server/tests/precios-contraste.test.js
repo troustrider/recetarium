@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import sql from '../src/lib/db.js'
 import { precioDe, buscarPrecio, PRECIOS } from '../../src/utils/precios.ts'
+import { mismoIngrediente } from '../../src/utils/despensa.ts'
 
 let recetas = []
 
@@ -46,12 +47,12 @@ describe('cobertura de la tabla de precios', () => {
   })
 
   it('no hay entradas duplicadas que se pisen entre sí', () => {
-    const vistos = new Set()
-    const duplicados = []
+    const porClave = new Map()
     for (const p of PRECIOS) {
-      if (vistos.has(p.nombre)) duplicados.push(p.nombre)
-      vistos.add(p.nombre)
+      const gemela = PRECIOS.find((otra) => mismoIngrediente(otra.nombre, p.nombre))
+      porClave.set(gemela.nombre, (porClave.get(gemela.nombre) ?? []).concat(p.nombre))
     }
+    const duplicados = [...porClave.values()].filter((nombres) => nombres.length > 1)
     expect(duplicados).toEqual([])
   })
 

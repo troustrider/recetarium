@@ -1,4 +1,4 @@
-import type { Receta } from '../types/receta'
+import type { RecetaListada } from '../types/receta'
 
 const OBJETIVO = {
   fibra: 7 * 12,
@@ -23,7 +23,7 @@ export interface Aporte extends Record<Clave, number> {
 
 const VACIO: Aporte = { fibra: 0, vitaminaC: 0, calcio: 0, folato: 0, hierro: 0, b12: 0, saturadas: 0, sal: 0 }
 
-export function aporteDe(receta: Receta): Aporte {
+export function aporteDe(receta: RecetaListada): Aporte {
   const partes = [
     { micros: receta.micros, hierro: receta.hierro },
     { micros: receta.guarnicion?.micros, hierro: receta.guarnicion?.hierro },
@@ -43,7 +43,7 @@ export function aporteDe(receta: Receta): Aporte {
   return total
 }
 
-function verduraDe(receta: Receta): string | null {
+function verduraDe(receta: RecetaListada): string | null {
   return receta.guarnicion?.ingredientes[0]?.nombre.toLowerCase() ?? null
 }
 
@@ -74,7 +74,7 @@ function ganancia(a: Aporte, acc: Acumulado): number {
   return g
 }
 
-function penalizacion(receta: Receta, a: Aporte, acc: Acumulado): number {
+function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado): number {
   let p = 0
   if (receta.categoria && acc.categorias.has(receta.categoria)) p += 0.35
   const verdura = verduraDe(receta)
@@ -86,7 +86,7 @@ function penalizacion(receta: Receta, a: Aporte, acc: Acumulado): number {
   return p
 }
 
-export function semanaEquilibrada(recetas: Receta[], n: number, semilla = Date.now()): Receta[] {
+export function semanaEquilibrada(recetas: RecetaListada[], n: number, semilla = Date.now()): RecetaListada[] {
   const aleatorio = prng(semilla)
   const disponibles = [...recetas]
   const acc: Acumulado = {
@@ -95,7 +95,7 @@ export function semanaEquilibrada(recetas: Receta[], n: number, semilla = Date.n
     verduras: new Set(),
     sabores: new Map(),
   }
-  const elegidas: Receta[] = []
+  const elegidas: RecetaListada[] = []
 
   while (elegidas.length < n && disponibles.length > 0) {
     let mejor = 0

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket, Plus, Heart } from 'lucide-react'
-import type { Receta } from '../../types/receta'
+import type { RecetaListada } from '../../types/receta'
 import { LUZ } from '../../utils/sabores'
 import { prefetchDetalleReceta } from '../../utils/prefetch'
 
@@ -20,7 +20,7 @@ function geometria(w: number): Geo {
 const NEUTRAL_BG = '#15181e'
 
 interface Props {
-  recetas: Receta[]
+  recetas: RecetaListada[]
   faltanPorReceta: Map<string, number> | null
   titulo: string
   onOpen: (id: string) => void

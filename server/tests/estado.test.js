@@ -59,7 +59,7 @@ describe('validación del plan', () => {
     ]
     const res = await http.put('/plan', plan)
     expect(res.status).toBe(200)
-    expect((await res.json()).plan).toEqual(plan)
+    expect(await res.json()).toEqual(plan)
     expect(await (await http.get('/plan')).json()).toEqual(plan)
   })
 

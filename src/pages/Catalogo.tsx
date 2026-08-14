@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import { useListaCompraContext, useDespensa } from '../context'
 import { faltantes } from '../utils/despensa'
 import { normalizar } from '../utils/ingredientes'
 import useFiltros, { type Orden } from '../hooks/useFiltros'
-import type { Receta } from '../types/receta'
+import type { RecetaListada } from '../types/receta'
 import RecetaCard from '../components/recetas/RecetaCard'
 import AbanicoRecetas from '../components/recetas/AbanicoRecetas'
 import IndiceAlfabetico from '../components/recetas/IndiceAlfabetico'
@@ -118,7 +118,7 @@ function Catalogo() {
     }
     if (!faltanPorReceta) return barajar(recetas).slice(0, 7)
 
-    const porNivel = new Map<number, Receta[]>()
+    const porNivel = new Map<number, RecetaListada[]>()
     for (const r of recetas) {
       const f = faltanPorReceta.get(r.id) ?? 99
       const grupo = porNivel.get(f)
@@ -216,7 +216,7 @@ function Catalogo() {
 
   type Elemento =
     | { tipo: 'letra'; letra: string }
-    | { tipo: 'receta'; receta: Receta; index: number }
+    | { tipo: 'receta'; receta: RecetaListada; index: number }
 
   const elementos = useMemo<Elemento[]>(() => {
     const tanda = resultados.slice(0, visibles)
@@ -379,36 +379,34 @@ function Catalogo() {
           ) : (
             <>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <AnimatePresence>
-                  {elementos.map((el) =>
-                    el.tipo === 'letra' ? (
-                      <div
-                        key={`letra-${el.letra}`}
-                        id={`letra-${el.letra}`}
-                        data-letra={el.letra}
-                        className="col-span-full sticky z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-1
-                                   top-[calc(env(safe-area-inset-top)+4rem)]
-                                   scroll-mt-[calc(env(safe-area-inset-top)+5rem)]
-                                   bg-stone-50/85 dark:bg-gray-950/85 backdrop-blur-sm"
-                      >
-                        <span className="font-display text-sm font-bold tracking-[0.2em] text-orange-600 dark:text-orange-400">
-                          {el.letra}
-                        </span>
-                      </div>
-                    ) : (
-                      <RecetaCard
-                        key={el.receta.id}
-                        receta={el.receta}
-                        index={el.index}
-                        onClick={abrirReceta}
-                        onToggleFavorita={toggleFavorita}
-                        faltan={faltanPorReceta?.get(el.receta.id)}
-                        onToggleLista={toggleReceta}
-                        enLista={estaSeleccionada(el.receta.id)}
-                      />
-                    )
-                  )}
-                </AnimatePresence>
+                {elementos.map((el) =>
+                  el.tipo === 'letra' ? (
+                    <div
+                      key={`letra-${el.letra}`}
+                      id={`letra-${el.letra}`}
+                      data-letra={el.letra}
+                      className="col-span-full sticky z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-1
+                                 top-[calc(env(safe-area-inset-top)+4rem)]
+                                 scroll-mt-[calc(env(safe-area-inset-top)+5rem)]
+                                 bg-stone-50/85 dark:bg-gray-950/85 backdrop-blur-sm"
+                    >
+                      <span className="font-display text-sm font-bold tracking-[0.2em] text-orange-600 dark:text-orange-400">
+                        {el.letra}
+                      </span>
+                    </div>
+                  ) : (
+                    <RecetaCard
+                      key={el.receta.id}
+                      receta={el.receta}
+                      index={el.index}
+                      onClick={abrirReceta}
+                      onToggleFavorita={toggleFavorita}
+                      faltan={faltanPorReceta?.get(el.receta.id)}
+                      onToggleLista={toggleReceta}
+                      enLista={estaSeleccionada(el.receta.id)}
+                    />
+                  )
+                )}
               </div>
               {secciones && (
                 <IndiceAlfabetico letras={letras} onSeleccionar={irALetra} />

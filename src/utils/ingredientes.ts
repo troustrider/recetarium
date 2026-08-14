@@ -1,8 +1,8 @@
-import type { Ingrediente, Receta } from '../types/receta'
+import type { Ingrediente, RecetaListada } from '../types/receta'
 import { ALIAS_NOMBRES } from './alias'
 
 export function ingredientesDe(
-  receta: Pick<Receta, 'ingredientes' | 'guarnicion'>,
+  receta: Pick<RecetaListada, 'ingredientes' | 'guarnicion'>,
   conGuarnicion?: boolean
 ): Ingrediente[] {
   if (!conGuarnicion || !receta.guarnicion) return receta.ingredientes

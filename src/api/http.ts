@@ -1,16 +1,42 @@
-import { cabeceraSesion, olvidarToken } from '../auth'
+import { cabeceraSesion, olvidarToken, renovarToken } from '../auth'
 
 export const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
-export async function apiFetch(ruta: string, options: RequestInit = {}): Promise<Response> {
-  const res = await fetch(`${BASE}${ruta}`, {
+// El service worker cachea las respuestas de /api por URL, sin la sesión en la
+// clave. Al soltar la sesión hay que tirar esa caché o el siguiente que entre en
+// este dispositivo puede leer la despensa y el plan del hogar anterior.
+export async function limpiarCacheApi(): Promise<void> {
+  if (!('caches' in window)) return
+  try {
+    const claves = await caches.keys()
+    await Promise.all(claves.filter((k) => k.startsWith('recetarium-api')).map((k) => caches.delete(k)))
+  } catch {
+    /* sin caché que limpiar */
+  }
+}
+
+async function pedir(ruta: string, options: RequestInit): Promise<Response> {
+  return fetch(`${BASE}${ruta}`, {
     ...options,
     headers: { ...options.headers, ...cabeceraSesion() },
   })
-  if (res.status === 401) {
-    olvidarToken()
-    window.location.reload()
+}
+
+export async function apiFetch(ruta: string, options: RequestInit = {}): Promise<Response> {
+  const res = await pedir(ruta, options)
+  if (res.status !== 401) return res
+
+  // Un 401 casi siempre es el JWT caducado, no una sesión perdida: se renueva y
+  // se repite la petición. Solo si no hay token nuevo se suelta la sesión.
+  const token = await renovarToken()
+  if (token) {
+    const reintento = await pedir(ruta, options)
+    if (reintento.status !== 401) return reintento
   }
+
+  olvidarToken()
+  await limpiarCacheApi()
+  window.location.reload()
   return res
 }
 

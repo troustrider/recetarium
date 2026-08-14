@@ -1,15 +1,15 @@
-import type { Receta } from '../types/receta'
+import type { Receta, RecetaListada } from '../types/receta'
 import { apiFetch, apiJson, jsonBody } from './http'
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 type Filtros = { categoria?: string; sabor?: string }
 
-export async function getRecetas(filtros?: Filtros): Promise<Receta[]> {
+export async function getRecetas(filtros?: Filtros): Promise<RecetaListada[]> {
   const params = new URLSearchParams()
   if (filtros?.categoria) params.set('categoria', filtros.categoria)
   if (filtros?.sabor) params.set('sabor', filtros.sabor)
   const query = params.toString() ? `?${params}` : ''
-  return apiJson<Receta[]>(`/recetas${query}`)
+  return apiJson<RecetaListada[]>(`/recetas${query}`)
 }
 
 export async function getReceta(id: string): Promise<Receta> {

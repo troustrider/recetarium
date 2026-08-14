@@ -13,9 +13,28 @@ const UNIDAD_NECESITA_FICHA = new Set(['ud', 'lata', 'paquete', 'loncha', 'rodaj
 
 const MICROS = ['fib', 'az', 'sat', 'sal', 'fe', 'vc', 'ca', 'b12', 'fol']
 
+const UNIDAD_CANON = {
+  gr: 'g', grs: 'g', gramo: 'g', gramos: 'g',
+  mililitro: 'ml', mililitros: 'ml',
+  cda: 'cucharada', cdas: 'cucharada', cucharadas: 'cucharada',
+  cdta: 'cucharadita', cdtas: 'cucharadita', cucharaditas: 'cucharadita',
+  dientes: 'diente', hojas: 'hoja', lonchas: 'loncha', rodajas: 'rodaja',
+  rebanadas: 'rebanada', unidad: 'ud', unidades: 'ud', uds: 'ud',
+  punado: 'puñado', punados: 'puñado', pizcas: 'pizca', gotas: 'gota',
+  tiras: 'tira', latas: 'lata', paquetes: 'paquete', vasos: 'vaso',
+}
+
+const ESCALA = { kg: 1000, l: 1000, cl: 10 }
+
+export function unidadCanon(unidad) {
+  const k = norm(unidad ?? '')
+  return UNIDAD_CANON[k] ?? k
+}
+
 function gramos(ing, ficha) {
-  const u = ing.unidad
+  const u = unidadCanon(ing.unidad)
   if (u === 'g' || u === 'ml') return ing.cantidad
+  if (ESCALA[u]) return ing.cantidad * ESCALA[u]
   if (ficha && typeof ficha[u] === 'number') return ing.cantidad * ficha[u]
   if (UNIDAD_NECESITA_FICHA.has(u)) return null
   const base = TABLA.unidades[u]
@@ -28,6 +47,7 @@ export function estimarMacros(r) {
   const fuentesGluten = []
   let p = 0, c = 0, g = 0, feHemo = 0
   const m = Object.fromEntries(MICROS.map((k) => [k, 0]))
+
   for (const ing of r.ingredientes ?? []) {
     const n = norm(ing.nombre)
     if (SIN_FICHA_OK.has(n)) continue

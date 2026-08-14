@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { consumoAlCocinar } from '../utils/consumo'
+import { repartirDespensa } from '../utils/despensa'
 import type { Receta } from '../types/receta'
 
 function receta(ingredientes: Receta['ingredientes'], porciones = 2): Receta {
@@ -100,6 +101,31 @@ describe('consumoAlCocinar', () => {
     expect(consumos).toHaveLength(1)
     expect(consumos[0].cantidad).toBe(0.7)
     expect(consumos[0].usadoPor).toEqual(['pechuga de pollo', 'muslo de pollo'])
+  })
+
+  it('gasta del mismo bote que la lista de la compra dio por cubierto', () => {
+    const plato = receta([ing('tomate', 300, 'g', 'verduras')])
+    const despensa = [
+      { nombre: 'tomate cherry', familia: 'verduras', estado: 'lleno', cantidad: 500, unidad: 'g' },
+      { nombre: 'tomate', familia: 'verduras', estado: 'lleno', cantidad: 1000, unidad: 'g' },
+    ]
+
+    const [reparto] = repartirDespensa([{ nombre: 'tomate', cantidad: 300, unidad: 'g' }], despensa)
+    expect(reparto.cobertura).toBe('cubierto')
+
+    const [c] = consumoAlCocinar([{ receta: plato, raciones: 2 }], despensa)
+    expect(c.nombre).toBe('tomate')
+    expect(c.cantidad).toBe(700)
+  })
+
+  it('prefiere el bote que no está a punto de agotarse', () => {
+    const plato = receta([ing('arroz', 300, 'g', 'cereales')])
+    const [c] = consumoAlCocinar([{ receta: plato, raciones: 2 }], [
+      { nombre: 'arroz basmati', familia: 'cereales', estado: 'lleno', cantidad: 0, unidad: 'g' },
+      { nombre: 'arroz', familia: 'cereales', estado: 'lleno', cantidad: 900, unidad: 'g' },
+    ])
+    expect(c.nombre).toBe('arroz')
+    expect(c.cantidad).toBe(600)
   })
 
   it('gastar más de lo que hay no deja stock negativo', () => {

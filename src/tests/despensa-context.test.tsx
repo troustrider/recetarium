@@ -305,3 +305,34 @@ describe('cache local y backend', () => {
     expect(result.current).not.toHaveProperty('error')
   })
 })
+
+describe('vaciada desde el otro dispositivo', () => {
+  it('la primera vez sube la despensa local que aún no estaba en el servidor', async () => {
+    localStorage.setItem('recetarium-despensa', JSON.stringify([{ nombre: 'pollo', familia: 'carnes', estado: 'lleno' }]))
+    api.getDespensa.mockResolvedValue([])
+
+    const { result } = await montar()
+
+    expect(result.current.despensa).toHaveLength(1)
+    await waitFor(() => expect(api.saveDespensa).toHaveBeenCalledWith([
+      { nombre: 'pollo', familia: 'carnes', estado: 'lleno' },
+    ]))
+  })
+
+  it('una vez sincronizada, el vacío del servidor manda y no resucita la caché', async () => {
+    localStorage.setItem('recetarium-despensa', JSON.stringify([{ nombre: 'pollo', familia: 'carnes', estado: 'lleno' }]))
+    localStorage.setItem('recetarium-despensa-sincronizada', '1')
+    api.getDespensa.mockResolvedValue([])
+
+    const { result } = await montar()
+
+    expect(result.current.despensa).toEqual([])
+    expect(api.saveDespensa).not.toHaveBeenCalled()
+  })
+
+  it('recibir despensa del servidor deja el dispositivo marcado como sincronizado', async () => {
+    api.getDespensa.mockResolvedValue([{ nombre: 'arroz', familia: 'cereales', estado: 'lleno' }])
+    await montar()
+    expect(localStorage.getItem('recetarium-despensa-sincronizada')).toBe('1')
+  })
+})

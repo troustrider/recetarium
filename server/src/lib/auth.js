@@ -8,16 +8,34 @@ function tokenDe(req) {
 }
 
 const URL_AUTH = process.env.NEON_AUTH_URL ?? process.env.VITE_NEON_AUTH_URL
+const BASE_AUTH = URL_AUTH?.replace(/\/$/, '')
+
+// El JWKS cuelga del path completo (.../neondb/auth/.well-known/jwks.json) pero
+// Neon Auth firma el token con el origen pelado en el iss. Comparar contra la URL
+// entera rechaza todos los tokens buenos.
+const origenDe = (url) => {
+  try {
+    return new URL(url).origin
+  } catch {
+    return url
+  }
+}
+
+const EMISOR = process.env.NEON_AUTH_ISSUER ?? (BASE_AUTH && origenDe(BASE_AUTH))
+const AUDIENCIA = process.env.NEON_AUTH_AUDIENCE
 let jwks = null
 
 function clavesJwt() {
   if (!URL_AUTH) throw new Error('Falta NEON_AUTH_URL o VITE_NEON_AUTH_URL')
-  jwks ??= createRemoteJWKSet(new URL(`${URL_AUTH.replace(/\/$/, '')}/.well-known/jwks.json`))
+  jwks ??= createRemoteJWKSet(new URL(`${BASE_AUTH}/.well-known/jwks.json`))
   return jwks
 }
 
 async function usuarioDeJwt(token) {
-  const { payload } = await jwtVerify(token, clavesJwt())
+  const { payload } = await jwtVerify(token, clavesJwt(), {
+    issuer: EMISOR,
+    ...(AUDIENCIA ? { audience: AUDIENCIA } : {}),
+  })
   const id = payload.sub
   if (!id) return null
   const [fila] = await sql`

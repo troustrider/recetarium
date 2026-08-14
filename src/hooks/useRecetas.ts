@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import type { Receta } from '../types/receta'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import type { Receta, RecetaListada } from '../types/receta'
 import {
   getRecetas,
   createReceta,
@@ -12,7 +12,7 @@ import {
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
 interface State {
-  recetas: Receta[]
+  recetas: RecetaListada[]
   loading: boolean
   error: string | null
 }
@@ -21,6 +21,13 @@ export interface UltimaEdicion {
   id: string
   anterior: RecetaFormData
 }
+
+const porNombre = (a: RecetaListada, b: RecetaListada) => a.nombre.localeCompare(b.nombre)
+
+// El catálogo viene ordenado del servidor y el índice alfabético cuenta con ello:
+// una receta nueva al final de la lista queda fuera de su letra hasta recargar.
+const insertarOrdenada = (recetas: RecetaListada[], nueva: RecetaListada) =>
+  [...recetas, nueva].sort(porNombre)
 
 function useRecetas() {
   const [state, setState] = useState<State>({ recetas: [], loading: true, error: null })
@@ -38,57 +45,50 @@ function useRecetas() {
 
   useEffect(() => { cargar() }, [cargar])
 
-  async function crear(data: RecetaFormData): Promise<Receta | null> {
+  const crear = useCallback(async (data: RecetaFormData): Promise<Receta | null> => {
     try {
       const nueva = await createReceta(data)
-      setState((prev) => ({ ...prev, recetas: [...prev.recetas, nueva] }))
+      setState((prev) => ({ ...prev, recetas: insertarOrdenada(prev.recetas, nueva) }))
       return nueva
     } catch {
       return null
     }
-  }
+  }, [])
 
-  async function actualizar(id: string, data: RecetaFormData, anterior?: RecetaFormData): Promise<boolean> {
-    const previa = anterior
-      ?? (() => {
-        const r = state.recetas.find((x) => x.id === id)
-        if (!r) return undefined
-        const { id: _id, favorita: _fav, ...resto } = r
-        return resto
-      })()
+  const actualizar = useCallback(async (id: string, data: RecetaFormData, anterior: RecetaFormData): Promise<boolean> => {
     try {
       const actualizada = await updateReceta(id, data)
       setState((prev) => ({
         ...prev,
-        recetas: prev.recetas.map((r) => (r.id === id ? actualizada : r)),
+        recetas: prev.recetas.map((r) => (r.id === id ? actualizada : r)).sort(porNombre),
       }))
-      if (previa) setUltimaEdicion({ id, anterior: previa })
+      setUltimaEdicion({ id, anterior })
       return true
     } catch {
       return false
     }
-  }
+  }, [])
 
-  async function deshacer(): Promise<boolean> {
+  const deshacer = useCallback(async (): Promise<boolean> => {
     if (!ultimaEdicion) return false
     try {
       const restaurada = await updateReceta(ultimaEdicion.id, ultimaEdicion.anterior)
       setState((prev) => ({
         ...prev,
-        recetas: prev.recetas.map((r) => (r.id === restaurada.id ? restaurada : r)),
+        recetas: prev.recetas.map((r) => (r.id === restaurada.id ? restaurada : r)).sort(porNombre),
       }))
       setUltimaEdicion(null)
       return true
     } catch {
       return false
     }
-  }
+  }, [ultimaEdicion])
 
-  function descartarDeshacer() {
+  const descartarDeshacer = useCallback(() => {
     setUltimaEdicion(null)
-  }
+  }, [])
 
-  async function eliminar(id: string): Promise<boolean> {
+  const eliminar = useCallback(async (id: string): Promise<boolean> => {
     try {
       await deleteReceta(id)
       setState((prev) => ({
@@ -99,21 +99,21 @@ function useRecetas() {
     } catch {
       return false
     }
-  }
+  }, [])
 
-  async function restaurar(id: string): Promise<boolean> {
+  const restaurar = useCallback(async (id: string): Promise<boolean> => {
     try {
       const receta = await restoreReceta(id)
       setState((prev) =>
         prev.recetas.some((r) => r.id === receta.id)
           ? prev
-          : { ...prev, recetas: [...prev.recetas, receta].sort((a, b) => a.nombre.localeCompare(b.nombre)) }
+          : { ...prev, recetas: insertarOrdenada(prev.recetas, receta) }
       )
       return true
     } catch {
       return false
     }
-  }
+  }, [])
 
   const alternarFavorita = useCallback(async (id: string): Promise<boolean> => {
     setState((prev) => ({
@@ -132,10 +132,16 @@ function useRecetas() {
     }
   }, [])
 
-  return {
-    ...state, cargar, crear, actualizar, eliminar, restaurar, toggleFavorita: alternarFavorita,
-    ultimaEdicion, deshacer, descartarDeshacer,
-  }
+  return useMemo(
+    () => ({
+      ...state, cargar, crear, actualizar, eliminar, restaurar, toggleFavorita: alternarFavorita,
+      ultimaEdicion, deshacer, descartarDeshacer,
+    }),
+    [
+      state, cargar, crear, actualizar, eliminar, restaurar, alternarFavorita,
+      ultimaEdicion, deshacer, descartarDeshacer,
+    ]
+  )
 }
 
 export default useRecetas

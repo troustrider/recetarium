@@ -208,3 +208,34 @@ describe('reintentar', () => {
     expect(leer().fallos).toEqual(['la despensa'])
   })
 })
+
+describe('guardado pendiente al salir de la app', () => {
+  it('manda lo pendiente sin esperar al retardo cuando se oculta la pestaña', async () => {
+    const { result } = await hidratado()
+    act(() => result.current[1](['tomate']))
+
+    Object.defineProperty(document, 'hidden', { value: true, configurable: true })
+    act(() => { document.dispatchEvent(new Event('visibilitychange')) })
+
+    await waitFor(() => expect(guardar).toHaveBeenCalledWith(['tomate']))
+    Object.defineProperty(document, 'hidden', { value: false, configurable: true })
+  })
+
+  it('no manda nada si no hay cambios pendientes', async () => {
+    await hidratado()
+
+    Object.defineProperty(document, 'hidden', { value: true, configurable: true })
+    act(() => { document.dispatchEvent(new Event('visibilitychange')) })
+
+    expect(guardar).not.toHaveBeenCalled()
+    Object.defineProperty(document, 'hidden', { value: false, configurable: true })
+  })
+
+  it('pagehide también fuerza el guardado', async () => {
+    const { result } = await hidratado()
+    act(() => result.current[1](['arroz']))
+    act(() => { window.dispatchEvent(new Event('pagehide')) })
+
+    await waitFor(() => expect(guardar).toHaveBeenCalledWith(['arroz']))
+  })
+})

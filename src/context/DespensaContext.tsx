@@ -47,6 +47,26 @@ interface DespensaCtx {
 const DespensaContext = createContext<DespensaCtx | null>(null)
 
 const STORAGE_KEY = 'recetarium-despensa'
+const CLAVE_SINCRONIZADA = 'recetarium-despensa-sincronizada'
+
+const yaSincronizada = () => localStorage.getItem(CLAVE_SINCRONIZADA) === '1'
+const marcarSincronizada = () => localStorage.setItem(CLAVE_SINCRONIZADA, '1')
+
+// Una despensa vacía en el servidor significa dos cosas distintas: que el otro
+// móvil la vació, o que este aún no ha subido nunca la suya. Sin la marca, la
+// caché local resucitaba lo borrado y además lo volvía a subir.
+function hidratarDespensa(
+  remota: IngredienteDespensaDTO[],
+  actual: IngredienteDespensa[]
+): IngredienteDespensa[] | null {
+  if (remota.length > 0) {
+    marcarSincronizada()
+    return remota as IngredienteDespensa[]
+  }
+  if (!yaSincronizada() && actual.length > 0) return null
+  marcarSincronizada()
+  return actual.length === 0 ? actual : []
+}
 
 function normalizar(s: string) {
   return s.trim().toLowerCase()
@@ -79,8 +99,7 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     cargar: getDespensa,
     guardar: saveDespensa,
     serializar: (d) => d,
-    hidratar: (remota, actual) =>
-      remota.length > 0 ? (remota as IngredienteDespensa[]) : actual.length > 0 ? null : actual,
+    hidratar: hidratarDespensa,
     alCambiar: (d) => localStorage.setItem(STORAGE_KEY, JSON.stringify(d)),
   })
 

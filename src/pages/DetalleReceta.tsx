@@ -64,7 +64,7 @@ function DetalleReceta() {
   const cached = useMemo(() => recetas.find((r) => r.id === id) ?? null, [recetas, id])
   const receta = fetched ?? cached
   const full = fetched ?? (cached && cached.ingredientes.length > 0 ? cached : null)
-  const detalleListo = !!fetched || (!!cached && cached.ingredientes.length > 0)
+  const detalleListo = !!full
 
   const ingredientesPorFamilia = useMemo(() => {
     if (!full) return []
@@ -109,7 +109,7 @@ function DetalleReceta() {
     toggleReceta(completa)
     if (!enLista) setRaciones(completa.id, comensales)
   }
-  const pasosEscalan = tieneCantidadesEscalables(full?.pasos ?? [])
+  const pasosEscalan = tieneCantidadesEscalables(fetched?.pasos ?? [])
 
   return (
     <div className="flex flex-col gap-8">
@@ -193,7 +193,7 @@ function DetalleReceta() {
         </motion.button>
       </div>
 
-      {detalleListo && full && full.pasos.length > 0 && (
+      {fetched && fetched.pasos.length > 0 && (
         <motion.button
           onClick={() => setCocinaOpen(true)}
           className="flex items-center justify-center gap-2.5 w-full py-3.5 text-sm font-bold text-white rounded-2xl bg-gradient-to-br from-orange-600 to-amber-500 shadow-sm shadow-orange-500/20"
@@ -323,9 +323,9 @@ function DetalleReceta() {
             ))}
           </ul>
 
-          {full.guarnicion.pasos.length > 0 && (
+          {fetched?.guarnicion && fetched.guarnicion.pasos.length > 0 && (
             <ol className="flex flex-col gap-2 mb-4">
-              {escalarPasos(full.guarnicion.pasos, multiplicador).map((paso, i) => (
+              {escalarPasos(fetched.guarnicion.pasos, multiplicador).map((paso, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
                   <span className="shrink-0 w-5 h-5 flex items-center justify-center bg-lime-600 text-white rounded-full text-[10px] font-bold">
                     {i + 1}
@@ -360,9 +360,9 @@ function DetalleReceta() {
             </span>
           </p>
         )}
-        {detalleListo ? (
+        {fetched ? (
           <ol className="flex flex-col gap-4">
-            {escalarPasos(full!.pasos, multiplicador).map((paso, i) => (
+            {escalarPasos(fetched.pasos, multiplicador).map((paso, i) => (
               <li key={i} className="flex items-start gap-4 text-sm">
                 <span className="shrink-0 w-7 h-7 flex items-center justify-center bg-gradient-to-br from-orange-700 to-amber-600 text-white rounded-full text-xs font-bold shadow-sm">
                   {i + 1}
@@ -376,11 +376,11 @@ function DetalleReceta() {
         )}
       </section>
 
-      {detalleListo && full && full.consejos && full.consejos.length > 0 && (
+      {fetched?.consejos && fetched.consejos.length > 0 && (
         <section>
           <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Consejos del chef</h2>
           <ul className="flex flex-col gap-3">
-            {full.consejos.map((consejo, i) => (
+            {fetched.consejos.map((consejo, i) => (
               <li
                 key={i}
                 className="flex items-start gap-3 text-sm bg-amber-50 dark:bg-amber-900/15 border border-amber-100 dark:border-amber-900/30 rounded-2xl px-4 py-3"
@@ -394,8 +394,8 @@ function DetalleReceta() {
       )}
 
       <AnimatePresence>
-        {cocinaOpen && full && (
-          <ModoCocina receta={full} multiplicador={multiplicador} onClose={() => setCocinaOpen(false)} />
+        {cocinaOpen && fetched && (
+          <ModoCocina receta={fetched} multiplicador={multiplicador} onClose={() => setCocinaOpen(false)} />
         )}
       </AnimatePresence>
     </div>
