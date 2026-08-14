@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
-import type { Receta, Ingrediente } from '../types/receta'
+import type { Receta, RecetaListada, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
 import { claveIngrediente, canonNombre, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
@@ -18,7 +18,7 @@ export interface IngredienteAgrupado extends Ingrediente {
 }
 
 export interface EntradaLista {
-  receta: Receta
+  receta: RecetaListada
   raciones: number
   conGuarnicion?: boolean
 }
@@ -48,7 +48,7 @@ function useListaCompra() {
 
   const { despensa } = useDespensa()
 
-  const toggleReceta = useCallback((receta: Receta) => {
+  const toggleReceta = useCallback((receta: RecetaListada) => {
     setSeleccionadas((prev) =>
       prev.some((e) => e.receta.id === receta.id)
         ? prev.filter((e) => e.receta.id !== receta.id)
@@ -80,7 +80,7 @@ function useListaCompra() {
     setDescartados(new Set())
   }, [setExtras])
 
-  const cargarAleatorias = useCallback((recetas: Receta[], n: number, raciones: number) => {
+  const cargarAleatorias = useCallback((recetas: RecetaListada[], n: number, raciones: number) => {
     setSeleccionadas((prev) => {
       const yaIds = new Set(prev.map((e) => e.receta.id))
       const candidatas = recetas.filter((r) => !yaIds.has(r.id))

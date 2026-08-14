@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import type { Receta, Sabor } from '../types/receta'
+import type { Receta, RecetaListada, Sabor } from '../types/receta'
 import { normalizar } from '../utils/ingredientes'
 import { despensaCubre } from '../utils/despensa'
 
@@ -15,14 +15,14 @@ export type Orden = 'nombre' | 'tiempo' | 'proteina' | 'precio' | 'hierro'
 
 const FILTROS_VACIOS: Filtros = { categoria: '', sabor: '', tiempoMax: '', ingrediente: '', sinGluten: false }
 
-function llevaIngrediente(receta: Receta, buscado: string): boolean {
+function llevaIngrediente(receta: Pick<Receta, 'ingredientes'>, buscado: string): boolean {
   const q = normalizar(buscado)
   return receta.ingredientes.some(
     (i) => normalizar(i.nombre).includes(q) || despensaCubre(buscado, i.nombre)
   )
 }
 
-function useFiltros(recetas: Receta[]) {
+function useFiltros<T extends RecetaListada>(recetas: T[]) {
   const [filtros, setFiltros] = useState<Filtros>(FILTROS_VACIOS)
   const [orden, setOrden] = useState<Orden>('nombre')
 
@@ -35,7 +35,7 @@ function useFiltros(recetas: Receta[]) {
       if (filtros.sinGluten && r.sinGluten !== true) return false
       return true
     })
-    const cmp: Record<Orden, (a: Receta, b: Receta) => number> = {
+    const cmp: Record<Orden, (a: T, b: T) => number> = {
       nombre: (a, b) => a.nombre.localeCompare(b.nombre),
       tiempo: (a, b) => a.tiempoPreparacion - b.tiempoPreparacion,
       proteina: (a, b) => (b.proteinas ?? -1) - (a.proteinas ?? -1),

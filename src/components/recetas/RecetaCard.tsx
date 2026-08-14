@@ -1,7 +1,7 @@
 import { memo, type ReactNode } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket } from 'lucide-react'
-import type { Receta } from '../../types/receta'
+import type { RecetaListada } from '../../types/receta'
 import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
 import { prefetchDetalleReceta } from '../../utils/prefetch'
 
@@ -36,11 +36,11 @@ function Tilt({ children }: { children: ReactNode }) {
 }
 
 interface Props {
-  receta: Receta
+  receta: RecetaListada
   onClick: (id: string) => void
   onToggleFavorita: (id: string) => void
   faltan?: number
-  onToggleLista?: (receta: Receta) => void
+  onToggleLista?: (receta: RecetaListada) => void
   enLista?: boolean
   index?: number
 }
@@ -58,7 +58,6 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
       onMouseEnter={prefetchDetalleReceta}
       initial={{ opacity: 0, y: reduce ? 0 : 16 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.25, ease: 'easeOut', delay: reduce ? 0 : Math.min(index, 8) * 0.04 }}
     >
       <Contenedor>

@@ -1,4 +1,4 @@
-import type { Receta } from '../types/receta'
+import type { RecetaListada } from '../types/receta'
 
 const HIERRO_ALTO = 4.5
 const HIERRO_MEDIO = 2.5
@@ -16,7 +16,7 @@ export interface SenalHierro {
   texto: string
 }
 
-export function senalHierro(receta: Receta): SenalHierro | null {
+export function senalHierro(receta: RecetaListada): SenalHierro | null {
   const { hierro, micros } = receta
   if (hierro == null || !micros) return null
 
@@ -36,6 +36,6 @@ export function senalHierro(receta: Receta): SenalHierro | null {
   return { hierro, nivel, hemo, potenciado, frenado, texto }
 }
 
-export function fuentesGluten(receta: Receta) {
+export function fuentesGluten(receta: RecetaListada) {
   return receta.micros?.gluten ?? null
 }

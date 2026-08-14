@@ -1,5 +1,5 @@
 import { Droplets, Wheat, WheatOff } from 'lucide-react'
-import type { Receta } from '../../types/receta'
+import type { RecetaListada } from '../../types/receta'
 import { senalHierro } from '../../utils/nutricion'
 
 const COLOR_NIVEL = {
@@ -16,7 +16,7 @@ function Tarjeta({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function FichaMicros({ receta }: { receta: Receta }) {
+export default function FichaMicros({ receta }: { receta: RecetaListada }) {
   const senal = senalHierro(receta)
   const micros = receta.micros
   if (!senal || !micros) return null

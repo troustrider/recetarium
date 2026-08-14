@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useRecetasContext } from '../context'
 import useFiltros from '../hooks/useFiltros'
 import FiltroBar from '../components/shared/FiltroBar'
@@ -69,18 +69,16 @@ function Favoritas() {
           {recetasFiltradas.length === 0 ? (
             <p className="text-sm text-gray-400 py-10 text-center">Sin resultados para estos filtros.</p>
           ) : (
-            <AnimatePresence>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {recetasFiltradas.map((receta) => (
-                  <RecetaCard
-                    key={receta.id}
-                    receta={receta}
-                    onClick={abrirReceta}
-                    onToggleFavorita={toggleFavorita}
-                  />
-                ))}
-              </div>
-            </AnimatePresence>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {recetasFiltradas.map((receta) => (
+                <RecetaCard
+                  key={receta.id}
+                  receta={receta}
+                  onClick={abrirReceta}
+                  onToggleFavorita={toggleFavorita}
+                />
+              ))}
+            </div>
           )}
         </>
       )}

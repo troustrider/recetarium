@@ -44,6 +44,10 @@ export interface Guarnicion {
   micros?: Micros
 }
 
+export type RecetaListada = Omit<Receta, 'pasos' | 'consejos' | 'guarnicion'> & {
+  guarnicion?: Omit<Guarnicion, 'pasos'> | null
+}
+
 export interface Receta {
   id: string
   nombre: string
