@@ -60,3 +60,35 @@ export function cabeceraSesion(): Record<string, string> {
   const token = tokenGuardado()
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
+
+// El JWT de Neon Auth dura 15 minutos. Sin esto, al caducar tocaba recargar la
+// página entera para pedir otro, y eso se lleva por delante los temporizadores
+// del modo cocina. Varias peticiones pueden caducar a la vez, así que comparten
+// una única renovación en vuelo.
+let renovacion: Promise<string | null> | null = null
+
+// token() es el método que Neon documenta para renovar; getSession() queda de
+// respaldo porque es el que ya usaba capturarToken y sabemos que devuelve JWT.
+async function pedirTokenNuevo(): Promise<string | null> {
+  const directo = await authClient
+    .token?.()
+    .then((r) => r?.data?.token ?? null)
+    .catch(() => null)
+  if (directo) return directo
+
+  return authClient
+    .getSession()
+    .then((r) => r.data?.session?.token ?? null)
+    .catch(() => null)
+}
+
+export function renovarToken(): Promise<string | null> {
+  renovacion ??= (async () => {
+    olvidarToken()
+    const token = await pedirTokenNuevo()
+    if (token) localStorage.setItem(CLAVE_TOKEN, token)
+    renovacion = null
+    return token
+  })()
+  return renovacion
+}

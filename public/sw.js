@@ -1,4 +1,4 @@
-const VERSION = 'v4'
+const VERSION = 'v5'
 const SHELL = `recetarium-shell-${VERSION}`
 const ASSETS = `recetarium-assets-${VERSION}`
 const API = `recetarium-api-${VERSION}`
@@ -69,6 +69,10 @@ self.addEventListener('fetch', (e) => {
     )
     return
   }
+
+  // /yo dice quién eres: si se cachea, al cambiar de cuenta en este dispositivo
+  // la app arranca creyéndose la sesión anterior.
+  if (url.pathname.startsWith('/api/v1/yo')) return
 
   if (url.pathname.startsWith('/api/')) {
     e.respondWith(redPrimero(request, API))

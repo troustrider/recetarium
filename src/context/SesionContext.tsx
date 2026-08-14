@@ -8,6 +8,7 @@ import {
   limpiarIntentoDeEntrada,
 } from '../auth'
 import { getYo, cerrarSesionServidor, type UsuarioDTO } from '../api/yo'
+import { limpiarCacheApi } from '../api/http'
 
 type Estado = 'comprobando' | 'dentro' | 'fuera'
 
@@ -65,6 +66,7 @@ export function SesionProvider({ children }: { children: ReactNode }) {
     setUsuario(null)
     setEstado('fuera')
     await revocada.catch(() => {})
+    await limpiarCacheApi()
     authClient.signOut().catch(() => {})
   }, [])
 
