@@ -1,11 +1,11 @@
 import { canonUnidad, ingredientesDe } from './ingredientes'
 import { convertir, redondear, unidadMedible } from './cantidades'
-import { despensaCubre } from './despensa'
+import { elegirDeDespensa, stockInicial } from './despensa'
 import { racionesBase } from '../hooks/useListaCompra'
-import type { Receta } from '../types/receta'
+import type { RecetaListada } from '../types/receta'
 
 export interface EntradaCocinada {
-  receta: Receta
+  receta: RecetaListada
   raciones: number
   conGuarnicion?: boolean
 }
@@ -13,6 +13,8 @@ export interface EntradaCocinada {
 interface ItemDespensa {
   nombre: string
   familia: string
+  estado?: string
+  caducidad?: string
   cantidad?: number
   unidad?: string
 }
@@ -30,9 +32,7 @@ export function consumoAlCocinar(
   entradas: EntradaCocinada[],
   despensa: ItemDespensa[]
 ): ConsumoIngrediente[] {
-  const restante = despensa.map((d) =>
-    typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
-  )
+  const restante = stockInicial(despensa)
   const tocados = new Map<number, { usadoPor: string[]; agotado: boolean }>()
 
   for (const { receta, raciones, conGuarnicion } of entradas) {
@@ -41,7 +41,11 @@ export function consumoAlCocinar(
       const unidad = canonUnidad(ing.nombre, ing.unidad)
       if (!unidadMedible(unidad)) continue
 
-      const idx = despensa.findIndex((d) => despensaCubre(d.nombre, ing.nombre))
+      const idx = elegirDeDespensa(despensa, restante, {
+        nombre: ing.nombre,
+        cantidad: ing.cantidad * factor,
+        unidad,
+      })
       if (idx === -1) continue
 
       const stock = restante[idx]

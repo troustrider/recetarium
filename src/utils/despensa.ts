@@ -119,7 +119,7 @@ export function estaEnDespensa(nombre: string, despensa: { nombre: string }[]): 
   return despensa.some((d) => mismoIngrediente(d.nombre, nombre))
 }
 
-export function faltantes(receta: Receta, despensa: { nombre: string }[]): string[] {
+export function faltantes(receta: Pick<Receta, 'ingredientes'>, despensa: { nombre: string }[]): string[] {
   return receta.ingredientes
     .filter((ing) => canonUnidad(ing.nombre, ing.unidad) !== 'al gusto')
     .filter((ing) => !despensa.some((d) => despensaCubre(d.nombre, ing.nombre)))
@@ -140,42 +140,57 @@ export interface Reparto {
   yaTengo: number // idem; 0 cuando no hay cantidad que descontar
 }
 
-interface ItemDespensa {
+export interface ItemDespensa {
   nombre: string
-  estado: string
+  estado?: string
   caducidad?: string
   cantidad?: number
   unidad?: string
 }
 
-export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]): Reparto[] {
-  const restante = despensa.map((d) =>
+export function stockInicial(despensa: ItemDespensa[]): (number | null)[] {
+  return despensa.map((d) =>
     typeof d.cantidad === 'number' && unidadMedible(d.unidad) ? d.cantidad : null
   )
+}
 
-  const agotado = (d: ItemDespensa, stock: number | null, item: ItemCompra) => {
-    if (stock == null) return false
-    const disponible = convertir(stock, d.unidad!, item.unidad)
-    return disponible != null && disponible <= 0
+const agotado = (d: ItemDespensa, stock: number | null, unidad: string) => {
+  if (stock == null) return false
+  const disponible = convertir(stock, d.unidad!, unidad)
+  return disponible != null && disponible <= 0
+}
+
+const puntuar = (d: ItemDespensa, stock: number | null, item: ItemCompra) =>
+  (agotado(d, stock, item.unidad) ? 0 : 16) +
+  (mismoIngrediente(d.nombre, item.nombre) ? 8 : 0) +
+  (d.estado !== 'poco' ? 2 : 0) +
+  (caducaPronto(d) ? 0 : 1)
+
+// La compra y el gasto al cocinar tienen que elegir el mismo bote: si cada uno
+// emparejaba por su cuenta, la lista daba por cubierto uno y la cocina vaciaba otro.
+export function elegirDeDespensa(
+  despensa: ItemDespensa[],
+  restante: (number | null)[],
+  item: ItemCompra
+): number {
+  let idx = -1
+  let mejor = -1
+  for (let i = 0; i < despensa.length; i++) {
+    if (!despensaCubre(despensa[i].nombre, item.nombre)) continue
+    const p = puntuar(despensa[i], restante[i], item)
+    if (p > mejor) {
+      mejor = p
+      idx = i
+    }
   }
+  return idx
+}
 
-  const puntuar = (d: ItemDespensa, stock: number | null, item: ItemCompra) =>
-    (agotado(d, stock, item) ? 0 : 16) +
-    (mismoIngrediente(d.nombre, item.nombre) ? 8 : 0) +
-    (d.estado !== 'poco' ? 2 : 0) +
-    (caducaPronto(d) ? 0 : 1)
+export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]): Reparto[] {
+  const restante = stockInicial(despensa)
 
   return items.map((item) => {
-    let idx = -1
-    let mejor = -1
-    for (let i = 0; i < despensa.length; i++) {
-      if (!despensaCubre(despensa[i].nombre, item.nombre)) continue
-      const p = puntuar(despensa[i], restante[i], item)
-      if (p > mejor) {
-        mejor = p
-        idx = i
-      }
-    }
+    const idx = elegirDeDespensa(despensa, restante, item)
     if (idx === -1) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
 
     const d = despensa[idx]
@@ -189,8 +204,10 @@ export function repartirDespensa(items: ItemCompra[], despensa: ItemDespensa[]):
     if (disponible <= 0) return { cobertura: 'no', aComprar: item.cantidad, yaTengo: 0 }
 
     if (disponible >= item.cantidad) {
-      if (caducaPronto(d)) return { cobertura: 'poco', aComprar: item.cantidad, yaTengo: 0 }
+      // Se reserva aunque caduque pronto: al cocinar se va a gastar igual, y si no
+      // lo descontáramos el mismo bote volvería a contar para el siguiente ingrediente.
       restante[idx] = redondear(stock! - convertir(item.cantidad, item.unidad, d.unidad!)!)
+      if (caducaPronto(d)) return { cobertura: 'poco', aComprar: item.cantidad, yaTengo: 0 }
       return { cobertura: 'cubierto', aComprar: 0, yaTengo: item.cantidad }
     }
 
