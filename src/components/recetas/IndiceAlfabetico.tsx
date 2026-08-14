@@ -1,36 +1,103 @@
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
   letras: string[]
-  activa: string | null
   onSeleccionar: (letra: string) => void
 }
 
-function IndiceAlfabetico({ letras, activa, onSeleccionar }: Props) {
+// Línea de referencia: una cabecera pasa a ser "la sección que se está viendo"
+// en cuanto sube por encima de ella. Va justo debajo de la barra superior.
+const LINEA = 140
+
+function IndiceAlfabetico({ letras, onSeleccionar }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const ultima = useRef<string | null>(null)
+  // Al arrastrar mandamos el dedo, no el clic: el navegador sintetiza un clic
+  // tras el toque y lo lanza sobre la letra que haya bajo el dedo ya con la
+  // página movida, que rara vez es la que se pulsó. Ese clic hay que comérselo.
+  const delPuntero = useRef(false)
+  const pendiente = useRef<number | null>(null)
+  const frame = useRef(0)
+
   const [arrastrando, setArrastrando] = useState(false)
   const [burbujaY, setBurbujaY] = useState(0)
+  const [enPantalla, setEnPantalla] = useState<string | null>(null)
+  const [bajoElDedo, setBajoElDedo] = useState<string | null>(null)
 
-  function recorrer(clientY: number) {
+  const activa = bajoElDedo ?? enPantalla
+
+  // Un salto por fotograma: si el dedo cruza cinco letras antes de que
+  // pintemos, solo vale la última. Sin esto cada letra pisada encola su propio
+  // salto y el arrastre se atasca.
+  const atender = useCallback(() => {
+    frame.current = 0
+    const y = pendiente.current
     const el = ref.current
-    if (!el) return
+    if (y == null || !el) return
     const r = el.getBoundingClientRect()
-    const i = Math.floor(((clientY - r.top) / r.height) * letras.length)
+    const i = Math.floor(((y - r.top) / r.height) * letras.length)
     const letra = letras[Math.max(0, Math.min(letras.length - 1, i))]
-    setBurbujaY(Math.max(r.top, Math.min(r.bottom, clientY)))
+    setBurbujaY(Math.max(r.top, Math.min(r.bottom, y)))
     if (!letra || letra === ultima.current) return
     ultima.current = letra
+    setBajoElDedo(letra)
     onSeleccionar(letra)
-  }
+  }, [letras, onSeleccionar])
+
+  const recorrer = useCallback(
+    (clientY: number) => {
+      pendiente.current = clientY
+      if (!frame.current) frame.current = requestAnimationFrame(atender)
+    },
+    [atender]
+  )
 
   function soltar(e: React.PointerEvent) {
     if (!arrastrando) return
     e.currentTarget.releasePointerCapture?.(e.pointerId)
+    // Un clic de ratón levanta el dedo dentro del mismo fotograma: hay que
+    // atender lo que quede pendiente, no tirarlo.
+    if (frame.current) {
+      cancelAnimationFrame(frame.current)
+      atender()
+    }
+    pendiente.current = null
     setArrastrando(false)
+    setBajoElDedo(null)
     ultima.current = null
   }
+
+  // La letra que se está viendo se calcula aquí y no en el catálogo: si viviera
+  // arriba, cada píxel de scroll repintaría la parrilla entera (~1,2 s con 430
+  // recetas montadas). Aquí solo se repintan las 26 letras.
+  useEffect(() => {
+    let pedido = false
+    const calcular = () => {
+      pedido = false
+      const cabeceras = document.querySelectorAll<HTMLElement>('[data-letra]')
+      let actual: string | null = cabeceras[0]?.dataset.letra ?? null
+      for (const h of cabeceras) {
+        if (h.getBoundingClientRect().top > LINEA) break
+        actual = h.dataset.letra ?? actual
+      }
+      setEnPantalla(actual)
+    }
+    const alScroll = () => {
+      if (pedido) return
+      pedido = true
+      requestAnimationFrame(calcular)
+    }
+    alScroll()
+    window.addEventListener('scroll', alScroll, { passive: true })
+    window.addEventListener('resize', alScroll)
+    return () => {
+      window.removeEventListener('scroll', alScroll)
+      window.removeEventListener('resize', alScroll)
+    }
+  }, [letras])
+
+  useEffect(() => () => { if (frame.current) cancelAnimationFrame(frame.current) }, [])
 
   return (
     <>
@@ -40,7 +107,12 @@ function IndiceAlfabetico({ letras, activa, onSeleccionar }: Props) {
         className="fixed right-0 z-20 w-7 flex flex-col items-stretch select-none touch-none
                    top-[calc(env(safe-area-inset-top)+5.5rem)] bottom-24 sm:bottom-10"
         onPointerDown={(e) => {
+          // Corta el clic de compatibilidad que el navegador dispara tras el
+          // toque: como la página ya se ha movido, ese clic cae donde haya
+          // quedado el dedo y llega a abrir la receta que pille debajo.
+          if (e.cancelable) e.preventDefault()
           e.currentTarget.setPointerCapture?.(e.pointerId)
+          delPuntero.current = true
           setArrastrando(true)
           ultima.current = null
           recorrer(e.clientY)
@@ -53,7 +125,13 @@ function IndiceAlfabetico({ letras, activa, onSeleccionar }: Props) {
           <button
             key={letra}
             tabIndex={-1}
-            onClick={() => onSeleccionar(letra)}
+            onClick={() => {
+              if (delPuntero.current) {
+                delPuntero.current = false
+                return
+              }
+              onSeleccionar(letra)
+            }}
             className={`flex-1 flex items-center justify-center text-[10px] font-bold leading-none tabular-nums transition-colors ${
               letra === activa
                 ? 'text-orange-600 dark:text-orange-400'

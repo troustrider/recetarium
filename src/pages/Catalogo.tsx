@@ -19,6 +19,25 @@ import ErrorMessage from '../components/shared/ErrorMessage'
 const POR_TANDA = 24
 const MAX_FALTAN = 3
 const MIN_PARA_INDICE = 30
+// Hueco que dejamos por encima de la primera tarjeta de la sección: la barra
+// superior más la cabecera de la letra pegada debajo.
+const TOPE_SECCION = 108
+
+// Dónde empieza un elemento dentro del documento. Ni getBoundingClientRect ni
+// scrollIntoView sirven para las cabeceras: son sticky y, en cuanto una se pega
+// arriba, el navegador la da por "ya visible" y se niega a saltar. Por eso el
+// salto se ancla en la primera tarjeta de la sección, que no se pega a nada.
+function alturaEnDocumento(el: HTMLElement): number {
+  let y = 0
+  for (let e: HTMLElement | null = el; e; e = e.offsetParent as HTMLElement | null) y += e.offsetTop
+  return y
+}
+
+function inicioDeSeccion(letra: string): number | null {
+  const primera = document.getElementById(`letra-${letra}`)?.nextElementSibling
+  if (!(primera instanceof HTMLElement)) return null
+  return Math.max(0, alturaEnDocumento(primera) - TOPE_SECCION)
+}
 
 function inicialDe(nombre: string): string {
   const c = normalizar(nombre).charAt(0).toUpperCase()
@@ -159,40 +178,41 @@ function Catalogo() {
     return m.size > 1 ? m : null
   }, [resultados, orden])
 
-  const [letraActiva, setLetraActiva] = useState<string | null>(null)
+  // Estable entre repintados: el índice se cuelga del scroll y no queremos que
+  // resuscriba en cada render.
+  const letras = useMemo(() => (secciones ? [...secciones.keys()] : []), [secciones])
+
+  const letraPedida = useRef<string | null>(null)
 
   const irALetra = useCallback(
     (letra: string) => {
       const i = secciones?.get(letra)
       if (i == null) return
-      flushSync(() => setVisibles((v) => (i < v ? v : Math.ceil((i + 1) / POR_TANDA) * POR_TANDA)))
-      document.getElementById(`letra-${letra}`)?.scrollIntoView({ block: 'start' })
+      // Una tanda de más por debajo del objetivo: si la lista se acaba justo
+      // ahí, al documento no le queda alto para subir la letra hasta arriba y
+      // el navegador deja el salto a medias, en la sección anterior.
+      const necesarias = Math.min(
+        resultados.length,
+        Math.ceil((i + 1) / POR_TANDA) * POR_TANDA + POR_TANDA
+      )
+      flushSync(() => setVisibles((v) => (v >= necesarias ? v : necesarias)))
+      const destino = inicioDeSeccion(letra)
+      if (destino == null) return
+      window.scrollTo(0, destino)
+      // Si el documento no daba de sí (últimas letras), al montar la siguiente
+      // tanda sí dará: se remata en el fotograma siguiente. Si mientras tanto
+      // se ha pedido otra letra —un arrastre—, este remate sobra.
+      if (Math.abs(window.scrollY - destino) < 2) return
+      letraPedida.current = letra
+      requestAnimationFrame(() => {
+        if (letraPedida.current !== letra) return
+        letraPedida.current = null
+        const y = inicioDeSeccion(letra)
+        if (y != null) window.scrollTo(0, y)
+      })
     },
-    [secciones]
+    [secciones, resultados.length]
   )
-
-  useEffect(() => {
-    if (!secciones) return
-    let pedido = false
-    const calcular = () => {
-      pedido = false
-      const cabeceras = document.querySelectorAll<HTMLElement>('[data-letra]')
-      let actual: string | null = cabeceras[0]?.dataset.letra ?? null
-      for (const h of cabeceras) {
-        if (h.getBoundingClientRect().top > 140) break
-        actual = h.dataset.letra ?? actual
-      }
-      setLetraActiva(actual)
-    }
-    const alScroll = () => {
-      if (pedido) return
-      pedido = true
-      requestAnimationFrame(calcular)
-    }
-    alScroll()
-    window.addEventListener('scroll', alScroll, { passive: true })
-    return () => window.removeEventListener('scroll', alScroll)
-  }, [secciones, visibles])
 
   type Elemento =
     | { tipo: 'letra'; letra: string }
@@ -391,11 +411,7 @@ function Catalogo() {
                 </AnimatePresence>
               </div>
               {secciones && (
-                <IndiceAlfabetico
-                  letras={[...secciones.keys()]}
-                  activa={letraActiva}
-                  onSeleccionar={irALetra}
-                />
+                <IndiceAlfabetico letras={letras} onSeleccionar={irALetra} />
               )}
               {visibles < resultados.length && (
                 <div ref={centinela} className="flex justify-center pt-2">

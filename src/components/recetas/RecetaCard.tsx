@@ -1,5 +1,5 @@
-import { memo, type ReactNode } from 'react'
-import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion'
+import { memo, useRef, type ReactNode } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket } from 'lucide-react'
 import type { Receta } from '../../types/receta'
 import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
@@ -11,27 +11,31 @@ const HOVER_CAPAZ =
 const CLASES_TARJETA =
   'bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none dark:border dark:border-gray-800 transition-shadow duration-300'
 
+// El vuelco va en CSS y no en muelles de framer: el catálogo llega a tener
+// cientos de tarjetas montadas a la vez y un motion.div con dos muelles y su
+// transform 3D en cada una multiplica por tres el coste de cada salto del
+// índice alfabético. Así solo paga transform la tarjeta que tienes debajo.
 function Tilt({ children }: { children: ReactNode }) {
-  const mvX = useMotionValue(0)
-  const mvY = useMotionValue(0)
-  const rotateX = useSpring(mvX, { stiffness: 250, damping: 22 })
-  const rotateY = useSpring(mvY, { stiffness: 250, damping: 22 })
+  const ref = useRef<HTMLDivElement>(null)
 
   function alMover(e: React.PointerEvent<HTMLElement>) {
+    const el = ref.current
+    if (!el) return
     const r = e.currentTarget.getBoundingClientRect()
-    mvX.set(-((e.clientY - r.top) / r.height - 0.5) * 6)
-    mvY.set(((e.clientX - r.left) / r.width - 0.5) * 6)
+    const x = -((e.clientY - r.top) / r.height - 0.5) * 6
+    const y = ((e.clientX - r.left) / r.width - 0.5) * 6
+    el.style.transform = `perspective(900px) rotateX(${x}deg) rotateY(${y}deg)`
   }
 
   return (
-    <motion.div
-      className={CLASES_TARJETA}
+    <div
+      ref={ref}
+      className={`${CLASES_TARJETA} transition-transform duration-200 ease-out`}
       onPointerMove={alMover}
-      onPointerLeave={() => { mvX.set(0); mvY.set(0) }}
-      style={{ rotateX, rotateY, transformPerspective: 900 }}
+      onPointerLeave={() => { if (ref.current) ref.current.style.transform = '' }}
     >
       {children}
-    </motion.div>
+    </div>
   )
 }
 
