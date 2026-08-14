@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import { useListaCompraContext, useDespensa } from '../context'
@@ -19,14 +19,10 @@ import ErrorMessage from '../components/shared/ErrorMessage'
 const POR_TANDA = 24
 const MAX_FALTAN = 3
 const MIN_PARA_INDICE = 30
-// Hueco que dejamos por encima de la primera tarjeta de la sección: la barra
-// superior más la cabecera de la letra pegada debajo.
-const TOPE_SECCION = 108
-
-// Dónde empieza un elemento dentro del documento. Ni getBoundingClientRect ni
-// scrollIntoView sirven para las cabeceras: son sticky y, en cuanto una se pega
-// arriba, el navegador la da por "ya visible" y se niega a saltar. Por eso el
-// salto se ancla en la primera tarjeta de la sección, que no se pega a nada.
+// Dónde empieza un elemento dentro del documento. El salto se ancla en el
+// bloque de la sección y no en su cabecera: la cabecera es sticky y, en cuanto
+// se pega arriba, tanto su rect como su offsetTop devuelven la posición pegada
+// —y scrollIntoView la da por "ya visible" y se niega a saltar—.
 function alturaEnDocumento(el: HTMLElement): number {
   let y = 0
   for (let e: HTMLElement | null = el; e; e = e.offsetParent as HTMLElement | null) y += e.offsetTop
@@ -34,9 +30,12 @@ function alturaEnDocumento(el: HTMLElement): number {
 }
 
 function inicioDeSeccion(letra: string): number | null {
-  const primera = document.getElementById(`letra-${letra}`)?.nextElementSibling
-  if (!(primera instanceof HTMLElement)) return null
-  return Math.max(0, alturaEnDocumento(primera) - TOPE_SECCION)
+  const seccion = document.getElementById(`seccion-${letra}`)
+  const cabecera = seccion?.firstElementChild
+  if (!seccion || !cabecera) return null
+  // El sitio exacto donde la cabecera se queda pegada, notch incluido.
+  const tope = parseFloat(getComputedStyle(cabecera).top) || 0
+  return Math.max(0, alturaEnDocumento(seccion) - tope)
 }
 
 function inicialDe(nombre: string): string {
@@ -214,21 +213,25 @@ function Catalogo() {
     [secciones, resultados.length]
   )
 
-  type Elemento =
-    | { tipo: 'letra'; letra: string }
-    | { tipo: 'receta'; receta: RecetaListada; index: number }
+  interface Grupo {
+    letra: string | null
+    recetas: { receta: RecetaListada; index: number }[]
+  }
 
-  const elementos = useMemo<Elemento[]>(() => {
+  // Cada letra va en su propio bloque para que su cabecera se despegue cuando
+  // entra la siguiente. Colgando todas de la misma parrilla se quedaban las 26
+  // pegadas en los mismos 64 px, una encima de otra.
+  const grupos = useMemo<Grupo[]>(() => {
     const tanda = resultados.slice(0, visibles)
-    const salida: Elemento[] = []
-    let previa = ''
+    if (!secciones) {
+      return [{ letra: null, recetas: tanda.map((receta, index) => ({ receta, index })) }]
+    }
+    const salida: Grupo[] = []
     tanda.forEach((receta, index) => {
-      if (secciones) {
-        const letra = inicialDe(receta.nombre)
-        if (letra !== previa) salida.push({ tipo: 'letra', letra })
-        previa = letra
-      }
-      salida.push({ tipo: 'receta', receta, index })
+      const letra = inicialDe(receta.nombre)
+      const ultimo = salida.at(-1)
+      if (ultimo && ultimo.letra === letra) ultimo.recetas.push({ receta, index })
+      else salida.push({ letra, recetas: [{ receta, index }] })
     })
     return salida
   }, [resultados, visibles, secciones])
@@ -378,35 +381,39 @@ function Catalogo() {
             </div>
           ) : (
             <>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {elementos.map((el) =>
-                  el.tipo === 'letra' ? (
-                    <div
-                      key={`letra-${el.letra}`}
-                      id={`letra-${el.letra}`}
-                      data-letra={el.letra}
-                      className="col-span-full sticky z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-1
-                                 top-[calc(env(safe-area-inset-top)+4rem)]
-                                 scroll-mt-[calc(env(safe-area-inset-top)+5rem)]
-                                 bg-stone-50/85 dark:bg-gray-950/85 backdrop-blur-sm"
-                    >
-                      <span className="font-display text-sm font-bold tracking-[0.2em] text-orange-600 dark:text-orange-400">
-                        {el.letra}
-                      </span>
+              <div className="flex flex-col gap-4">
+                {grupos.map((grupo) => (
+                  <section key={grupo.letra ?? 'todas'} id={grupo.letra ? `seccion-${grupo.letra}` : undefined}>
+                    {grupo.letra && (
+                      <div
+                        data-letra={grupo.letra}
+                        className="sticky z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-1 mb-4
+                                   top-[calc(env(safe-area-inset-top)+4rem)]
+                                   bg-stone-50/85 dark:bg-gray-950/85 backdrop-blur-sm"
+                      >
+                        <span className="font-display text-sm font-bold tracking-[0.2em] text-orange-600 dark:text-orange-400">
+                          {grupo.letra}
+                        </span>
+                      </div>
+                    )}
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      <AnimatePresence>
+                        {grupo.recetas.map(({ receta, index }) => (
+                          <RecetaCard
+                            key={receta.id}
+                            receta={receta}
+                            index={index}
+                            onClick={abrirReceta}
+                            onToggleFavorita={toggleFavorita}
+                            faltan={faltanPorReceta?.get(receta.id)}
+                            onToggleLista={toggleReceta}
+                            enLista={estaSeleccionada(receta.id)}
+                          />
+                        ))}
+                      </AnimatePresence>
                     </div>
-                  ) : (
-                    <RecetaCard
-                      key={el.receta.id}
-                      receta={el.receta}
-                      index={el.index}
-                      onClick={abrirReceta}
-                      onToggleFavorita={toggleFavorita}
-                      faltan={faltanPorReceta?.get(el.receta.id)}
-                      onToggleLista={toggleReceta}
-                      enLista={estaSeleccionada(el.receta.id)}
-                    />
-                  )
-                )}
+                  </section>
+                ))}
               </div>
               {secciones && (
                 <IndiceAlfabetico letras={letras} onSeleccionar={irALetra} />
