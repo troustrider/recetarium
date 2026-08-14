@@ -119,7 +119,9 @@ Una tanda no es una lista de platos buenos: es un reparto. Se diseña sobre un *
 
 Sobre ese esqueleto, cuatro condiciones:
 
+- **Antes de listar platos, valida la familia.** Este es el paso que más caro sale saltarse. Elige la familia de la que van a salir (montaje en frío, cuchara, masa rellena, salteado…) y comprueba **sobre dos o tres ejemplos** que esa familia puede cumplir la puerta del bloque. Si no puede, no se rescata plato a plato: se cambia de familia. Una tanda de desayunos se diseñó sobre montajes de pan, queso y embutido y se cayó entera en verificación, porque esa familia es meze o merienda en su cocina de origen y no carga la proteína que pide el bloque.
 - **La cuota de la fase 2 se cumple contando**, no aproximando. Si el acuerdo fue máx 20% con huevo en 25 recetas, son 5 exactas y se marcan en la tabla.
+- **Diseña con margen.** La fase 5 es una criba, no un trámite: espera perder platos. En la tanda de desayunos sobrevivieron 18 de 37 candidatos. Lista un 30-40% más de platos que el objetivo, o acepta desde el principio que el número final será menor y dilo.
 - **Cada receta declara su nivel de procedencia antes de escribirse** (A/B/C de `canon-recetas.md`) y **de dónde sale su proteína**. Si no sabes de dónde va a salir, la receta no está diseñada: está deseada.
 - **Cocinas ausentes primero.** Una tanda es la ocasión barata de meter las que faltan. Míralo por `categoria` sobre el bloque entero.
 - **Nada de fusión de relleno.** Si un hueco no se llena con un plato documentado, se deja el hueco y se dice, en vez de inventar un nivel C para cuadrar el número.
@@ -169,6 +171,16 @@ Ojo: el fichero tiene la forma `{ _doc, unidades, ignorar, ingredientes }`. Las 
 6. **`apply`**, y verificar con SELECT que están las que tienen que estar.
 
 Si un plato no sobrevive a la verificación del paso 1, **se cae y se dice**. No se rellena el hueco a ojo para mantener el número redondo.
+
+### Qué se le pregunta al verificador
+
+La diferencia entre una ronda útil y una que confirma lo que ya creías está en las preguntas. Además del protocolo de `canon-recetas.md`, mete en cada lote las dos o tres dudas concretas que **podrían tumbar el plato**, formuladas para que la respuesta sea un no si toca: si la marinada obligatoria cabe en una mañana, si la masa comprada es una vía aceptada o una corrupción, si el sustituto de un T3 es equivalente de verdad, si el ingrediente clave existe en Dirk. Y pide un veredicto explícito por plato —OK, DUDA con qué falta contrastar, o PROBLEMA con por qué—, no un resumen.
+
+Dos cosas que la experiencia dice que hay que vigilar: los subagentes a veces **delegan en vez de investigar** y vuelven anunciando trabajo en curso, así que exige que la búsqueda la haga el propio agente; y una fuente que no se pudo contrastar es un dato que no tienes, no un dato flojo. Un ratio sin verificar no se escribe en una receta.
+
+### Si el plato se come a otra hora en su país
+
+No es motivo para descartarlo. La skill exige que el plato sea real y esté bien hecho, no que se coma a una hora concreta: `tipo` en la app significa cuándo lo va a comer Karim. Un meze griego o un Brotzeit bávaro pueden entrar como desayuno **declarando en `consejos` cuándo se comen allí**. Lo que no se relaja nunca es la puerta de proteína del bloque, que es la que de verdad decide si la receta sirve.
 
 ---
 
