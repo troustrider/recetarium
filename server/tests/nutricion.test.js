@@ -68,6 +68,43 @@ describe('estimación de micronutrientes', () => {
   })
 })
 
+describe('origen animal', () => {
+  const apto = (...ingredientes) =>
+    fichaNutricional({ porciones: 2, ingredientes: ingredientes.map((n) => ing(n, 100, 'g')) }).apto
+
+  it('un plato de legumbre y verdura es vegetariano y vegano', () => {
+    const a = apto('lentejas cocidas de bote', 'zanahoria', 'aceite de oliva')
+    expect(a.vegetariana).toBe(true)
+    expect(a.vegana).toBe(true)
+    expect(a.animal).toEqual([])
+  })
+
+  it('el queso deja de ser vegano pero sigue siendo vegetariano', () => {
+    const a = apto('espaguetis', 'parmesano rallado')
+    expect(a.vegetariana).toBe(true)
+    expect(a.vegana).toBe(false)
+    expect(a.animal).toEqual([{ nombre: 'parmesano rallado', origen: 'lacteo', certeza: 'si' }])
+  })
+
+  it('pilla el pescado escondido en el dashi, que no está en la familia pescados', () => {
+    const a = apto('fideos ramen', 'caldo dashi')
+    expect(a.vegetariana).toBe(false)
+    expect(a.animal).toEqual([{ nombre: 'caldo dashi', origen: 'pescado', certeza: 'si' }])
+  })
+
+  it('lo que depende de la marca no se da por apto: queda en no se puede afirmar', () => {
+    const a = apto('arroz', 'kimchi')
+    expect(a.vegetariana).toBe(null)
+    expect(a.animal[0]).toMatchObject({ nombre: 'kimchi', certeza: 'depende' })
+  })
+
+  it('un ingrediente sin ficha deja la receta sin afirmar, no apta por defecto', () => {
+    const a = apto('arroz', 'polvo de estrellas')
+    expect(a.vegetariana).toBe(null)
+    expect(a.vegana).toBe(null)
+  })
+})
+
 describe('la API calcula la ficha, no la acepta del cliente', () => {
   it('rellena hierro, sinGluten y micros al crear', async () => {
     const res = await http.post('/recetas', recetaValida({

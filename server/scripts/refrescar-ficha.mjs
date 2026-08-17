@@ -4,7 +4,7 @@ import { neon } from '@neondatabase/serverless'
 import { fichaNutricional } from '../src/lib/nutricion.js'
 
 // Recalcula lo que el servidor deriva de los ingredientes (hierro, sin_gluten,
-// micros) sin tocar los macros curados a mano. Hace falta cuando cambian las
+// micros, apto) sin tocar los macros curados a mano. Hace falta cuando cambian las
 // reglas de estimación: las recetas ya guardadas conservan la ficha vieja hasta
 // que alguien las reedita.
 
@@ -25,9 +25,9 @@ if (!todas && ids.length === 0) {
 }
 
 const filas = todas
-  ? await sql`SELECT id, nombre, porciones, ingredientes, hierro::float AS hierro, sin_gluten AS "sinGluten", micros
+  ? await sql`SELECT id, nombre, porciones, ingredientes, hierro::float AS hierro, sin_gluten AS "sinGluten", micros, apto
               FROM recetas WHERE borrada_en IS NULL ORDER BY nombre`
-  : await sql`SELECT id, nombre, porciones, ingredientes, hierro::float AS hierro, sin_gluten AS "sinGluten", micros
+  : await sql`SELECT id, nombre, porciones, ingredientes, hierro::float AS hierro, sin_gluten AS "sinGluten", micros, apto
               FROM recetas WHERE id = ANY(${ids})`
 
 if (!todas && filas.length !== ids.length) {
@@ -50,6 +50,9 @@ for (const r of filas) {
   if (f.micros.estimadoDe !== r.micros?.estimadoDe) {
     difs.push(`estimadoDe ${r.micros?.estimadoDe} -> ${f.micros.estimadoDe}`)
   }
+  for (const k of ['vegetariana', 'vegana']) {
+    if (f.apto[k] !== (r.apto?.[k] ?? undefined)) difs.push(`${k} ${r.apto?.[k]} -> ${f.apto[k]}`)
+  }
   if (difs.length === 0) continue
 
   tocadas++
@@ -59,7 +62,8 @@ for (const r of filas) {
   if (!dry) {
     await sql`
       UPDATE recetas
-      SET hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${JSON.stringify(f.micros)}
+      SET hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${JSON.stringify(f.micros)},
+          apto = ${JSON.stringify(f.apto)}
       WHERE id = ${r.id}
     `
   }

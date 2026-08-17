@@ -8,7 +8,7 @@ const CAMPOS = sql.unsafe(`
   r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
   r.calorias, r.proteinas::float AS proteinas,
   r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-  r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.guarnicion,
+  r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.apto, r.guarnicion,
   r.hogar_id IS NOT NULL AS privada
 `)
 
@@ -19,7 +19,7 @@ const CAMPOS_LISTA = sql.unsafe(`
   r.precio_por_porcion::float AS "precioPorPorcion", r.porciones,
   r.calorias, r.proteinas::float AS proteinas,
   r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas, r.tipo,
-  r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros,
+  r.hierro::float AS hierro, r.sin_gluten AS "sinGluten", r.micros, r.apto,
   r.guarnicion - 'pasos' AS guarnicion,
   r.hogar_id IS NOT NULL AS privada
 `)
@@ -71,6 +71,7 @@ function guarnicionConFicha(guarnicion, porciones) {
     hierro: ficha.hierro,
     sinGluten: ficha.sinGluten,
     micros: ficha.micros,
+    apto: ficha.apto,
   }
 }
 
@@ -86,13 +87,13 @@ export async function create(hogarId, hogarDueno, data) {
   const ficha = fichaNutricional({ ingredientes, porciones: porciones ?? 1 })
   const guarnicion = guarnicionConFicha(data.guarnicion, porciones ?? 1)
   const [row] = await sql`
-    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, imagen, ingredientes, pasos, consejos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo, hierro, sin_gluten, micros, guarnicion, hogar_id)
+    INSERT INTO recetas (nombre, categoria, tiempo_preparacion, imagen, ingredientes, pasos, consejos, precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo, hierro, sin_gluten, micros, apto, guarnicion, hogar_id)
     VALUES (
       ${nombre}, ${categoria ?? null}, ${tiempoPreparacion},
       ${imagen ?? null}, ${JSON.stringify(ingredientes)}, ${JSON.stringify(pasos)}, ${JSON.stringify(consejos ?? [])},
       ${precioPorPorcion ?? 1}, ${porciones ?? 1}, ${categoryId},
       ${calorias ?? null}, ${proteinas ?? null}, ${carbohidratos ?? null}, ${grasas ?? null}, ${tipo ?? 'principal'},
-      ${ficha.hierro}, ${ficha.sinGluten}, ${JSON.stringify(ficha.micros)},
+      ${ficha.hierro}, ${ficha.sinGluten}, ${JSON.stringify(ficha.micros)}, ${JSON.stringify(ficha.apto)},
       ${guarnicion ? JSON.stringify(guarnicion) : null},
       ${hogarDueno}
     )
@@ -127,6 +128,7 @@ export async function update(hogarId, id, data) {
       hierro = ${ficha.hierro},
       sin_gluten = ${ficha.sinGluten},
       micros = ${JSON.stringify(ficha.micros)},
+      apto = ${JSON.stringify(ficha.apto)},
       guarnicion = ${guarnicion ? JSON.stringify(guarnicion) : null}
     WHERE id = ${id}
     RETURNING id

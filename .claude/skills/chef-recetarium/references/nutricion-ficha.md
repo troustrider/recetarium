@@ -16,7 +16,7 @@ Dos consecuencias directas para el chef:
 | Campo | Quién lo pone |
 |---|---|
 | `calorias`, `proteinas`, `carbohidratos`, `grasas` | **Tú**, en el JSON. El validador los contrasta contra los ingredientes |
-| `hierro` (columna), `sin_gluten` (columna), `micros` (jsonb) | **El sistema**, desde los ingredientes, en cada alta y cada edición |
+| `hierro` (columna), `sin_gluten` (columna), `micros` (jsonb), `apto` (jsonb) | **El sistema**, desde los ingredientes, en cada alta y cada edición |
 
 `micros` trae fibra, azúcares, saturadas, sal, `hierroHemo`, vitamina C, calcio, B12 y folato, más el desglose de gluten. Nunca los mandes en el payload: se ignoran. La única forma de que salgan bien es que la ficha del ingrediente en `server/src/lib/nutrientes.json` esté bien.
 
@@ -41,12 +41,20 @@ Por 100 g de producto tal como se compra. Los campos que valen 0 se omiten.
 | `b12` | vitamina B12 | µg |
 | `fol` | folato | µg |
 | `hemo` | `true` en carne, pescado y marisco | — |
+| `an` | origen animal: `carne`, `pescado`, `lacteo`, `huevo`, `miel` | — |
+| `anDep` | `true` si depende de la marca (pastilla de caldo, kimchi) | — |
 | `glu` | `"si"` o `"depende"` | — |
 | `sust` | sustituto sin gluten conocido | texto |
 
 Más las unidades que dependen del producto (`ud`, `lata`, `loncha`, `vaso`, `cucharada`…), que ya estaban.
 
 `hemo: true` solo en carne, pescado y marisco. **El huevo no lleva `hemo`**: su hierro es no hemo y se absorbe mal, aunque el alimento sea animal. Confundirlo infla la señal de absorción de media docena de recetas de desayuno.
+
+## Origen animal
+
+`apto` sale de la misma tabla y con el mismo criterio que el gluten: `{ vegetariana, vegana, animal: [...] }`, donde `null` es **no se puede afirmar**, no "no". Carne y pescado descartan vegetariana; esos dos más lácteo, huevo y miel descartan vegana.
+
+**Lo que se cuela no es el filete, es el caldo.** `caldo dashi` es bonito seco, `salsa de pescado` y `salsa de ostras` llevan su nombre puesto, la `salsa worcester` lleva anchoa y la `pastilla de caldo` suele ser de pollo. Ninguno está en la familia `pescados` ni `carnes` de la receta, y por eso el flag va en la ficha del ingrediente y no se deduce de la familia. Antes de dar por vegetariano un plato asiático, repasa: dashi, salsa de pescado, ostras, worcester, kimchi, pastilla de caldo, manteca.
 
 ## Gluten
 

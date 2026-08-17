@@ -45,6 +45,7 @@ export function estimarMacros(r) {
   const desconocidos = []
   const sinFicha = []
   const fuentesGluten = []
+  const fuentesAnimales = []
   let p = 0, c = 0, g = 0, feHemo = 0
   const m = Object.fromEntries(MICROS.map((k) => [k, 0]))
 
@@ -54,6 +55,7 @@ export function estimarMacros(r) {
     const ficha = FICHAS.get(n)
     if (!ficha) { desconocidos.push(ing.nombre); sinFicha.push(ing.nombre); continue }
     if (ficha.glu) fuentesGluten.push({ nombre: ing.nombre, certeza: ficha.glu, sustituto: ficha.sust ?? null })
+    if (ficha.an) fuentesAnimales.push({ nombre: ing.nombre, origen: ficha.an, certeza: ficha.anDep ? 'depende' : 'si' })
     const gr = gramos(ing, ficha)
     if (gr === null) { desconocidos.push(`${ing.nombre} (${ing.unidad})`); continue }
     p += (gr * ficha.p) / 100
@@ -87,7 +89,25 @@ export function estimarMacros(r) {
       evitable: fuentesGluten.length > 0 && fuentesGluten.every((f) => f.sustituto),
       cierto: sinFicha.length === 0,
     },
+    animal: {
+      fuentes: fuentesAnimales,
+      cierto: sinFicha.length === 0,
+    },
   }
+}
+
+const NO_VEGETARIANO = new Set(['carne', 'pescado'])
+const NO_VEGANO = new Set(['carne', 'pescado', 'lacteo', 'huevo', 'miel'])
+
+// Mismo criterio que el gluten: lo que depende de la marca cuenta como que lo
+// lleva, y un ingrediente sin ficha deja la receta en "no se puede afirmar"
+// (null) en vez de darla por apta. Es un fallo silencioso caro: quien filtra por
+// vegetariana confía en el filtro.
+function aptoPara(animal, prohibidos) {
+  const relevantes = animal.fuentes.filter((f) => prohibidos.has(f.origen))
+  if (relevantes.some((f) => f.certeza === 'si')) return false
+  if (relevantes.length > 0) return null
+  return animal.cierto ? true : null
 }
 
 const red = (x, d = 1) => Math.round(x * 10 ** d) / 10 ** d
@@ -97,6 +117,11 @@ export function fichaNutricional(r) {
   return {
     hierro: red(e.hierro),
     sinGluten: e.gluten.hay ? false : e.gluten.cierto ? true : null,
+    apto: {
+      vegetariana: aptoPara(e.animal, NO_VEGETARIANO),
+      vegana: aptoPara(e.animal, NO_VEGANO),
+      animal: e.animal.fuentes,
+    },
     micros: {
       fibra: red(e.fibra),
       azucares: red(e.azucares),
