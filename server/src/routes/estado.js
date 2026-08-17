@@ -56,6 +56,19 @@ import { requireUser } from '../lib/auth.js'
  *       200: { description: Guardado, devuelto tal cual }
  *       400: { description: Inválido }
  *       401: { description: Sesión requerida }
+ * /preferencias:
+ *   get:
+ *     summary: Cómo quiere comer el hogar (prioridades, cocinas favoritas, límites)
+ *     tags: [Plan]
+ *     responses:
+ *       200: { description: Objeto de preferencias; {} si el hogar no las ha tocado }
+ *   put:
+ *     summary: Guardar las preferencias del hogar
+ *     tags: [Plan]
+ *     responses:
+ *       200: { description: Guardado, devuelto tal cual }
+ *       400: { description: Inválido }
+ *       401: { description: Sesión requerida }
  */
 export function rutaEstado(campo) {
   const router = Router()

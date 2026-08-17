@@ -1,5 +1,6 @@
 import { apiJson, jsonBody } from './http'
 import type { Ingrediente } from '../types/receta'
+import type { Preferencias } from '../types/preferencias'
 
 export interface EntradaPlanDTO {
   dia: string
@@ -38,3 +39,8 @@ export const saveDespensa = (d: IngredienteDespensaDTO[]) => guardar('/despensa'
 
 export const getExtras = () => apiJson<Ingrediente[]>('/extras')
 export const saveExtras = (e: Ingrediente[]) => guardar('/extras', e)
+
+// El hogar que nunca las ha tocado recibe {}, no las de por defecto: quién
+// decide el valor de partida es el front, en un solo sitio.
+export const getPreferencias = () => apiJson<Partial<Preferencias>>('/preferencias')
+export const savePreferencias = (p: Preferencias) => guardar('/preferencias', p)
