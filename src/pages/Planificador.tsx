@@ -618,7 +618,7 @@ function Planificador() {
           <motion.button
             onClick={() => {
               const anterior = plan
-              autollenar(recetas.filter((r) => (r.tipo ?? 'principal') === 'principal'), 2)
+              autollenar(recetas, 2)
               registrar('Semana equilibrada', () => restaurarPlan(anterior))
             }}
             disabled={recetas.length === 0}
