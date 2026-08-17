@@ -12,6 +12,8 @@ const api = vi.hoisted(() => ({
   saveExtras: vi.fn().mockResolvedValue(undefined),
   getDespensa: vi.fn().mockResolvedValue([]),
   saveDespensa: vi.fn().mockResolvedValue(undefined),
+  getPreferencias: vi.fn().mockResolvedValue({}),
+  savePreferencias: vi.fn().mockResolvedValue(undefined),
 }))
 
 vi.mock('../api/estado', () => api)
@@ -45,6 +47,7 @@ vi.mock('../context/RecetasContext', () => ({
 const { DespensaProvider, useDespensa } = await import('../context/DespensaContext')
 const { ListaCompraProvider, useListaCompraContext } = await import('../context/ListaCompraContext')
 const { PendientesPlanProvider, usePendientesPlan } = await import('../context/PendientesPlanContext')
+const { PreferenciasProvider, usePreferencias } = await import('../context/PreferenciasContext')
 const { PlanificadorProvider, usePlanificador } = await import('../context/PlanificadorContext')
 
 function envoltorio({ children }: { children: ReactNode }) {
@@ -52,7 +55,9 @@ function envoltorio({ children }: { children: ReactNode }) {
     <DespensaProvider>
       <ListaCompraProvider>
         <PendientesPlanProvider>
-          <PlanificadorProvider>{children}</PlanificadorProvider>
+          <PreferenciasProvider>
+            <PlanificadorProvider>{children}</PlanificadorProvider>
+          </PreferenciasProvider>
         </PendientesPlanProvider>
       </ListaCompraProvider>
     </DespensaProvider>
@@ -65,6 +70,7 @@ function montar() {
       plan: usePlanificador(),
       lista: useListaCompraContext(),
       pendientes: usePendientesPlan(),
+      prefs: usePreferencias(),
     }),
     { wrapper: envoltorio }
   )
@@ -85,6 +91,7 @@ beforeEach(() => {
   api.getPendientes.mockResolvedValue([])
   api.getExtras.mockResolvedValue([])
   api.getDespensa.mockResolvedValue([])
+  api.getPreferencias.mockResolvedValue({})
 })
 
 describe('plan -> lista de la compra', () => {
@@ -454,5 +461,139 @@ describe('la hidratación no pisa lo que el usuario hizo mientras cargaba', () =
     const { result } = await montarHidratado()
     expect(result.current.plan.plan.Martes).toHaveLength(1)
     expect(api.savePlan).not.toHaveBeenCalled()
+  })
+})
+
+const DESAYUNO_1 = { ...receta('d1', 'Tostada con huevo', [{ nombre: 'huevos', cantidad: 2, unidad: 'ud', familia: 'huevos' }]), tipo: 'desayuno' as const }
+const DESAYUNO_2 = { ...receta('d2', 'Avena con fruta', [{ nombre: 'avena', cantidad: 80, unidad: 'g', familia: 'cereales' }]), tipo: 'desayuno' as const }
+const DESAYUNO_3 = { ...receta('d3', 'Yogur con nueces', [{ nombre: 'yogur', cantidad: 200, unidad: 'g', familia: 'lácteos' }]), tipo: 'desayuno' as const }
+
+const LENTA = { ...receta('r4', 'Cocido de domingo', [{ nombre: 'garbanzos', cantidad: 300, unidad: 'g', familia: 'legumbres' }]), tipoPreparacion: undefined, tiempoPreparacion: 120 }
+const SIN_GLUTEN = { ...receta('r5', 'Ensalada de arroz', [{ nombre: 'arroz', cantidad: 200, unidad: 'g', familia: 'cereales' }]), sinGluten: true }
+
+describe('desayunos en la auto-semana', () => {
+  const catalogo = [...CATALOGO, DESAYUNO_1, DESAYUNO_2, DESAYUNO_3]
+
+  it('mete los tres desayunos de por defecto, repartidos por la semana', async () => {
+    const { result } = await montarHidratado()
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.desayunos).toBe(3)
+    const conDesayuno = result.current.plan.dias.filter((d) =>
+      result.current.plan.plan[d].some((e) => e.receta.tipo === 'desayuno')
+    )
+    expect(conDesayuno).toHaveLength(3)
+    // Repartidos, no tres días seguidos.
+    const indices = conDesayuno.map((d) => result.current.plan.dias.indexOf(d))
+    expect(indices[1] - indices[0]).toBeGreaterThan(1)
+  })
+
+  it('el desayuno va antes que la cena en el día', async () => {
+    const { result } = await montarHidratado()
+    act(() => { result.current.plan.autollenar(catalogo, 2) })
+
+    for (const dia of result.current.plan.dias) {
+      const entradas = result.current.plan.plan[dia]
+      if (entradas.length < 2) continue
+      expect(entradas[0].receta.tipo).toBe('desayuno')
+    }
+  })
+
+  it('ningún día se queda sin principal por meter desayunos', async () => {
+    const { result } = await montarHidratado()
+    act(() => { result.current.plan.autollenar(catalogo, 2) })
+
+    for (const dia of result.current.plan.dias) {
+      const principales = result.current.plan.plan[dia].filter((e) => e.receta.tipo !== 'desayuno')
+      expect(principales.length, dia).toBe(1)
+    }
+  })
+
+  it('a cero desayunos, la semana es solo de principales', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setDesayunos(0))
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.desayunos).toBe(0)
+    const desayunos = result.current.plan.dias.flatMap((d) =>
+      result.current.plan.plan[d].filter((e) => e.receta.tipo === 'desayuno')
+    )
+    expect(desayunos).toHaveLength(0)
+  })
+
+  it('un desayuno ya cocinado cuenta para el cupo y no se toca', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Viernes', DESAYUNO_1, 2))
+    const hecha = result.current.plan.plan.Viernes[0].id
+    act(() => result.current.plan.marcarCocinada('Viernes', hecha, true))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.desayunos).toBe(2)
+    expect(result.current.plan.plan.Viernes.some((e) => e.id === hecha)).toBe(true)
+    const total = result.current.plan.dias.flatMap((d) =>
+      result.current.plan.plan[d].filter((e) => e.receta.tipo === 'desayuno')
+    )
+    expect(total).toHaveLength(3)
+  })
+})
+
+describe('límites duros de la auto-semana', () => {
+  it('el tiempo máximo deja fuera al plato lento', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ tiempoMax: 30, tiempoMaxFinde: 30 }))
+    act(() => { result.current.plan.autollenar([...CATALOGO, LENTA], 2) })
+
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas.some((e) => e.receta.id === 'r4')).toBe(false)
+  })
+
+  it('si el tiempo deja el catálogo sin platos para la semana, lo ensancha y lo dice', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ tiempoMax: 5, tiempoMaxFinde: 5 }))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(CATALOGO, 2) })
+
+    expect(informe.tiempoEnsanchado).toBe(true)
+    expect(informe.principales).toBe(7)
+  })
+
+  it('la dieta no se ensancha aunque no dé para la semana: antes menos días que un plato con carne', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ dieta: 'vegetariana' }))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(CATALOGO, 2) })
+
+    // Ninguna receta del catálogo de prueba trae ficha apto, así que no se puede
+    // afirmar de ninguna: la semana se queda vacía en vez de colar carne.
+    expect(informe.principales).toBe(0)
+    // Siete cenas y tres desayunos sin una sola candidata.
+    expect(informe.huecosVacios).toBe(10)
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas).toHaveLength(0)
+  })
+
+  it('sin gluten solo deja pasar lo que consta como sin gluten', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ sinGluten: true }))
+    act(() => { result.current.plan.autollenar([...CATALOGO, SIN_GLUTEN], 2) })
+
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas.every((e) => e.receta.id === 'r5')).toBe(true)
+  })
+
+  it('un ingrediente vetado saca a la receta que lo lleva', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ vetados: ['pollo'] }))
+    act(() => { result.current.plan.autollenar(CATALOGO, 2) })
+
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas.some((e) => e.receta.id === 'r1' || e.receta.id === 'r2')).toBe(false)
+    expect(puestas.every((e) => e.receta.id === 'r3')).toBe(true)
   })
 })

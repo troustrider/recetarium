@@ -6,10 +6,48 @@ import { usePendientesPlan } from './PendientesPlanContext'
 import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { racionesBase } from '../hooks/useListaCompra'
-import { semanaEquilibrada } from '../utils/semana'
+import { repartirSemana, type Hueco } from '../utils/semana'
+import { candidatas } from '../utils/candidatas'
+import { usePreferencias } from './PreferenciasContext'
+import type { Preferencias } from '../types/preferencias'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
 export type Dia = typeof DIAS[number]
+
+const FINDE: readonly Dia[] = ['Sábado', 'Domingo']
+
+const esDesayuno = (receta: RecetaListada) => receta.tipo === 'desayuno'
+const esPrincipal = (receta: RecetaListada) => (receta.tipo ?? 'principal') === 'principal'
+
+/**
+ * Qué ha pasado al rellenar la semana. Un generador que se explica es la
+ * diferencia entre una herramienta y una caja negra: si ha tenido que repetir
+ * plato o ensanchar el tiempo, se dice, en vez de devolver una semana peor sin
+ * avisar.
+ */
+export interface InformeSemana {
+  principales: number
+  desayunos: number
+  conservados: number
+  repetidos: number
+  tiempoEnsanchado: boolean
+  huecosVacios: number
+}
+
+const INFORME_VACIO: InformeSemana = {
+  principales: 0, desayunos: 0, conservados: 0, repetidos: 0,
+  tiempoEnsanchado: false, huecosVacios: 0,
+}
+
+/**
+ * Reparte n desayunos por la semana sin amontonarlos: tres desayunos son lunes,
+ * miércoles y sábado, no lunes, martes y miércoles.
+ */
+function repartidos(dias: Dia[], n: number): Dia[] {
+  if (n >= dias.length) return dias
+  const paso = dias.length / n
+  return Array.from({ length: n }, (_, i) => dias[Math.floor(i * paso)])
+}
 
 export interface EntradaPlan {
   id: string
@@ -66,7 +104,7 @@ interface PlanificadorCtx {
   marcarCocinada: (dia: Dia, entradaId: string, cocinada: boolean) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
-  autollenar: (recetas: RecetaListada[], raciones: number) => void
+  autollenar: (recetas: RecetaListada[], raciones: number) => InformeSemana
   restaurarPlan: (anterior: Plan) => void
 }
 
@@ -98,6 +136,12 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   const { seleccionadas, toggleReceta, setRaciones: setRacionesLista, setGuarnicion: setGuarnicionLista, estaSeleccionada } = useListaCompraContext()
   const { pendientes, quitarPendiente } = usePendientesPlan()
+
+  // El planificador lee las preferencias pero no se re-renderiza por ellas: solo
+  // las necesita en el momento de generar la semana.
+  const { preferencias } = usePreferencias()
+  const preferenciasRef = useRef<Preferencias>(preferencias)
+  useEffect(() => { preferenciasRef.current = preferencias }, [preferencias])
 
   const seleccionadasRef = useRef(seleccionadas)
   const estaSeleccionadaRef = useRef(estaSeleccionada)
@@ -210,32 +254,105 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   // descontó de la despensa, así que borrarlo sería mentir sobre lo que pasó. Lo
   // demás se sustituye, y lo cocinado entra en el cálculo del resto para que la
   // semana salga equilibrada contando lo que ya hay, no desde cero.
-  const autollenar = useCallback((recetas: RecetaListada[], raciones: number) => {
-    if (recetas.length === 0) return
-    huerfanasRef.current = huerfanasRef.current.filter((d) => d.cocinada)
-    cambiarPlan((prev) => {
-      const nuevo = Object.fromEntries(
-        DIAS.map((d) => [d, prev[d].filter((e) => e.cocinada)])
-      ) as unknown as Plan
-      const hechas = DIAS.flatMap((d) => nuevo[d]).map((e) => e.receta)
-      const porLlenar = DIAS.filter((d) => nuevo[d].length === 0)
-      if (porLlenar.length === 0) return nuevo
+  const autollenar = useCallback((recetas: RecetaListada[], raciones: number): InformeSemana => {
+    if (recetas.length === 0) return INFORME_VACIO
+    const prefs = preferenciasRef.current
+    const { limites } = prefs
 
-      const semana = semanaEquilibrada(recetas, porLlenar.length, Date.now(), hechas)
-      if (semana.length === 0) return nuevo
+    const nuevo = Object.fromEntries(
+      DIAS.map((d) => [d, plan[d].filter((e) => e.cocinada)])
+    ) as unknown as Plan
+    const conservadas = DIAS.flatMap((d) => nuevo[d])
+    const hechas = conservadas.map((e) => e.receta)
 
-      porLlenar.forEach((dia, i) => {
-        const receta = semana[i % semana.length]
-        nuevo[dia] = [{
-          id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`,
-          receta,
-          raciones,
-          ...(receta.guarnicion ? { conGuarnicion: true } : {}),
-        }]
-      })
-      return nuevo
+    const diasSinPrincipal = DIAS.filter((d) => !nuevo[d].some((e) => esPrincipal(e.receta)))
+    const conDesayuno = DIAS.filter((d) => nuevo[d].some((e) => esDesayuno(e.receta)))
+    const diasSinDesayuno = DIAS.filter((d) => !conDesayuno.includes(d))
+    const faltanDesayunos = Math.max(0, Math.min(prefs.desayunos, DIAS.length) - conDesayuno.length)
+
+    const principales = recetas.filter(esPrincipal)
+    const desayunos = recetas.filter(esDesayuno)
+
+    // El tiempo es el único límite que se ensancha: si el catálogo no da siete
+    // platos distintos con el techo puesto, antes que repetir seis veces el mismo
+    // se sueltan los minutos. La dieta, el gluten y los vetos no se tocan.
+    const topeDe = (dia: Dia) => (FINDE.includes(dia) ? limites.tiempoMaxFinde : limites.tiempoMax)
+    const construir = (dias: Dia[], pool: RecetaListada[], sufijo: string, conTiempo: boolean): Hueco[] =>
+      dias.map((dia) => ({
+        id: `${dia}${sufijo}`,
+        candidatos: candidatas(pool, limites, conTiempo ? topeDe(dia) : null),
+      }))
+
+    const distintas = (huecos: Hueco[]) =>
+      new Set(huecos.flatMap((h) => h.candidatos.map((r) => r.id))).size
+
+    let huecosPrincipales = construir(diasSinPrincipal, principales, '', true)
+    let tiempoEnsanchado = false
+    const estrictas = distintas(huecosPrincipales)
+    if (estrictas < diasSinPrincipal.length) {
+      const sinTope = construir(diasSinPrincipal, principales, '', false)
+      // Solo se salta el tiempo si saltárselo resuelve algo: llenar la semana
+      // entera, o poder llenar algo cuando con el techo puesto no cabe nada.
+      // Servir un guiso de dos horas un martes para ahorrarse una repetición es
+      // peor que la repetición.
+      if (distintas(sinTope) >= diasSinPrincipal.length || estrictas === 0) {
+        huecosPrincipales = sinTope
+        tiempoEnsanchado = distintas(sinTope) > estrictas
+      }
+    }
+
+    const huecosDesayuno = construir(
+      repartidos(diasSinDesayuno, faltanDesayunos),
+      desayunos,
+      ':desayuno',
+      // Un desayuno de 40 minutos un martes no lo hace nadie, pero el techo de la
+      // cena no es su techo: se les aplica solo si el de entre semana es holgado.
+      false
+    )
+
+    const huecos = [...huecosPrincipales, ...huecosDesayuno]
+    if (huecos.length === 0) {
+      huerfanasRef.current = huerfanasRef.current.filter((d) => d.cocinada)
+      cambiarPlan(nuevo)
+      return { ...INFORME_VACIO, conservados: conservadas.length }
+    }
+
+    const { porHueco, repetidos } = repartirSemana(huecos, {
+      preferencias: prefs,
+      yaEnLaSemana: hechas,
     })
-  }, [cambiarPlan])
+
+    for (const hueco of huecos) {
+      const receta = porHueco.get(hueco.id)
+      if (!receta) continue
+      const dia = hueco.id.split(':')[0] as Dia
+      nuevo[dia] = [...nuevo[dia], {
+        id: `${hueco.id}-${receta.id}-${Date.now()}-${Math.random()}`,
+        receta,
+        raciones,
+        ...(receta.guarnicion ? { conGuarnicion: true } : {}),
+      }]
+    }
+
+    // El desayuno se lee antes que la cena, como en el día.
+    for (const dia of DIAS) {
+      nuevo[dia] = [...nuevo[dia]].sort(
+        (a, b) => Number(esDesayuno(b.receta)) - Number(esDesayuno(a.receta))
+      )
+    }
+
+    huerfanasRef.current = huerfanasRef.current.filter((d) => d.cocinada)
+    cambiarPlan(nuevo)
+
+    return {
+      principales: huecosPrincipales.filter((h) => porHueco.has(h.id)).length,
+      desayunos: huecosDesayuno.filter((h) => porHueco.has(h.id)).length,
+      conservados: conservadas.length,
+      repetidos: repetidos.size,
+      tiempoEnsanchado,
+      huecosVacios: huecos.filter((h) => !porHueco.has(h.id)).length,
+    }
+  }, [cambiarPlan, plan])
 
   const restaurarPlan = useCallback((anterior: Plan) => {
     cambiarPlan(anterior)
