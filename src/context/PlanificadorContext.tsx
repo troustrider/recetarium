@@ -206,21 +206,35 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     cambiarPlan(PLAN_VACIO)
   }, [cambiarPlan])
 
+  // Rehacer la semana respeta lo ya cocinado: ese plato ya se comió y ya se
+  // descontó de la despensa, así que borrarlo sería mentir sobre lo que pasó. Lo
+  // demás se sustituye, y lo cocinado entra en el cálculo del resto para que la
+  // semana salga equilibrada contando lo que ya hay, no desde cero.
   const autollenar = useCallback((recetas: RecetaListada[], raciones: number) => {
     if (recetas.length === 0) return
-    huerfanasRef.current = []
-    const semana = semanaEquilibrada(recetas, DIAS.length)
-    const nuevo = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
-    DIAS.forEach((dia, i) => {
-      const receta = semana[i % semana.length]
-      nuevo[dia] = [{
-        id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`,
-        receta,
-        raciones,
-        ...(receta.guarnicion ? { conGuarnicion: true } : {}),
-      }]
+    huerfanasRef.current = huerfanasRef.current.filter((d) => d.cocinada)
+    cambiarPlan((prev) => {
+      const nuevo = Object.fromEntries(
+        DIAS.map((d) => [d, prev[d].filter((e) => e.cocinada)])
+      ) as unknown as Plan
+      const hechas = DIAS.flatMap((d) => nuevo[d]).map((e) => e.receta)
+      const porLlenar = DIAS.filter((d) => nuevo[d].length === 0)
+      if (porLlenar.length === 0) return nuevo
+
+      const semana = semanaEquilibrada(recetas, porLlenar.length, Date.now(), hechas)
+      if (semana.length === 0) return nuevo
+
+      porLlenar.forEach((dia, i) => {
+        const receta = semana[i % semana.length]
+        nuevo[dia] = [{
+          id: `${dia}-${receta.id}-${Date.now()}-${Math.random()}`,
+          receta,
+          raciones,
+          ...(receta.guarnicion ? { conGuarnicion: true } : {}),
+        }]
+      })
+      return nuevo
     })
-    cambiarPlan(nuevo)
   }, [cambiarPlan])
 
   const restaurarPlan = useCallback((anterior: Plan) => {

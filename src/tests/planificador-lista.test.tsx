@@ -197,6 +197,39 @@ describe('raciones y límites del plan', () => {
     await waitFor(() => expect(result.current.lista.seleccionadas.length).toBeGreaterThan(0))
   })
 
+  it('autollenar respeta lo ya cocinado y sustituye lo demás', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Miércoles', SOPA, 1))
+    act(() => result.current.plan.añadir('Lunes', POLLO, 1))
+    const hecha = result.current.plan.plan['Miércoles'][0].id
+    act(() => result.current.plan.marcarCocinada('Miércoles', hecha, true))
+
+    act(() => result.current.plan.autollenar(CATALOGO, 2))
+
+    expect(result.current.plan.plan['Miércoles']).toHaveLength(1)
+    expect(result.current.plan.plan['Miércoles'][0]).toMatchObject({
+      id: hecha, raciones: 1, cocinada: true,
+    })
+    // El lunes no estaba hecho: se sustituye por el reparto nuevo, con sus raciones.
+    expect(result.current.plan.plan.Lunes).toHaveLength(1)
+    expect(result.current.plan.plan.Lunes[0].raciones).toBe(2)
+  })
+
+  it('autollenar no vuelve a proponer la receta que ya está hecha', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Martes', SOPA, 1))
+    const hecha = result.current.plan.plan.Martes[0].id
+    act(() => result.current.plan.marcarCocinada('Martes', hecha, true))
+
+    act(() => result.current.plan.autollenar(CATALOGO, 2))
+
+    const resto = result.current.plan.dias
+      .filter((d) => d !== 'Martes')
+      .flatMap((d) => result.current.plan.plan[d])
+    expect(resto).toHaveLength(6)
+    expect(resto.some((e) => e.receta.id === SOPA.id)).toBe(false)
+  })
+
   it('autollenar sin recetas no toca el plan', async () => {
     const { result } = await montarHidratado()
     act(() => result.current.plan.añadir('Lunes', POLLO, 1))
