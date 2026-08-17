@@ -65,11 +65,74 @@ function validarExtras(extras) {
   return null
 }
 
+// Mismas listas que src/types/preferencias.ts. No se comparte el fichero porque
+// el deploy solo empaqueta server/src (ver vercel.json).
+const PRIORIDADES = [
+  'proteina', 'fibra', 'hierro', 'calcio', 'b12folato',
+  'menosSal', 'menosAzucar', 'menosSaturadas', 'ligera',
+]
+const DIETAS = ['vegetariana', 'vegana']
+const MAX_PRIORIDADES = 3
+const MAX_COCINAS = 4
+const DIAS_SEMANA = 7
+
+function validarLista(valor, campo, { max, min = 0 }) {
+  if (!Array.isArray(valor)) return `${campo} debe ser un array`
+  if (valor.length > max) return `${campo} admite como mucho ${max}`
+  if (valor.length < min) return `${campo} necesita al menos ${min}`
+  if (valor.some((v) => typeof v !== 'string' || !v.trim())) return `${campo} solo admite textos`
+  return null
+}
+
+function validarLimites(limites) {
+  if (limites == null) return null
+  if (typeof limites !== 'object' || Array.isArray(limites)) return 'preferencias.limites debe ser un objeto'
+  for (const campo of ['tiempoMax', 'tiempoMaxFinde']) {
+    const v = limites[campo]
+    if (v == null) continue
+    if (typeof v !== 'number' || !Number.isFinite(v) || v <= 0) return `preferencias.limites.${campo} debe ser un número > 0`
+  }
+  if (limites.dieta != null && !DIETAS.includes(limites.dieta)) {
+    return `preferencias.limites.dieta debe ser una de: ${DIETAS.join(', ')}`
+  }
+  if (limites.sinGluten != null && typeof limites.sinGluten !== 'boolean') {
+    return 'preferencias.limites.sinGluten debe ser booleano'
+  }
+  if (limites.vetados != null) return validarLista(limites.vetados, 'preferencias.limites.vetados', { max: 30 })
+  return null
+}
+
+function validarPreferencias(p) {
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return 'preferencias debe ser un objeto'
+
+  if (p.prioridades != null) {
+    const error = validarLista(p.prioridades, 'preferencias.prioridades', { max: MAX_PRIORIDADES })
+    if (error) return error
+    const desconocida = p.prioridades.find((x) => !PRIORIDADES.includes(x))
+    if (desconocida) return `preferencias.prioridades: ${desconocida} no existe`
+    if (new Set(p.prioridades).size !== p.prioridades.length) return 'preferencias.prioridades tiene repetidas'
+  }
+
+  if (p.cocinasFavoritas != null) {
+    const error = validarLista(p.cocinasFavoritas, 'preferencias.cocinasFavoritas', { max: MAX_COCINAS })
+    if (error) return error
+  }
+
+  if (p.desayunos != null) {
+    if (!Number.isInteger(p.desayunos) || p.desayunos < 0 || p.desayunos > DIAS_SEMANA) {
+      return `preferencias.desayunos debe ser un entero entre 0 y ${DIAS_SEMANA}`
+    }
+  }
+
+  return validarLimites(p.limites)
+}
+
 const VALIDADORES = {
   plan: validarPlan,
   despensa: validarDespensa,
   pendientes: validarPendientes,
   extras: validarExtras,
+  preferencias: validarPreferencias,
 }
 
 function validadorDe(campo) {

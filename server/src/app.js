@@ -34,6 +34,7 @@ app.use('/api/v1/plan', rutaEstado('plan'))
 app.use('/api/v1/extras', rutaEstado('extras'))
 app.use('/api/v1/despensa', rutaEstado('despensa'))
 app.use('/api/v1/pendientes', rutaEstado('pendientes'))
+app.use('/api/v1/preferencias', rutaEstado('preferencias'))
 app.use('/api/v1/admin', sesionesRouter)
 app.use('/api/v1/yo', yoRouter)
 

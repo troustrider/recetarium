@@ -8,7 +8,7 @@ const original = {}
 beforeAll(async () => {
   servidor = await arrancarServidor()
   http = api(servidor.base, (await crearSesion()).token)
-  for (const ruta of ['/plan', '/despensa', '/extras', '/pendientes']) {
+  for (const ruta of ['/plan', '/despensa', '/extras', '/pendientes', '/preferencias']) {
     original[ruta] = await (await http.get(ruta)).json()
   }
 })
@@ -159,5 +159,65 @@ describe('aislamiento entre campos del estado compartido', () => {
       expect((await http.put(ruta, [])).status).toBe(200)
       expect(await (await http.get(ruta)).json()).toEqual([])
     }
+  })
+})
+
+describe('validación de las preferencias', () => {
+  it('exige un objeto, no una lista', async () => {
+    expect(await errorDe('/preferencias', [])).toBe('preferencias debe ser un objeto')
+  })
+
+  it('no admite una prioridad que no existe', async () => {
+    expect(await errorDe('/preferencias', { prioridades: ['adelgazar'] }))
+      .toBe('preferencias.prioridades: adelgazar no existe')
+  })
+
+  it('corta en tres prioridades', async () => {
+    const cuatro = ['proteina', 'fibra', 'hierro', 'ligera']
+    expect(await errorDe('/preferencias', { prioridades: cuatro }))
+      .toBe('preferencias.prioridades admite como mucho 3')
+  })
+
+  it('no admite prioridades repetidas', async () => {
+    expect(await errorDe('/preferencias', { prioridades: ['fibra', 'fibra'] }))
+      .toBe('preferencias.prioridades tiene repetidas')
+  })
+
+  it('corta en cuatro cocinas favoritas', async () => {
+    expect(await errorDe('/preferencias', { cocinasFavoritas: ['a', 'b', 'c', 'd', 'e'] }))
+      .toBe('preferencias.cocinasFavoritas admite como mucho 4')
+  })
+
+  it('los desayunos son un entero de la semana', async () => {
+    expect(await errorDe('/preferencias', { desayunos: 9 }))
+      .toBe('preferencias.desayunos debe ser un entero entre 0 y 7')
+    expect(await errorDe('/preferencias', { desayunos: 2.5 }))
+      .toBe('preferencias.desayunos debe ser un entero entre 0 y 7')
+  })
+
+  it('la dieta solo admite las que el catálogo sabe calcular', async () => {
+    expect(await errorDe('/preferencias', { limites: { dieta: 'paleo' } }))
+      .toBe('preferencias.limites.dieta debe ser una de: vegetariana, vegana')
+  })
+
+  it('el tiempo máximo tiene que ser un número positivo', async () => {
+    expect(await errorDe('/preferencias', { limites: { tiempoMax: 0 } }))
+      .toBe('preferencias.limites.tiempoMax debe ser un número > 0')
+  })
+
+  it('guarda y devuelve las preferencias tal cual', async () => {
+    const prefs = {
+      prioridades: ['fibra', 'menosSal'],
+      cocinasFavoritas: ['japonesa', 'griega'],
+      desayunos: 3,
+      limites: { tiempoMax: 30, tiempoMaxFinde: null, dieta: 'vegetariana', sinGluten: false, vetados: ['cilantro'] },
+    }
+    expect((await http.put('/preferencias', prefs)).status).toBe(200)
+    expect(await (await http.get('/preferencias')).json()).toEqual(prefs)
+  })
+
+  it('un hogar sin preferencias recibe un objeto vacío, no una lista', async () => {
+    await http.put('/preferencias', {})
+    expect(await (await http.get('/preferencias')).json()).toEqual({})
   })
 })
