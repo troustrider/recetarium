@@ -1,4 +1,4 @@
-import type { RecetaListada } from '../types/receta'
+import type { Apto, RecetaListada } from '../types/receta'
 
 const HIERRO_ALTO = 4.5
 const HIERRO_MEDIO = 2.5
@@ -38,4 +38,31 @@ export function senalHierro(receta: RecetaListada): SenalHierro | null {
 
 export function fuentesGluten(receta: RecetaListada) {
   return receta.micros?.gluten ?? null
+}
+
+export type Dieta = 'vegetariana' | 'vegana'
+
+/**
+ * La guarnición cuenta: un salteado de verdura acabado en mantequilla deja de ser
+ * vegano, y un plato vegetariano con guarnición de bacon no lo es. Solo devuelve
+ * `true` cuando se puede afirmar de las dos partes; `null` en cuanto una de ellas
+ * no se puede afirmar. Nunca da por apto lo que no consta.
+ */
+export function aptaPara(receta: RecetaListada, dieta: Dieta): boolean | null {
+  // Una receta guardada antes de que existiera el flag tampoco se afirma: sin
+  // ficha calculada no hay nada que garantizar.
+  const partes: (Apto | null | undefined)[] = [receta.apto]
+  if (receta.guarnicion) partes.push(receta.guarnicion.apto)
+
+  let cierto = true
+  for (const apto of partes) {
+    const valor = apto?.[dieta] ?? null
+    if (valor === false) return false
+    if (valor === null) cierto = false
+  }
+  return cierto ? true : null
+}
+
+export function fuentesAnimales(receta: RecetaListada) {
+  return [...(receta.apto?.animal ?? []), ...(receta.guarnicion?.apto?.animal ?? [])]
 }
