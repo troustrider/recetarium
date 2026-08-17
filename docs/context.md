@@ -81,6 +81,7 @@ const { plan, dias, añadir, quitar, setRaciones, mover, limpiar } = usePlanific
 | `setRaciones(dia, entradaId, n)` | `void` | Cambia las raciones de una entrada (mín. 1, máx. 4) |
 | `mover(desde, hasta, entradaId)` | `void` | Mueve una entrada de un día a otro |
 | `limpiar()` | `void` | Vacía el plan completo |
+| `autollenar(recetas, raciones)` | `void` | Rellena los días sin plato repartiendo macros y micros (`utils/semana`). Respeta las entradas marcadas como cocinadas: ni las borra ni vuelve a proponer su receta, y las cuenta en el reparto del resto |
 
 ---
 
