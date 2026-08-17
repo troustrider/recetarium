@@ -1,23 +1,69 @@
 import type { RecetaListada } from '../types/receta'
+import type { Preferencias, Prioridad } from '../types/preferencias'
 
-// Lo que la semana entera debería sumar. Todo va por porción, que es como se
-// guardan los macros y los micros de una receta: siete platos, uno al día.
-const OBJETIVO = {
-  fibra: 7 * 12,
-  vitaminaC: 7 * 32,
-  calcio: 7 * 400,
-  folato: 7 * 130,
-  hierro: 7 * 5.6,
-  b12: 7 * 1,
-  proteinas: 7 * 40,
+// Lo que una semana de comer debería sumar, por día y por ración. Es el objetivo
+// de la semana entera, no de los platos que se planifiquen: cuantas más comidas
+// entren en el plan (cenas, desayunos), más cerca queda. La ganancia está topada
+// al objetivo, así que nada cuenta dos veces.
+const DIAS_SEMANA = 7
+
+const OBJETIVO_DIARIO = {
+  fibra: 12,
+  vitaminaC: 32,
+  calcio: 400,
+  folato: 130,
+  hierro: 5.6,
+  b12: 1,
+  proteinas: 40,
 } as const
 
-type Clave = keyof typeof OBJETIVO
+type Clave = keyof typeof OBJETIVO_DIARIO
 
-const CLAVES = Object.keys(OBJETIVO) as Clave[]
+const CLAVES = Object.keys(OBJETIVO_DIARIO) as Clave[]
 
-const TECHO_SATURADAS = 12
-const TECHO_SAL = 3
+// Techos por ración. Por encima, el plato penaliza en proporción a lo que se
+// pasa. Los de serie son holgados a propósito: el que aprieta de verdad es el
+// que se elige como prioridad.
+const TECHOS_BASE = {
+  saturadas: 12,
+  sal: 3,
+  azucares: 25,
+  calorias: Infinity,
+} as const
+
+type Techo = keyof typeof TECHOS_BASE
+
+const PESO_TECHO: Record<Techo, number> = {
+  saturadas: 0.4,
+  sal: 0.5,
+  azucares: 0.4,
+  calorias: 0.6,
+}
+
+const PESOS_BASE = {
+  cocinaRepetida: 0.35,
+  verduraRepetida: 0.3,
+  sinVerdura: 0.15,
+  saborRepetido: 0.2,
+  reparto: 0.8,
+  noFavorita: 0.5,
+}
+
+type Peso = keyof typeof PESOS_BASE
+
+// Qué mueve cada prioridad. Es una tabla y no código a propósito: añadir una
+// prioridad nueva mañana es añadir una fila.
+const EFECTO: Record<Prioridad, { objetivo?: Partial<Record<Clave, number>>; techo?: Partial<Record<Techo, number>>; peso?: Partial<Record<Peso, number>> }> = {
+  proteina:       { objetivo: { proteinas: 1.35 } },
+  fibra:          { objetivo: { fibra: 1.4 }, peso: { sinVerdura: 0.3, verduraRepetida: 0.4 } },
+  hierro:         { objetivo: { hierro: 1.4, vitaminaC: 1.2 } },
+  calcio:         { objetivo: { calcio: 1.3 } },
+  b12folato:      { objetivo: { b12: 1.3, folato: 1.3 } },
+  menosSal:       { techo: { sal: 1.5 } },
+  menosAzucar:    { techo: { azucares: 12 } },
+  menosSaturadas: { techo: { saturadas: 6 } },
+  ligera:         { techo: { calorias: 600 } },
+}
 
 // Reparto de referencia de la energía de la semana. No es un dogma: es el punto
 // medio del recetario (principales de 35-45 g de proteína) y lo que evita que la
@@ -27,18 +73,18 @@ type Macro = typeof MACROS[number]
 
 const REPARTO: Record<Macro, number> = { proteinas: 0.3, carbohidratos: 0.4, grasas: 0.3 }
 const KCAL_POR_GRAMO: Record<Macro, number> = { proteinas: 4, carbohidratos: 4, grasas: 9 }
-const PESO_REPARTO = 0.8
 
-export interface Aporte extends Record<Clave, number> {
-  saturadas: number
-  sal: number
+const FAMILIA_VERDURA = 'verduras'
+
+export interface Aporte extends Record<Clave, number>, Record<Techo, number> {
   carbohidratos: number
   grasas: number
 }
 
 const VACIO: Aporte = {
   fibra: 0, vitaminaC: 0, calcio: 0, folato: 0, hierro: 0, b12: 0,
-  proteinas: 0, carbohidratos: 0, grasas: 0, saturadas: 0, sal: 0,
+  proteinas: 0, carbohidratos: 0, grasas: 0,
+  saturadas: 0, sal: 0, azucares: 0, calorias: 0,
 }
 
 export function aporteDe(receta: RecetaListada): Aporte {
@@ -48,6 +94,7 @@ export function aporteDe(receta: RecetaListada): Aporte {
     if (!parte) continue
     if (parte.hierro != null) total.hierro += parte.hierro
     for (const macro of MACROS) total[macro] += parte[macro] ?? 0
+    total.calorias += parte.calorias ?? 0
     const micros = parte.micros
     if (!micros) continue
     total.fibra += micros.fibra
@@ -57,25 +104,21 @@ export function aporteDe(receta: RecetaListada): Aporte {
     total.b12 += micros.b12
     total.saturadas += micros.saturadas
     total.sal += micros.sal
+    total.azucares += micros.azucares
   }
   return total
 }
 
-// Cuánto se desvía el reparto de energía acumulado del de referencia, de 0 (clavado)
-// a 1 (todo en un macro). Una semana sin macros declarados no se desvía: no hay dato
-// que juzgar, y castigarla la dejaría siempre por debajo de las que sí lo traen.
-function desvioReparto(acumulado: Record<Macro, number>): number {
-  const kcal = MACROS.reduce((t, m) => t + acumulado[m] * KCAL_POR_GRAMO[m], 0)
-  if (kcal === 0) return 0
-  const suma = MACROS.reduce(
-    (t, m) => t + Math.abs((acumulado[m] * KCAL_POR_GRAMO[m]) / kcal - REPARTO[m]),
-    0
-  )
-  return suma / 2
-}
-
+/**
+ * La verdura del plato. Mira primero la guarnición, que es donde va casi siempre,
+ * y si no la hay busca en los ingredientes del propio plato: un guiso de lentejas
+ * con puerro y zanahoria no es un plato sin verdura, y contarlo como tal era
+ * penalizar justo a los platos que se quieren.
+ */
 function verduraDe(receta: RecetaListada): string | null {
-  return receta.guarnicion?.ingredientes[0]?.nombre.toLowerCase() ?? null
+  const enGuarnicion = receta.guarnicion?.ingredientes.find((i) => i.familia === FAMILIA_VERDURA)
+  const enPlato = receta.ingredientes?.find((i) => i.familia === FAMILIA_VERDURA)
+  return (enGuarnicion ?? enPlato)?.nombre.toLowerCase() ?? null
 }
 
 function prng(semilla: number): () => number {
@@ -88,53 +131,210 @@ function prng(semilla: number): () => number {
   }
 }
 
+export interface Ajustes {
+  objetivos: Record<Clave, number>
+  techos: Record<Techo, number>
+  pesos: Record<Peso, number>
+  favoritas: Set<string>
+  /** Cuántas veces puede salir una cocina favorita sin que penalice. */
+  cuotaFavorita: number
+}
+
+/**
+ * Traduce las preferencias a números. `huecos` es cuántos platos se van a elegir:
+ * con cuatro cocinas favoritas y siete días alguna cocina tiene que repetir, así
+ * que la cuota se reparte en vez de castigar lo que la propia elección obliga.
+ */
+export function ajustesDe(preferencias?: Preferencias, huecos = DIAS_SEMANA): Ajustes {
+  const objetivos = Object.fromEntries(
+    CLAVES.map((c) => [c, OBJETIVO_DIARIO[c] * DIAS_SEMANA])
+  ) as Record<Clave, number>
+  const techos = { ...TECHOS_BASE } as Record<Techo, number>
+  const pesos = { ...PESOS_BASE }
+
+  for (const prioridad of preferencias?.prioridades ?? []) {
+    const efecto = EFECTO[prioridad]
+    if (!efecto) continue
+    for (const [clave, factor] of Object.entries(efecto.objetivo ?? {})) {
+      objetivos[clave as Clave] *= factor as number
+    }
+    for (const [clave, valor] of Object.entries(efecto.techo ?? {})) {
+      techos[clave as Techo] = Math.min(techos[clave as Techo], valor as number)
+    }
+    for (const [clave, valor] of Object.entries(efecto.peso ?? {})) {
+      pesos[clave as Peso] = Math.max(pesos[clave as Peso], valor as number)
+    }
+  }
+
+  const favoritas = new Set(preferencias?.cocinasFavoritas ?? [])
+  return {
+    objetivos,
+    techos,
+    pesos,
+    favoritas,
+    cuotaFavorita: favoritas.size > 0 ? Math.max(1, Math.ceil(huecos / favoritas.size)) : 1,
+  }
+}
+
 interface Acumulado {
   nutrientes: Record<Clave, number>
   macros: Record<Macro, number>
-  categorias: Set<string>
+  cocinas: Map<string, number>
   verduras: Set<string>
   sabores: Map<string, number>
+}
+
+function acumuladoVacio(): Acumulado {
+  return {
+    nutrientes: Object.fromEntries(CLAVES.map((c) => [c, 0])) as Record<Clave, number>,
+    macros: Object.fromEntries(MACROS.map((m) => [m, 0])) as Record<Macro, number>,
+    cocinas: new Map(),
+    verduras: new Set(),
+    sabores: new Map(),
+  }
 }
 
 function acumular(acc: Acumulado, receta: RecetaListada) {
   const a = aporteDe(receta)
   for (const clave of CLAVES) acc.nutrientes[clave] += a[clave]
   for (const macro of MACROS) acc.macros[macro] += a[macro]
-  if (receta.categoria) acc.categorias.add(receta.categoria)
+  if (receta.categoria) acc.cocinas.set(receta.categoria, (acc.cocinas.get(receta.categoria) ?? 0) + 1)
   const verdura = verduraDe(receta)
   if (verdura) acc.verduras.add(verdura)
   acc.sabores.set(receta.sabor, (acc.sabores.get(receta.sabor) ?? 0) + 1)
 }
 
-function ganancia(a: Aporte, acc: Acumulado): number {
+// Cuánto se desvía el reparto de energía acumulado del de referencia, de 0
+// (clavado) a 1 (todo en un macro). Una semana sin macros declarados no se
+// desvía: no hay dato que juzgar, y castigarla la dejaría siempre por debajo de
+// las que sí lo traen.
+function desvioReparto(acumulado: Record<Macro, number>): number {
+  const kcal = MACROS.reduce((t, m) => t + acumulado[m] * KCAL_POR_GRAMO[m], 0)
+  if (kcal === 0) return 0
+  const suma = MACROS.reduce(
+    (t, m) => t + Math.abs((acumulado[m] * KCAL_POR_GRAMO[m]) / kcal - REPARTO[m]),
+    0
+  )
+  return suma / 2
+}
+
+function ganancia(a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
   let g = 0
   for (const clave of CLAVES) {
-    const antes = Math.min(acc.nutrientes[clave], OBJETIVO[clave])
-    const despues = Math.min(acc.nutrientes[clave] + a[clave], OBJETIVO[clave])
-    g += (despues - antes) / OBJETIVO[clave]
+    const objetivo = ajustes.objetivos[clave]
+    const antes = Math.min(acc.nutrientes[clave], objetivo)
+    const despues = Math.min(acc.nutrientes[clave] + a[clave], objetivo)
+    g += (despues - antes) / objetivo
   }
   return g
 }
 
-function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado): number {
+function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
+  const { pesos, techos, favoritas } = ajustes
   let p = 0
-  if (receta.categoria && acc.categorias.has(receta.categoria)) p += 0.35
+
+  if (receta.categoria) {
+    const cuota = favoritas.has(receta.categoria) ? ajustes.cuotaFavorita : 1
+    const usos = acc.cocinas.get(receta.categoria) ?? 0
+    if (usos >= cuota) p += pesos.cocinaRepetida * (1 + usos - cuota)
+    if (favoritas.size > 0 && !favoritas.has(receta.categoria)) p += pesos.noFavorita
+  }
+
   const verdura = verduraDe(receta)
-  if (verdura && acc.verduras.has(verdura)) p += 0.3
-  if (!verdura) p += 0.15
-  if ((acc.sabores.get(receta.sabor) ?? 0) >= 3) p += 0.2
-  if (a.saturadas > TECHO_SATURADAS) p += (a.saturadas - TECHO_SATURADAS) / 60
-  if (a.sal > TECHO_SAL) p += (a.sal - TECHO_SAL) / 12
-  // Cómo quedaría el reparto de macros de la semana si entrase este plato.
+  if (!verdura) p += pesos.sinVerdura
+  else if (acc.verduras.has(verdura)) p += pesos.verduraRepetida
+
+  if ((acc.sabores.get(receta.sabor) ?? 0) >= 3) p += pesos.saborRepetido
+
+  // Lo que se pasa de cada techo, en proporción al propio techo: así el mismo
+  // plato apenas roza el techo de serie y pesa de verdad cuando se ha pedido
+  // "menos sal" y el techo baja a la mitad.
+  for (const clave of Object.keys(techos) as Techo[]) {
+    const techo = techos[clave]
+    if (Number.isFinite(techo) && a[clave] > techo) {
+      p += PESO_TECHO[clave] * ((a[clave] - techo) / techo)
+    }
+  }
+
   const conElPlato = Object.fromEntries(
     MACROS.map((m) => [m, acc.macros[m] + a[m]])
   ) as Record<Macro, number>
-  p += PESO_REPARTO * desvioReparto(conElPlato)
+  p += pesos.reparto * desvioReparto(conElPlato)
+
   return p
 }
 
+/** Un sitio que llenar: un día de la semana, o el desayuno de ese día. */
+export interface Hueco {
+  id: string
+  /** Candidatas que cumplen los límites de este hueco concreto. */
+  candidatos: RecetaListada[]
+}
+
+export interface Reparto {
+  porHueco: Map<string, RecetaListada>
+  /** Huecos que han tenido que repetir un plato porque no quedaban candidatas. */
+  repetidos: Set<string>
+}
+
+export interface OpcionesReparto {
+  preferencias?: Preferencias
+  /** Platos que ya están puestos y no se tocan: los cocinados. */
+  yaEnLaSemana?: RecetaListada[]
+  semilla?: number
+}
+
 /**
- * Elige `n` platos que completen la semana. `yaEnLaSemana` son los que ya están
+ * Reparte platos por huecos manteniendo una sola cuenta de la semana. Los huecos
+ * más estrechos se llenan primero: si el martes solo admite platos de 20 minutos
+ * y el sábado admite cualquiera, elegir antes por el martes evita gastarle sus
+ * cuatro opciones a un día que no las necesitaba.
+ */
+export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}): Reparto {
+  const { preferencias, yaEnLaSemana = [], semilla = Date.now() } = opciones
+  const aleatorio = prng(semilla)
+  const ajustes = ajustesDe(preferencias, huecos.length)
+
+  const acc = acumuladoVacio()
+  for (const receta of yaEnLaSemana) acumular(acc, receta)
+
+  const usadas = new Set(yaEnLaSemana.map((r) => r.id))
+  const porHueco = new Map<string, RecetaListada>()
+  const repetidos = new Set<string>()
+
+  const orden = huecos
+    .map((hueco, i) => ({ hueco, i }))
+    .sort((a, b) => a.hueco.candidatos.length - b.hueco.candidatos.length || a.i - b.i)
+
+  for (const { hueco } of orden) {
+    const libres = hueco.candidatos.filter((r) => !usadas.has(r.id))
+    // Sin candidatas nuevas se repite un plato antes que dejar el día vacío: en
+    // una casa eso son sobras, no un fallo. Quien llama lo cuenta.
+    const entre = libres.length > 0 ? libres : hueco.candidatos
+    if (entre.length === 0) continue
+    if (libres.length === 0) repetidos.add(hueco.id)
+
+    let mejor = entre[0]
+    let mejorNota = -Infinity
+    for (const receta of entre) {
+      const a = aporteDe(receta)
+      const nota = ganancia(a, acc, ajustes) - penalizacion(receta, a, acc, ajustes) + aleatorio() * 0.25
+      if (nota > mejorNota) {
+        mejorNota = nota
+        mejor = receta
+      }
+    }
+
+    acumular(acc, mejor)
+    usadas.add(mejor.id)
+    porHueco.set(hueco.id, mejor)
+  }
+
+  return { porHueco, repetidos }
+}
+
+/**
+ * Elige `n` platos de un mismo montón. `yaEnLaSemana` son los que ya están
  * puestos y no se tocan (los cocinados): entran en el cálculo como si los hubiese
  * elegido esta misma función, así que lo que devuelve compensa lo que les falta y
  * no repite ni su cocina, ni su verdura, ni el plato en sí.
@@ -143,37 +343,12 @@ export function semanaEquilibrada(
   recetas: RecetaListada[],
   n: number,
   semilla = Date.now(),
-  yaEnLaSemana: RecetaListada[] = []
+  yaEnLaSemana: RecetaListada[] = [],
+  preferencias?: Preferencias
 ): RecetaListada[] {
-  const aleatorio = prng(semilla)
-  const puestas = new Set(yaEnLaSemana.map((r) => r.id))
-  const disponibles = recetas.filter((r) => !puestas.has(r.id))
-  const acc: Acumulado = {
-    nutrientes: Object.fromEntries(CLAVES.map((c) => [c, 0])) as Record<Clave, number>,
-    macros: Object.fromEntries(MACROS.map((m) => [m, 0])) as Record<Macro, number>,
-    categorias: new Set(),
-    verduras: new Set(),
-    sabores: new Map(),
-  }
-  for (const receta of yaEnLaSemana) acumular(acc, receta)
-  const elegidas: RecetaListada[] = []
-
-  while (elegidas.length < n && disponibles.length > 0) {
-    let mejor = 0
-    let mejorNota = -Infinity
-    for (let i = 0; i < disponibles.length; i++) {
-      const a = aporteDe(disponibles[i])
-      const nota = ganancia(a, acc) - penalizacion(disponibles[i], a, acc) + aleatorio() * 0.25
-      if (nota > mejorNota) {
-        mejorNota = nota
-        mejor = i
-      }
-    }
-
-    const [receta] = disponibles.splice(mejor, 1)
-    acumular(acc, receta)
-    elegidas.push(receta)
-  }
-
-  return elegidas
+  const huecos = Array.from({ length: n }, (_, i) => ({ id: String(i), candidatos: recetas }))
+  const { porHueco, repetidos } = repartirSemana(huecos, { preferencias, yaEnLaSemana, semilla })
+  return huecos
+    .filter((h) => porHueco.has(h.id) && !repetidos.has(h.id))
+    .map((h) => porHueco.get(h.id)!)
 }
