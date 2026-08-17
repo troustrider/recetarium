@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { semanaEquilibrada, aporteDe } from '../utils/semana'
+import { semanaEquilibrada, aporteDe, ajustesDe, repartirSemana } from '../utils/semana'
+import { PREFERENCIAS_POR_DEFECTO, type Preferencias, type Prioridad } from '../types/preferencias'
 import type { Micros, Receta } from '../types/receta'
+
+const con = (over: Partial<Preferencias>): Preferencias => ({ ...PREFERENCIAS_POR_DEFECTO, ...over })
+const conPrioridad = (...prioridades: Prioridad[]) => con({ prioridades })
 
 const MICROS_CERO: Micros = {
   fibra: 0, azucares: 0, saturadas: 0, sal: 0, hierroHemo: 0,
@@ -146,5 +150,161 @@ describe('semanaEquilibrada', () => {
     const a = semanaEquilibrada(recetas, 7, 42).map((r) => r.id)
     const b = semanaEquilibrada(recetas, 7, 42).map((r) => r.id)
     expect(a).toEqual(b)
+  })
+})
+
+describe('ajustesDe', () => {
+  it('una prioridad sube su objetivo y deja los demás en su sitio', () => {
+    const base = ajustesDe()
+    const conProteina = ajustesDe(conPrioridad('proteina'))
+    expect(conProteina.objetivos.proteinas).toBeGreaterThan(base.objetivos.proteinas)
+    expect(conProteina.objetivos.fibra).toBe(base.objetivos.fibra)
+  })
+
+  it('las prioridades de "menos" bajan el techo, no suben ningún objetivo', () => {
+    const a = ajustesDe(conPrioridad('menosSal', 'menosAzucar', 'ligera'))
+    expect(a.techos.sal).toBeLessThan(ajustesDe().techos.sal)
+    expect(a.techos.azucares).toBeLessThan(ajustesDe().techos.azucares)
+    expect(a.techos.calorias).toBe(600)
+    expect(a.objetivos).toEqual(ajustesDe().objetivos)
+  })
+
+  it('reparte la cuota entre las cocinas favoritas en vez de castigar lo que obliga la propia elección', () => {
+    // Cuatro favoritas para siete días: alguna tiene que salir dos veces.
+    expect(ajustesDe(con({ cocinasFavoritas: ['a', 'b', 'c', 'd'] }), 7).cuotaFavorita).toBe(2)
+    expect(ajustesDe(con({ cocinasFavoritas: ['a'] }), 7).cuotaFavorita).toBe(7)
+    expect(ajustesDe().cuotaFavorita).toBe(1)
+  })
+
+  it('una prioridad desconocida no revienta el cálculo', () => {
+    const a = ajustesDe(con({ prioridades: ['inventada' as Prioridad] }))
+    expect(a.objetivos).toEqual(ajustesDe().objetivos)
+  })
+})
+
+describe('prioridades de salud', () => {
+  it('con "menos sal" se va al plato soso aunque los dos alimenten igual', () => {
+    const pool = [
+      receta({ categoria: 'a', micros: { fibra: 6, sal: 4 } }),
+      receta({ categoria: 'b', micros: { fibra: 6, sal: 0.8 } }),
+    ]
+    expect(semanaEquilibrada(pool, 1, 3, [], conPrioridad('menosSal'))[0].categoria).toBe('b')
+  })
+
+  it('con "ligera" descarta el plato de 900 kcal', () => {
+    const pool = [
+      receta({ categoria: 'a', calorias: 900, micros: { fibra: 6 } }),
+      receta({ categoria: 'b', calorias: 500, micros: { fibra: 6 } }),
+    ]
+    expect(semanaEquilibrada(pool, 1, 3, [], conPrioridad('ligera'))[0].categoria).toBe('b')
+  })
+
+  it('sin la prioridad, ese mismo plato no está descartado', () => {
+    const pool = [receta({ categoria: 'a', calorias: 900, micros: { fibra: 20 } })]
+    expect(semanaEquilibrada(pool, 1, 3)).toHaveLength(1)
+  })
+
+  it('con "más proteína" prefiere el plato proteico al que solo trae fibra', () => {
+    const pool = [
+      receta({ categoria: 'a', proteinas: 50, carbohidratos: 40, grasas: 15 }),
+      receta({ categoria: 'b', proteinas: 8, carbohidratos: 40, grasas: 15, micros: { fibra: 4 } }),
+    ]
+    expect(semanaEquilibrada(pool, 1, 5, [], conPrioridad('proteina'))[0].categoria).toBe('a')
+  })
+})
+
+describe('cocinas favoritas', () => {
+  const favoritas = con({ cocinasFavoritas: ['japonesa', 'italiana'] })
+
+  it('prefiere una cocina favorita a igualdad de aporte', () => {
+    const pool = [
+      receta({ categoria: 'holandesa', micros: { fibra: 6 } }),
+      receta({ categoria: 'japonesa', micros: { fibra: 6 } }),
+    ]
+    expect(semanaEquilibrada(pool, 1, 2, [], favoritas)[0].categoria).toBe('japonesa')
+  })
+
+  it('llena la semana con las favoritas repitiendo cocina, que es lo que pide elegir solo dos', () => {
+    const pool = [
+      ...Array.from({ length: 4 }, (_, i) => receta({ categoria: 'japonesa', micros: { fibra: i } })),
+      ...Array.from({ length: 4 }, (_, i) => receta({ categoria: 'italiana', micros: { fibra: i } })),
+      ...Array.from({ length: 8 }, (_, i) => receta({ categoria: `otra${i}`, micros: { fibra: i } })),
+    ]
+    const semana = semanaEquilibrada(pool, 6, 9, [], favoritas)
+    const deFavoritas = semana.filter((r) => r.categoria === 'japonesa' || r.categoria === 'italiana')
+    expect(deFavoritas.length).toBeGreaterThanOrEqual(5)
+  })
+
+  it('no son un filtro: si las favoritas no dan para la semana, entra lo demás', () => {
+    const pool = [
+      receta({ categoria: 'japonesa' }),
+      ...Array.from({ length: 6 }, (_, i) => receta({ categoria: `otra${i}` })),
+    ]
+    expect(semanaEquilibrada(pool, 7, 4, [], favoritas)).toHaveLength(7)
+  })
+})
+
+describe('la verdura del propio plato cuenta', () => {
+  const conVerduraDentro = (nombre: string, resto: Partial<Receta> = {}) =>
+    receta({
+      ...resto,
+      ingredientes: [
+        { nombre: 'pollo', cantidad: 200, unidad: 'g', familia: 'carnes' },
+        { nombre, cantidad: 150, unidad: 'g', familia: 'verduras' },
+      ],
+    })
+
+  it('un guiso con verdura dentro no se penaliza como plato sin verdura', () => {
+    const pool = [
+      receta({ categoria: 'a' }),
+      conVerduraDentro('calabacín', { categoria: 'b' }),
+    ]
+    expect(semanaEquilibrada(pool, 1, 6, [], conPrioridad('fibra'))[0].categoria).toBe('b')
+  })
+
+  it('y su verdura ya cuenta como puesta para el resto de la semana', () => {
+    const puesta = conVerduraDentro('calabacín', { categoria: 'z' })
+    const pool = [
+      receta({ categoria: 'a', guarnicion: guarnicion('calabacín', { fibra: 4 }) }),
+      receta({ categoria: 'b', guarnicion: guarnicion('brócoli', { fibra: 4 }) }),
+    ]
+    expect(semanaEquilibrada(pool, 1, 8, [puesta], conPrioridad('fibra'))[0].categoria).toBe('b')
+  })
+})
+
+describe('repartirSemana', () => {
+  it('llena antes el hueco estrecho para no gastarle su única opción', () => {
+    const solo = receta({ categoria: 'a' })
+    const otra = receta({ categoria: 'b' })
+    const { porHueco, repetidos } = repartirSemana(
+      [
+        { id: 'ancho', candidatos: [solo, otra] },
+        { id: 'estrecho', candidatos: [solo] },
+      ],
+      { semilla: 1 }
+    )
+    expect(porHueco.get('estrecho')!.id).toBe(solo.id)
+    expect(porHueco.get('ancho')!.id).toBe(otra.id)
+    expect(repetidos.size).toBe(0)
+  })
+
+  it('repite un plato antes que dejar el día vacío, y lo dice', () => {
+    const unica = receta()
+    const { porHueco, repetidos } = repartirSemana(
+      [{ id: 'lunes', candidatos: [unica] }, { id: 'martes', candidatos: [unica] }],
+      { semilla: 1 }
+    )
+    expect(porHueco.get('lunes')!.id).toBe(unica.id)
+    expect(porHueco.get('martes')!.id).toBe(unica.id)
+    expect([...repetidos]).toEqual(['martes'])
+  })
+
+  it('un hueco sin ninguna candidata se queda vacío en vez de inventarse un plato', () => {
+    const { porHueco, repetidos } = repartirSemana(
+      [{ id: 'lunes', candidatos: [receta()] }, { id: 'martes', candidatos: [] }],
+      { semilla: 1 }
+    )
+    expect(porHueco.has('martes')).toBe(false)
+    expect(repetidos.has('martes')).toBe(false)
   })
 })
