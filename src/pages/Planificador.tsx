@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Dices, ChefHat, Salad } from 'lucide-react'
+import { Dices, ChefHat, Salad, SlidersHorizontal } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,
@@ -13,9 +13,11 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core'
-import { usePlanificador, type Dia, type EntradaPlan } from '../context/PlanificadorContext'
-import { useRecetasContext, usePendientesPlan, useDeshacer } from '../context'
+import { usePlanificador, type Dia, type EntradaPlan, type InformeSemana } from '../context/PlanificadorContext'
+import { useRecetasContext, usePendientesPlan, useDeshacer, usePreferencias } from '../context'
 import { useDespensa } from '../context/DespensaContext'
+import PanelSemana from '../components/planificador/PanelSemana'
+import ResumenSemana from '../components/planificador/ResumenSemana'
 import type { PendientePlan } from '../context/PendientesPlanContext'
 import { consumoAlCocinar, type ConsumoIngrediente } from '../utils/consumo'
 import { faltantes } from '../utils/despensa'
@@ -526,6 +528,9 @@ function Planificador() {
   const { pendientes, quitarPendiente, restaurarPendientes } = usePendientesPlan()
   const { despensa, consumir, restaurarDespensa } = useDespensa()
   const { registrar } = useDeshacer()
+  const { preferencias } = usePreferencias()
+  const [panelAbierto, setPanelAbierto] = useState(false)
+  const [informe, setInforme] = useState<InformeSemana | null>(null)
   const [selectorDia, setSelectorDia] = useState<Dia | null>(null)
   const [pendienteActiva, setPendienteActiva] = useState<PendientePlan | null>(null)
   const [cocinando, setCocinando] = useState<{ dia: Dia; entrada: EntradaPlan } | null>(null)
@@ -546,6 +551,22 @@ function Planificador() {
   const consumos = useMemo(
     () => (cocinando ? consumoAlCocinar([cocinando.entrada], despensa) : []),
     [cocinando, despensa]
+  )
+
+  // Las cocinas que de verdad hay en el catálogo, de la más surtida a la que
+  // menos: elegir como favorita una de la que solo hay dos platos no llena nada.
+  const cocinas = useMemo(() => {
+    const cuenta = new Map<string, number>()
+    for (const receta of recetas) {
+      if (!receta.categoria) continue
+      cuenta.set(receta.categoria, (cuenta.get(receta.categoria) ?? 0) + 1)
+    }
+    return [...cuenta.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([c]) => c)
+  }, [recetas])
+
+  const recetasDelPlan = useMemo(
+    () => dias.flatMap((d) => plan[d].map((e) => e.receta)),
+    [dias, plan]
   )
 
   function alCocinar(dia: Dia, entrada: EntradaPlan) {
@@ -616,10 +637,22 @@ function Planificador() {
         </div>
         <div className="flex items-center gap-3">
           <motion.button
+            onClick={() => setPanelAbierto(true)}
+            className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            whileTap={{ scale: 0.95 }}
+            title="Qué buscamos esta semana, cuántos desayunos y qué no entra"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            Cómo comemos
+          </motion.button>
+          <motion.button
             onClick={() => {
               const anterior = plan
-              autollenar(recetas, 2)
-              registrar('Semana equilibrada', () => restaurarPlan(anterior))
+              setInforme(autollenar(recetas, 2))
+              registrar('Semana equilibrada', () => {
+                restaurarPlan(anterior)
+                setInforme(null)
+              })
             }}
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
@@ -644,6 +677,18 @@ function Planificador() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {informe && (
+          <ResumenSemana
+            key="resumen"
+            recetas={recetasDelPlan}
+            preferencias={preferencias}
+            informe={informe}
+            onCerrar={() => setInforme(null)}
+          />
+        )}
+      </AnimatePresence>
 
       <DndContext
         sensors={sensors}
@@ -742,6 +787,9 @@ function Planificador() {
             }}
             onCerrar={() => setCocinando(null)}
           />
+        )}
+        {panelAbierto && (
+          <PanelSemana cocinas={cocinas} onCerrar={() => setPanelAbierto(false)} />
         )}
         {pendienteActiva && (
           <SelectorDia

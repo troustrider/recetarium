@@ -308,3 +308,28 @@ describe('repartirSemana', () => {
     expect(repetidos.has('martes')).toBe(false)
   })
 })
+
+describe('lo cocinado no vuelve', () => {
+  it('al repetir plato no rescata uno que ya estaba en la semana', () => {
+    const cocinada = receta({ categoria: 'z' })
+    const unica = receta({ categoria: 'a' })
+    const { porHueco } = repartirSemana(
+      [
+        { id: 'lunes', candidatos: [cocinada, unica] },
+        { id: 'martes', candidatos: [cocinada, unica] },
+        { id: 'miercoles', candidatos: [cocinada, unica] },
+      ],
+      { yaEnLaSemana: [cocinada], semilla: 1 }
+    )
+    expect([...porHueco.values()].every((r) => r.id === unica.id)).toBe(true)
+  })
+
+  it('si lo único que cabía ya estaba cocinado, el hueco se queda vacío', () => {
+    const cocinada = receta()
+    const { porHueco } = repartirSemana(
+      [{ id: 'lunes', candidatos: [cocinada] }],
+      { yaEnLaSemana: [cocinada], semilla: 1 }
+    )
+    expect(porHueco.size).toBe(0)
+  })
+})
