@@ -81,7 +81,32 @@ const { plan, dias, añadir, quitar, setRaciones, mover, limpiar } = usePlanific
 | `setRaciones(dia, entradaId, n)` | `void` | Cambia las raciones de una entrada (mín. 1, máx. 4) |
 | `mover(desde, hasta, entradaId)` | `void` | Mueve una entrada de un día a otro |
 | `limpiar()` | `void` | Vacía el plan completo |
-| `autollenar(recetas, raciones)` | `void` | Rellena los días sin plato repartiendo macros y micros (`utils/semana`). Respeta las entradas marcadas como cocinadas: ni las borra ni vuelve a proponer su receta, y las cuenta en el reparto del resto |
+| `autollenar(recetas, raciones)` | `InformeSemana` | Rellena los días sin plato repartiendo macros y micros (`utils/semana`) según las preferencias del hogar, e incluye los desayunos del cupo. Respeta las entradas marcadas como cocinadas: ni las borra ni vuelve a proponer su receta —tampoco al repetir—, y las cuenta en el reparto del resto. Devuelve qué ha hecho: cuántas cenas y desayunos, qué ha conservado, qué ha repetido, si ha ensanchado el tiempo y qué huecos se han quedado vacíos |
+
+---
+
+## PreferenciasContext
+
+Cómo quiere comer el hogar: lo único que cambia el comportamiento de Auto-semana. Se guarda en `app_estado.preferencias` y lo comparten los dos miembros, como el plan.
+
+**Provider:** `<PreferenciasProvider>` — por encima de `PlanificadorProvider`, que lo lee al generar la semana.
+
+**Hook de acceso:** `usePreferencias()`
+
+```tsx
+const { preferencias, alternarPrioridad, alternarCocina, setDesayunos, setLimites } = usePreferencias()
+```
+
+| Valor | Tipo | Descripción |
+|---|---|---|
+| `preferencias.prioridades` | `Prioridad[]` | Máx. 3. Suben un objetivo semanal o bajan un techo; no descartan platos |
+| `preferencias.cocinasFavoritas` | `string[]` | Máx. 4. Prioridad, no filtro: si no dan para la semana, entra lo demás |
+| `preferencias.desayunos` | `number` | 0-7 desayunos planificados, repartidos por la semana |
+| `preferencias.limites` | `LimitesSemana` | Tiempo (entre semana y finde), dieta, sin gluten, ingredientes vetados |
+| `alternarPrioridad(p)` | `void` | Al pasar de 3 sale la más antigua, no hay que quitar una a mano |
+| `aplicar(prefs)` | `void` | Sustituye el bloque entero (lo usan los presets) |
+
+Los límites excluyen y las prioridades empujan: es la diferencia que evita que una preferencia deje la semana a medias. De los límites, solo el tiempo se ensancha cuando el catálogo no da; la dieta, el gluten y los vetos no se relajan nunca.
 
 ---
 
@@ -91,9 +116,13 @@ const { plan, dias, añadir, quitar, setRaciones, mover, limpiar } = usePlanific
 <RecetasProvider>
   <ListaCompraProvider>
     <DespensaProvider>
-      <PlanificadorProvider>
-        <App />
-      </PlanificadorProvider>
+      <PendientesPlanProvider>
+        <PreferenciasProvider>
+          <PlanificadorProvider>
+            <App />
+          </PlanificadorProvider>
+        </PreferenciasProvider>
+      </PendientesPlanProvider>
     </DespensaProvider>
   </ListaCompraProvider>
 </RecetasProvider>

@@ -298,7 +298,10 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   const acc = acumuladoVacio()
   for (const receta of yaEnLaSemana) acumular(acc, receta)
 
-  const usadas = new Set(yaEnLaSemana.map((r) => r.id))
+  // Lo ya cocinado no se vuelve a proponer ni cuando toca repetir: acabas de
+  // comértelo. Si hay que repetir, se repite de lo elegido en esta pasada.
+  const intocables = new Set(yaEnLaSemana.map((r) => r.id))
+  const usadas = new Set(intocables)
   const porHueco = new Map<string, RecetaListada>()
   const repetidos = new Set<string>()
 
@@ -310,7 +313,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     const libres = hueco.candidatos.filter((r) => !usadas.has(r.id))
     // Sin candidatas nuevas se repite un plato antes que dejar el día vacío: en
     // una casa eso son sobras, no un fallo. Quien llama lo cuenta.
-    const entre = libres.length > 0 ? libres : hueco.candidatos
+    const entre = libres.length > 0 ? libres : hueco.candidatos.filter((r) => !intocables.has(r.id))
     if (entre.length === 0) continue
     if (libres.length === 0) repetidos.add(hueco.id)
 
@@ -331,6 +334,56 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   }
 
   return { porHueco, repetidos }
+}
+
+export interface Cobertura {
+  clave: Clave
+  aportado: number
+  objetivo: number
+  /** 1 = la semana llega al objetivo. */
+  ratio: number
+}
+
+export interface Exceso {
+  clave: Techo
+  media: number
+  techo: number
+}
+
+export interface ResumenSemana {
+  coberturas: Cobertura[]
+  excesos: Exceso[]
+  platos: number
+}
+
+/**
+ * Qué trae la semana puesta, para poder contarla en vez de enseñar un número.
+ * No es una nota ni un aprobado: es de dónde viene cada cosa y qué se queda
+ * corto, que es lo único accionable.
+ */
+export function resumenSemana(recetas: RecetaListada[], preferencias?: Preferencias): ResumenSemana {
+  const ajustes = ajustesDe(preferencias, recetas.length || 1)
+  const acc = acumuladoVacio()
+  for (const receta of recetas) acumular(acc, receta)
+
+  const coberturas = CLAVES.map((clave) => ({
+    clave,
+    aportado: acc.nutrientes[clave],
+    objetivo: ajustes.objetivos[clave],
+    ratio: ajustes.objetivos[clave] > 0 ? acc.nutrientes[clave] / ajustes.objetivos[clave] : 0,
+  }))
+
+  const excesos: Exceso[] = []
+  if (recetas.length > 0) {
+    for (const clave of Object.keys(ajustes.techos) as Techo[]) {
+      const techo = ajustes.techos[clave]
+      if (!Number.isFinite(techo)) continue
+      const media = recetas.reduce((t, r) => t + aporteDe(r)[clave], 0) / recetas.length
+      if (media > techo) excesos.push({ clave, media, techo })
+    }
+  }
+
+  return { coberturas, excesos, platos: recetas.length }
 }
 
 /**
