@@ -50,7 +50,7 @@ function Landing() {
     try {
       const destino = window.location.pathname + window.location.search
       marcarIntentoDeEntrada()
-      await signIn.social({ provider: proveedor, callbackURL: destino === '/' ? '/' : destino })
+      await signIn.social({ provider: proveedor, callbackURL: window.location.origin + destino })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se ha podido iniciar sesión')
       setEntrando(false)
