@@ -5,9 +5,9 @@ export async function listar() {
     SELECT i.email, i.hogar_id AS "hogarId", h.nombre AS hogar, i.rol,
            i.invitado_en AS "invitadoEn", i.usado_en AS "usadoEn",
            EXISTS (
-             SELECT 1 FROM neon_auth."user" u
+             SELECT 1 FROM usuarios u
              JOIN miembros m ON m.usuario_id = u.id
-             WHERE lower(u.email) = i.email
+             WHERE u.email = i.email
            ) AS "haEntrado"
     FROM invitados i
     LEFT JOIN hogares h ON h.id = i.hogar_id

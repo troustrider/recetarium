@@ -1,4 +1,4 @@
-import { cabeceraSesion, olvidarToken, renovarToken } from '../auth'
+import { cabeceraSesion, olvidarToken } from '../auth'
 
 export const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
@@ -25,14 +25,6 @@ async function pedir(ruta: string, options: RequestInit): Promise<Response> {
 export async function apiFetch(ruta: string, options: RequestInit = {}): Promise<Response> {
   const res = await pedir(ruta, options)
   if (res.status !== 401) return res
-
-  // Un 401 casi siempre es el JWT caducado, no una sesión perdida: se renueva y
-  // se repite la petición. Solo si no hay token nuevo se suelta la sesión.
-  const token = await renovarToken()
-  if (token) {
-    const reintento = await pedir(ruta, options)
-    if (reintento.status !== 401) return reintento
-  }
 
   olvidarToken()
   await limpiarCacheApi()

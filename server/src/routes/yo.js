@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import sql from '../lib/db.js'
 import { requireUser } from '../lib/auth.js'
+import { borrarSesionesDe } from '../services/authService.js'
 
 const router = Router()
 
@@ -10,10 +10,9 @@ const router = Router()
  *   get:
  *     summary: Quién soy, según el token de sesión
  *     description: >
- *       Fuente de verdad de la sesión al arrancar la app. En la PWA de iOS la
- *       cookie del servicio de auth no sobrevive al cierre, así que el cliente
- *       guarda el token y pregunta aquí: este backend valida contra
- *       neon_auth.session, que está en su misma base de datos.
+ *       Fuente de verdad de la sesión al arrancar la app: el cliente guarda el
+ *       token que le dio nuestro OAuth y pregunta aquí, que valida contra la
+ *       tabla sesiones.
  *     tags: [Auth]
  *     responses:
  *       200: { description: Usuario, hogar y rol }
@@ -37,7 +36,7 @@ router.get('/', requireUser, (req, res) => res.json(req.usuario))
  *       401: { description: Sesión inválida o caducada }
  */
 router.delete('/sesion', requireUser, async (req, res) => {
-  await sql`DELETE FROM neon_auth.session WHERE "userId" = ${req.usuario.id}`
+  await borrarSesionesDe(req.usuario.id)
   res.status(204).end()
 })
 

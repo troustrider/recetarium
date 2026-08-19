@@ -124,9 +124,10 @@ cd .. && npm run dev
 
 Frontend en `http://localhost:5173`. Backend en `http://localhost:3001`.
 
-Hace falta `DATABASE_URL` en `server/.env` y `VITE_NEON_AUTH_URL` en la raíz, apuntando
-las dos a la misma rama de Neon. Sin fila en `invitados` no se entra, aunque se tenga
-cuenta de Google:
+Hacen falta en `server/.env`: `DATABASE_URL` y las credenciales del cliente OAuth de
+Google (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`), con
+`http://localhost:3001/api/v1/auth/google/callback` autorizado en Google Cloud. Sin fila
+en `invitados` no se entra, aunque se tenga cuenta de Google:
 
 ```bash
 node server/scripts/invitar.mjs tu@correo.com --propio --admin

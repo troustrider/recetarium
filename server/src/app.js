@@ -3,26 +3,19 @@ import express from 'express'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './config/swagger.js'
+import { origenPermitido } from './lib/origenes.js'
 import recetasRouter from './routes/recetas.js'
 import { rutaEstado } from './routes/estado.js'
 import sesionesRouter from './routes/sesiones.js'
 import yoRouter from './routes/yo.js'
+import authRouter from './routes/auth.js'
 
 const app = express()
-
-const ORIGENES = (process.env.ORIGENES_PERMITIDOS ?? '')
-  .split(',')
-  .map((o) => o.trim().replace(/\/$/, ''))
-  .filter(Boolean)
-
-const LOCAL = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/
 
 app.use(
   cors({
     origin(origin, cb) {
-      if (!origin) return cb(null, true)
-      const limpio = origin.replace(/\/$/, '')
-      cb(null, ORIGENES.includes(limpio) || (ORIGENES.length === 0 && LOCAL.test(limpio)))
+      cb(null, !origin || origenPermitido(origin))
     },
   })
 )
@@ -37,6 +30,7 @@ app.use('/api/v1/pendientes', rutaEstado('pendientes'))
 app.use('/api/v1/preferencias', rutaEstado('preferencias'))
 app.use('/api/v1/admin', sesionesRouter)
 app.use('/api/v1/yo', yoRouter)
+app.use('/api/v1/auth', authRouter)
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'Ruta no encontrada' }))
 

@@ -1,12 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
-import {
-  capturarToken,
-  olvidarToken,
-  tokenGuardado,
-  authClient,
-  huboIntentoDeEntrada,
-  limpiarIntentoDeEntrada,
-} from '../auth'
+import { avisoDeVuelta, capturarToken, olvidarToken, tokenGuardado, type Aviso } from '../auth'
 import { getYo, cerrarSesionServidor, type UsuarioDTO } from '../api/yo'
 import { limpiarCacheApi } from '../api/http'
 
@@ -16,7 +9,7 @@ interface Sesion {
   estado: Estado
   usuario: UsuarioDTO | null
   fallo: boolean
-  bloqueada: boolean
+  aviso: Aviso | null
   salir: () => Promise<void>
   reintentar: () => void
 }
@@ -27,22 +20,22 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<Estado>(() => (tokenGuardado() ? 'comprobando' : 'fuera'))
   const [usuario, setUsuario] = useState<UsuarioDTO | null>(null)
   const [fallo, setFallo] = useState(false)
-  const [bloqueada, setBloqueada] = useState(false)
+  const [aviso, setAviso] = useState<Aviso | null>(null)
   const [intento, setIntento] = useState(0)
 
   useEffect(() => {
     let vigente = true
     ;(async () => {
       try {
-        const token = await capturarToken()
+        const token = capturarToken()
+        const vuelta = token ? null : avisoDeVuelta()
 
-        if (!token && huboIntentoDeEntrada()) {
+        if (!token) {
           if (!vigente) return
-          setBloqueada(true)
+          setAviso(vuelta)
           setEstado('fuera')
           return
         }
-        if (token) limpiarIntentoDeEntrada()
 
         const yo = await getYo()
         if (!vigente) return
@@ -67,19 +60,17 @@ export function SesionProvider({ children }: { children: ReactNode }) {
     setEstado('fuera')
     await revocada.catch(() => {})
     await limpiarCacheApi()
-    authClient.signOut().catch(() => {})
   }, [])
 
   const reintentar = useCallback(() => {
     setFallo(false)
-    setBloqueada(false)
-    limpiarIntentoDeEntrada()
+    setAviso(null)
     setEstado(tokenGuardado() ? 'comprobando' : 'fuera')
     setIntento((n) => n + 1)
   }, [])
 
   return (
-    <SesionContext.Provider value={{ estado, usuario, fallo, bloqueada, salir, reintentar }}>
+    <SesionContext.Provider value={{ estado, usuario, fallo, aviso, salir, reintentar }}>
       {children}
     </SesionContext.Provider>
   )

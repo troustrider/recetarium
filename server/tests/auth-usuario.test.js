@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import express from 'express'
 import sql from '../src/lib/db.js'
 import { requireUser, requireAdmin } from '../src/lib/auth.js'
+import { crearSesion } from '../src/services/authService.js'
 
 const HOGAR_COMPARTIDO = '00000000-0000-0000-0000-000000000001'
 const creados = { usuarios: [], invitados: [], hogares: [] }
@@ -11,16 +12,12 @@ let base
 
 async function crearUsuario(email, { banned = false } = {}) {
   const [u] = await sql`
-    INSERT INTO neon_auth."user" (id, name, email, "emailVerified", banned, "createdAt", "updatedAt")
-    VALUES (gen_random_uuid(), ${email.split('@')[0]}, ${email}, true, ${banned}, now(), now())
+    INSERT INTO usuarios (email, nombre, suspendido)
+    VALUES (${email}, ${email.split('@')[0]}, ${banned})
     RETURNING id
   `
   creados.usuarios.push(u.id)
-  const token = `test-${crypto.randomUUID()}`
-  await sql`
-    INSERT INTO neon_auth.session (id, token, "userId", "expiresAt", "createdAt", "updatedAt")
-    VALUES (gen_random_uuid(), ${token}, ${u.id}, now() + interval '1 day', now(), now())
-  `
+  const token = await crearSesion(u.id)
   return { id: u.id, token }
 }
 
@@ -46,8 +43,7 @@ beforeAll(async () => {
 afterAll(async () => {
   if (creados.usuarios.length) {
     await sql`DELETE FROM miembros WHERE usuario_id = ANY(${creados.usuarios}::uuid[])`
-    await sql`DELETE FROM neon_auth.session WHERE "userId" = ANY(${creados.usuarios}::uuid[])`
-    await sql`DELETE FROM neon_auth."user" WHERE id = ANY(${creados.usuarios}::uuid[])`
+    await sql`DELETE FROM usuarios WHERE id = ANY(${creados.usuarios}::uuid[])`
   }
   if (creados.invitados.length) await sql`DELETE FROM invitados WHERE email = ANY(${creados.invitados})`
   if (creados.hogares.length) await sql`DELETE FROM hogares WHERE id = ANY(${creados.hogares}::uuid[])`
@@ -63,12 +59,6 @@ describe('requireUser', () => {
     expect((await get('/yo', 'no-existe')).status).toBe(401)
   })
 
-  it('rechaza un JWT que no verifica', async () => {
-    const res = await get('/yo', 'eyJhbGciOiJFZERTQSJ9.eyJzdWIiOiJmYWxzbyJ9.firma-invalida')
-    expect(res.status).toBe(401)
-    expect((await res.json()).error).toMatch(/no verificable/i)
-  })
-
   it('acepta el token opaco url-encoded', async () => {
     const email = `encoded-${Date.now()}@test.dev`
     const { token } = await crearUsuario(email)
@@ -80,7 +70,7 @@ describe('requireUser', () => {
 
   it('rechaza una sesión caducada', async () => {
     const { id, token } = await crearUsuario(`caducada-${Date.now()}@test.dev`)
-    await sql`UPDATE neon_auth.session SET "expiresAt" = now() - interval '1 hour' WHERE "userId" = ${id}`
+    await sql`UPDATE sesiones SET expira_en = now() - interval '1 hour' WHERE usuario_id = ${id}`
     expect((await get('/yo', token)).status).toBe(401)
   })
 

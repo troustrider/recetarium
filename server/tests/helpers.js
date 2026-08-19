@@ -1,5 +1,6 @@
 import app from '../src/app.js'
 import sql from '../src/lib/db.js'
+import { crearSesion as nuevaSesion } from '../src/services/authService.js'
 
 const HOGAR_COMPARTIDO = '00000000-0000-0000-0000-000000000001'
 
@@ -18,8 +19,7 @@ const creados = { usuarios: [], hogares: [] }
 export async function limpiarCreados() {
   if (creados.usuarios.length) {
     await sql`DELETE FROM miembros WHERE usuario_id = ANY(${creados.usuarios}::uuid[])`
-    await sql`DELETE FROM neon_auth.session WHERE "userId" = ANY(${creados.usuarios}::uuid[])`
-    await sql`DELETE FROM neon_auth."user" WHERE id = ANY(${creados.usuarios}::uuid[])`
+    await sql`DELETE FROM usuarios WHERE id = ANY(${creados.usuarios}::uuid[])`
     creados.usuarios.length = 0
   }
   if (creados.hogares.length) {
@@ -31,15 +31,9 @@ export async function limpiarCreados() {
 export async function crearSesion({ rol = 'admin', hogarId = HOGAR_COMPARTIDO } = {}) {
   const email = `helper-${crypto.randomUUID()}@test.dev`
   const [u] = await sql`
-    INSERT INTO neon_auth."user" (id, name, email, "emailVerified", "createdAt", "updatedAt")
-    VALUES (gen_random_uuid(), 'Helper', ${email}, true, now(), now())
-    RETURNING id
+    INSERT INTO usuarios (email, nombre) VALUES (${email}, 'Helper') RETURNING id
   `
-  const token = `helper-${crypto.randomUUID()}`
-  await sql`
-    INSERT INTO neon_auth.session (id, token, "userId", "expiresAt", "createdAt", "updatedAt")
-    VALUES (gen_random_uuid(), ${token}, ${u.id}, now() + interval '1 day', now(), now())
-  `
+  const token = await nuevaSesion(u.id)
   await sql`INSERT INTO miembros (usuario_id, hogar_id, rol) VALUES (${u.id}, ${hogarId}, ${rol})`
   creados.usuarios.push(u.id)
 
@@ -50,8 +44,7 @@ export async function crearSesion({ rol = 'admin', hogarId = HOGAR_COMPARTIDO } 
     hogarId,
     borrar: async () => {
       await sql`DELETE FROM miembros WHERE usuario_id = ${u.id}`
-      await sql`DELETE FROM neon_auth.session WHERE "userId" = ${u.id}`
-      await sql`DELETE FROM neon_auth."user" WHERE id = ${u.id}`
+      await sql`DELETE FROM usuarios WHERE id = ${u.id}`
     },
   }
 }

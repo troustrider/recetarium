@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import useDarkMode from '../hooks/useDarkMode'
 import Marca from '../components/shared/Marca'
-import { signIn, marcarIntentoDeEntrada } from '../auth'
+import { entrar as irAGoogle, type Aviso } from '../auth'
 import { useSesion } from '../context/SesionContext'
 import MosaicoLanding from '../components/shared/MosaicoLanding'
 import MuestraTarjeta from '../components/shared/MuestraTarjeta'
@@ -37,24 +37,22 @@ function GoogleIcon() {
 
 const METODOS = [{ id: 'google' as const, etiqueta: 'Continuar con Google', Icono: GoogleIcon }]
 
+const MENSAJES: Record<Aviso, string> = {
+  'sin-invitacion': 'Ese correo no tiene acceso todavía. Pídeselo a Karim y vuelve a entrar.',
+  cancelado: 'Se quedó a medias la entrada con Google.',
+  fallo: 'Google no ha podido confirmar quién eres.',
+  suspendido: 'Esa cuenta está suspendida.',
+}
+
 function Landing() {
   const { dark, toggle } = useDarkMode()
-  const { fallo, bloqueada, reintentar } = useSesion()
+  const { fallo, aviso, reintentar } = useSesion()
   const [abierto, setAbierto] = useState(false)
   const [entrando, setEntrando] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  async function entrar(proveedor: 'google') {
+  function entrar() {
     setEntrando(true)
-    setError(null)
-    try {
-      const destino = window.location.pathname + window.location.search
-      marcarIntentoDeEntrada()
-      await signIn.social({ provider: proveedor, callbackURL: window.location.origin + destino })
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'No se ha podido iniciar sesión')
-      setEntrando(false)
-    }
+    irAGoogle()
   }
 
   const unico = METODOS.length === 1
@@ -140,7 +138,7 @@ function Landing() {
                   {METODOS.map(({ id, etiqueta, Icono }) => (
                     <motion.button
                       key={id}
-                      onClick={() => entrar(id)}
+                      onClick={entrar}
                       disabled={entrando}
                       whileTap={{ scale: 0.97 }}
                       className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl text-sm font-semibold bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-white disabled:opacity-60 transition-colors"
@@ -162,23 +160,14 @@ function Landing() {
             )}
           </div>
 
-          {error && (
-            <p className="mt-4 text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2">
-              {error}
-            </p>
-          )}
-
-          {bloqueada && (
+          {aviso && (
             <div className="mt-4 text-left text-sm text-amber-900 dark:text-amber-100 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/60 rounded-xl px-3 py-2.5 space-y-2">
-              <p className="font-semibold">Entraste en Google, pero el navegador no guardó la sesión.</p>
-              <p className="opacity-90">
-                Suele ser el bloqueo de seguimiento entre sitios de Safari. En el iPhone:
-                Ajustes › Apps › Safari › desactiva <strong>Impedir seguimiento entre sitios</strong>,
-                y vuelve a intentarlo.
-              </p>
-              <button onClick={reintentar} className="font-semibold underline underline-offset-2">
-                Ya está, reintentar
-              </button>
+              <p>{MENSAJES[aviso]}</p>
+              {aviso !== 'sin-invitacion' && (
+                <button onClick={reintentar} className="font-semibold underline underline-offset-2">
+                  Reintentar
+                </button>
+              )}
             </div>
           )}
 

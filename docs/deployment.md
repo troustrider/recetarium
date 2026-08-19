@@ -36,18 +36,26 @@ El proyecto es un monorepo con frontend (Vite) y backend (Express). Vercel lo ge
 |---|---|---|
 | `DATABASE_URL` | Connection string de Neon (PostgreSQL) | Obligatoria en producción y local con BD |
 | `VITE_API_URL` | Sobreescribe la URL base de la API | Solo si el frontend y el backend están en dominios distintos |
-| `VITE_NEON_AUTH_URL` | URL del servicio Neon Auth. La usan el login en el cliente **y** el backend para descargar el JWKS con el que verifica los tokens | Obligatoria |
+| `GOOGLE_CLIENT_ID` | Cliente OAuth de Google, tipo «Aplicación web» | Obligatoria |
+| `GOOGLE_CLIENT_SECRET` | Su secreto. Solo lo ve el backend | Obligatoria |
+| `URL_API` | Base pública de la API, sin barra final. De ahí sale el `redirect_uri` que Google tiene que tener autorizado | Obligatoria en producción |
+| `ORIGENES_PERMITIDOS` | Orígenes que pueden llamar a la API y a los que se puede volver tras entrar, separados por coma | Obligatoria en producción; vacía en local permite localhost |
 
-> **Cuidado con `VITE_NEON_AUTH_URL`.** Tiene que apuntar a la auth de la **misma rama de Neon** que `DATABASE_URL`. Si el bundle mira a la rama de pruebas y la API a producción, el login entra pero `GET /yo` devuelve 401 y la app queda en bucle contra la landing, sin forma de entrar.
->
-> No la marques como «Sensitive»: viaja en el bundle igualmente, y marcarla impide releerla para comprobar erratas.
+> **El `redirect_uri` tiene que coincidir carácter a carácter** con uno de los autorizados en Google Cloud: `<URL_API>/auth/google/callback`. En producción,
+> `https://recetarium-one.vercel.app/api/v1/auth/google/callback`; en local,
+> `http://localhost:3001/api/v1/auth/google/callback`. Si no coincide, Google corta antes de
+> enseñar la pantalla de cuentas y el error es suyo, no de la app.
 
-`DATABASE_URL` se configura en el panel de Vercel (Settings → Environment Variables). Nunca se commitea al repositorio.
+> **`ORIGENES_PERMITIDOS` es la lista blanca de vuelta.** El destino que la landing manda en
+> `/auth/google/inicio?destino=...` se valida contra ella: sin eso, cualquiera podría hacerse
+> mandar la sesión a un sitio ajeno.
+
+`DATABASE_URL`, `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` se configuran en el panel de Vercel (Settings → Environment Variables). Nunca se commitean al repositorio.
 
 ## Pasos para redesplegar desde cero
 
 1. Importar el repositorio en Vercel (o conectarlo si ya existe).
 2. El framework se detecta automáticamente como Vite.
-3. Añadir `DATABASE_URL` y `VITE_NEON_AUTH_URL` en Settings → Environment Variables.
-4. Provisionar Neon Auth en esa rama y dejar la lista blanca sembrada (`server/scripts/invitar.mjs`), o nadie podrá entrar.
+3. Añadir `DATABASE_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `URL_API` y `ORIGENES_PERMITIDOS` en Settings → Environment Variables.
+4. Aplicar `sql/2026-08-oauth-propio.sql` y dejar la lista blanca sembrada (`server/scripts/invitar.mjs`), o nadie podrá entrar.
 4. Hacer push a `main` — Vercel despliega solo.
