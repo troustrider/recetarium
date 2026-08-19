@@ -51,7 +51,7 @@ for (const r of filas) {
     difs.push(`estimadoDe ${r.micros?.estimadoDe} -> ${f.micros.estimadoDe}`)
   }
   for (const k of ['vegetariana', 'vegana']) {
-    if (f.apto[k] !== (r.apto?.[k] ?? undefined)) difs.push(`${k} ${r.apto?.[k]} -> ${f.apto[k]}`)
+    if ((f.apto[k] ?? null) !== (r.apto?.[k] ?? null)) difs.push(`${k} ${r.apto?.[k]} -> ${f.apto[k]}`)
   }
   if (difs.length === 0) continue
 
