@@ -105,6 +105,38 @@
       "revisado": "2026-08"
     },
     {
+      "nombre": "salami",
+      "euros": 15,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 100 g"
+    },
+    {
+      "nombre": "mortadela",
+      "euros": 10,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 150 g"
+    },
+    {
+      "nombre": "rookvlees",
+      "euros": 26,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 100 g"
+    },
+    {
+      "nombre": "corned beef en lata",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "lata 340 g"
+    },
+    {
       "nombre": "bacon",
       "euros": 11.59,
       "unidad": "kg",
