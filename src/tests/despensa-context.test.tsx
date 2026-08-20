@@ -10,6 +10,7 @@ const api = vi.hoisted(() => ({
 vi.mock('../api/estado', () => api)
 
 const { DespensaProvider, useDespensa } = await import('../context/DespensaContext')
+const { sumarDias } = await import('../utils/caducidadEstimada')
 
 const envoltorio = ({ children }: { children: ReactNode }) => <DespensaProvider>{children}</DespensaProvider>
 
@@ -196,6 +197,46 @@ describe('editar', () => {
     act(() => result.current.editar('arroz', { unidad: 'kg' }))
 
     expect(result.current.despensa[0].unidad).toBeUndefined()
+  })
+})
+
+describe('abrir el paquete', () => {
+  it('recorta la caducidad a lo que aguanta abierto', async () => {
+    const { result } = await montar()
+    act(() => result.current.añadir('nata', 'lácteos', { caducidad: '2026-12-30' }))
+    act(() => result.current.editar('nata', { abierto: '2026-08-10' }))
+
+    expect(result.current.despensa[0]).toMatchObject({ abierto: '2026-08-10', caducidad: '2026-08-13' })
+  })
+
+  it('no toca la fecha de lo que abrir no estropea', async () => {
+    const { result } = await montar()
+    act(() => result.current.añadir('arroz', 'cereales', { caducidad: '2027-01-01' }))
+    act(() => result.current.editar('arroz', { abierto: '2026-08-10' }))
+
+    expect(result.current.despensa[0]).toMatchObject({ abierto: '2026-08-10', caducidad: '2027-01-01' })
+  })
+
+  it('desmarcarlo quita la apertura y deja la fecha para editarla a mano', async () => {
+    const { result } = await montar()
+    act(() => result.current.añadir('nata', 'lácteos', { caducidad: '2026-12-30' }))
+    act(() => result.current.editar('nata', { abierto: '2026-08-10' }))
+    act(() => result.current.editar('nata', { abierto: null }))
+
+    expect(result.current.despensa[0].abierto).toBeUndefined()
+    expect(result.current.despensa[0].caducidad).toBe('2026-08-13')
+  })
+
+  it('reponer trae un paquete cerrado: se olvida la apertura y se reestima la fecha', async () => {
+    const { result } = await montar()
+    act(() => result.current.añadir('nata', 'lácteos'))
+    act(() => result.current.editar('nata', { abierto: '2026-08-10' }))
+    expect(result.current.despensa[0].caducidad).toBe('2026-08-13')
+
+    act(() => result.current.reponer('nata', 'lácteos'))
+    expect(result.current.despensa[0].abierto).toBeUndefined()
+    // 7 días de nata sin abrir, contados desde hoy y no desde aquel 10 de agosto
+    expect(result.current.despensa[0].caducidad).toBe(sumarDias(7))
   })
 })
 

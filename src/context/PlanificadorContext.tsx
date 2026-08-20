@@ -8,6 +8,7 @@ import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { racionesBase } from '../hooks/useListaCompra'
 import { repartirSemana, type Hueco } from '../utils/semana'
 import { candidatas } from '../utils/candidatas'
+import type { ItemAprovechable } from '../utils/aprovechamiento'
 import { usePreferencias } from './PreferenciasContext'
 import type { Preferencias } from '../types/preferencias'
 
@@ -32,11 +33,13 @@ export interface InformeSemana {
   repetidos: number
   tiempoEnsanchado: boolean
   huecosVacios: number
+  /** Lo que había en casa y la semana se va a gastar, por su nombre. */
+  aprovechados: string[]
 }
 
 const INFORME_VACIO: InformeSemana = {
   principales: 0, desayunos: 0, conservados: 0, repetidos: 0,
-  tiempoEnsanchado: false, huecosVacios: 0,
+  tiempoEnsanchado: false, huecosVacios: 0, aprovechados: [],
 }
 
 /**
@@ -104,7 +107,7 @@ interface PlanificadorCtx {
   marcarCocinada: (dia: Dia, entradaId: string, cocinada: boolean) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
   limpiar: () => void
-  autollenar: (recetas: RecetaListada[], raciones: number) => InformeSemana
+  autollenar: (recetas: RecetaListada[], raciones: number, despensa?: ItemAprovechable[]) => InformeSemana
   restaurarPlan: (anterior: Plan) => void
 }
 
@@ -254,7 +257,11 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   // descontó de la despensa, así que borrarlo sería mentir sobre lo que pasó. Lo
   // demás se sustituye, y lo cocinado entra en el cálculo del resto para que la
   // semana salga equilibrada contando lo que ya hay, no desde cero.
-  const autollenar = useCallback((recetas: RecetaListada[], raciones: number): InformeSemana => {
+  const autollenar = useCallback((
+    recetas: RecetaListada[],
+    raciones: number,
+    despensa: ItemAprovechable[] = []
+  ): InformeSemana => {
     if (recetas.length === 0) return INFORME_VACIO
     const prefs = preferenciasRef.current
     const { limites } = prefs
@@ -317,9 +324,10 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       return { ...INFORME_VACIO, conservados: conservadas.length }
     }
 
-    const { porHueco, repetidos } = repartirSemana(huecos, {
+    const { porHueco, repetidos, aprovechados } = repartirSemana(huecos, {
       preferencias: prefs,
       yaEnLaSemana: hechas,
+      despensa,
     })
 
     for (const hueco of huecos) {
@@ -351,6 +359,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       repetidos: repetidos.size,
       tiempoEnsanchado,
       huecosVacios: huecos.filter((h) => !porHueco.has(h.id)).length,
+      aprovechados,
     }
   }, [cambiarPlan, plan])
 

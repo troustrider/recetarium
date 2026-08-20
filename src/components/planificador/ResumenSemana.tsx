@@ -49,7 +49,14 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
     informe.desayunos > 0 && `${informe.desayunos} ${informe.desayunos === 1 ? 'desayuno' : 'desayunos'}`,
   ].filter(Boolean) as string[]
 
+  // Lo que se salva se cuenta con nombres y apellidos: "aprovecha 4 cosas" no
+  // se puede comprobar, y "gasta la nata y las espinacas" sí.
+  const aprovechados = informe.aprovechados.slice(0, 3)
+  const deMas = informe.aprovechados.length - aprovechados.length
+
   const avisos = [
+    informe.aprovechados.length > 0 &&
+      `Gasta de la despensa ${listar(aprovechados)}${deMas > 0 ? ` y ${deMas} cosa${deMas === 1 ? '' : 's'} más` : ''}.`,
     informe.conservados > 0 &&
       `${informe.conservados} ${informe.conservados === 1 ? 'plato ya hecho se queda' : 'platos ya hechos se quedan'} donde estaban.`,
     informe.tiempoEnsanchado &&

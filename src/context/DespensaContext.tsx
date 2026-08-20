@@ -3,6 +3,7 @@ import { getDespensa, saveDespensa, type IngredienteDespensaDTO } from '../api/e
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { mismoIngrediente } from '../utils/despensa'
 import { caducidadEstimada } from '../utils/caducidadEstimada'
+import { caducidadAlAbrir } from '../utils/trasAbrir'
 import { convertir, redondear, unidadMedible } from '../utils/cantidades'
 import type { ConsumoIngrediente } from '../utils/consumo'
 
@@ -13,6 +14,12 @@ export interface IngredienteDespensa {
   familia: string
   estado: EstadoDespensa
   caducidad?: string // YYYY-MM-DD
+  /**
+   * El día que se abrió el paquete, YYYY-MM-DD. Lo que hay dentro deja de durar
+   * lo que dice el envase y pasa a durar lo que dice `trasAbrir`, así que al
+   * ponerlo se recorta la caducidad. Sin abrir, no está.
+   */
+  abierto?: string
   cantidad?: number
   unidad?: string
 }
@@ -28,6 +35,8 @@ export interface CambiosIngrediente {
   familia?: string
   estado?: EstadoDespensa
   caducidad?: string | null
+  /** Fecha de apertura; `null` deshace la apertura. */
+  abierto?: string | null
   cantidad?: number | null
   unidad?: string
 }
@@ -154,6 +163,12 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
           : tieneStock
             ? { ...actual, estado: 'lleno' as EstadoDespensa, cantidad: redondear(actual.cantidad! + sumado!) }
             : { ...actual, estado: 'lleno' as EstadoDespensa, cantidad, unidad: normalizar(unidad!) }
+      // Reponer es traer un paquete cerrado: la apertura del anterior deja de
+      // valer, y con ella la fecha corta que salió de abrirlo.
+      if (repuesto.abierto != null) {
+        delete repuesto.abierto
+        delete repuesto.caducidad
+      }
       const estimada = repuesto.caducidad ? null : caducidadEstimada(norm, repuesto.familia)
       copia[idx] = estimada ? { ...repuesto, caducidad: estimada } : repuesto
       return copia
@@ -177,6 +192,15 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
           if (cambios.estado != null) sig.estado = cambios.estado
           if (cambios.caducidad === null) delete sig.caducidad
           else if (cambios.caducidad != null) sig.caducidad = cambios.caducidad
+          // Abrir recorta la caducidad a lo que aguante el paquete abierto.
+          // Desmarcarlo no la devuelve: lo abierto no se vuelve a cerrar, y
+          // adivinar la fecha de antes sería peor que dejar que se edite a mano.
+          if (cambios.abierto === null) delete sig.abierto
+          else if (cambios.abierto != null) {
+            sig.abierto = cambios.abierto
+            const recortada = caducidadAlAbrir(sig, cambios.abierto)
+            if (recortada) sig.caducidad = recortada
+          }
           if (cambios.cantidad === null) {
             delete sig.cantidad
             delete sig.unidad
