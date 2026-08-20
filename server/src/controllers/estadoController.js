@@ -3,6 +3,11 @@ import { hogarDe } from '../lib/hogar.js'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
+// Misma lista que MOMENTOS en src/utils/momentos.ts. Falta en los planes
+// guardados antes de los tres huecos, y por eso es opcional: el front deduce
+// el momento de las entradas que no lo traen.
+const MOMENTOS = ['desayuno', 'comida', 'cena']
+
 function validarPlan(plan) {
   if (!Array.isArray(plan)) return 'plan debe ser un array'
   for (let i = 0; i < plan.length; i++) {
@@ -12,6 +17,7 @@ function validarPlan(plan) {
     if (typeof e.recetaId !== 'string' || !e.recetaId.trim()) return `plan[${i}].recetaId es obligatorio`
     if (typeof e.raciones !== 'number' || e.raciones < 1) return `plan[${i}].raciones debe ser >= 1`
     if (e.cocinada != null && typeof e.cocinada !== 'boolean') return `plan[${i}].cocinada debe ser booleano`
+    if (e.momento != null && !MOMENTOS.includes(e.momento)) return `plan[${i}].momento debe ser uno de: ${MOMENTOS.join(', ')}`
   }
   return null
 }
@@ -119,9 +125,11 @@ function validarPreferencias(p) {
     if (error) return error
   }
 
-  if (p.desayunos != null) {
-    if (!Number.isInteger(p.desayunos) || p.desayunos < 0 || p.desayunos > DIAS_SEMANA) {
-      return `preferencias.desayunos debe ser un entero entre 0 y ${DIAS_SEMANA}`
+  for (const campo of ['desayunos', 'comidas']) {
+    const v = p[campo]
+    if (v == null) continue
+    if (!Number.isInteger(v) || v < 0 || v > DIAS_SEMANA) {
+      return `preferencias.${campo} debe ser un entero entre 0 y ${DIAS_SEMANA}`
     }
   }
 

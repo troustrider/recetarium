@@ -44,9 +44,13 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
     .sort((a, b) => a.ratio - b.ratio)
     .slice(0, 2)
 
+  const cuenta = (n: number, singular: string, plural: string) =>
+    n > 0 && `${n} ${n === 1 ? singular : plural}`
+
   const hechos = [
-    informe.principales > 0 && `${informe.principales} ${informe.principales === 1 ? 'cena' : 'cenas'}`,
-    informe.desayunos > 0 && `${informe.desayunos} ${informe.desayunos === 1 ? 'desayuno' : 'desayunos'}`,
+    cuenta(informe.desayunos, 'desayuno', 'desayunos'),
+    cuenta(informe.comidas, 'comida', 'comidas'),
+    cuenta(informe.cenas, 'cena', 'cenas'),
   ].filter(Boolean) as string[]
 
   // Lo que se salva se cuenta con nombres y apellidos: "aprovecha 4 cosas" no
