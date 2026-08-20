@@ -27,31 +27,102 @@ node server/scripts/chef-recetas.mjs check tandas/2026-08-cenas-15min.json
 - Cada plato con su verdura propia o su `guarnicion` rellena, y con la procedencia
   y las desviaciones declaradas en `consejos`.
 
+## ⚠️ Dedup: 11 de las 25 hay que sustituirlas antes de insertar
+
+Esto es lo primero que hay que mirar, y no está resuelto.
+
+El dedup se hizo contra `server/seed-recetas.mjs`, que trae **88 recetas con
+nombre** y es la mejor foto del catálogo que hay dentro del repo (el `seed.sql`
+solo tiene 20). No es la BD viva, que ronda las 280: **una receta que no aparece
+ahí puede seguir existiendo**. Pero lo que sí aparece es evidencia fuerte, porque
+ese seed se insertó.
+
+### Choque directo — el mismo plato con otro nombre (8)
+
+| # | Receta de la tanda | Ya en el seed |
+|---|---|---|
+| 1 | Ensalada César con pollo a la plancha | `Ensalada César de pollo` |
+| 4 | Uitsmijter de jamón y queso | `Uitsmijter de jamón y queso` *(nombre idéntico)* |
+| 8 | Pad krapow gai | `Pollo a la albahaca tailandés (pad krapow)` |
+| 11 | Gong bao ji ding | `Pollo kung pao` |
+| 14 | Piccata de pavo al limón | `Pollo piccata` *(mismo plato, otra ave)* |
+| 22 | Sundubu jjigae | `Sundubu jjigae (estofado de tofu)` |
+| 23 | Pollo lemonato de sartén | `Pollo griego al limón y orégano` |
+| 25 | Ternera con brócoli y jengibre | `Ternera con brócoli` |
+
+### Misma terna formato + proteína + base aromática (3)
+
+No comparten nombre, comparten cena. Según la regla de dedup de la skill, cuentan
+como duplicado:
+
+| # | Receta de la tanda | Ya en el seed |
+|---|---|---|
+| 15 | Solomillo de cerdo a la mostaza | `Solomillo de cerdo con champiñones y arroz` + `Pollo a la mostaza con arroz` |
+| 20 | Bami goreng | `Noodles salteados con pollo y verduras` |
+| 21 | Arroz chaufa de pollo | `Arroz frito con huevo y pollo` |
+
+### Dudosas — decidir con la BD viva delante (3)
+
+| # | Receta de la tanda | Por qué duda |
+|---|---|---|
+| 9 | Tavuk sote | `Pollo turco especiado` es un nombre genérico que bien podría ser justo esto |
+| 12 | Butadon | Sería el cuarto donburi: ya están `Gyudon`, `Katsudon` y `Oyakodon` |
+| 24 | Yakisoba de cerdo y col | Roza `Noodles salteados con pollo y verduras`, aunque cambian carne y salsa |
+
+### Las 11 sustitutas, ya elegidas pero **sin escribir**
+
+Se quedaron diseñadas a este nivel: plato, cocina, de dónde sale la proteína y
+por qué no choca. Ninguna está en las 88 del seed ni en las tablas del canon de
+`canon-recetas.md`, que es donde viven los platos con más papeletas de estar ya
+guardados. Cumplen el mismo encargo: ≤15 min, cinco pasos, ≥35 g de proteína por
+ración, dos raciones, verdura propia o guarnición, y solo ingredientes con ficha
+en `nutrientes.json`.
+
+| Sustituta | Cocina | Proteína (para 2) | Nota |
+|---|---|---|---|
+| Bánh mì de cerdo a la sartén | vietnamita | 300 g lomo de cerdo + baguette | Cocina ausente. Sin paté ni nam pla: declararlo |
+| Bò lúc lắc | vietnamita | 400 g filete de ternera en dados | Sobre lechuga y tomate, 5 min de sartén |
+| Pad see ew de cerdo | tailandesa | 300 g lomo + 2 huevos + fideos de arroz planos | El canon usa gai lan; brócoli es el sustituto habitual |
+| Yuxiang rousi | china | 350 g lomo de cerdo en tiras | Doubanjiang, vinagre y azúcar; segundo plato de Sichuan de la tanda |
+| Saltimbocca de pavo | italiana | 400 g filetes de pavo + 60 g jamón serrano | El canónico es ternera; el de pavo existe en Italia |
+| Nasu no miso itame | japonesa | 400 g carne picada de cerdo + miso | Berenjena como verdura propia |
+| Ayam kecap | indonesia | 400 g contramuslos + ketjap manis | Sustituye al bami goreng manteniendo la cocina |
+| Budae jjigae | coreana | salchicha + jamón cocido + tofu + fideos ramen | Plato documentado y muy distinto del resto |
+| Keftedakia | griega | 400 g carne picada mixta + menta y orégano | Fritas y sin salsa: no es el de `Albóndigas en salsa` |
+| Bitoque à portuguesa | portuguesa | 350 g filete de ternera + 2 huevos | Cocina ausente en las dos listas |
+| Jjajangmyeon | coreana | 300 g lomo de cerdo + chunjang | Chunjang ya tiene ficha en `nutrientes.json` |
+
+Con este cambio la tanda quedaría en: coreana 5, japonesa 4, turca 3, china 2,
+italiana 2, indonesia 2, vietnamita 2, tailandesa 1, griega 1, mexicana 1,
+portuguesa 1, mediooriente 1. Sin española ni holandesa, que es lo correcto:
+son las dos que el seed ya cubre de sobra.
+
+### Qué hacer en local
+
+1. Bajar la lista real de nombres (comando de abajo) y **confirmar las 8 + 3**,
+   porque el seed puede estar desfasado en las dos direcciones.
+2. Resolver las 3 dudosas mirando la receta guardada, no solo el nombre:
+   `SELECT nombre, pasos FROM recetas WHERE nombre ILIKE '%turco especiado%'`.
+3. Escribir las sustitutas que hagan falta con la skill `chef-recetarium` en modo
+   tanda (fase 5), quitar del JSON las que se caen y `check` hasta 0 errores.
+4. `apply`, y después `audit` para comprobar que la BD entera sigue limpia.
+
+```bash
+cd server
+node --input-type=module -e "
+import 'dotenv/config'
+import sql from './src/lib/db.js'
+const filas = await sql\`SELECT nombre FROM recetas WHERE borrada_en IS NULL ORDER BY nombre\`
+console.log(filas.map(f => f.nombre).join('\n'))
+"
+```
+
+Compara por **formato + proteína + base aromática**, no solo por nombre. El
+duplicado que se cuela no comparte nombre, comparte cena.
+
 ## Lo que falta y por qué
 
-1. **Dedup contra la base de datos real.** Es lo único serio que queda. El
-   `seed.sql` del repo tiene 20 recetas y la BD viva ronda las 280, así que no se
-   ha podido comparar contra la lista de nombres completa. Antes de aplicar:
-
-   ```bash
-   cd server
-   node --input-type=module -e "
-   import 'dotenv/config'
-   import sql from './src/lib/db.js'
-   const filas = await sql\`SELECT nombre FROM recetas WHERE borrada_en IS NULL ORDER BY nombre\`
-   console.log(filas.map(f => f.nombre).join('\n'))
-   "
-   ```
-
-   Compara por **formato + proteína + base aromática**, no solo por nombre. Los
-   candidatos más probables a chocar, por ser platos muy vistos, son *Bami
-   goreng*, *Yakisoba de cerdo y col*, *Ternera con brócoli y jengibre* y
-   *Ensalada César con pollo a la plancha*. Se han evitado a propósito los platos
-   que están en las tablas del canon (gyudon, oyakodon, teriyaki, mapo tofu,
-   bulgogi, tteokbokki, larb, nasi goreng, lomo saltado, tinga, shakshuka,
-   menemen), porque son los que más papeletas tienen de estar ya guardados.
-
-2. **La auditoría del bloque `principal`** que pide `tandas.md` en su fase 1
+1. **La auditoría del bloque `principal`** que pide `tandas.md` en su fase 1
    (concentración por proteína y por formato, reparto de tiempos, defectos ya
    guardados). Sin BD no se pudo medir. La tanda se diseñó con las cuotas a
    ciegas pero con margen: 8 de 25 llevan pollo (32%), ninguna lleva udon, y las
@@ -59,7 +130,7 @@ node server/scripts/chef-recetas.mjs check tandas/2026-08-cenas-15min.json
    italiana 2, mexicana 2, indonesia 2, y una de española, griega, holandesa,
    peruana, tailandesa y Oriente Medio).
 
-3. **Siete ingredientes sin precio** en `src/data/precios.json`, que dejan la
+2. **Siete ingredientes sin precio** en `src/data/precios.json`, que dejan la
    estimación de `precioPorPorcion` algo por debajo de la real: judías verdes,
    orecchiette, salchicha fresca de cerdo, pul biber, doubanjiang, chiles secos y
    pimienta de sichuan. Se añaden con precio visto en tienda:
