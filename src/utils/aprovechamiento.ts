@@ -1,7 +1,7 @@
 import type { RecetaListada } from '../types/receta'
 import { canonUnidad, ingredientesDe } from './ingredientes'
 import { despensaCubre, esDeHogar, diasHastaCaducidad, UMBRAL_CADUCIDAD_DIAS } from './despensa'
-import { diasEstimados } from './caducidadEstimada'
+import { esNoPerecedero } from './caducidadEstimada'
 
 export interface ItemAprovechable {
   nombre: string
@@ -34,12 +34,15 @@ const PESO = {
 function pesoDe(item: ItemAprovechable): number {
   const dias = item.caducidad != null ? diasHastaCaducidad(item.caducidad) : null
 
+  // Una fecha lejana no dice nada: desde que la despensa seca también estima
+  // caducidad, el bote de garbanzos trae fecha para dentro de dos años. Así que
+  // la fecha manda solo mientras aprieta, y a partir de ahí decide qué es.
   const porFecha =
     dias == null ? null
     : dias <= 1 ? PESO.urgente
     : dias <= UMBRAL_CADUCIDAD_DIAS ? PESO.pronto
     : dias <= 7 ? PESO.proximo
-    : PESO.fresco
+    : null
 
   // Un paquete abierto sin fecha no es menos urgente por no tenerla: se abrió,
   // y lo que no se sabe es cuándo. Con fecha ya la lleva recortada por
@@ -48,7 +51,7 @@ function pesoDe(item: ItemAprovechable): number {
     porFecha ??
     (item.abierto != null
       ? PESO.pronto
-      : diasEstimados(item.nombre, item.familia) == null
+      : esNoPerecedero(item.nombre, item.familia)
         ? PESO.fondo
         : PESO.fresco)
 
