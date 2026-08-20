@@ -16,6 +16,7 @@ interface PreferenciasCtx {
   alternarPrioridad: (prioridad: Prioridad) => void
   alternarCocina: (cocina: string) => void
   setDesayunos: (n: number) => void
+  setComidas: (n: number) => void
   setLimites: (limites: Partial<LimitesSemana>) => void
   aplicar: (preferencias: Preferencias) => void
   reiniciar: () => void
@@ -68,8 +69,14 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
     })
   }, [cambiar])
 
+  const enDias = (n: number) => Math.max(0, Math.min(7, Math.round(n)))
+
   const setDesayunos = useCallback((n: number) => {
-    cambiar((prev) => ({ ...prev, desayunos: Math.max(0, Math.min(7, Math.round(n))) }))
+    cambiar((prev) => ({ ...prev, desayunos: enDias(n) }))
+  }, [cambiar])
+
+  const setComidas = useCallback((n: number) => {
+    cambiar((prev) => ({ ...prev, comidas: enDias(n) }))
   }, [cambiar])
 
   const setLimites = useCallback((limites: Partial<LimitesSemana>) => {
@@ -80,8 +87,8 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
   const reiniciar = useCallback(() => cambiar(PREFERENCIAS_POR_DEFECTO), [cambiar])
 
   const valor = useMemo(
-    () => ({ preferencias, alternarPrioridad, alternarCocina, setDesayunos, setLimites, aplicar, reiniciar }),
-    [preferencias, alternarPrioridad, alternarCocina, setDesayunos, setLimites, aplicar, reiniciar]
+    () => ({ preferencias, alternarPrioridad, alternarCocina, setDesayunos, setComidas, setLimites, aplicar, reiniciar }),
+    [preferencias, alternarPrioridad, alternarCocina, setDesayunos, setComidas, setLimites, aplicar, reiniciar]
   )
 
   return <PreferenciasContext.Provider value={valor}>{children}</PreferenciasContext.Provider>

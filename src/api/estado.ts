@@ -1,6 +1,7 @@
 import { apiJson, jsonBody } from './http'
 import type { Ingrediente } from '../types/receta'
 import type { Preferencias } from '../types/preferencias'
+import type { Momento } from '../utils/momentos'
 
 export interface EntradaPlanDTO {
   dia: string
@@ -8,6 +9,8 @@ export interface EntradaPlanDTO {
   raciones: number
   cocinada?: boolean
   conGuarnicion?: boolean
+  /** Desayuno, comida o cena. Falta en los planes anteriores a los tres huecos. */
+  momento?: Momento
 }
 
 export interface IngredienteDespensaDTO {

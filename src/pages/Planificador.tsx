@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Dices, ChefHat, Salad, SlidersHorizontal } from 'lucide-react'
+import { Dices, ChefHat, Salad, SlidersHorizontal, Sunrise, Sun, Moon } from 'lucide-react'
 import {
   DndContext,
   DragOverlay,
@@ -22,7 +22,52 @@ import type { PendientePlan } from '../context/PendientesPlanContext'
 import { consumoAlCocinar, type ConsumoIngrediente } from '../utils/consumo'
 import { faltantes } from '../utils/despensa'
 import { formatCantidad } from '../utils/ingredientes'
+import {
+  MOMENTOS,
+  NOMBRE_MOMENTO,
+  momentoDe,
+  momentoPorDefecto,
+  siguienteMomento,
+  type Momento,
+} from '../utils/momentos'
 import type { RecetaListada, Sabor } from '../types/receta'
+
+/**
+ * Cada momento del día tiene su color y su icono, y los tres se usan en el
+ * mismo sitio: el carril que agrupa los platos de ese hueco y el botón del chip
+ * que lo cambia. Amanecer, mediodía y noche, que es lo que hace que la semana
+ * se lea sin tener que leerla: el ámbar arriba, el azul en medio y el índigo
+ * abajo, en cada fila.
+ *
+ * No compiten con la franja de sabor porque no ocupan el mismo sitio: el sabor
+ * va al canto del chip y es del plato; el momento tiñe el chip entero y es de
+ * la semana. Un mismo plato cambia de momento sin cambiar de sabor.
+ */
+const MOMENTO_ESTILO: Record<Momento, {
+  Icono: typeof Sunrise
+  texto: string
+  chip: string
+  boton: string
+}> = {
+  desayuno: {
+    Icono: Sunrise,
+    texto: 'text-amber-600 dark:text-amber-400',
+    chip: 'bg-amber-50/80 dark:bg-amber-950/25 border-amber-200/80 dark:border-amber-900/50',
+    boton: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/70',
+  },
+  comida: {
+    Icono: Sun,
+    texto: 'text-teal-600 dark:text-teal-400',
+    chip: 'bg-teal-50/80 dark:bg-teal-950/25 border-teal-200/80 dark:border-teal-900/50',
+    boton: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 hover:bg-teal-200 dark:hover:bg-teal-900/70',
+  },
+  cena: {
+    Icono: Moon,
+    texto: 'text-indigo-500 dark:text-indigo-400',
+    chip: 'bg-indigo-50/80 dark:bg-indigo-950/25 border-indigo-200/80 dark:border-indigo-900/50',
+    boton: 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-500 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-900/70',
+  },
+}
 
 const SABOR_STRIP: Record<Sabor, string> = {
   salado: 'bg-sky-500',
@@ -47,24 +92,29 @@ interface ChipProps {
   onRaciones: (n: number) => void
   onCocinar: () => void
   onGuarnicion: (conGuarnicion: boolean) => void
+  onMomento: (momento: Momento) => void
   overlay?: boolean
 }
 
-function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, onGuarnicion, overlay = false }: ChipProps) {
+function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, onGuarnicion, onMomento, overlay = false }: ChipProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: entrada.id,
     data: { entradaId: entrada.id },
   })
   const hecha = entrada.cocinada === true
+  const momento = momentoDe(entrada)
+  const estilo = MOMENTO_ESTILO[momento]
 
   return (
     <div
       ref={setNodeRef}
       style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
       className={`relative flex items-center gap-2 border rounded-xl pr-3 py-2 select-none min-w-0 max-w-full overflow-hidden ${
+        // Lo cocinado manda sobre el momento: el verde de "ya está hecha" es el
+        // estado del plato de hoy, y el momento seguirá ahí mañana.
         hecha
           ? 'bg-white dark:bg-gray-800 border-dashed border-emerald-300 dark:border-emerald-800'
-          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600'
+          : estilo.chip
       } ${overlay ? 'shadow-2xl rotate-1 scale-105' : 'shadow-sm dark:shadow-none'}`}
     >
       {/* Franja de sabor. Va pegada al canto y a toda altura: es lo que hace que
@@ -84,6 +134,19 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, onGuarnicion, ov
           <circle cx="3" cy="8" r="1.5" /><circle cx="9" cy="8" r="1.5" />
           <circle cx="3" cy="13" r="1.5" /><circle cx="9" cy="13" r="1.5" />
         </svg>
+      </button>
+
+      {/* Momento. El icono dice en qué hueco del día se come y el toque lo
+          cambia en rueda: desayuno → comida → cena. Es el mismo icono que
+          encabeza el carril, así que el chip nunca queda huérfano de su grupo
+          —al arrastrarlo, por ejemplo, que es cuando el carril no se ve—. */}
+      <button
+        onClick={() => onMomento(siguienteMomento(momento))}
+        aria-label={`${NOMBRE_MOMENTO[momento]}. Cambiar a ${NOMBRE_MOMENTO[siguienteMomento(momento)].toLowerCase()}`}
+        title={`${NOMBRE_MOMENTO[momento]}: toca para pasarlo a ${NOMBRE_MOMENTO[siguienteMomento(momento)].toLowerCase()}`}
+        className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${estilo.boton}`}
+      >
+        <estilo.Icono className="w-3.5 h-3.5" />
       </button>
 
       {/* Hecha. Va al principio, como la casilla de una lista de tareas: es el
@@ -376,11 +439,19 @@ interface FilaDiaProps {
   onRaciones: (id: string, n: number) => void
   onCocinar: (entrada: EntradaPlan) => void
   onGuarnicion: (id: string, conGuarnicion: boolean) => void
+  onMomento: (id: string, momento: Momento) => void
   isDragOver: boolean
 }
 
-function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, onGuarnicion, isDragOver }: FilaDiaProps) {
+function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, onGuarnicion, onMomento, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
+
+  // Solo se dibujan los carriles que tienen algo. Tres carriles fijos por día
+  // son veintiuno en la pantalla, casi todos vacíos: el día se cuenta por lo
+  // que hay, no por lo que podría haber.
+  const carriles = MOMENTOS
+    .map((momento) => ({ momento, entradas: entradas.filter((e) => momentoDe(e) === momento) }))
+    .filter((c) => c.entradas.length > 0)
 
   return (
     <div
@@ -399,33 +470,60 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, on
         </p>
       </div>
 
-      {/* Chips de recetas + botón añadir */}
-      <div className="flex flex-wrap gap-2 flex-1 min-w-0">
-        <AnimatePresence>
-          {entradas.map((entrada) => (
-            <motion.div
-              key={entrada.id}
-              className="min-w-0 max-w-full"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.85 }}
-              transition={{ duration: 0.15 }}
-            >
-              <RecetaChip
-                entrada={entrada}
-                dia={dia}
-                onQuitar={() => onQuitar(entrada.id)}
-                onRaciones={(n) => onRaciones(entrada.id, n)}
-                onCocinar={() => onCocinar(entrada)}
-                onGuarnicion={(v) => onGuarnicion(entrada.id, v)}
-              />
-            </motion.div>
-          ))}
+      {/* Un carril por momento con algo dentro, en el orden del día, y el botón
+          de añadir al final. La etiqueta va en línea con los chips y no en una
+          columna suya: en móvil una columna más se come el ancho que el chip
+          necesita para no desbordar. */}
+      <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+        <AnimatePresence initial={false}>
+          {carriles.map(({ momento, entradas: delCarril }) => {
+            const { Icono, texto } = MOMENTO_ESTILO[momento]
+            return (
+              <motion.div
+                key={momento}
+                className="flex flex-wrap items-center gap-x-2 gap-y-1.5 min-w-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                {/* Ancho fijo a partir de `sm` para que los chips de los tres
+                    carriles empiecen en la misma vertical: si no, "Desayuno"
+                    empuja su fila 30px más a la derecha que "Cena" y el día
+                    queda con el canto roto. En móvil no se fija, que ahí la
+                    etiqueta cae en su propia línea. */}
+                <span className={`flex items-center gap-1 shrink-0 sm:w-[86px] text-[10px] font-bold uppercase tracking-widest ${texto}`}>
+                  <Icono className="w-3 h-3" />
+                  {NOMBRE_MOMENTO[momento]}
+                </span>
+                {delCarril.map((entrada) => (
+                  <motion.div
+                    key={entrada.id}
+                    className="min-w-0 max-w-full"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.85 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <RecetaChip
+                      entrada={entrada}
+                      dia={dia}
+                      onQuitar={() => onQuitar(entrada.id)}
+                      onRaciones={(n) => onRaciones(entrada.id, n)}
+                      onCocinar={() => onCocinar(entrada)}
+                      onGuarnicion={(v) => onGuarnicion(entrada.id, v)}
+                      onMomento={(m) => onMomento(entrada.id, m)}
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+            )
+          })}
         </AnimatePresence>
 
         <button
           onClick={onAñadir}
-          className="flex items-center gap-1 px-3 py-2 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-300 dark:hover:border-orange-700 transition-colors"
+          className="self-start flex items-center gap-1 px-3 py-2 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-300 dark:hover:border-orange-700 transition-colors"
         >
           + Añadir
         </button>
@@ -438,12 +536,17 @@ interface SelectorProps {
   dia: Dia
   recetas: RecetaListada[]
   faltanPorReceta: Map<string, number> | null
-  onSeleccionar: (receta: RecetaListada) => void
+  onSeleccionar: (receta: RecetaListada, momento: Momento) => void
   onCerrar: () => void
 }
 
 function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar }: SelectorProps) {
   const [busqueda, setBusqueda] = useState('')
+
+  // El momento se elige antes que el plato, porque es lo que decide qué plato
+  // tiene sentido. Mientras no se toque va en `null` y lo pone la receta: quien
+  // busca "tostada con huevo" quiere un desayuno y no hace falta que lo diga.
+  const [momento, setMomento] = useState<Momento | null>(null)
   const filtradas = useMemo(() => {
     const lista = recetas.filter((r) => r.nombre.toLowerCase().includes(busqueda.toLowerCase()))
     if (!faltanPorReceta) return lista
@@ -472,6 +575,33 @@ function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">
             Añadir al {dia}
           </p>
+          <div className="flex gap-1.5 mb-2">
+            {MOMENTOS.map((m) => {
+              const { Icono, texto } = MOMENTO_ESTILO[m]
+              const activo = momento === m
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMomento(activo ? null : m)}
+                  aria-pressed={activo}
+                  className={`flex flex-1 items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-bold transition-colors ${
+                    activo
+                      ? `${MOMENTO_ESTILO[m].boton} ring-1 ring-current`
+                      : `bg-gray-50 dark:bg-gray-800 ${texto} hover:bg-gray-100 dark:hover:bg-gray-700`
+                  }`}
+                >
+                  <Icono className="w-3.5 h-3.5" />
+                  {NOMBRE_MOMENTO[m]}
+                </button>
+              )
+            })}
+          </div>
+          {momento === null && (
+            <p className="text-[11px] text-gray-400 dark:text-gray-500 mb-2">
+              Sin elegir, cada receta cae en su hueco: los desayunos al desayuno y el resto a la cena.
+            </p>
+          )}
           <input
             type="text"
             placeholder="Buscar receta..."
@@ -491,7 +621,10 @@ function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar
                 <motion.li key={receta.id} whileHover={{ backgroundColor: 'rgba(249,115,22,0.05)' }}>
                   <button
                     className="w-full flex items-center gap-3 px-4 py-3 text-left"
-                    onClick={() => { onSeleccionar(receta); onCerrar() }}
+                    onClick={() => {
+                      onSeleccionar(receta, momento ?? momentoPorDefecto(receta.tipo))
+                      onCerrar()
+                    }}
                   >
                     <div className={`w-1 h-8 rounded-full shrink-0 ${SABOR_STRIP[receta.sabor]}`} />
                     <div className="min-w-0 flex-1">
@@ -523,7 +656,7 @@ function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar
 }
 
 function Planificador() {
-  const { plan, dias, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
+  const { plan, dias, añadir, quitar, setRaciones, setMomento, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
   const { recetas } = useRecetasContext()
   const { pendientes, quitarPendiente, restaurarPendientes } = usePendientesPlan()
   const { despensa, consumir, restaurarDespensa } = useDespensa()
@@ -657,7 +790,7 @@ function Planificador() {
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
-            title="Rellena los días libres repartiendo verdura, macros y micronutrientes, con su guarnición puesta. Prefiere los platos que gastan lo que hay en casa, empezando por lo abierto y lo que caduca. Lo que ya has marcado como hecho se queda y cuenta para el reparto"
+            title="Rellena los huecos libres —cenas, y los desayunos y comidas que hayas pedido— repartiendo verdura, macros y micronutrientes, con su guarnición puesta. Prefiere los platos que gastan lo que hay en casa, empezando por lo abierto y lo que caduca. Lo que ya has marcado como hecho se queda y cuenta para el reparto"
           >
             <Dices className="w-3.5 h-3.5" />
             Auto-semana
@@ -732,6 +865,7 @@ function Planificador() {
               onRaciones={(id, n) => setRaciones(dia, id, n)}
               onCocinar={(entrada) => alCocinar(dia, entrada)}
               onGuarnicion={(id, v) => setGuarnicionPlan(dia, id, v)}
+              onMomento={(id, m) => setMomento(dia, id, m)}
               isDragOver={dragOverDia === dia}
             />
           ))}
@@ -746,6 +880,7 @@ function Planificador() {
               onRaciones={() => {}}
               onCocinar={() => {}}
               onGuarnicion={() => {}}
+              onMomento={() => {}}
               overlay
             />
           )}
@@ -766,7 +901,7 @@ function Planificador() {
             dia={selectorDia}
             recetas={recetas}
             faltanPorReceta={faltanPorReceta}
-            onSeleccionar={(receta) => añadir(selectorDia, receta)}
+            onSeleccionar={(receta, momento) => añadir(selectorDia, receta, undefined, momento)}
             onCerrar={() => setSelectorDia(null)}
           />
         )}

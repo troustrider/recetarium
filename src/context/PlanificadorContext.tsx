@@ -8,6 +8,13 @@ import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { racionesBase } from '../hooks/useListaCompra'
 import { repartirSemana, type Hueco } from '../utils/semana'
 import { candidatas } from '../utils/candidatas'
+import {
+  ORDEN_MOMENTO,
+  esMomento,
+  momentoDe,
+  momentoPorDefecto,
+  type Momento,
+} from '../utils/momentos'
 import type { ItemAprovechable } from '../utils/aprovechamiento'
 import { usePreferencias } from './PreferenciasContext'
 import type { Preferencias } from '../types/preferencias'
@@ -27,7 +34,8 @@ const esPrincipal = (receta: RecetaListada) => (receta.tipo ?? 'principal') === 
  * avisar.
  */
 export interface InformeSemana {
-  principales: number
+  comidas: number
+  cenas: number
   desayunos: number
   conservados: number
   repetidos: number
@@ -38,7 +46,7 @@ export interface InformeSemana {
 }
 
 const INFORME_VACIO: InformeSemana = {
-  principales: 0, desayunos: 0, conservados: 0, repetidos: 0,
+  comidas: 0, cenas: 0, desayunos: 0, conservados: 0, repetidos: 0,
   tiempoEnsanchado: false, huecosVacios: 0, aprovechados: [],
 }
 
@@ -58,11 +66,21 @@ export interface EntradaPlan {
   raciones: number
   cocinada?: boolean
   conGuarnicion?: boolean
+  /**
+   * En qué hueco del día se come. Puede faltar —entradas guardadas antes de que
+   * el plan distinguiera comida y cena—, y quien lo lee usa `momentoDe`, que lo
+   * deduce en vez de tratarlas como un caso raro.
+   */
+  momento?: Momento
 }
 
 type Plan = Record<Dia, EntradaPlan[]>
 
 const PLAN_VACIO: Plan = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
+
+/** El día se lee como se vive: el desayuno antes que la comida y que la cena. */
+const porMomento = (a: EntradaPlan, b: EntradaPlan) =>
+  ORDEN_MOMENTO[momentoDe(a)] - ORDEN_MOMENTO[momentoDe(b)]
 
 function serializar(plan: Plan): EntradaPlanDTO[] {
   const out: EntradaPlanDTO[] = []
@@ -72,6 +90,7 @@ function serializar(plan: Plan): EntradaPlanDTO[] {
         dia,
         recetaId: e.receta.id,
         raciones: e.raciones,
+        momento: momentoDe(e),
         ...(e.cocinada ? { cocinada: true } : {}),
         ...(e.conGuarnicion ? { conGuarnicion: true } : {}),
       })
@@ -83,26 +102,29 @@ function serializar(plan: Plan): EntradaPlanDTO[] {
 function hidratar(dtos: EntradaPlanDTO[], recetas: RecetaListada[]): Plan {
   const byId = new Map(recetas.map((r) => [r.id, r]))
   const result = Object.fromEntries(DIAS.map((d) => [d, []])) as unknown as Plan
-  for (const { dia, recetaId, raciones, cocinada, conGuarnicion } of dtos) {
+  for (const { dia, recetaId, raciones, cocinada, conGuarnicion, momento } of dtos) {
     const receta = byId.get(recetaId)
     if (!receta || !DIAS.includes(dia as Dia)) continue
     result[dia as Dia].push({
       id: `${dia}-${recetaId}-${Date.now()}-${Math.random()}`,
       receta,
       raciones,
+      momento: esMomento(momento) ? momento : momentoPorDefecto(receta.tipo),
       ...(cocinada ? { cocinada: true } : {}),
       ...(conGuarnicion ? { conGuarnicion: true } : {}),
     })
   }
+  for (const dia of DIAS) result[dia].sort(porMomento)
   return result
 }
 
 interface PlanificadorCtx {
   plan: Plan
   dias: readonly Dia[]
-  añadir: (dia: Dia, receta: RecetaListada, raciones?: number) => void
+  añadir: (dia: Dia, receta: RecetaListada, raciones?: number, momento?: Momento) => void
   quitar: (dia: Dia, entradaId: string) => void
   setRaciones: (dia: Dia, entradaId: string, raciones: number) => void
+  setMomento: (dia: Dia, entradaId: string, momento: Momento) => void
   setGuarnicionPlan: (dia: Dia, entradaId: string, conGuarnicion: boolean) => void
   marcarCocinada: (dia: Dia, entradaId: string, cocinada: boolean) => void
   mover: (desdeDia: Dia, hastaDia: Dia, entradaId: string) => void
@@ -194,10 +216,18 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }
   }, [plan, pendientes, quitarPendiente])
 
-  const añadir = useCallback((dia: Dia, receta: RecetaListada, raciones = racionesBase(receta)) => {
+  const añadir = useCallback((
+    dia: Dia,
+    receta: RecetaListada,
+    raciones = racionesBase(receta),
+    momento: Momento = momentoPorDefecto(receta.tipo)
+  ) => {
     cambiarPlan((prev) => ({
       ...prev,
-      [dia]: [...prev[dia], { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones }],
+      [dia]: [
+        ...prev[dia],
+        { id: `${dia}-${receta.id}-${Date.now()}`, receta, raciones, momento },
+      ].sort(porMomento),
     }))
   }, [cambiarPlan])
 
@@ -218,6 +248,15 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
           ? { ...e, raciones: Math.max(1, Math.min(Math.max(4, racionesBase(e.receta)), raciones)) }
           : e
       ),
+    }))
+  }, [cambiarPlan])
+
+  const setMomento = useCallback((dia: Dia, entradaId: string, momento: Momento) => {
+    cambiarPlan((prev) => ({
+      ...prev,
+      [dia]: prev[dia]
+        .map((e) => (e.id === entradaId ? { ...e, momento } : e))
+        .sort(porMomento),
     }))
   }, [cambiarPlan])
 
@@ -243,7 +282,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       return {
         ...prev,
         [desdeDia]: prev[desdeDia].filter((e) => e.id !== entradaId),
-        [hastaDia]: [...prev[hastaDia], entrada],
+        [hastaDia]: [...prev[hastaDia], entrada].sort(porMomento),
       }
     })
   }, [cambiarPlan])
@@ -272,10 +311,22 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     const conservadas = DIAS.flatMap((d) => nuevo[d])
     const hechas = conservadas.map((e) => e.receta)
 
-    const diasSinPrincipal = DIAS.filter((d) => !nuevo[d].some((e) => esPrincipal(e.receta)))
-    const conDesayuno = DIAS.filter((d) => nuevo[d].some((e) => esDesayuno(e.receta)))
-    const diasSinDesayuno = DIAS.filter((d) => !conDesayuno.includes(d))
-    const faltanDesayunos = Math.max(0, Math.min(prefs.desayunos, DIAS.length) - conDesayuno.length)
+    // Los huecos ya ocupados se miran por momento y no por tipo de receta: si
+    // el lunes ya tienes puesta la comida, lo que falta ese día es la cena, no
+    // "un principal".
+    const ocupado = (dia: Dia, momento: Momento) => nuevo[dia].some((e) => momentoDe(e) === momento)
+    const repartirLos = (momento: Momento, cuantos: number) => {
+      const puestos = DIAS.filter((d) => ocupado(d, momento))
+      const faltan = Math.max(0, Math.min(cuantos, DIAS.length) - puestos.length)
+      return repartidos(DIAS.filter((d) => !puestos.includes(d)), faltan)
+    }
+
+    // La cena la lleva la semana entera; la comida, los días que se hayan
+    // pedido. Los dos huecos beben del mismo montón de principales, y quien
+    // reparte se encarga de que no salga el mismo plato dos veces.
+    const diasSinCena = DIAS.filter((d) => !ocupado(d, 'cena'))
+    const diasConComida = repartirLos('comida', prefs.comidas)
+    const diasConDesayuno = repartirLos('desayuno', prefs.desayunos)
 
     const principales = recetas.filter(esPrincipal)
     const desayunos = recetas.filter(esDesayuno)
@@ -284,34 +335,39 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     // platos distintos con el techo puesto, antes que repetir seis veces el mismo
     // se sueltan los minutos. La dieta, el gluten y los vetos no se tocan.
     const topeDe = (dia: Dia) => (FINDE.includes(dia) ? limites.tiempoMaxFinde : limites.tiempoMax)
-    const construir = (dias: Dia[], pool: RecetaListada[], sufijo: string, conTiempo: boolean): Hueco[] =>
+    const construir = (dias: Dia[], momento: Momento, pool: RecetaListada[], conTiempo: boolean): Hueco[] =>
       dias.map((dia) => ({
-        id: `${dia}${sufijo}`,
+        id: `${dia}:${momento}`,
         candidatos: candidatas(pool, limites, conTiempo ? topeDe(dia) : null),
       }))
 
     const distintas = (huecos: Hueco[]) =>
       new Set(huecos.flatMap((h) => h.candidatos.map((r) => r.id))).size
 
-    let huecosPrincipales = construir(diasSinPrincipal, principales, '', true)
+    const construirPrincipales = (conTiempo: boolean) => [
+      ...construir(diasConComida, 'comida', principales, conTiempo),
+      ...construir(diasSinCena, 'cena', principales, conTiempo),
+    ]
+
+    let huecosPrincipales = construirPrincipales(true)
     let tiempoEnsanchado = false
     const estrictas = distintas(huecosPrincipales)
-    if (estrictas < diasSinPrincipal.length) {
-      const sinTope = construir(diasSinPrincipal, principales, '', false)
+    if (estrictas < huecosPrincipales.length) {
+      const sinTope = construirPrincipales(false)
       // Solo se salta el tiempo si saltárselo resuelve algo: llenar la semana
       // entera, o poder llenar algo cuando con el techo puesto no cabe nada.
       // Servir un guiso de dos horas un martes para ahorrarse una repetición es
       // peor que la repetición.
-      if (distintas(sinTope) >= diasSinPrincipal.length || estrictas === 0) {
+      if (distintas(sinTope) >= huecosPrincipales.length || estrictas === 0) {
         huecosPrincipales = sinTope
         tiempoEnsanchado = distintas(sinTope) > estrictas
       }
     }
 
     const huecosDesayuno = construir(
-      repartidos(diasSinDesayuno, faltanDesayunos),
+      diasConDesayuno,
+      'desayuno',
       desayunos,
-      ':desayuno',
       // Un desayuno de 40 minutos un martes no lo hace nadie, pero el techo de la
       // cena no es su techo: se les aplica solo si el de entre semana es holgado.
       false
@@ -333,28 +389,27 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     for (const hueco of huecos) {
       const receta = porHueco.get(hueco.id)
       if (!receta) continue
-      const dia = hueco.id.split(':')[0] as Dia
+      const [dia, momento] = hueco.id.split(':') as [Dia, Momento]
       nuevo[dia] = [...nuevo[dia], {
         id: `${hueco.id}-${receta.id}-${Date.now()}-${Math.random()}`,
         receta,
         raciones,
+        momento,
         ...(receta.guarnicion ? { conGuarnicion: true } : {}),
       }]
     }
 
-    // El desayuno se lee antes que la cena, como en el día.
-    for (const dia of DIAS) {
-      nuevo[dia] = [...nuevo[dia]].sort(
-        (a, b) => Number(esDesayuno(b.receta)) - Number(esDesayuno(a.receta))
-      )
-    }
+    for (const dia of DIAS) nuevo[dia] = [...nuevo[dia]].sort(porMomento)
 
     huerfanasRef.current = huerfanasRef.current.filter((d) => d.cocinada)
     cambiarPlan(nuevo)
 
+    const llenos = (grupo: Hueco[]) => grupo.filter((h) => porHueco.has(h.id)).length
+
     return {
-      principales: huecosPrincipales.filter((h) => porHueco.has(h.id)).length,
-      desayunos: huecosDesayuno.filter((h) => porHueco.has(h.id)).length,
+      comidas: llenos(huecosPrincipales.filter((h) => h.id.endsWith(':comida'))),
+      cenas: llenos(huecosPrincipales.filter((h) => h.id.endsWith(':cena'))),
+      desayunos: llenos(huecosDesayuno),
       conservados: conservadas.length,
       repetidos: repetidos.size,
       tiempoEnsanchado,
@@ -368,8 +423,8 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   }, [cambiarPlan])
 
   const valor = useMemo(
-    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan }),
-    [plan, añadir, quitar, setRaciones, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan]
+    () => ({ plan, dias: DIAS, añadir, quitar, setRaciones, setMomento, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan }),
+    [plan, añadir, quitar, setRaciones, setMomento, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan]
   )
 
   return <PlanificadorContext.Provider value={valor}>{children}</PlanificadorContext.Provider>
