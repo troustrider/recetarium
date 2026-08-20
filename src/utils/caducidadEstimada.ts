@@ -1,10 +1,6 @@
 import { nucleoOrdenado } from './despensa'
 import { normalizar } from './ingredientes'
 
-const FAMILIAS_SIN_ESTIMAR = new Set([
-  'conservas', 'especias', 'condimentos', 'salsas', 'bebidas', 'frutos secos', 'hogar',
-])
-
 const DIAS_POR_FAMILIA: Record<string, number> = {
   verduras: 7,
   frutas: 7,
@@ -12,6 +8,46 @@ const DIAS_POR_FAMILIA: Record<string, number> = {
   pescados: 2,
   lacteos: 10,
   huevos: 21,
+}
+
+/**
+ * La despensa seca. Antes no se estimaba —un bote de garbanzos no se echa a
+ * perder el martes— y el resultado era que media despensa no tenía fecha, y sin
+ * fecha no hay ni aviso ni forma de saber qué lleva dos años al fondo del
+ * armario. Las fechas de aquí son largas a propósito: no son una alarma, son un
+ * punto de partida que el envase corrige.
+ *
+ * Van por familia y no por ingrediente porque es la familia la que decide: el
+ * atún fresco dura dos días y el mismo atún en lata dos años, y lo único que los
+ * distingue en la despensa es estar en `pescados` o en `conservas`.
+ */
+const DIAS_POR_FAMILIA_SECA: Record<string, number> = {
+  cereales: 365,
+  legumbres: 540,
+  conservas: 730,
+  especias: 730,
+  condimentos: 365,
+  salsas: 365,
+  bebidas: 365,
+  'frutos secos': 180,
+}
+
+/**
+ * Lo que dentro de una familia seca no dura lo que su familia. La mitad son
+ * frescos que viven en el estante del pan, y la otra mitad son botes que duran
+ * bastante más de lo que dice su familia.
+ */
+const DIAS_SECOS: Record<string, number> = {
+  // "pasta fresca" y "pan rallado" no están: el núcleo del nombre les quita el
+  // descriptor y quedan en "pasta" y "pan", así que taparían al seco y al fresco.
+  pan: 4, 'pan de molde': 8, 'pan de pita': 14, tortillas: 30,
+  masa: 3, 'masa de hojaldre': 3, 'masa quebrada': 3, gnocchi: 30,
+  harina: 240, levadura: 365,
+  arroz: 730, pasta: 730, cuscus: 730, bulgur: 730, quinoa: 730, avena: 365, polenta: 365,
+  aceite: 540, vinagre: 1095, azucar: 1800, miel: 1800, sal: 1800,
+  'leche de coco': 365, 'leche condensada': 365, 'leche evaporada': 365,
+  caldo: 365, zumo: 180, vino: 730, cerveza: 270,
+  cacao: 540, chocolate: 365, cafe: 365, mermelada: 540,
 }
 
 const DIAS_POR_INGREDIENTE: Record<string, number> = {
@@ -41,29 +77,60 @@ const DIAS_POR_INGREDIENTE: Record<string, number> = {
   pan: 4, 'pan de molde': 8, hummus: 5, tofu: 7,
 }
 
-const TABLA = new Map(
-  Object.entries(DIAS_POR_INGREDIENTE).map(([nombre, dias]) => [nucleoOrdenado(nombre).join(' '), dias])
-)
+const tablaDe = (dias: Record<string, number>) =>
+  new Map(Object.entries(dias).map(([nombre, d]) => [nucleoOrdenado(nombre).join(' '), d]))
+
+const TABLA = tablaDe(DIAS_POR_INGREDIENTE)
+const TABLA_SECA = tablaDe(DIAS_SECOS)
 
 const DIAS_CONGELADO = 180
 
+/** Lo que no se come: ni se estima ni cuenta para nada. */
+const FAMILIA_SIN_COMIDA = 'hogar'
+
+/**
+ * A partir de aquí un ingrediente es fondo de armario y no una carrera contra el
+ * reloj. Es el corte que separa "cómetelo esta semana" de "está ahí para cuando
+ * haga falta", y lo usa la auto-semana para decidir cuánto vale gastarlo.
+ */
+export const UMBRAL_NO_PERECEDERO_DIAS = 60
+
+function diasSecos(nucleo: string[], fam: string): number | null {
+  // En la despensa seca manda la familia, y el ingrediente solo cuando lo
+  // contradice: el pan es `cereales` y dura cuatro días, no un año.
+  return (
+    TABLA_SECA.get(nucleo.join(' ')) ??
+    TABLA_SECA.get(nucleo[0]) ??
+    DIAS_POR_FAMILIA_SECA[fam] ??
+    null
+  )
+}
+
 export function diasEstimados(nombre: string, familia: string): number | null {
   const fam = normalizar(familia)
-  if (FAMILIAS_SIN_ESTIMAR.has(fam)) return null
+  if (fam === FAMILIA_SIN_COMIDA) return null
 
   const nucleo = nucleoOrdenado(nombre)
   if (nucleo.length === 0) return null
 
   const porFamilia = DIAS_POR_FAMILIA[fam] ?? null
   const base =
-    TABLA.get(nucleo.join(' ')) ??
-    TABLA.get(nucleo[0]) ??
-    (porFamilia == null
-      ? null
-      : nucleo.map((t) => TABLA.get(t)).find((d) => d != null) ?? porFamilia)
+    fam in DIAS_POR_FAMILIA_SECA
+      ? diasSecos(nucleo, fam)
+      : TABLA.get(nucleo.join(' ')) ??
+        TABLA.get(nucleo[0]) ??
+        (porFamilia == null
+          ? null
+          : nucleo.map((t) => TABLA.get(t)).find((d) => d != null) ?? porFamilia)
 
   if (base == null) return null
   return /congelad/.test(normalizar(nombre)) ? DIAS_CONGELADO : base
+}
+
+/** Fondo de armario: dura lo bastante como para que no corra prisa gastarlo. */
+export function esNoPerecedero(nombre: string, familia: string): boolean {
+  const dias = diasEstimados(nombre, familia)
+  return dias != null && dias >= UMBRAL_NO_PERECEDERO_DIAS
 }
 
 export function sumarDias(dias: number, desde = new Date()): string {

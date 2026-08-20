@@ -134,6 +134,13 @@ describe('reponer — vuelta de la compra', () => {
     expect(result.current.despensa[0].cantidad).toBeUndefined()
   })
 
+  it('le pone caducidad estimada también a la despensa seca', async () => {
+    const { result } = await montar()
+    act(() => result.current.reponer('garbanzos de bote', 'conservas', 1, 'ud'))
+
+    expect(result.current.despensa[0].caducidad).toBe(sumarDias(730))
+  })
+
   it('encuentra el ingrediente aunque esté escrito distinto', async () => {
     const { result } = await montar()
     act(() => result.current.añadir('aceite de oliva', 'condimentos'))

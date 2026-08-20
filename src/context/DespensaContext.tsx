@@ -26,6 +26,8 @@ export interface IngredienteDespensa {
 
 export interface AltaIngrediente {
   caducidad?: string
+  /** Se da de alta ya abierto: la caducidad nace recortada. */
+  abierto?: string
   cantidad?: number
   unidad?: string
 }
@@ -117,6 +119,11 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
     const fam = normalizar(familia) || 'otros'
     if (!norm) return
     const medible = alta.cantidad != null && alta.cantidad >= 0 && unidadMedible(alta.unidad)
+    // Darlo de alta ya abierto recorta la fecha desde el primer día, igual que
+    // marcarlo después: si no, el bote entraría con la caducidad del envase.
+    const caducidad = alta.abierto
+      ? caducidadAlAbrir({ nombre: norm, familia: fam, caducidad: alta.caducidad }, alta.abierto)
+      : alta.caducidad
     cambiarDespensa((prev) =>
       prev.some((i) => mismoIngrediente(i.nombre, norm))
         ? prev
@@ -126,7 +133,8 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
               nombre: norm,
               familia: fam,
               estado: 'lleno' as EstadoDespensa,
-              ...(alta.caducidad ? { caducidad: alta.caducidad } : {}),
+              ...(caducidad ? { caducidad } : {}),
+              ...(alta.abierto ? { abierto: alta.abierto } : {}),
               ...(medible ? { cantidad: alta.cantidad, unidad: normalizar(alta.unidad!) } : {}),
             },
           ].sort(porFamiliaYNombre)

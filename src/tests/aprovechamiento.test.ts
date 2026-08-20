@@ -54,6 +54,16 @@ describe('indiceDespensa — cuánto vale gastar cada cosa', () => {
       .toBe(pesoDe(item({ nombre: 'yogur', familia: 'lácteos', caducidad: sumarDias(3) })))
   })
 
+  it('el fondo de despensa sigue siendo fondo aunque ahora traiga fecha larga', () => {
+    // La despensa seca ya estima caducidad, así que el bote viene con fecha para
+    // dentro de dos años. Eso no lo convierte en un perecedero cualquiera.
+    const conFecha = pesoDe(item({ nombre: 'arroz', familia: 'cereales', caducidad: sumarDias(700) }))
+    const sinFecha = pesoDe(item({ nombre: 'arroz', familia: 'cereales' }))
+    const perecedero = pesoDe(item({ nombre: 'lechuga', familia: 'verduras', caducidad: sumarDias(20) }))
+    expect(conFecha).toBe(sinFecha)
+    expect(conFecha).toBeGreaterThan(perecedero)
+  })
+
   it('el fondo de despensa pesa, pero menos que cualquier perecedero con fecha', () => {
     const arroz = pesoDe(item({ nombre: 'arroz', familia: 'cereales' }))
     const urgente = pesoDe(item({ nombre: 'nata', familia: 'lácteos', caducidad: sumarDias(1) }))

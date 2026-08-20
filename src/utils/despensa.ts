@@ -243,6 +243,16 @@ export interface InfoCaducidad {
   pronto: boolean // dentro del umbral de aviso
 }
 
+// A partir del mes, los días dejan de decir nada: "caduca en 730d" es ruido y
+// "en 2 años" es la información que se buscaba. La despensa seca vive ahí.
+function plazo(dias: number): string {
+  if (dias <= 45) return `${dias}d`
+  const meses = Math.round(dias / 30)
+  if (meses < 12) return `${meses} meses`
+  const anos = Math.round(dias / 365)
+  return anos === 1 ? '1 año' : `${anos} años`
+}
+
 export function infoCaducidad(caducidad?: string): InfoCaducidad | null {
   if (!caducidad) return null
   const dias = diasHastaCaducidad(caducidad)
@@ -250,6 +260,6 @@ export function infoCaducidad(caducidad?: string): InfoCaducidad | null {
     dias < 0 ? 'caducado'
     : dias === 0 ? 'caduca hoy'
     : dias === 1 ? 'caduca mañana'
-    : `caduca en ${dias}d`
+    : `caduca en ${plazo(dias)}`
   return { dias, label, urgente: dias <= 1, pronto: dias <= UMBRAL_CADUCIDAD_DIAS }
 }
