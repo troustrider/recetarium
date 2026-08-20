@@ -73,14 +73,16 @@ Escupe ERROR y aviso receta a receta con su `categoria/tipo`, así que se filtra
 
 | Bloque | Puerta numérica | Consulta |
 |---|---|---|
-| `principal` | ≥35 g proteína, y comida completa (verdura propia o `guarnicion` rellena) | `proteinas < 35`, y `guarnicion IS NULL` sobre platos que la piden |
-| `desayuno` | ≥25 g proteína | `proteinas < 25` |
+| `principal` | Suelo de 20 g de proteína, y comida completa (verdura propia o `guarnicion` rellena) | `proteinas < 20`, y `guarnicion IS NULL` sobre platos que la piden |
+| `desayuno` | Suelo de 15 g de proteína | `proteinas < 15` |
 | `postre` / `entrante` | **Ninguna.** No inventes una | Sólo `audit` |
 
 ```sql
 SELECT nombre, proteinas FROM recetas
-WHERE borrada_en IS NULL AND tipo = 'principal' AND proteinas < 35 ORDER BY proteinas;
+WHERE borrada_en IS NULL AND tipo = 'principal' AND proteinas < 20 ORDER BY proteinas;
 ```
+
+La consulta usa el suelo y no el objetivo a propósito: lo que sale de ahí es deuda de verdad. Lo que queda entre el suelo y el objetivo (35 g con carne o pescado, 25 sin ellos) lo saca `audit`, que sí sabe si el plato es vegetal y si declara su palanca; a ojo, desde SQL, no se distingue una cena floja de un guiso de lentejas honrado. Ver el gate completo en `criterio-chef.md`.
 
 Que un bloque no tenga puerta de proteína no lo exime: en postres y entrantes el defecto típico es de pasos y de procedencia, y eso lo caza `audit`. No se arregla nada ahora: esto se convierte en la fase 6.
 
@@ -180,7 +182,7 @@ Dos cosas que la experiencia dice que hay que vigilar: los subagentes a veces **
 
 ### Si el plato se come a otra hora en su país
 
-No es motivo para descartarlo. La skill exige que el plato sea real y esté bien hecho, no que se coma a una hora concreta: `tipo` en la app significa cuándo lo va a comer Karim. Un meze griego o un Brotzeit bávaro pueden entrar como desayuno **declarando en `consejos` cuándo se comen allí**. Lo que no se relaja nunca es la puerta de proteína del bloque, que es la que de verdad decide si la receta sirve.
+No es motivo para descartarlo. La skill exige que el plato sea real y esté bien hecho, no que se coma a una hora concreta: `tipo` en la app significa cuándo lo va a comer Karim. Un meze griego o un Brotzeit bávaro pueden entrar como desayuno **declarando en `consejos` cuándo se comen allí**. Lo que no se relaja nunca es el suelo de proteína del bloque, que es el que de verdad decide si la receta sirve para ese hueco.
 
 ---
 
