@@ -1,0 +1,2674 @@
+[
+ {
+  "nombre": "Ensalada César con pollo a la plancha",
+  "sabor": "salado",
+  "categoria": "mexicana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "pechuga de pollo",
+    "cantidad": 350,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "lechuga romana",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "pan",
+    "cantidad": 80,
+    "unidad": "g",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "parmesano rallado",
+    "cantidad": 40,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "mayonesa",
+    "cantidad": 60,
+    "unidad": "g",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "mostaza",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "limón",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 1,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {80 g} de pan en dados de 2 cm, parte la {1 lechuga romana} en trozos de tres dedos y lávala. Abre los {350 g} de pechuga de pollo por la mitad a lo ancho para tener dos filetes de 1,5 cm y sécalos con papel de cocina.",
+   "Calienta {1 cucharada} de aceite de oliva en una sartén de 24 cm a fuego medio y tuesta los dados de pan 4-5 min, moviéndolos cada minuto, hasta que estén dorados y suenen huecos. Sácalos a un plato.",
+   "Sube a fuego fuerte, echa {1 cucharada} de aceite de oliva y sala los filetes con {1 cucharadita} de sal repartida. Hazlos 3-4 min por cada cara, sin moverlos, hasta 74°C en el centro o hasta que el jugo salga transparente al pinchar la parte más gruesa.",
+   "Mientras se hace el pollo, mezcla en un bol grande los {60 g} de mayonesa, {1 cucharadita} de mostaza, el {1 diente} de ajo rallado, el zumo del {1 limón} y {20 g} del parmesano rallado, hasta que quede una salsa lisa que cae de la cuchara en cinta.",
+   "Deja reposar el pollo 3 min y córtalo en tiras de 1 cm contra la fibra. Mezcla la lechuga con la salsa hasta que todas las hojas brillen, reparte el pollo y el pan tostado por encima, corona con los {20 g} de parmesano restante y pimienta negra recién molida, prueba y ajusta de sal y de limón."
+  ],
+  "consejos": [
+   "La César es de Tijuana, de Caesar Cardini (1924): lechuga romana entera, ajo, huevo escalfado un minuto, limón, worcester, parmesano y pan frito. La mayonesa es esa misma emulsión de huevo y aceite ya hecha, y ahorra el escalfado.",
+   "Sin anchoa ni worcester el aliño pierde el fondo salado del original. Media cucharadita de salsa de soja lo devuelve sin cambiar la textura.",
+   "El punto crítico es el pan: si lo tuestas a fuego fuerte se quema fuera y queda blando dentro, y en la ensalada se ablanda en dos minutos.",
+   "La salsa aguanta 3 días en un tarro en la nevera. Alíñala solo en el momento de servir: la romana se derrumba al cuarto de hora."
+  ],
+  "guarnicion": null,
+  "calorias": 744,
+  "proteinas": 53,
+  "carbohidratos": 25,
+  "grasas": 48,
+  "precioPorPorcion": 3.89
+ },
+ {
+  "nombre": "Hummus con carne picada y piñones",
+  "sabor": "salado",
+  "categoria": "mediooriente",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "garbanzos cocidos de bote",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "legumbres"
+   },
+   {
+    "nombre": "tahini",
+    "cantidad": 60,
+    "unidad": "g",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "limón",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 1,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "comino",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "carne picada de ternera",
+    "cantidad": 250,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "piñones",
+    "cantidad": 20,
+    "unidad": "g",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "perejil",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "pimentón",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Escurre y enjuaga los {400 g} de garbanzos, reservando {4 cucharadas} de su líquido. Pica el {1 puñado} de perejil, ralla el {1 diente} de ajo y saca la {250 g} de carne picada de la nevera para que no esté fría.",
+   "Tritura los garbanzos con los {60 g} de tahini, el ajo, el zumo del {1 limón}, {½ cucharadita} de comino, {1 cucharadita} de sal y las {4 cucharadas} del líquido reservado, 2 min, hasta que quede una crema que se estira sin romperse.",
+   "Tuesta los {20 g} de piñones en una sartén de 24 cm en seco a fuego medio 2-3 min, moviéndolos sin parar, hasta que estén dorados por fuera. Sácalos enseguida, que se queman en treinta segundos.",
+   "En la misma sartén calienta {2 cucharadas} de aceite de oliva a fuego fuerte y dora la carne picada 5-6 min, aplastándola contra el fondo y removiendo cada 2 min, hasta que no queden zonas rosas y esté tostada por partes.",
+   "Baja el fuego, añade a la carne {½ cucharadita} de comino, {1 cucharadita} de pimentón y {½ cucharadita} de sal y remueve 30 s fuera del centro del fuego. Extiende el hummus en dos platos haciendo un cráter, vuelca la carne con su grasa, esparce piñones, perejil y pimienta negra molida, prueba y ajusta de sal y de limón."
+  ],
+  "consejos": [
+   "El hummus con carne caliente encima es levantino y se llama hummus kawarma; en Beirut y en Jerusalén se come así, de plato principal, y no de mezze.",
+   "El punto crítico es la temperatura del hummus: si los garbanzos están fríos de nevera la crema queda espesa y granulosa. Un minuto de microondas sobre los garbanzos escurridos antes de triturar lo arregla.",
+   "El original lleva cordero picado, que es más graso y más dulce. Con ternera sale más seco, y por eso la carne se sirve con toda su grasa de la sartén.",
+   "Sin pan de pita al lado se queda corto de saciedad. También aguanta un huevo cocido partido por encima, que suma proteína sin tocar el plato."
+  ],
+  "guarnicion": {
+   "nombre": "Pan de pita y ensalada de tomate y pepino",
+   "ingredientes": [
+    {
+     "nombre": "pan de pita",
+     "cantidad": 2,
+     "unidad": "ud",
+     "familia": "cereales"
+    },
+    {
+     "nombre": "tomate",
+     "cantidad": 2,
+     "unidad": "ud",
+     "familia": "verduras"
+    },
+    {
+     "nombre": "pepino",
+     "cantidad": 1,
+     "unidad": "ud",
+     "familia": "verduras"
+    }
+   ],
+   "pasos": [
+    "Tostar el pan de pita 2 min por cara hasta que infle y cortar el tomate y el pepino en dados de 1 cm con sal y aceite."
+   ]
+  },
+  "calorias": 859,
+  "proteinas": 48,
+  "carbohidratos": 34,
+  "grasas": 59,
+  "precioPorPorcion": 3.49
+ },
+ {
+  "nombre": "Gado-gado exprés",
+  "sabor": "salado",
+  "categoria": "indonesia",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "huevos",
+    "cantidad": 4,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "tofu firme",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "otros"
+   },
+   {
+    "nombre": "judías verdes",
+    "cantidad": 150,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "col blanca",
+    "cantidad": 150,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "brotes de soja",
+    "cantidad": 100,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "pepino",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "crema de cacahuete",
+    "cantidad": 80,
+    "unidad": "g",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "ketjap manis",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "sambal oelek",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "leche de coco",
+    "cantidad": 60,
+    "unidad": "ml",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "lima",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 1,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Pon a hervir un cazo con {1 litro} de agua. Corta los {200 g} de tofu firme en dados de 2 cm y sécalos, quita las puntas a las {150 g} de judías verdes, corta los {150 g} de col blanca en tiras de 1 cm y el {1 pepino} en medias lunas.",
+   "Cuece los {4 huevos} 8 min desde que el agua vuelve a hervir. Los últimos 4 min echa en el mismo cazo las judías y la col, y los últimos 30 s los {100 g} de brotes de soja. Escurre todo y pasa los huevos por agua fría.",
+   "Mientras cuecen, calienta {1 cucharada} de aceite de girasol en una sartén de 24 cm a fuego medio-alto y dora los dados de tofu 5-6 min, dándoles la vuelta a mitad, hasta que tengan una costra dorada en dos caras.",
+   "Bate en un bol los {80 g} de crema de cacahuete con el {1 diente} de ajo rallado, {1 cucharada} de ketjap manis, {1 cucharadita} de sambal oelek, los {60 ml} de leche de coco, el zumo de {½ lima} y {2 cucharadas} de agua caliente. Bate 1 min hasta que quede una salsa que cae en cinta sin cortarse.",
+   "Reparte la verdura templada, el pepino crudo y el tofu en dos platos, corta los huevos por la mitad y colócalos encima, riega con la salsa de cacahuete, prueba y ajusta de sal y de lima."
+  ],
+  "consejos": [
+   "El gado-gado es javanés y su gracia es el contraste de verdura cocida, verdura cruda y salsa de cacahuete; la versión de puesto lleva además patata cocida y lontong (pastel de arroz).",
+   "La salsa auténtica se hace moliendo cacahuete tostado en mortero con chile y azúcar de palma. Con crema de cacahuete sale más lisa y algo más dulce: por eso lleva lima, para cortarla.",
+   "El punto crítico es no pasarse con la verdura: la col y las judías tienen que quedar crujientes, porque si se cuecen de más el plato se vuelve blando entero.",
+   "Usa crema de cacahuete sin azúcar añadido. La de bote dulce empalaga y hace que la salsa se vuelva pegajosa al enfriarse."
+  ],
+  "guarnicion": null,
+  "calorias": 756,
+  "proteinas": 46,
+  "carbohidratos": 26,
+  "grasas": 52,
+  "precioPorPorcion": 2.76
+ },
+ {
+  "nombre": "Uitsmijter de jamón y queso",
+  "sabor": "salado",
+  "categoria": "holandesa",
+  "tipo": "principal",
+  "tiempoPreparacion": 12,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "pan de molde",
+    "cantidad": 4,
+    "unidad": "rebanada",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "jamón cocido",
+    "cantidad": 4,
+    "unidad": "loncha",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "queso en lonchas",
+    "cantidad": 4,
+    "unidad": "loncha",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 4,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "mantequilla",
+    "cantidad": 20,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "cebollino",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Saca los {4 huevos} de la nevera y cáscalos en dos tazas, dos en cada una, sin romper las yemas. Pica el {1 puñado} de cebollino y ten a mano las {4 rebanadas} de pan de molde, las {4 lonchas} de jamón cocido y las {4 lonchas} de queso.",
+   "Tuesta las rebanadas de pan 2 min por cara en una sartén de 24 cm a fuego medio, sin grasa, hasta que estén doradas y rígidas. Ponlas en dos platos, dos por plato, y cubre cada una con una loncha de jamón y otra de queso.",
+   "En la misma sartén derrite los {20 g} de mantequilla a fuego medio-bajo hasta que espume sin llegar a dorarse, unos 30 s.",
+   "Vuelca las dos tazas de huevo en la sartén, separados, tapa y cuaja 3-4 min a fuego bajo, hasta que la clara esté opaca y firme y la yema siga líquida al mover la sartén.",
+   "Coloca dos huevos sobre cada plato de pan, jamón y queso, con la mantequilla de la sartén por encima. Sala con {1 pizca} de sal, muele pimienta negra por encima, esparce el cebollino, prueba y ajusta de sal antes de llevarlo a la mesa."
+  ],
+  "consejos": [
+   "El uitsmijter es la comida de mediodía neerlandesa de toda la vida, de café y de estación: pan, jamón, queso y huevos fritos encima. El nombre viene de 'portero de discoteca', porque era lo último que se comía al salir de fiesta.",
+   "El punto crítico es el fuego del huevo: a fuego fuerte la clara se encaje y la yema se cuaja antes de que el queso funda. Bajo y tapado, el vapor cuaja la clara de arriba sin tocar la yema.",
+   "El calor del huevo funde el queso lo justo. Si lo prefieres bien fundido, mete los platos 40 s en el microondas antes de poner los huevos.",
+   "Aguanta mal la espera: el pan tostado se ablanda con el jamón encima en cinco minutos, así que se monta y se come."
+  ],
+  "guarnicion": {
+   "nombre": "Ensalada de tomate y pepinillos",
+   "ingredientes": [
+    {
+     "nombre": "tomate",
+     "cantidad": 2,
+     "unidad": "ud",
+     "familia": "verduras"
+    },
+    {
+     "nombre": "pepinillos en vinagre",
+     "cantidad": 60,
+     "unidad": "g",
+     "familia": "conservas"
+    },
+    {
+     "nombre": "lechuga",
+     "cantidad": 60,
+     "unidad": "g",
+     "familia": "verduras"
+    }
+   ],
+   "pasos": [
+    "Cortar el tomate en rodajas y la lechuga en tiras, y poner los pepinillos enteros al lado."
+   ]
+  },
+  "calorias": 578,
+  "proteinas": 38,
+  "carbohidratos": 30,
+  "grasas": 34,
+  "precioPorPorcion": 2.07
+ },
+ {
+  "nombre": "Hellim ızgara con çoban salatası",
+  "sabor": "salado",
+  "categoria": "turca",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "halloumi",
+    "cantidad": 300,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "tomate",
+    "cantidad": 3,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "pepino",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolla roja",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "pimiento verde",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "perejil",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "limón",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "menta",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {3 tomates} y el {1 pepino} en dados de 1 cm, el {1 pimiento verde} en tiras finas y la {1 cebolla roja} en medias lunas finas. Pica el {1 puñado} de perejil y corta los {300 g} de halloumi en lonchas de 1 cm.",
+   "Aliña la verdura en un bol con {2 cucharadas} de aceite de oliva, el zumo de {½ limón}, {1 cucharadita} de menta seca y {½ cucharadita} de sal, y remueve. Déjala reposar mientras se hace el queso, para que el tomate suelte su jugo.",
+   "Seca las lonchas de halloumi con papel de cocina, que si están húmedas no doran. Calienta una sartén de 24 cm a fuego medio-alto 2 min con {1 cucharada} de aceite de oliva, hasta que el aceite brille.",
+   "Pon las lonchas en una sola capa, sin que se toquen, y hazlas 2 min por cara, sin moverlas, hasta que tengan una costra dorada y estén blandas al presionar. Si no caben, hazlo en dos tandas.",
+   "Sirve el queso recién salido de la sartén sobre la ensalada, con el zumo del {½ limón} restante y el perejil por encima. Prueba y ajusta de sal con cuidado, que el halloumi ya viene salado."
+  ],
+  "consejos": [
+   "El hellim es el queso chipriota de la parrilla y la çoban salatası, la ensalada del pastor turca: tomate, pepino, pimiento y cebolla en dados, sin más aliño que aceite, limón y menta seca.",
+   "El punto crítico es no pasarse de tiempo: a partir de tres minutos por cara el halloumi suelta su suero, se contrae y queda chicloso.",
+   "El halloumi recalentado se vuelve gomoso. Si sobra, se come frío al día siguiente cortado en dados dentro de la propia ensalada.",
+   "La cebolla roja cruda en dados se suaviza si la enjuagas bajo el grifo un minuto y la escurres antes de aliñar."
+  ],
+  "guarnicion": null,
+  "calorias": 789,
+  "proteinas": 38,
+  "carbohidratos": 22,
+  "grasas": 61,
+  "precioPorPorcion": 4.32
+ },
+ {
+  "nombre": "Jeyuk bokkeum",
+  "sabor": "umami",
+  "categoria": "coreana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "zanahoria",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "gochujang",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 3,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "aceite de sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {400 g} de lomo de cerdo en tiras de medio centímetro de grosor, la {1 cebolla} en medias lunas, la {1 zanahoria} en rodajas finas y las {2 cebolletas} en trozos de 3 cm, separando la parte verde.",
+   "Mezcla en un bol las {2 cucharadas} de gochujang, {1 cucharada} de salsa de soja, {1 cucharadita} de azúcar, los {3 dientes} de ajo rallados y {1 cucharadita} de aceite de sésamo. Añade el cerdo y remueve 1 min hasta que todas las tiras estén cubiertas.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min, hasta que el aceite esté brillante y ondulado. Echa la cebolla, la zanahoria y la parte blanca de la cebolleta y saltea 2 min, removiendo cada 30 s.",
+   "Añade el cerdo con toda su marinada en una sola capa y déjalo quieto 2 min para que se tueste. Remueve y sigue 4-5 min más, hasta 63°C en el centro de una tira o hasta que no queden zonas rosas y la salsa se pegue a la carne.",
+   "Apaga el fuego, echa la parte verde de la cebolleta y {1 cucharadita} de sésamo, remueve 30 s con el calor residual, prueba y ajusta de sal y de azúcar, que el gochujang varía mucho de marca a marca."
+  ],
+  "consejos": [
+   "El jeyuk bokkeum es el salteado de cerdo picante de diario en Corea, y se come con arroz y hojas de lechuga para envolver. En casa se hace con panceta o con paletilla en tiras finas.",
+   "El punto crítico es la sartén: si está poco caliente o va abarrotada, el cerdo suelta agua y la marinada se cuece en vez de caramelizar. Con más de 400 g conviene hacerlo en dos tandas.",
+   "El gochujang es de toko o de estante asiático y no tiene sustituto honesto: con sriracha y miso sale otra cosa. Un bote aguanta un año en la nevera y sirve para todos los platos coreanos.",
+   "Aguanta 3 días en la nevera y recalienta bien en sartén con una cucharada de agua para despegar la salsa."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 479,
+  "proteinas": 46,
+  "carbohidratos": 22,
+  "grasas": 23,
+  "precioPorPorcion": 2.38
+ },
+ {
+  "nombre": "Buta no shogayaki",
+  "sabor": "umami",
+  "categoria": "japonesa",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "col blanca",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "jengibre",
+    "cantidad": 20,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "mirin",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {400 g} de lomo de cerdo en filetes de medio centímetro, la {1 cebolla} en medias lunas y los {200 g} de col blanca en tiras lo más finas que puedas. Deja la col en agua fría mientras cocinas, para que quede crujiente.",
+   "Ralla los {20 g} de jengibre con su jugo y mézclalo en un bol con {2 cucharadas} de salsa de soja, {2 cucharadas} de mirin y {1 cucharadita} de azúcar, hasta que el azúcar se disuelva.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego medio-alto y sofríe la cebolla 3 min, removiendo cada minuto, hasta que esté transparente por los bordes.",
+   "Sube a fuego fuerte, pon los filetes en una sola capa sin que se toquen y hazlos 1 min por cara, hasta que cambien de color. Si no caben, hazlo en dos tandas.",
+   "Vuelca la salsa sobre la carne y deja que hierva 2 min, moviendo la sartén, hasta que espese y napa los filetes, o sea, los cubra sin resbalar, y el cerdo llegue a 63°C. Escurre la col, ponla al lado, prueba y ajusta de soja."
+  ],
+  "consejos": [
+   "El shogayaki es, junto al tonkatsu, el plato de cerdo de diario en Japón. Se sirve siempre sobre una montaña de col cruda en tiras finas, que es lo que corta la grasa de la salsa.",
+   "El corte tradicional es panceta o lomo en lonchas de 2 mm, que venden cortadas en los supermercados asiáticos. Con lomo entero, congélalo 20 min antes de cortarlo y saldrán lonchas más finas.",
+   "El punto crítico es no cocer la carne en la salsa: la salsa entra al final y solo el tiempo justo para que reduzca, o el cerdo se endurece.",
+   "El mirin es de estante asiático. Sustituyéndolo por la misma cantidad de vino blanco con media cucharadita más de azúcar sale parecido, aunque con menos brillo."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 431,
+  "proteinas": 45,
+  "carbohidratos": 20,
+  "grasas": 19,
+  "precioPorPorcion": 2.44
+ },
+ {
+  "nombre": "Pad krapow gai",
+  "sabor": "salado",
+  "categoria": "tailandesa",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "pollo picado",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "judías verdes",
+    "cantidad": 150,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 4,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "albahaca",
+    "cantidad": 30,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "salsa de ostras",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "guindilla",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "especias"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Pica los {4 dientes} de ajo y las {2 guindillas} juntos hasta que queden groseros, corta las {150 g} de judías verdes en trozos de 2 cm y arranca las hojas de los {30 g} de albahaca. Mezcla aparte {2 cucharadas} de salsa de ostras, {1 cucharada} de salsa de soja y {1 cucharadita} de azúcar.",
+   "Calienta {2 cucharadas} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y fríe los {2 huevos} 2-3 min, sin tocarlos, hasta que el borde de la clara esté crujiente y la yema líquida. Sácalos a los platos.",
+   "En la misma sartén echa {1 cucharada} de aceite de girasol y el ajo con la guindilla, y remueve 20 s a fuego fuerte, justo hasta que huela y antes de que el ajo tome color.",
+   "Añade los {400 g} de pollo picado y las judías verdes, aplasta la carne contra el fondo y déjala 2 min sin tocar. Rompe los grumos y saltea 4-5 min más, hasta que no queden zonas rosas y el fondo de la sartén esté seco.",
+   "Vuelca la salsa, saltea 1 min a fuego fuerte hasta que se pegue a la carne, apaga y mezcla la albahaca fuera del fuego, solo hasta que se ablande. Sirve sobre el arroz con el huevo encima, prueba y ajusta de sal y de azúcar."
+  ],
+  "consejos": [
+   "El pad krapow es el plato de puesto tailandés por excelencia y se pide 'krapow gai kai dao': con pollo y huevo frito encima. Su albahaca es la sagrada (krapow), de sabor a clavo; con la genovesa sale el plato pero con otro perfume.",
+   "El canon lleva salsa de pescado además de la de ostras. Aquí va solo la de ostras y soja, que dan la misma sal y el mismo umami sin el fondo de anchoa.",
+   "El punto crítico es el fuego: la carne tiene que tostarse, no hervir. Fuego al máximo, sartén ancha y no remover durante los dos primeros minutos.",
+   "Las judías verdes no son obligatorias en Bangkok, pero son lo que convierte el plato en una cena completa en vez de en carne sobre arroz."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 630,
+  "proteinas": 50,
+  "carbohidratos": 13,
+  "grasas": 42,
+  "precioPorPorcion": 3.48
+ },
+ {
+  "nombre": "Tavuk sote",
+  "sabor": "salado",
+  "categoria": "turca",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "pechuga de pollo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "pimiento verde",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "tomate",
+    "cantidad": 3,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 2,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "mantequilla",
+    "cantidad": 20,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "pimentón",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pul biber",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "comino",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "perejil",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {400 g} de pechuga de pollo en dados de 2 cm y sécalos con papel de cocina. Pica la {1 cebolla} y los {2 dientes} de ajo, corta los {2 pimientos verdes} en tiras de 1 cm y los {3 tomates} en dados de 2 cm.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y dora el pollo en una sola capa 4 min, dándole la vuelta a la mitad, hasta que esté dorado por fuera. Sácalo a un plato.",
+   "Baja a fuego medio, echa los {20 g} de mantequilla y sofríe la cebolla y el pimiento 4 min, removiendo cada minuto, hasta que la cebolla esté transparente y el pimiento ceda al apretarlo.",
+   "Añade el ajo, {1 cucharadita} de pimentón, {1 cucharadita} de pul biber y {1 cucharadita} de comino y remueve 30 s fuera del centro del fuego, para que el pimentón no se queme. Incorpora el tomate y {½ cucharadita} de sal.",
+   "Devuelve el pollo con su jugo y cuece 4-5 min a fuego medio, removiendo cada 2 min, hasta que el tomate se deshaga en salsa y el pollo llegue a 74°C. Esparce el {1 puñado} de perejil y pimienta negra molida, prueba y ajusta de sal y de pul biber."
+  ],
+  "consejos": [
+   "El sote es la fórmula turca de diario: proteína en dados, pimiento verde, tomate y mantequilla, en una sartén. Se hace igual con ternera (et sote) y con hígado (ciğer sote).",
+   "El pimiento que le corresponde es el sivri, verde alargado y algo picante. El pimiento verde italiano de aquí es el equivalente más cercano.",
+   "El punto crítico es dorar el pollo aparte y devolverlo al final: si se guisa desde el principio con el tomate, suelta agua y queda con textura de hervido.",
+   "El pul biber es de supermercado turco. Media cucharadita de copos de chile con media más de pimentón dulce se le acerca, aunque sin el punto afrutado."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz pilav",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    },
+    {
+     "nombre": "mantequilla",
+     "cantidad": 15,
+     "unidad": "g",
+     "familia": "lácteos"
+    }
+   ],
+   "pasos": [
+    "Tostar el arroz enjuagado en la mantequilla 2 min, añadir vez y media de agua medida con el mismo vaso y sal, cocer tapado 12 min y reposar 5 min tapado."
+   ]
+  },
+  "calorias": 473,
+  "proteinas": 51,
+  "carbohidratos": 20,
+  "grasas": 21,
+  "precioPorPorcion": 3.91
+ },
+ {
+  "nombre": "Bistec a la mexicana",
+  "sabor": "salado",
+  "categoria": "mexicana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "ternera en tiras",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "tomate",
+    "cantidad": 4,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "chile jalapeño",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "especias"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 2,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cilantro",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "lima",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "comino",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {4 tomates} en dados de 1 cm, la {1 cebolla} en dados del mismo tamaño y los {2 chiles jalapeños} en aros finos con sus semillas. Pica los {2 dientes} de ajo y seca los {400 g} de ternera en tiras con papel de cocina.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min, hasta que humee ligeramente. Sella la ternera en una sola capa 2 min sin moverla y otro minuto removiendo, hasta que esté dorada por fuera y aún roja por dentro. Sácala.",
+   "Baja a fuego medio, echa {1 cucharada} de aceite de girasol y sofríe la cebolla y el jalapeño 3 min, removiendo cada minuto, hasta que la cebolla esté transparente.",
+   "Añade el ajo y {1 cucharadita} de comino, remueve 30 s, incorpora el tomate y {1 cucharadita} de sal y cuece 4 min a fuego medio, removiendo cada 2 min, hasta que el tomate suelte su jugo y la salsa cubra el fondo.",
+   "Devuelve la carne con el jugo del plato y cuece 1-2 min, solo hasta que se caliente y no queden zonas rosas por fuera. Aparta del fuego, exprime {½ lima}, esparce el {1 puñado} de cilantro y pimienta negra, prueba y ajusta de sal y de lima."
+  ],
+  "consejos": [
+   "Bistec a la mexicana se llama así por los tres colores de la bandera: tomate, cebolla y chile verde. Es plato de fonda y se come con tortillas de maíz, no con arroz.",
+   "El chile que le toca es el serrano; el jalapeño pica algo menos y aguanta mejor el sofrito. Quitando las semillas baja bastante el picante.",
+   "El punto crítico es sellar la carne aparte: la ternera en tiras suelta agua en cuanto entra en la salsa, y si se hace todo junto queda gris y dura.",
+   "Con falda o con aguja en tiras finas sale más sabroso que con filete magro, y aguanta mejor el minuto final dentro de la salsa."
+  ],
+  "guarnicion": {
+   "nombre": "Tortillas de maíz calientes",
+   "ingredientes": [
+    {
+     "nombre": "tortillas de maíz",
+     "cantidad": 6,
+     "unidad": "ud",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Calentar las tortillas 30 s por cara en una sartén seca a fuego medio y guardarlas envueltas en un paño hasta servir."
+   ]
+  },
+  "calorias": 491,
+  "proteinas": 46,
+  "carbohidratos": 16,
+  "grasas": 27,
+  "precioPorPorcion": 4.47
+ },
+ {
+  "nombre": "Gong bao ji ding",
+  "sabor": "umami",
+  "categoria": "china",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "pechuga de pollo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "cacahuetes",
+    "cantidad": 60,
+    "unidad": "g",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "pimiento verde",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 3,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 2,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "jengibre",
+    "cantidad": 15,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "chiles secos",
+    "cantidad": 6,
+    "unidad": "ud",
+    "familia": "especias"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "vinagre de arroz",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 2,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "maicena",
+    "cantidad": 2,
+    "unidad": "cucharadita",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "pimienta de sichuan",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {400 g} de pechuga de pollo en dados de 1,5 cm y mézclalos con {1 cucharadita} de maicena, {1 cucharada} de salsa de soja y {1 cucharada} de agua hasta que la maicena desaparezca. Pica el ajo y los {15 g} de jengibre, corta las {3 cebolletas} en trozos de 2 cm y el {1 pimiento verde} en cuadrados de 2 cm.",
+   "Mezcla en un cuenco {1 cucharada} de salsa de soja, {1 cucharada} de vinagre de arroz, {2 cucharaditas} de azúcar, {1 cucharadita} de maicena y {2 cucharadas} de agua. Esta es la salsa y entra de una vez, así que tenla al lado del fuego.",
+   "Tuesta la {1 cucharadita} de pimienta de sichuan en una sartén de 28 cm en seco a fuego medio 1 min, hasta que huela, y muélela. Añade {2 cucharadas} de aceite de girasol y los {6 chiles secos} partidos y remueve 30 s, hasta que se oscurezcan sin llegar a negro.",
+   "Sube a fuego fuerte, echa el pollo escurrido en una sola capa y déjalo quieto 2 min. Dale la vuelta y saltea 3 min más con el pimiento, hasta 74°C en el centro o hasta que el jugo salga transparente.",
+   "Añade el ajo, el jengibre y la cebolleta, remueve 30 s, vuelca la salsa removida y deja que borbotee 1 min hasta que nape los dados. Apaga, mezcla los {60 g} de cacahuetes, prueba y ajusta de azúcar y de vinagre, que el plato busca el punto agridulce."
+  ],
+  "consejos": [
+   "El gong bao es de Sichuan y su firma es el ma la: el hormigueo de la pimienta de sichuan más el picante del chile seco, sobre un fondo agridulce. Sin la pimienta de sichuan es otro salteado de pollo con cacahuetes.",
+   "El pimiento verde no está en la versión de Chengdu, que solo lleva cebolleta; se añade aquí para que el plato traiga su propia verdura.",
+   "El punto crítico son los chiles: si se pasan de 30 s se queman y amargan toda la salsa. Se buscan oscuros y aromáticos, no negros.",
+   "La maicena sobre el pollo es la técnica del velveting: forma una capa que retiene el jugo y es la razón de que el pollo del restaurante chino quede tierno."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 601,
+  "proteinas": 56,
+  "carbohidratos": 20,
+  "grasas": 33,
+  "precioPorPorcion": 3.69
+ },
+ {
+  "nombre": "Butadon",
+  "sabor": "umami",
+  "categoria": "japonesa",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "arroz",
+    "cantidad": 1,
+    "unidad": "vaso",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "mirin",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "jengibre",
+    "cantidad": 10,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Enjuaga el {1 vaso} de arroz hasta que el agua salga clara, ponlo en un cazo con vez y media de agua medida con el mismo vaso y {½ cucharadita} de sal, lleva a hervor, tapa y baja al mínimo 12 min. Apaga y deja reposar tapado 5 min sin destapar.",
+   "Mientras cuece el arroz, corta los {400 g} de lomo de cerdo en lonchas de medio centímetro, la {1 cebolla} en medias lunas y las {2 cebolletas} en aros finos. Mezcla {3 cucharadas} de salsa de soja, {3 cucharadas} de mirin, {1 cucharada} de azúcar y los {10 g} de jengibre rallado.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 24 cm a fuego medio-alto y sofríe la cebolla 3 min, removiendo cada minuto, hasta que esté transparente y empiece a dorarse por los bordes.",
+   "Sube a fuego fuerte, añade el cerdo en una sola capa y hazlo 1 min por cara, hasta que cambie de color. Vuelca la salsa y deja que hierva 3-4 min, moviendo la sartén cada minuto, hasta que espese, brille y el cerdo llegue a 63°C.",
+   "Reparte el arroz en dos boles, vuelca encima el cerdo con toda su salsa, esparce la cebolleta y {1 cucharadita} de sésamo, prueba y ajusta de soja antes de servir."
+  ],
+  "consejos": [
+   "El butadon es de Obihiro, en Hokkaidō: cerdo glaseado en salsa dulce-salada sobre arroz, hermano del gyudon pero con cerdo y sin caldo. Allí se hace a la parrilla de carbón.",
+   "La proporción de la salsa es soja, mirin y azúcar a partes que se reducen hasta napar. Reducirla de más la vuelve caramelo y sala en exceso: se para cuando cubre el dorso de la cuchara.",
+   "El punto crítico es el orden: la cebolla primero y sola, para que se ablande sin quemar la salsa, y el cerdo después, poco tiempo.",
+   "Sin mirin, vino blanco con una cucharadita más de azúcar hace el mismo papel, aunque el glaseado brilla menos."
+  ],
+  "guarnicion": {
+   "nombre": "Col rallada con sésamo",
+   "ingredientes": [
+    {
+     "nombre": "col blanca",
+     "cantidad": 200,
+     "unidad": "g",
+     "familia": "verduras"
+    },
+    {
+     "nombre": "aceite de sésamo",
+     "cantidad": 1,
+     "unidad": "cucharadita",
+     "familia": "condimentos"
+    }
+   ],
+   "pasos": [
+    "Cortar la col en tiras muy finas, dejarla 5 min en agua fría, escurrirla y aliñarla con el aceite de sésamo y una pizca de sal."
+   ]
+  },
+  "calorias": 785,
+  "proteinas": 52,
+  "carbohidratos": 97,
+  "grasas": 21,
+  "precioPorPorcion": 2.63
+ },
+ {
+  "nombre": "Dubu kimchi",
+  "sabor": "umami",
+  "categoria": "coreana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "tofu firme",
+    "cantidad": 300,
+    "unidad": "g",
+    "familia": "otros"
+   },
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "kimchi",
+    "cantidad": 250,
+    "unidad": "g",
+    "familia": "conservas"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 2,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "gochugaru",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de sésamo",
+    "cantidad": 2,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Pon a hervir un cazo con {1 litro} de agua y {1 cucharadita} de sal. Corta los {200 g} de lomo de cerdo en tiras finas, los {250 g} de kimchi en trozos de 3 cm reservando su jugo, la {1 cebolla} en medias lunas y las {2 cebolletas} en aros.",
+   "Corta los {300 g} de tofu firme en lonchas de 1,5 cm y cuécelas 3 min en el agua salada, sin que llegue a borbotear fuerte, hasta que se calienten por dentro. Sácalas con espumadera a un plato y déjalas escurrir.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y saltea el cerdo en una sola capa 3 min, dándole la vuelta a la mitad, hasta que esté dorado y no queden zonas rosas.",
+   "Añade la cebolla, el kimchi escurrido y los {2 dientes} de ajo picados y saltea 4 min a fuego fuerte, removiendo cada minuto, hasta que el kimchi pierda el color crudo y los bordes se tuesten. Es donde se hace el sabor del plato.",
+   "Echa el jugo del kimchi, {1 cucharada} de salsa de soja, {1 cucharadita} de azúcar y {1 cucharadita} de gochugaru y cuece 2 min más, hasta que casi no quede líquido. Apaga, añade {2 cucharaditas} de aceite de sésamo, monta sobre el tofu, esparce cebolleta y {1 cucharadita} de sésamo, prueba y ajusta de sal."
+  ],
+  "consejos": [
+   "El dubu kimchi es el plato coreano de cerdo salteado con kimchi servido sobre tofu templado. La gracia es el contraste: el tofu suave y sin sal contra el kimchi ácido y picante.",
+   "El kimchi tiene que ser maduro, del que ya está ácido y burbujea al abrir el bote. El recién comprado no tiene la acidez que sostiene el salteado.",
+   "El punto crítico es escurrir el kimchi antes de saltear y añadir su jugo al final: si entra todo junto, se cuece en vez de tostarse.",
+   "Hervir el tofu en agua salada en vez de freírlo es lo tradicional y lo que hace que no se rompa. Sécalo bien antes de emplatar o suelta agua en el plato."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 565,
+  "proteinas": 49,
+  "carbohidratos": 18,
+  "grasas": 33,
+  "precioPorPorcion": 3.76
+ },
+ {
+  "nombre": "Piccata de pavo al limón",
+  "sabor": "acido",
+  "categoria": "italiana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "filetes de pavo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "harina",
+    "cantidad": 30,
+    "unidad": "g",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "mantequilla",
+    "cantidad": 30,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "limón",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "alcaparras",
+    "cantidad": 20,
+    "unidad": "g",
+    "familia": "conservas"
+   },
+   {
+    "nombre": "caldo de pollo",
+    "cantidad": 100,
+    "unidad": "ml",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "perejil",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Aplasta los {400 g} de filetes de pavo entre dos hojas de papel film con la base de un cazo hasta dejarlos de medio centímetro. Sálalos con {1 cucharadita} de sal repartida, enharínalos con los {30 g} de harina y sacude el exceso. Exprime el {1 limón} y pica el {1 puñado} de perejil.",
+   "Calienta {1 cucharada} de aceite de oliva y {10 g} de mantequilla en una sartén de 28 cm a fuego medio-alto, hasta que la mantequilla espume sin dorarse.",
+   "Pon los filetes en una sola capa, sin que se toquen, y hazlos 2 min por cara, sin moverlos, hasta que estén dorados y el jugo salga transparente al pinchar. Si no caben, hazlo en dos tandas. Sácalos a un plato.",
+   "Echa en la sartén los {100 ml} de caldo de pollo y el zumo del limón y raspa el fondo con una cuchara de madera 2 min a fuego fuerte, hasta que el líquido se reduzca a la mitad.",
+   "Baja el fuego al mínimo, añade los {20 g} de mantequilla restantes en dados y mueve la sartén sin parar 1 min, hasta que la salsa espese y brille. Echa las {20 g} de alcaparras, devuelve el pavo con su jugo 30 s, esparce el perejil y pimienta negra, prueba y ajusta de sal y de limón."
+  ],
+  "consejos": [
+   "La piccata es de la cocina italoamericana de escalope: carne fina enharinada, fondo de limón y alcaparras y mantequilla fría montada al final. En Italia se hace con ternera; el pavo es la versión barata y funciona igual.",
+   "El punto crítico es el final: la mantequilla se monta con el fuego al mínimo y moviendo. Si la salsa hierve con la mantequilla dentro, se corta y suelta grasa.",
+   "La harina no es un rebozado: es lo que espesa la salsa al desglasar. Sacude bien el exceso o la salsa saldrá pastosa.",
+   "Con el pavo aplastado a medio centímetro bastan dos minutos por cara. Un filete grueso se seca antes de dorarse por fuera."
+  ],
+  "guarnicion": {
+   "nombre": "Espinacas salteadas al ajo",
+   "ingredientes": [
+    {
+     "nombre": "espinacas",
+     "cantidad": 300,
+     "unidad": "g",
+     "familia": "verduras"
+    },
+    {
+     "nombre": "ajo",
+     "cantidad": 2,
+     "unidad": "diente",
+     "familia": "verduras"
+    },
+    {
+     "nombre": "aceite de oliva",
+     "cantidad": 1,
+     "unidad": "cucharada",
+     "familia": "condimentos"
+    }
+   ],
+   "pasos": [
+    "Dorar el ajo laminado en el aceite 1 min a fuego medio y saltear las espinacas 3 min, hasta que rompan y suelten su agua."
+   ]
+  },
+  "calorias": 463,
+  "proteinas": 51,
+  "carbohidratos": 13,
+  "grasas": 23,
+  "precioPorPorcion": 2.63
+ },
+ {
+  "nombre": "Solomillo de cerdo a la mostaza",
+  "sabor": "salado",
+  "categoria": "espanola",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "solomillo de cerdo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "mostaza",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "nata para cocinar",
+    "cantidad": 150,
+    "unidad": "ml",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 2,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "vino blanco seco",
+    "cantidad": 80,
+    "unidad": "ml",
+    "familia": "bebidas"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "perejil",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {400 g} de solomillo de cerdo en medallones de 2 cm, sécalos con papel de cocina y sálalos con {1 cucharadita} de sal repartida. Pica la {1 cebolla} muy fina y los {2 dientes} de ajo, y pica el {1 puñado} de perejil.",
+   "Calienta {2 cucharadas} de aceite de oliva en una sartén de 28 cm a fuego fuerte 2 min, hasta que el aceite brille. Sella los medallones de pie, en una sola capa, 2 min por cara sin moverlos, hasta que tengan costra dorada. Sácalos a un plato.",
+   "Baja a fuego medio y sofríe la cebolla y el ajo 4 min en la grasa de la sartén, removiendo cada minuto y raspando el fondo tostado, hasta que la cebolla esté transparente.",
+   "Echa los {80 ml} de vino blanco y deja que hierva 2 min a fuego fuerte, hasta que huela a vino cocido y no a alcohol. Añade los {150 ml} de nata y {2 cucharadas} de mostaza y remueve hasta que la salsa quede homogénea.",
+   "Devuelve los medallones con su jugo y cuece 3-4 min a fuego medio-bajo, dándoles la vuelta a la mitad, hasta 63°C en el centro o hasta que estén rosa pálido por dentro y la salsa nape la cuchara. Esparce el perejil y pimienta negra, prueba y ajusta de sal y de mostaza."
+  ],
+  "consejos": [
+   "El solomillo a la mostaza es de barra de bar español, de la familia de las carnes en salsa de nata y mostaza de Dijon que se extendieron en los ochenta. La mostaza entra fuera del hervor fuerte, que si no pierde el punto picante.",
+   "El punto crítico es no pasar el cerdo: a 63°C queda jugoso y rosa pálido, y tres minutos más lo dejan seco. Fuera del fuego sube un par de grados solo.",
+   "El solomillo se sella de pie, por la cara del corte, no de canto: es donde se forma la costra que da sabor a la salsa.",
+   "La nata para cocinar aguanta el hervor mejor que la de montar. Si la salsa queda espesa, dos cucharadas de agua la devuelven al punto."
+  ],
+  "guarnicion": {
+   "nombre": "Judías verdes al vapor",
+   "ingredientes": [
+    {
+     "nombre": "judías verdes",
+     "cantidad": 300,
+     "unidad": "g",
+     "familia": "verduras"
+    },
+    {
+     "nombre": "aceite de oliva",
+     "cantidad": 1,
+     "unidad": "cucharada",
+     "familia": "condimentos"
+    }
+   ],
+   "pasos": [
+    "Cocer las judías sin puntas 5 min en agua con sal, escurrirlas y aliñarlas con el aceite."
+   ]
+  },
+  "calorias": 548,
+  "proteinas": 46,
+  "carbohidratos": 10,
+  "grasas": 36,
+  "precioPorPorcion": 3
+ },
+ {
+  "nombre": "Sucuklu yumurta",
+  "sabor": "salado",
+  "categoria": "turca",
+  "tipo": "principal",
+  "tiempoPreparacion": 12,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "chorizo",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 5,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "pimiento verde",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "mantequilla",
+    "cantidad": 15,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "pul biber",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "perejil",
+    "cantidad": 1,
+    "unidad": "puñado",
+    "familia": "especias"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {200 g} de chorizo en rodajas de medio centímetro y el {1 pimiento verde} en tiras finas. Casca los {5 huevos} en un cuenco, sin batirlos, y pica el {1 puñado} de perejil.",
+   "Pon las rodajas de chorizo en una sartén de 24 cm en frío, enciende a fuego medio y dóralas 4 min, dándoles la vuelta a la mitad, hasta que suelten su grasa roja y los bordes se ricen.",
+   "Añade el pimiento verde y los {15 g} de mantequilla y sofríe 3 min, removiendo cada minuto, hasta que el pimiento ceda al apretarlo con la cuchara.",
+   "Baja a fuego bajo y vuelca los huevos entre las rodajas, sin romper las yemas. Tapa y cuaja 4-5 min, hasta que la clara esté opaca y firme y la yema siga líquida al mover la sartén.",
+   "Esparce {1 cucharadita} de pul biber y el perejil, prueba y ajusta de sal con cuidado, que el chorizo ya sala bastante, y sirve en la propia sartén con pan para mojar."
+  ],
+  "consejos": [
+   "El sucuklu yumurta es el desayuno fuerte turco de sartén de cobre, y de cena se come igual. El sucuk es un embutido de ternera curado con comino y ajo.",
+   "El sucuk es de supermercado turco. El chorizo es el sustituto razonable, aunque aporta pimentón donde el sucuk aporta comino: media cucharadita de comino con el pimiento acerca el sabor.",
+   "El punto crítico es empezar con la sartén fría: así el embutido suelta su grasa poco a poco y es esa grasa la que fríe el huevo. En sartén caliente se quema por fuera y no suelta nada.",
+   "Los huevos se cascan enteros y no se baten. Si se remueven queda un revuelto, que es otro plato."
+  ],
+  "guarnicion": {
+   "nombre": "Pan y tomate en rodajas",
+   "ingredientes": [
+    {
+     "nombre": "pan",
+     "cantidad": 150,
+     "unidad": "g",
+     "familia": "cereales"
+    },
+    {
+     "nombre": "tomate",
+     "cantidad": 2,
+     "unidad": "ud",
+     "familia": "verduras"
+    }
+   ],
+   "pasos": [
+    "Tostar el pan 2 min por cara y servirlo con el tomate en rodajas gruesas con sal y aceite."
+   ]
+  },
+  "calorias": 664,
+  "proteinas": 42,
+  "carbohidratos": 7,
+  "grasas": 52,
+  "precioPorPorcion": 2.53
+ },
+ {
+  "nombre": "Ma yi shang shu",
+  "sabor": "umami",
+  "categoria": "china",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "fideos de boniato",
+    "cantidad": 150,
+    "unidad": "g",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "carne picada de ternera",
+    "cantidad": 350,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "pasta de judía picante (doubanjiang)",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 3,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "jengibre",
+    "cantidad": 15,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 3,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "pak choi",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "caldo de pollo",
+    "cantidad": 250,
+    "unidad": "ml",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Pon los {150 g} de fideos de boniato en un bol con agua caliente del grifo y déjalos 10 min, hasta que estén flexibles pero aún firmes al doblarlos. Pica los {3 dientes} de ajo, los {15 g} de jengibre y las {3 cebolletas}, y corta los {200 g} de pak choi a lo largo en cuartos.",
+   "Calienta {2 cucharadas} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y saltea los {350 g} de carne picada de ternera 5 min, aplastándola contra el fondo y rompiendo los grumos, hasta que no queden zonas rosas y se tueste por partes.",
+   "Baja a fuego medio, aparta la carne a un lado y fríe las {2 cucharadas} de pasta de judía picante en el aceite del hueco 1 min, removiendo, hasta que el aceite se tiña de rojo. Añade el ajo, el jengibre y la parte blanca de la cebolleta y remueve 30 s.",
+   "Echa los {250 ml} de caldo de pollo, {1 cucharada} de salsa de soja y los fideos escurridos, y cuece 4 min a fuego medio, removiendo cada minuto, hasta que los fideos estén transparentes y hayan bebido casi todo el caldo.",
+   "Añade el pak choi y cuece 2 min más, hasta que el tallo ceda al cuchillo y la hoja se ablande. Esparce la parte verde de la cebolleta, prueba y ajusta de sal, que el doubanjiang ya viene muy salado."
+  ],
+  "consejos": [
+   "Ma yi shang shu significa 'hormigas subiendo a un árbol': la carne picada agarrada a los fideos de boniato. Es plato de casa de Sichuan, no de restaurante.",
+   "En Sichuan se hace con cerdo picado; con ternera sale menos graso y algo más seco, y por eso conviene no escatimar el caldo.",
+   "El doubanjiang es de toko y no tiene sustituto honesto: con miso y chile sale otra cosa. Un bote dura un año en la nevera y sirve para el mapo tofu y para todo Sichuan.",
+   "El punto crítico son los fideos: si se remojan en agua hirviendo se pasan y se rompen al saltear. Agua caliente del grifo y firmes al escurrir."
+  ],
+  "guarnicion": null,
+  "calorias": 789,
+  "proteinas": 40,
+  "carbohidratos": 74,
+  "grasas": 37,
+  "precioPorPorcion": 3.49
+ },
+ {
+  "nombre": "Orecchiette con salchicha y brócoli",
+  "sabor": "salado",
+  "categoria": "italiana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "orecchiette",
+    "cantidad": 180,
+    "unidad": "g",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "salchicha fresca de cerdo",
+    "cantidad": 250,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "brócoli",
+    "cantidad": 350,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 3,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "copos de chile",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "parmesano rallado",
+    "cantidad": 40,
+    "unidad": "g",
+    "familia": "lácteos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Pon {3 litros} de agua a hervir con {30 g} de sal. Separa los {350 g} de brócoli en floretes pequeños, lamina los {3 dientes} de ajo y saca la carne de las {250 g} de salchicha apretando la piel, para tener trozos irregulares del tamaño de una avellana.",
+   "Cuece las {180 g} de orecchiette según el paquete (10-11 min) y echa los floretes de brócoli en la misma olla los últimos 4 min. Antes de escurrir, guarda {1 vaso} del agua de cocción.",
+   "Mientras hierve la pasta, calienta {2 cucharadas} de aceite de oliva en una sartén de 28 cm a fuego medio-alto y dora la carne de salchicha 6 min sin removerla los dos primeros minutos, hasta que no queden zonas rosas y esté tostada por fuera.",
+   "Baja a fuego medio, añade el ajo laminado y {1 cucharadita} de copos de chile y sofríe 1 min, hasta que el ajo esté dorado por los bordes pero sin llegar a marrón.",
+   "Echa la pasta y el brócoli escurridos en la sartén con medio vaso del agua de cocción y remueve 1-2 min a fuego fuerte, aplastando algún florete, hasta que la salsa se pegue a la pasta. Fuera del fuego añade los {40 g} de parmesano, prueba y ajusta de sal y de chile."
+  ],
+  "consejos": [
+   "El plato de Puglia es orecchiette con cime di rapa, un grelo amargo que aquí no se encuentra. El brócoli es el sustituto habitual también en Italia y da un plato más dulce y menos amargo.",
+   "El punto crítico es el agua de cocción: es lo que liga el aceite y el queso en salsa. Sin ella la pasta queda aceitosa y el queso se apelmaza.",
+   "La salchicha se saca de la piel y se rompe a trozos grandes, no se pica: se busca tropezón, no carne picada.",
+   "El parmesano entra fuera del fuego. Sobre la sartén al fuego se agrieta y se pega al fondo."
+  ],
+  "guarnicion": null,
+  "calorias": 905,
+  "proteinas": 41,
+  "carbohidratos": 75,
+  "grasas": 49,
+  "precioPorPorcion": 1.41
+ },
+ {
+  "nombre": "Kimchi bokkeumbap",
+  "sabor": "umami",
+  "categoria": "coreana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "arroz",
+    "cantidad": 1,
+    "unidad": "vaso",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "kimchi",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "conservas"
+   },
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 250,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "col china",
+    "cantidad": 150,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "gochujang",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "aceite de sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Usa {1 vaso} de arroz ya cocido y frío de la nevera, y desgrana los granos con las manos húmedas. Corta los {200 g} de kimchi en trozos de 1 cm reservando su jugo, los {250 g} de lomo de cerdo en tiras finas, los {150 g} de col china en tiras y las {2 cebolletas} en aros.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y saltea el cerdo en una sola capa 3 min, dándole la vuelta a la mitad, hasta que esté dorado y no queden zonas rosas.",
+   "Añade el kimchi escurrido y la col china y saltea 3 min a fuego fuerte, removiendo cada minuto, hasta que el kimchi se tueste por los bordes y la col se ablande.",
+   "Echa el arroz frío, {1 cucharada} de gochujang, {1 cucharada} de salsa de soja y el jugo del kimchi, y saltea 3 min extendiendo el arroz contra el fondo y removiendo cada minuto, hasta que todos los granos estén teñidos y sueltos.",
+   "Aparta a los platos, echa {1 cucharada} de aceite de girasol en la sartén y fríe los {2 huevos} 2-3 min, hasta que la clara esté opaca y la yema líquida. Ponlos encima, riega con {1 cucharadita} de aceite de sésamo, esparce cebolleta y {1 cucharadita} de sésamo, prueba y ajusta de sal."
+  ],
+  "consejos": [
+   "El bokkeumbap es lo que se hace en Corea con el arroz de ayer y el kimchi que ya está demasiado ácido para comerlo tal cual. El huevo frito encima con la yema líquida no es adorno: se rompe y liga el arroz.",
+   "El arroz tiene que ser del día anterior y estar frío. El recién hecho suelta almidón, se apelmaza y sale una papilla.",
+   "El punto crítico es tostar el kimchi antes de meter el arroz: es donde se concentra el sabor. Su jugo entra después, con el arroz, o se evapora en balde.",
+   "Con panceta en vez de lomo sale más sabroso y no hace falta aceite para el primer salteado, porque la propia grasa basta."
+  ],
+  "guarnicion": null,
+  "calorias": 792,
+  "proteinas": 44,
+  "carbohidratos": 82,
+  "grasas": 32,
+  "precioPorPorcion": 3.14
+ },
+ {
+  "nombre": "Bami goreng",
+  "sabor": "umami",
+  "categoria": "indonesia",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "fideos de huevo",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "pechuga de pollo",
+    "cantidad": 250,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "col blanca",
+    "cantidad": 150,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "zanahoria",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 3,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "ketjap manis",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "sambal oelek",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Cuece los {200 g} de fideos de huevo según el paquete (4-5 min), escúrrelos y pásalos por agua fría para que no se peguen. Corta los {250 g} de pechuga de pollo en tiras, los {150 g} de col blanca y la {1 zanahoria} en juliana, la {1 cebolla} en medias lunas y pica los {3 dientes} de ajo y las {2 cebolletas}.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y saltea el pollo en una sola capa 4 min, dándole la vuelta a la mitad, hasta 74°C en el centro o hasta que el jugo salga transparente. Sácalo a un plato.",
+   "Echa {1 cucharada} de aceite de girasol, la cebolla, la zanahoria y el ajo y saltea 2 min a fuego fuerte, removiendo cada 30 s. Añade la col y sigue 2 min más, hasta que se ablande sin perder el punto crujiente.",
+   "Aparta la verdura a un lado, casca los {2 huevos} en el hueco y revuélvelos 1 min con la espátula, hasta que cuajen en trozos grandes. Mézclalos con la verdura.",
+   "Añade los fideos, el pollo, {3 cucharadas} de ketjap manis, {1 cucharada} de salsa de soja y {1 cucharadita} de sambal oelek, y saltea 2 min removiendo con dos espátulas, hasta que todo esté teñido de marrón. Esparce la cebolleta y pimienta negra, prueba y ajusta de sal y de sambal."
+  ],
+  "consejos": [
+   "El bami goreng es el fideo salteado de las mesas indonesias y neerlandesas, hermano del nasi goreng. La firma es el ketjap manis: soja dulce y espesa, no salsa de soja normal.",
+   "Con salsa de soja sola no sale: falta el dulce y el color oscuro. El ketjap manis se vende en cualquier supermercado de aquí, en el pasillo de cocina del mundo.",
+   "El punto crítico es enfriar los fideos tras cocerlos. Calientes se rompen y se apelmazan en cuanto entran en la sartén.",
+   "En Java se remata con kroepoek y cebolla frita crujiente por encima, que es el contraste de textura del plato."
+  ],
+  "guarnicion": null,
+  "calorias": 833,
+  "proteinas": 53,
+  "carbohidratos": 99,
+  "grasas": 25,
+  "precioPorPorcion": 3.11
+ },
+ {
+  "nombre": "Arroz chaufa de pollo",
+  "sabor": "umami",
+  "categoria": "peruana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "arroz",
+    "cantidad": 1,
+    "unidad": "vaso",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "pechuga de pollo",
+    "cantidad": 300,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 3,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "pimiento rojo",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 4,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "brotes de soja",
+    "cantidad": 100,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 2,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "jengibre",
+    "cantidad": 10,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "aceite de sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Usa {1 vaso} de arroz ya cocido y frío de la nevera, desgranado con las manos húmedas. Corta los {300 g} de pechuga de pollo en dados de 1,5 cm, el {1 pimiento rojo} en cuadrados de 1 cm y las {4 cebolletas} en aros, separando lo verde. Pica el ajo y los {10 g} de jengibre y bate los {3 huevos}.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego medio, vuelca los huevos batidos y cuájalos 2 min sin remover, hasta que la tortilla esté firme por abajo. Dale la vuelta, 30 s más, sácala y córtala en tiras.",
+   "Sube a fuego fuerte, echa {1 cucharada} de aceite de girasol y saltea el pollo en una sola capa 4 min, dándole la vuelta a la mitad, hasta 74°C en el centro o hasta que el jugo salga transparente al pinchar.",
+   "Añade el pimiento, la parte blanca de la cebolleta, el ajo y el jengibre y saltea 2 min, removiendo cada 30 s, hasta que el pimiento tenga los bordes tostados.",
+   "Echa el arroz frío, {3 cucharadas} de salsa de soja y las tiras de tortilla y saltea 3 min extendiendo el arroz contra el fondo, hasta que los granos estén sueltos y teñidos. Fuera del fuego añade los {100 g} de brotes de soja, {1 cucharadita} de aceite de sésamo y lo verde de la cebolleta, prueba y ajusta de soja y de pimienta negra."
+  ],
+  "consejos": [
+   "El chaufa es el arroz frito de la cocina chifa, la china nacida en Perú con la migración cantonesa del siglo XIX. La tortilla en tiras y el sillao (la soja) son sus dos señas.",
+   "El arroz tiene que ser del día anterior y estar frío y seco. Recién hecho suelta almidón y el salteado se convierte en papilla.",
+   "El punto crítico es la sartén: muy caliente y sin abarrotar. Si el arroz no chisporrotea al caer, se está cociendo en vez de friéndose.",
+   "Los brotes de soja entran fuera del fuego para que queden crujientes. Con dos minutos de sartén se vuelven blandos y sueltan agua."
+  ],
+  "guarnicion": null,
+  "calorias": 800,
+  "proteinas": 56,
+  "carbohidratos": 81,
+  "grasas": 28,
+  "precioPorPorcion": 3.94
+ },
+ {
+  "nombre": "Sundubu jjigae",
+  "sabor": "umami",
+  "categoria": "coreana",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "tofu sedoso",
+    "cantidad": 300,
+    "unidad": "g",
+    "familia": "otros"
+   },
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "kimchi",
+    "cantidad": 100,
+    "unidad": "g",
+    "familia": "conservas"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "calabacín",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 3,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "gochugaru",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "especias"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "caldo de verduras",
+    "cantidad": 400,
+    "unidad": "ml",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "huevos",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "huevos"
+   },
+   {
+    "nombre": "aceite de sésamo",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Corta los {200 g} de lomo de cerdo en tiras finas, la {1 cebolla} en medias lunas, el {1 calabacín} en medias rodajas de medio centímetro, los {100 g} de kimchi en trozos de 2 cm y las {2 cebolletas} en aros. Pica los {3 dientes} de ajo.",
+   "Calienta {1 cucharada} de aceite de sésamo en una olla de 20 cm a fuego medio-alto y saltea el cerdo, el kimchi y el ajo 4 min, removiendo cada minuto, hasta que no queden zonas rosas en la carne y el kimchi se tueste por los bordes.",
+   "Aparta la olla del centro del fuego, añade las {2 cucharadas} de gochugaru y remueve 30 s en el aceite rojo, sin que llegue a humear, para que el picante se abra sin quemarse.",
+   "Vuelve al fuego, echa los {400 ml} de caldo de verduras, {1 cucharada} de salsa de soja, la cebolla y el calabacín y lleva a hervor. Cuece 5 min a borbotón suave, hasta que el calabacín esté tierno al pincharlo.",
+   "Añade los {300 g} de tofu sedoso en cucharadas grandes, sin trocearlo, y hierve 2 min más. Casca los {2 huevos} encima, apaga y tapa 1 min con el calor residual. Esparce la cebolleta, prueba y ajusta de sal y de gochugaru antes de llevar la olla a la mesa."
+  ],
+  "consejos": [
+   "El sundubu jjigae es el guiso coreano de tofu sedoso, y se sirve borboteando en su olla de barro con el huevo cuajándose encima con el propio calor.",
+   "La textura es el plato: el tofu sedoso se echa a cucharadas y no se remueve, para que queden nubes grandes. Con tofu firme sale otro guiso.",
+   "El gochugaru es de toko o de supermercado asiático y no tiene sustituto honesto: el pimentón picante da color pero no ese punto afrutado. Una bolsa dura un año en el congelador.",
+   "El punto crítico es abrir el gochugaru en la grasa fuera del fuego fuerte. Si se quema, todo el guiso amarga."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 452,
+  "proteinas": 42,
+  "carbohidratos": 17,
+  "grasas": 24,
+  "precioPorPorcion": 4.3
+ },
+ {
+  "nombre": "Pollo lemonato de sartén",
+  "sabor": "acido",
+  "categoria": "griega",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "pechuga de pollo",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "judías verdes",
+    "cantidad": 300,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "limón",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "frutas"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 4,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "orégano",
+    "cantidad": 2,
+    "unidad": "cucharadita",
+    "familia": "especias"
+   },
+   {
+    "nombre": "aceite de oliva",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "caldo de pollo",
+    "cantidad": 150,
+    "unidad": "ml",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   },
+   {
+    "nombre": "pimienta negra",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Abre los {400 g} de pechuga de pollo en filetes de 1,5 cm, sécalos con papel de cocina y sálalos con {1 cucharadita} de sal repartida. Quita las puntas a las {300 g} de judías verdes, lamina los {4 dientes} de ajo y exprime {1 limón}, reservando el otro en rodajas.",
+   "Calienta {2 cucharadas} de aceite de oliva en una sartén de 28 cm a fuego fuerte 2 min y dora los filetes 3 min por cara, sin moverlos, hasta 74°C en el centro o hasta que el jugo salga transparente al pinchar. Sácalos a un plato.",
+   "Baja a fuego medio, echa {1 cucharada} de aceite de oliva y el ajo laminado y sofríe 1 min, hasta que esté dorado por los bordes pero sin llegar a marrón, que amarga.",
+   "Añade las judías verdes, los {150 ml} de caldo de pollo y {1 cucharadita} de orégano, tapa y cuece 6 min a fuego medio, hasta que las judías cedan al cuchillo y quede un dedo de caldo en el fondo.",
+   "Devuelve el pollo con su jugo, echa el zumo del limón y {1 cucharadita} de orégano y cuece destapado 2 min a fuego fuerte, hasta que la salsa se reduzca y brille. Sirve con las rodajas del otro limón, pimienta negra, prueba y ajusta de sal y de limón."
+  ],
+  "consejos": [
+   "El kotopoulo lemonato griego es pollo al horno con patatas, limón y orégano, y tarda una hora larga. Esta es la versión de sartén: mismo trío de limón, ajo y orégano, sin el horno y sin la patata.",
+   "El orégano tiene que ser seco, no fresco. En Grecia es orégano de monte y se frota entre las manos al echarlo para que suelte el aroma.",
+   "El punto crítico es el limón al final: hervido largo amarga y pierde el perfume. Entra en los dos últimos minutos.",
+   "Las judías verdes se pueden cambiar por brócoli o por espinacas, ajustando el tiempo: el brócoli pide los mismos 6 min y la espinaca solo 2."
+  ],
+  "guarnicion": null,
+  "calorias": 474,
+  "proteinas": 50,
+  "carbohidratos": 10,
+  "grasas": 26,
+  "precioPorPorcion": 3.34
+ },
+ {
+  "nombre": "Yakisoba de cerdo y col",
+  "sabor": "umami",
+  "categoria": "japonesa",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "fideos de trigo",
+    "cantidad": 200,
+    "unidad": "g",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "lomo de cerdo",
+    "cantidad": 300,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "col blanca",
+    "cantidad": 250,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "zanahoria",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolla",
+    "cantidad": 1,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "salsa worcester",
+    "cantidad": 3,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de ostras",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "kétchup",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 1,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sésamo",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "frutos secos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Cuece los {200 g} de fideos de trigo según el paquete (4-5 min), escúrrelos y pásalos por agua fría. Corta los {300 g} de lomo de cerdo en tiras finas, los {250 g} de col blanca en cuadrados de 3 cm, la {1 zanahoria} en juliana, la {1 cebolla} en medias lunas y las {2 cebolletas} en aros.",
+   "Mezcla en un cuenco {3 cucharadas} de salsa worcester, {1 cucharada} de salsa de ostras, {1 cucharada} de kétchup, {1 cucharada} de salsa de soja y {1 cucharadita} de azúcar. Esta es la salsa yakisoba y entra de golpe al final.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min y saltea el cerdo en una sola capa 3 min, dándole la vuelta a la mitad, hasta que esté dorado y no queden zonas rosas.",
+   "Añade {1 cucharada} de aceite de girasol, la cebolla, la zanahoria y la col y saltea 3 min a fuego fuerte, removiendo cada minuto, hasta que la col se ablande y le salgan bordes tostados.",
+   "Echa los fideos y la salsa y saltea 2 min removiendo con dos espátulas, hasta que todo esté teñido y el fondo de la sartén quede seco. Esparce la cebolleta y {1 cucharadita} de sésamo, prueba y ajusta de salsa worcester."
+  ],
+  "consejos": [
+   "El yakisoba es comida de puesto de festival japonés, y a pesar del nombre no lleva soba: son fideos de trigo al huevo. La salsa es una versión japonesa de la worcester, más dulce y espesa.",
+   "La mezcla de worcester, kétchup, ostras y azúcar es el apaño casero habitual cuando no hay salsa yakisoba embotellada, y queda muy cerca.",
+   "El punto crítico es la col: se busca que quede entre crujiente y tierna, con algún borde tostado. Pasada de cocción suelta agua y los fideos se ablandan.",
+   "Enfriar los fideos tras cocerlos evita que se rompan al saltear. Un chorro de aceite tras escurrirlos los mantiene sueltos."
+  ],
+  "guarnicion": null,
+  "calorias": 814,
+  "proteinas": 48,
+  "carbohidratos": 97,
+  "grasas": 26,
+  "precioPorPorcion": 2.53
+ },
+ {
+  "nombre": "Ternera con brócoli y jengibre",
+  "sabor": "umami",
+  "categoria": "china",
+  "tipo": "principal",
+  "tiempoPreparacion": 15,
+  "porciones": 2,
+  "ingredientes": [
+   {
+    "nombre": "ternera en tiras",
+    "cantidad": 350,
+    "unidad": "g",
+    "familia": "carnes"
+   },
+   {
+    "nombre": "brócoli",
+    "cantidad": 400,
+    "unidad": "g",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "ajo",
+    "cantidad": 3,
+    "unidad": "diente",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "jengibre",
+    "cantidad": 20,
+    "unidad": "g",
+    "familia": "especias"
+   },
+   {
+    "nombre": "cebolleta",
+    "cantidad": 2,
+    "unidad": "ud",
+    "familia": "verduras"
+   },
+   {
+    "nombre": "salsa de ostras",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "salsa de soja",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "salsas"
+   },
+   {
+    "nombre": "maicena",
+    "cantidad": 2,
+    "unidad": "cucharadita",
+    "familia": "cereales"
+   },
+   {
+    "nombre": "azúcar",
+    "cantidad": 1,
+    "unidad": "cucharadita",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "caldo de carne",
+    "cantidad": 100,
+    "unidad": "ml",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "aceite de girasol",
+    "cantidad": 2,
+    "unidad": "cucharada",
+    "familia": "condimentos"
+   },
+   {
+    "nombre": "sal",
+    "cantidad": 1,
+    "unidad": "pizca",
+    "familia": "especias"
+   }
+  ],
+  "pasos": [
+   "Mezcla los {350 g} de ternera en tiras con {1 cucharadita} de maicena, {1 cucharada} de salsa de soja y {1 cucharada} de agua hasta que la maicena desaparezca, y déjala mientras cortas. Separa los {400 g} de brócoli en floretes pequeños, pica los {3 dientes} de ajo y los {20 g} de jengibre y corta las {2 cebolletas} en aros.",
+   "Mezcla aparte {2 cucharadas} de salsa de ostras, {1 cucharada} de salsa de soja, {1 cucharadita} de azúcar, {1 cucharadita} de maicena y los {100 ml} de caldo de carne, y déjalo al lado del fuego.",
+   "Escalda el brócoli 3 min en un cazo con agua hirviendo y sal, hasta que esté verde intenso y ceda al cuchillo con resistencia. Escúrrelo y pásalo por agua fría para cortar la cocción.",
+   "Calienta {1 cucharada} de aceite de girasol en una sartén de 28 cm a fuego fuerte 2 min, hasta que humee ligeramente, y sella la ternera en una sola capa 2 min sin moverla y 1 min removiendo, hasta que esté dorada por fuera y aún roja por dentro, unos 55°C en el centro. Sácala.",
+   "Echa {1 cucharada} de aceite de girasol, el ajo y el jengibre y remueve 30 s. Añade el brócoli, la salsa removida y la ternera, y saltea 1-2 min hasta que la salsa espese y nape los floretes. Esparce la cebolleta, prueba y ajusta de sal y de azúcar."
+  ],
+  "consejos": [
+   "La ternera con brócoli es cantonesa de ultramar, de los restaurantes chinos de California, y su técnica es la del salteado con salsa ligada con maicena al final.",
+   "Escaldar el brócoli aparte y enfriarlo es lo que le deja el color y el punto. Salteado en crudo se tuesta por fuera y queda duro dentro.",
+   "El punto crítico es la maicena sobre la carne, el velveting: forma una película que retiene el jugo y es la razón de que la ternera del chino quede tierna con cortes baratos.",
+   "El corte que mejor funciona es la falda o la aguja en tiras finas contra la fibra. El filete magro se seca en el minuto y medio de sartén."
+  ],
+  "guarnicion": {
+   "nombre": "Arroz blanco",
+   "ingredientes": [
+    {
+     "nombre": "arroz",
+     "cantidad": 1,
+     "unidad": "vaso",
+     "familia": "cereales"
+    }
+   ],
+   "pasos": [
+    "Enjuagar el arroz hasta que el agua salga clara, cocerlo tapado 12 min con vez y media de agua medida con el mismo vaso y media cucharadita de sal, y dejarlo reposar 5 min tapado."
+   ]
+  },
+  "calorias": 493,
+  "proteinas": 45,
+  "carbohidratos": 22,
+  "grasas": 25,
+  "precioPorPorcion": 4.07
+ }
+]
