@@ -177,6 +177,18 @@ export function ajustesDe(preferencias?: Preferencias, huecos = DIAS_SEMANA): Aj
     }
   }
 
+  // Una semana sin carne ni pescado parte con el techo de proteína más bajo:
+  // sus platos rondan los 25 g por ración en vez de los 35, y el recetario ya
+  // no los descarta por eso. Para que ese margen no se pierda por el camino, la
+  // dieta empuja la proteína igual que la prioridad "proteína": entre dos
+  // platos veganos gana el que más trae, que es donde se maximiza de verdad.
+  const dieta = preferencias?.limites?.dieta
+  if (dieta && !(preferencias?.prioridades ?? []).includes('proteina')) {
+    for (const [clave, factor] of Object.entries(EFECTO.proteina.objetivo ?? {})) {
+      objetivos[clave as Clave] *= factor as number
+    }
+  }
+
   const favoritas = new Set(preferencias?.cocinasFavoritas ?? [])
   return {
     objetivos,

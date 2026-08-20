@@ -40,6 +40,67 @@ const RE_REGLA_PERSONAL = /tu m[ií]nimo|tus \d+ g|tu objetivo|tus macros/i
 const RE_BASE_AROMATICA = /^(ajo|cebolla|cebolla roja|cebolleta|chalota|puerro|tomate triturado|tomate frito|passata|perejil|cilantro|albahaca|menta|cebollino|limon|lima|guindilla|chile jalapeno)$/
 const RE_GUARNICION = /guarnici[oó]n|al lado|acompa[ñn]|de acompa|s[ií]rve(?:lo|la)? con|se (?:come|sirve|toma) (?:con|en)|va con|encima van|por encima van/i
 
+/**
+ * Proteína: suelo, objetivo y palanca. Sustituye al umbral seco de 35 g que
+ * hubo hasta agosto de 2026 y que avisaba igual a un plato de pasta con dos
+ * lonchas que a un guiso de lentejas bien cargado.
+ *
+ * El suelo sí es un juicio sobre el plato: por debajo no sostiene la comida,
+ * y da igual lo que digan los consejos. El objetivo depende de hasta dónde
+ * puede llegar el plato sin desfigurarse: con carne o pescado sigue siendo 35;
+ * sin ellos baja, porque una ración de legumbre, tofu o huevo bien cargada
+ * ronda los 25 y llegar a 35 exige un bote de proteína en polvo o romper un
+ * ratio del canon. Ver `criterio-chef.md`.
+ */
+const SUELO_PROTEINA = { principal: 20, desayuno: 15 }
+const OBJETIVO_PROTEINA = { principal: 35, desayuno: 25 }
+const OBJETIVO_PROTEINA_VEGETAL = { principal: 25, desayuno: 18 }
+
+/**
+ * La frase de `consejos` que dice con qué se sube la proteína. Es lo que
+ * convierte "maximizar el aporte proteico" en algo comprobable: exige un verbo
+ * de acompañar y una fuente con nombre, así que "sírvelo con pan" no cuenta y
+ * "acompáñalo de 200 g de yogur griego" sí. Se prueba sobre el texto
+ * normalizado, que es la única forma de que "acompáñalo" y "acompanalo" pesen
+ * lo mismo.
+ */
+const RE_PALANCA_PROTEINA =
+  /(?:sube|subirla|suma|anade|anadiendo|acompan|remata|rematando|sirve|completa|completalo|cierra)[^.]{0,90}(protein|yogur|skyr|kwark|queso|huevo|hummus|legumbre|garbanzo|lenteja|alubia|judia|soja|tofu|tempeh|seitan|edamame|requeson|atun|pavo|pollo|jamon|frutos secos|semillas|cacahuete|altramuz)/
+
+const ORIGEN_NO_VEGETARIANO = new Set(['carne', 'pescado'])
+
+const red1 = (n) => Math.round(n * 10) / 10
+
+/**
+ * La proteína de la ración tal como se come: el plato más su guarnición. La
+ * ficha guarda las dos por separado, y contar solo el plato dejaba corta a la
+ * receta que reparte bien —un pescado con su ensalada de garbanzos declaraba
+ * la del pescado y suspendía por la mitad de lo que hay en el plato—.
+ */
+function proteinaDeRacion(r) {
+  if (typeof r.proteinas !== 'number') return null
+  const ingredientes = r.guarnicion?.ingredientes
+  if (!Array.isArray(ingredientes) || !ingredientes.length) return r.proteinas
+  const est = estimarMacros({ ingredientes, porciones: r.porciones })
+  return r.proteinas + (Number.isFinite(est.proteinas) ? est.proteinas : 0)
+}
+
+/**
+ * Sin carne ni pescado, contando también la guarnición. Se abstiene igual que
+ * el resto de gates de la tabla: si a algún ingrediente le falta ficha no se
+ * puede afirmar que el plato sea vegetal, y entonces se le pide el objetivo
+ * alto. Bajarlo por un ingrediente que no sabemos leer sería regalar el gate.
+ */
+function sinProteinaAnimal(r) {
+  const ingredientes = [...(r.ingredientes ?? []), ...(r.guarnicion?.ingredientes ?? [])]
+  if (!ingredientes.length) return false
+  const { animal } = estimarMacros({ ingredientes, porciones: r.porciones })
+  return animal.cierto && !animal.fuentes.some((f) => ORIGEN_NO_VEGETARIANO.has(f.origen))
+}
+
+const declaraPalanca = (r) =>
+  (r.consejos ?? []).some((c) => RE_PALANCA_PROTEINA.test(norm(c)))
+
 const STOP = new Set(['de', 'del', 'la', 'el', 'en', 'con', 'y', 'al', 'a', 'para', 'los', 'las'])
 const IMPLICITOS = new Set(['sal', 'pimienta', 'agua'])
 
@@ -168,10 +229,23 @@ export function validar(r, { estricto = true } = {}) {
     }
   }
 
-  if (estricto && r.tipo === 'principal' && typeof p === 'number' && p < 35)
-    w.push(`principal con ${p} g de proteína (< 35)`)
-  if (estricto && r.tipo === 'desayuno' && typeof p === 'number' && p < 25)
-    w.push(`desayuno con ${p} g de proteína (< 25)`)
+  // Tres avisos distintos donde antes había un umbral: por debajo del suelo la
+  // receta no sirve para su hueco; entre el suelo y el objetivo sirve, pero
+  // tiene que decir con qué se completa; llegando al objetivo, nada que decir.
+  // Nunca es ERROR: una receta vegana honrada no puede bloquear un `apply`.
+  if (estricto && (r.tipo === 'principal' || r.tipo === 'desayuno')) {
+    const total = proteinaDeRacion(r)
+    if (total !== null) {
+      const objetivos = sinProteinaAnimal(r) ? OBJETIVO_PROTEINA_VEGETAL : OBJETIVO_PROTEINA
+      const suelo = SUELO_PROTEINA[r.tipo]
+      const objetivo = objetivos[r.tipo]
+      const conGuarnicion = total > p ? ` (${p} g el plato y ${red1(total - p)} g su guarnición)` : ''
+      if (total < suelo)
+        w.push(`${r.tipo} con ${red1(total)} g de proteína${conGuarnicion}: por debajo del suelo de ${suelo} g no sostiene la comida`)
+      else if (total < objetivo && !declaraPalanca(r))
+        w.push(`${r.tipo} con ${red1(total)} g de proteína${conGuarnicion}, por debajo de ${objetivo}: sube lo que dé el plato sin romper el canon, y di en consejos con qué se completa`)
+    }
+  }
 
   if (r.precioPorPorcion > 4.5 || r.precioPorPorcion < 0.8)
     w.push(`precio ${r.precioPorPorcion} €/ración fuera del rango habitual 0,80-4,50`)
@@ -201,7 +275,6 @@ function guarnicionConFicha(guarnicion, porciones) {
   const entrada = { ingredientes: guarnicion.ingredientes, porciones }
   const macros = estimarMacros(entrada)
   const ficha = fichaNutricional(entrada)
-  const red1 = (n) => Math.round(n * 10) / 10
   return {
     nombre: guarnicion.nombre,
     ingredientes: guarnicion.ingredientes,

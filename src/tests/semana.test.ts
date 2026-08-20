@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { semanaEquilibrada, aporteDe, ajustesDe, repartirSemana } from '../utils/semana'
-import { PREFERENCIAS_POR_DEFECTO, type Preferencias, type Prioridad } from '../types/preferencias'
+import { LIMITES_VACIOS, PREFERENCIAS_POR_DEFECTO, type Preferencias, type Prioridad } from '../types/preferencias'
 import type { Micros, Receta } from '../types/receta'
 
 const con = (over: Partial<Preferencias>): Preferencias => ({ ...PREFERENCIAS_POR_DEFECTO, ...over })
@@ -179,6 +179,33 @@ describe('ajustesDe', () => {
   it('una prioridad desconocida no revienta el cálculo', () => {
     const a = ajustesDe(con({ prioridades: ['inventada' as Prioridad] }))
     expect(a.objetivos).toEqual(ajustesDe().objetivos)
+  })
+
+  it('una semana vegetariana empuja la proteína sola, sin gastar prioridad', () => {
+    const base = ajustesDe()
+    const veg = ajustesDe(con({ limites: { ...LIMITES_VACIOS, dieta: 'vegetariana' } }))
+    expect(veg.objetivos.proteinas).toBeGreaterThan(base.objetivos.proteinas)
+    expect(veg.objetivos.fibra).toBe(base.objetivos.fibra)
+  })
+
+  it('la dieta no empuja dos veces si ya está la prioridad de proteína', () => {
+    const conPrio = ajustesDe(conPrioridad('proteina'))
+    const conLasDos = ajustesDe(con({
+      prioridades: ['proteina'],
+      limites: { ...LIMITES_VACIOS, dieta: 'vegana' },
+    }))
+    expect(conLasDos.objetivos.proteinas).toBe(conPrio.objetivos.proteinas)
+  })
+})
+
+describe('proteína en una semana sin carne', () => {
+  it('entre dos platos veganos se lleva el que más proteína trae', () => {
+    const pool = [
+      receta({ categoria: 'a', proteinas: 14, micros: { fibra: 6 } }),
+      receta({ categoria: 'b', proteinas: 26, micros: { fibra: 6 } }),
+    ]
+    const veg = con({ limites: { ...LIMITES_VACIOS, dieta: 'vegana' } })
+    expect(semanaEquilibrada(pool, 1, 7, [], veg)[0].categoria).toBe('b')
   })
 })
 
