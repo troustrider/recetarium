@@ -30,8 +30,10 @@ App web fullstack para centralizar recetas y generar listas de la compra. Fronte
 
 **Cocina y compra**
 - Despensa con cantidades, unidades y caducidad estimada por ingrediente
+- Paquetes abiertos: marcar uno recorta su caducidad a lo que aguanta abierto, que es lo que de verdad dura
 - Lista de la compra unificada, que resta lo que ya hay en casa y desglosa cuánto va a cada plato
 - Planificador semanal con drag & drop; marcar un plato como hecho gasta lo suyo de la despensa
+- Auto-semana que prefiere los platos que gastan lo que ya hay en casa: primero lo abierto y lo que caduca, y de fondo el armario
 - Deshacer para cualquier acción destructiva, rebobinando todos los estados implicados a la vez
 - Modo cocina con temporizadores por paso, alarma sintetizada y pantalla siempre encendida
 - Precio estimado a partir de una tabla de precios reales de supermercados neerlandeses

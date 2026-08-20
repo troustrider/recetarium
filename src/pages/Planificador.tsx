@@ -648,7 +648,7 @@ function Planificador() {
           <motion.button
             onClick={() => {
               const anterior = plan
-              setInforme(autollenar(recetas, 2))
+              setInforme(autollenar(recetas, 2, despensa))
               registrar('Semana equilibrada', () => {
                 restaurarPlan(anterior)
                 setInforme(null)
@@ -657,7 +657,7 @@ function Planificador() {
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
-            title="Rellena los días libres repartiendo verdura, macros y micronutrientes, con su guarnición puesta. Lo que ya has marcado como hecho se queda y cuenta para el reparto"
+            title="Rellena los días libres repartiendo verdura, macros y micronutrientes, con su guarnición puesta. Prefiere los platos que gastan lo que hay en casa, empezando por lo abierto y lo que caduca. Lo que ya has marcado como hecho se queda y cuenta para el reparto"
           >
             <Dices className="w-3.5 h-3.5" />
             Auto-semana

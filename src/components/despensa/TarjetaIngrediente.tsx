@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { PackageOpen } from 'lucide-react'
 import type { IngredienteDespensa } from '../../context/DespensaContext'
 import { infoCaducidad } from '../../utils/despensa'
 import { requiereCantidad } from '../../utils/cantidades'
@@ -50,6 +51,15 @@ function TarjetaIngrediente({ item, onClick }: Props) {
       <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 pr-5 leading-snug">
         {capitalize(item.nombre)}
       </span>
+
+      {/* Abierto: la fecha de la tarjeta ya viene recortada, pero sin decir por
+          qué parece un error de quien la puso. */}
+      {item.abierto != null && (
+        <span className="-mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+          <PackageOpen className="w-3 h-3" />
+          Abierto
+        </span>
+      )}
 
       <span className="h-1 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
         <span
