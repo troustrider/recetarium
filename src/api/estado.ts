@@ -15,6 +15,7 @@ export interface IngredienteDespensaDTO {
   familia: string
   estado: 'lleno' | 'poco'
   caducidad?: string
+  abierto?: string
   cantidad?: number
   unidad?: string
 }
