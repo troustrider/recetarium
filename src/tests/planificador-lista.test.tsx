@@ -310,7 +310,7 @@ describe('platos ya cocinados', () => {
 
     act(() => result.current.plan.marcarCocinada('Lunes', result.current.plan.plan.Lunes[0].id, false))
     await waitFor(() => expect(api.savePlan).toHaveBeenCalledTimes(1), { timeout: 3000 })
-    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 2 }])
+    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 2, momento: 'cena' }])
   })
 
   it('consumir vacía lo gastado y rebaja lo que sobra', async () => {
@@ -382,7 +382,7 @@ describe('hidratación del plan desde el backend', () => {
     expect(api.savePlan).not.toHaveBeenCalled()
 
     await waitFor(() => expect(api.savePlan).toHaveBeenCalledTimes(1), { timeout: 3000 })
-    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 1 }])
+    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 1, momento: 'cena' }])
   })
 
   it('una ráfaga de cambios colapsa en un solo guardado', async () => {
@@ -422,7 +422,7 @@ describe('la hidratación no pisa lo que el usuario hizo mientras cargaba', () =
 
     expect(result.current.plan.plan.Lunes).toHaveLength(1)
     expect(result.current.plan.plan.Jueves).toHaveLength(0)
-    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 2 }])
+    expect(api.savePlan).toHaveBeenCalledWith([{ dia: 'Lunes', recetaId: 'r1', raciones: 2, momento: 'cena' }])
   })
 
   it('una receta marcada como comprada antes de la respuesta se conserva', async () => {
@@ -541,6 +541,116 @@ describe('desayunos en la auto-semana', () => {
   })
 })
 
+describe('momentos del día', () => {
+  const catalogo = [...CATALOGO, DESAYUNO_1, DESAYUNO_2, DESAYUNO_3]
+
+  // Diez huecos de principal (siete cenas y tres comidas) piden diez platos
+  // distintos: con el catálogo mínimo de tres, lo que se mide es la repetición
+  // y no el reparto.
+  const surtido = [
+    ...Array.from({ length: 12 }, (_, i) =>
+      receta(`p${i}`, `Principal ${i}`, [{ nombre: 'pollo', cantidad: 200, unidad: 'g', familia: 'carnes' }])
+    ),
+    DESAYUNO_1, DESAYUNO_2, DESAYUNO_3,
+  ]
+
+  it('lo que se añade sin decir momento cae donde toca por su tipo', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Lunes', POLLO, 2))
+    act(() => result.current.plan.añadir('Lunes', DESAYUNO_1, 2))
+
+    const porReceta = new Map(result.current.plan.plan.Lunes.map((e) => [e.receta.id, e.momento]))
+    expect(porReceta.get('r1')).toBe('cena')
+    expect(porReceta.get('d1')).toBe('desayuno')
+  })
+
+  it('un plan guardado sin momento se lee como se leía antes: todo cenas', async () => {
+    api.getPlan.mockResolvedValue([
+      { dia: 'Lunes', recetaId: 'r1', raciones: 2 },
+      { dia: 'Martes', recetaId: 'r2', raciones: 2 },
+    ])
+    const { result } = await montarHidratado()
+
+    expect(result.current.plan.plan.Lunes[0].momento).toBe('cena')
+    expect(result.current.plan.plan.Martes[0].momento).toBe('cena')
+  })
+
+  it('cambiar el momento de una entrada la recoloca en el día', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Lunes', POLLO, 2))
+    act(() => result.current.plan.añadir('Lunes', PASTA, 2, 'comida'))
+    expect(result.current.plan.plan.Lunes.map((e) => e.receta.id)).toEqual(['r2', 'r1'])
+
+    const pasta = result.current.plan.plan.Lunes.find((e) => e.receta.id === 'r2')!.id
+    act(() => result.current.plan.setMomento('Lunes', pasta, 'desayuno'))
+
+    expect(result.current.plan.plan.Lunes.map((e) => e.momento)).toEqual(['desayuno', 'cena'])
+  })
+
+  it('a cero comidas la auto-semana solo reparte cenas y desayunos', async () => {
+    const { result } = await montarHidratado()
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.comidas).toBe(0)
+    expect(informe.cenas).toBe(7)
+  })
+
+  it('con comidas puestas reparte los dos huecos, sin repetir plato el mismo día', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setComidas(3))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(surtido, 2) })
+
+    expect(informe.comidas).toBe(3)
+    expect(informe.cenas).toBe(7)
+
+    const conComida = result.current.plan.dias.filter((d) =>
+      result.current.plan.plan[d].some((e) => e.momento === 'comida')
+    )
+    expect(conComida).toHaveLength(3)
+    // Repartidas por la semana, no tres días seguidos.
+    const indices = conComida.map((d) => result.current.plan.dias.indexOf(d))
+    expect(indices[1] - indices[0]).toBeGreaterThan(1)
+
+    for (const dia of result.current.plan.dias) {
+      const ids = result.current.plan.plan[dia].map((e) => e.receta.id)
+      expect(new Set(ids).size, dia).toBe(ids.length)
+    }
+  })
+
+  it('una comida ya cocinada cuenta para el cupo y deja su día en paz', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setComidas(2))
+    act(() => result.current.plan.añadir('Jueves', PASTA, 2, 'comida'))
+    const hecha = result.current.plan.plan.Jueves[0].id
+    act(() => result.current.plan.marcarCocinada('Jueves', hecha, true))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.comidas).toBe(1)
+    expect(result.current.plan.plan.Jueves.some((e) => e.id === hecha)).toBe(true)
+    const comidas = result.current.plan.dias.flatMap((d) =>
+      result.current.plan.plan[d].filter((e) => e.momento === 'comida')
+    )
+    expect(comidas).toHaveLength(2)
+  })
+
+  it('el día se ordena desayuno, comida y cena', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setComidas(7))
+    act(() => { result.current.plan.autollenar(catalogo, 2) })
+
+    const orden = { desayuno: 0, comida: 1, cena: 2 }
+    for (const dia of result.current.plan.dias) {
+      const puestos = result.current.plan.plan[dia].map((e) => orden[e.momento!])
+      expect(puestos, dia).toEqual([...puestos].sort((a, b) => a - b))
+    }
+  })
+})
+
 describe('límites duros de la auto-semana', () => {
   it('el tiempo máximo deja fuera al plato lento', async () => {
     const { result } = await montarHidratado()
@@ -559,7 +669,7 @@ describe('límites duros de la auto-semana', () => {
     act(() => { informe = result.current.plan.autollenar(CATALOGO, 2) })
 
     expect(informe.tiempoEnsanchado).toBe(true)
-    expect(informe.principales).toBe(7)
+    expect(informe.cenas).toBe(7)
   })
 
   it('la dieta no se ensancha aunque no dé para la semana: antes menos días que un plato con carne', async () => {
@@ -571,7 +681,7 @@ describe('límites duros de la auto-semana', () => {
 
     // Ninguna receta del catálogo de prueba trae ficha apto, así que no se puede
     // afirmar de ninguna: la semana se queda vacía en vez de colar carne.
-    expect(informe.principales).toBe(0)
+    expect(informe.cenas).toBe(0)
     // Siete cenas y tres desayunos sin una sola candidata.
     expect(informe.huecosVacios).toBe(10)
     const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])

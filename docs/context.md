@@ -69,19 +69,20 @@ Gestiona el plan semanal (qué recetas se cocinan cada día). Cada vez que cambi
 **Hook de acceso:** `usePlanificador()`
 
 ```tsx
-const { plan, dias, añadir, quitar, setRaciones, mover, limpiar } = usePlanificador()
+const { plan, dias, añadir, quitar, setRaciones, setMomento, mover, limpiar } = usePlanificador()
 ```
 
 | Valor | Tipo | Descripción |
 |---|---|---|
 | `plan` | `Record<Dia, EntradaPlan[]>` | Recetas asignadas a cada día de la semana |
 | `dias` | `Dia[]` | `['Lunes', ..., 'Domingo']` |
-| `añadir(dia, receta)` | `void` | Añade una receta a un día con 1 ración |
+| `añadir(dia, receta, raciones?, momento?)` | `void` | Añade una receta a un día. Sin momento, cae en su hueco natural: los `tipo: 'desayuno'` en el desayuno y el resto en la cena |
 | `quitar(dia, entradaId)` | `void` | Elimina una entrada del plan |
 | `setRaciones(dia, entradaId, n)` | `void` | Cambia las raciones de una entrada (mín. 1, máx. 4) |
+| `setMomento(dia, entradaId, momento)` | `void` | Pasa una entrada a otro hueco del día (`desayuno`, `comida`, `cena`) y la recoloca |
 | `mover(desde, hasta, entradaId)` | `void` | Mueve una entrada de un día a otro |
 | `limpiar()` | `void` | Vacía el plan completo |
-| `autollenar(recetas, raciones)` | `InformeSemana` | Rellena los días sin plato repartiendo macros y micros (`utils/semana`) según las preferencias del hogar, e incluye los desayunos del cupo. Respeta las entradas marcadas como cocinadas: ni las borra ni vuelve a proponer su receta —tampoco al repetir—, y las cuenta en el reparto del resto. Devuelve qué ha hecho: cuántas cenas y desayunos, qué ha conservado, qué ha repetido, si ha ensanchado el tiempo y qué huecos se han quedado vacíos |
+| `autollenar(recetas, raciones)` | `InformeSemana` | Rellena los días sin plato repartiendo macros y micros (`utils/semana`) según las preferencias del hogar, e incluye los desayunos y las comidas del cupo. Los huecos ocupados se miran por momento: si el lunes ya tiene comida, lo que falta ese día es la cena. Respeta las entradas marcadas como cocinadas: ni las borra ni vuelve a proponer su receta —tampoco al repetir—, y las cuenta en el reparto del resto. Devuelve qué ha hecho: cuántos desayunos, comidas y cenas, qué ha conservado, qué ha repetido, si ha ensanchado el tiempo y qué huecos se han quedado vacíos |
 
 ---
 
@@ -94,7 +95,7 @@ Cómo quiere comer el hogar: lo único que cambia el comportamiento de Auto-sema
 **Hook de acceso:** `usePreferencias()`
 
 ```tsx
-const { preferencias, alternarPrioridad, alternarCocina, setDesayunos, setLimites } = usePreferencias()
+const { preferencias, alternarPrioridad, alternarCocina, setDesayunos, setComidas, setLimites } = usePreferencias()
 ```
 
 | Valor | Tipo | Descripción |
@@ -102,11 +103,14 @@ const { preferencias, alternarPrioridad, alternarCocina, setDesayunos, setLimite
 | `preferencias.prioridades` | `Prioridad[]` | Máx. 3. Suben un objetivo semanal o bajan un techo; no descartan platos |
 | `preferencias.cocinasFavoritas` | `string[]` | Máx. 4. Prioridad, no filtro: si no dan para la semana, entra lo demás |
 | `preferencias.desayunos` | `number` | 0-7 desayunos planificados, repartidos por la semana |
+| `preferencias.comidas` | `number` | 0-7 comidas de mediodía. La cena va todos los días y no tiene ajuste |
 | `preferencias.limites` | `LimitesSemana` | Tiempo (entre semana y finde), dieta, sin gluten, ingredientes vetados |
 | `alternarPrioridad(p)` | `void` | Al pasar de 3 sale la más antigua, no hay que quitar una a mano |
 | `aplicar(prefs)` | `void` | Sustituye el bloque entero (lo usan los presets) |
 
 Los límites excluyen y las prioridades empujan: es la diferencia que evita que una preferencia deje la semana a medias. De los límites, solo el tiempo se ensancha cuando el catálogo no da; la dieta, el gluten y los vetos no se relajan nunca.
+
+Una dieta vegetariana o vegana empuja además la proteína por su cuenta, sin gastar una de las tres prioridades: el recetario ya acepta platos de menos proteína para dar cabida a la cocina vegetal (ver el gate de proteína en la skill del chef), y quien tiene que maximizarla entonces es la semana, eligiendo el plato vegetal que más trae.
 
 ---
 

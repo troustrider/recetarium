@@ -17,21 +17,38 @@ El filtro por el que pasa cualquier propuesta: para quién es, qué tiene que cu
 
 La skill `entrenador-personal` fija los objetivos en la memoria `karim-fitness-profile`. Por defecto: lean bulk, ~3.100 kcal y ~130 g de proteína al día.
 
-- **Plato principal para Karim: ≥35 g de proteína por ración.** Si el plato canónico no llega, o subes la proteína con una palanca declarada (ver `compra-nl.md`), o propones otro plato. Lo que no se hace es entregar 22 g y no decirlo.
-- **Desayunos: ≥25 g** por ración.
+La proteína es un **objetivo, no una puerta**. Se maximiza siempre; no se exige siempre. Son tres números y no uno:
+
+| | Suelo | Objetivo con carne o pescado | Objetivo sin ellos |
+|---|---|---|---|
+| `principal` | 20 g | 35 g | 25 g |
+| `desayuno` | 15 g | 25 g | 18 g |
+
+- **Por debajo del suelo la receta no sirve para su hueco**, y ahí no hay palanca que valga: 14 g no sostienen una cena, se escriba lo que se escriba en `consejos`.
+- **Entre el suelo y el objetivo la receta pasa si declara la palanca**: la frase de `consejos` que dice con qué se completa ("acompáñalo de 200 g de yogur griego"). Eso es lo que hace comprobable que se ha maximizado en vez de conformarse.
+- **La proteína se cuenta con la de la guarnición**, porque es lo que se come: un pescado a 24 g con su ensalada de garbanzos no es un plato de 24 g.
+
+### Por qué el objetivo baja sin carne ni pescado
+
+Hasta agosto de 2026 el umbral era seco —35 g o aviso— y el efecto real no era seleccionar calidad, era **seleccionar carne**: una ración vegetal bien cargada de legumbre, tofu o huevo ronda los 25 g, y llegar a 35 pide un bote de proteína en polvo o romper un ratio del canon. Ninguna receta vegana entraba limpia. El objetivo bajo es el techo honesto de esa cocina, no una rebaja de exigencia: dentro de él sigue mandando el "sube lo que dé el plato".
+
+Y el gate **se abstiene**, como el resto: si a algún ingrediente le falta ficha en `nutrientes.json` no se puede afirmar que el plato sea vegetal, y se le pide el objetivo alto.
+
+Quien recoge la holgura que se suelta aquí es la semana: con dieta vegetariana o vegana puesta, la auto-semana empuja la proteína sola (`src/utils/semana.ts`) y entre dos platos veganos elige el que más trae.
+
 - Si `entrenador-personal` pasa números concretos del día, mandan esos; si no, estos, y dilo.
 - Los macros del JSON son **por ración** y tienen que ser coherentes con las cantidades reales de la lista de ingredientes. Cálculalos con la tabla de `compra-nl.md`, no a ojo. El validador los contrasta contra `server/src/lib/nutrientes.json` y da ERROR si la proteína o las kcal se desvían más de un 20% de lo que dan los ingredientes.
 
 ### Precedencia: el canon manda sobre el macro
 
-**Cuando llegar a 35 g exige romper un ratio del canon, no se rompe.** El número se declara como sale y la palanca va al lado, fuera del plato.
+**Cuando llegar al objetivo exige romper un ratio del canon, no se rompe.** El número se declara como sale y la palanca va al lado, fuera del plato.
 
 Un ratio canónico es la forma del plato, no un parámetro libre. Estirarlo para cuadrar una cifra produce comida peor y datos que parecen buenos: la Cacio e pepe de la BD llegó a llevar 180 g de pecorino para 200 g de pasta (el canon dice 60-70 g por cada 100 g de pasta) y el resultado era salado y con la emulsión al borde de agrietarse, todo para subir la proteína a 35.
 
 Las tres salidas correctas, en este orden:
 
 1. **Palanca fuera del plato**: acompañar con un lácteo proteico, un huevo, hummus o una guarnición de legumbre. Se declara en `consejos` y **no se cuenta en los macros** si no está en la lista de ingredientes.
-2. **Declarar el número real** y decirlo en la respuesta. Un principal a 30 g dicho en voz alta es correcto; uno a 30 g escrito como 35 no.
+2. **Declarar el número real** y decirlo en la respuesta. Un principal a 30 g dicho en voz alta es correcto; uno a 30 g escrito como 35 no. Esta salida dejó de ser la excepción: es la vía normal de la cocina vegetal.
 3. **Proponer otro plato** de la misma cocina que sí llegue sin deformarse.
 
 Lo que nunca: subir el ingrediente que define el ratio (queso en una emulsión, carne en una masa, tahini en un hummus) para alcanzar la cifra. Ni escribir el número que hace falta.

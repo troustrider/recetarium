@@ -129,7 +129,7 @@ Recórrelo entero. Cualquier "no" bloquea la entrega.
 16. Ningún ingrediente T3/T4 sin su sustituto T1/T2 en `consejos` (`compra-nl.md`).
 
 **Perfil (`criterio-chef.md`)**
-17. Si es para Karim: sin pescado, no india, y ≥35 g de proteína por ración (≥25 g en desayunos). Si no llega, no se ha tocado ningún ratio del canon para forzarlo: el número va como sale y la palanca en `consejos`.
+17. Si es para Karim: sin pescado y no india. La proteína llega al suelo de su hueco (20 g en principales, 15 en desayunos) y se ha subido todo lo que daba el plato. Si no alcanza el objetivo (35/25 con carne o pescado, 25/18 sin ellos), no se ha tocado ningún ratio del canon para forzarlo: el número va como sale y la palanca, declarada en `consejos`.
 18. Es una comida completa: lleva verdura propia, o va con `guarnicion` rellena. La guarnición NO se declara en `consejos` ni se cuenta en los macros del plato: tiene campo propio y el servidor le calcula su ficha aparte.
 19. Los `consejos` no hablan de versiones anteriores ni comparan con el resto del recetario.
 20. No duplica una receta existente (dedup por lista completa de nombres).
