@@ -65,6 +65,8 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
       `${informe.conservados} ${informe.conservados === 1 ? 'plato ya hecho se queda' : 'platos ya hechos se quedan'} donde estaban.`,
     informe.tiempoEnsanchado &&
       'No había platos para toda la semana con ese tiempo, así que he ensanchado los minutos.',
+    informe.cenaEnsanchada &&
+      'No daba el catálogo para siete cenas ligeras, así que alguna noche cae un plato de los grandes.',
     informe.repetidos > 0 &&
       `${informe.repetidos} ${informe.repetidos === 1 ? 'día repite' : 'días repiten'} plato: no quedaban candidatas distintas. En casa eso son sobras.`,
     informe.huecosVacios > 0 &&

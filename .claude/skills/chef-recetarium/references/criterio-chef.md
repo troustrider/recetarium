@@ -28,6 +28,12 @@ La proteína es un **objetivo, no una puerta**. Se maximiza siempre; no se exige
 - **Entre el suelo y el objetivo la receta pasa si declara la palanca**: la frase de `consejos` que dice con qué se completa ("acompáñalo de 200 g de yogur griego"). Eso es lo que hace comprobable que se ha maximizado en vez de conformarse.
 - **La proteína se cuenta con la de la guarnición**, porque es lo que se come: un pescado a 24 g con su ensalada de garbanzos no es un plato de 24 g.
 
+### El suelo del catálogo no es el del hueco
+
+Esta tabla es de **catálogo**: mide la receta por su `tipo`, que es lo único que puede validar `chef-recetas.mjs`. Cuándo se come lo decide el plan y no el recetario, y las puertas de los tres huecos del día están en `momentos-del-dia.md`, con su fundamento y con lo que la evidencia no sostiene. Son criterio de propuesta y de auto-semana, nunca del validador: una receta guardada no sabe dónde va a caer.
+
+Lo que hay que retener aquí es que **el suelo de 15 g del desayuno es de catálogo y no autoriza a colocar un desayuno de 15 g en su hueco**. Por toma, lo que sostiene la evidencia es ~0,4 g/kg, o sea ~29 g para 73 kg, y el bloque de desayunos de la BD ya viene de media a 33.
+
 ### Por qué el objetivo baja sin carne ni pescado
 
 Hasta agosto de 2026 el umbral era seco —35 g o aviso— y el efecto real no era seleccionar calidad, era **seleccionar carne**: una ración vegetal bien cargada de legumbre, tofu o huevo ronda los 25 g, y llegar a 35 pide un bote de proteína en polvo o romper un ratio del canon. Ninguna receta vegana entraba limpia. El objetivo bajo es el techo honesto de esa cocina, no una rebaja de exigencia: dentro de él sigue mandando el "sube lo que dé el plato".

@@ -42,3 +42,29 @@ export function momentoDe(entrada: { momento?: Momento; receta: Pick<RecetaLista
 export function siguienteMomento(momento: Momento): Momento {
   return MOMENTOS[(MOMENTOS.indexOf(momento) + 1) % MOMENTOS.length]
 }
+
+/**
+ * Lo que deja un plato fuera de la cena. No es una regla metabólica: lo que
+ * sostiene la evidencia es que las comidas grandes y grasas en las dos o tres
+ * horas previas a dormir empeoran el sueño y el reflujo, y nada más. Lo demás
+ * que suele decirse de la cena —que el carbohidrato de noche engorda, que hay
+ * platos que "son" de día— no tiene con qué defenderse.
+ *
+ * Los dos números son un corte de conveniencia sobre este recetario y no un
+ * umbral clínico: parten los principales casi por la mitad, así que dejan sitio
+ * de sobra para llenar siete cenas y mandan los platos pesados al hueco donde
+ * caben, que es la comida. El fundamento completo, en la skill del chef
+ * (`references/momentos-del-dia.md`).
+ */
+export const TOPE_CENA = { calorias: 950, grasas: 35 } as const
+
+type ConMacros = Pick<RecetaListada, 'calorias' | 'grasas' | 'guarnicion'>
+
+export function cabeDeNoche(receta: ConMacros): boolean {
+  // La guarnición cuenta porque es lo que se come. Un plato sin macros
+  // declarados pasa: no hay dato que le impute nada, y descartarlo por no
+  // traerlo sería castigar a la receta vieja en vez de a la pesada.
+  const calorias = (receta.calorias ?? 0) + (receta.guarnicion?.calorias ?? 0)
+  const grasas = (receta.grasas ?? 0) + (receta.guarnicion?.grasas ?? 0)
+  return calorias <= TOPE_CENA.calorias && grasas <= TOPE_CENA.grasas
+}

@@ -2,25 +2,32 @@ import type { RecetaListada } from '../types/receta'
 import type { Preferencias, Prioridad } from '../types/preferencias'
 import { aprovechaDe, indiceDespensa, type IndiceDespensa, type ItemAprovechable } from './aprovechamiento'
 
-// Lo que una semana de comer debería sumar, por día y por ración. Es el objetivo
-// de la semana entera, no de los platos que se planifiquen: cuantas más comidas
-// entren en el plan (cenas, desayunos), más cerca queda. La ganancia está topada
-// al objetivo, así que nada cuenta dos veces.
+// Lo que debería traer **una comida**, no un día entero: es en torno a un tercio
+// de las referencias para un adulto (fibra 25-30 g/día, vitamina C 110 mg, calcio
+// 950 mg, folato 330 µg, hierro 11 mg, B12 4 µg) y de los 130 g de proteína que
+// fija `entrenador-personal`.
+//
+// Estaba escrito como objetivo diario y multiplicado por siete días, que era
+// correcto mientras el plan repartía una sola comida al día. Con los tres huecos
+// puestos dejó de serlo: un principal de 43 g saturaba él solo la proteína del
+// día entero y el reparto dejaba de valorarla en las otras dos comidas. Ahora
+// escala con los huecos que el plan llena, así que una semana de siete cenas
+// mide igual que antes y una de veintiuna comidas mide lo que de verdad pide.
 const DIAS_SEMANA = 7
 
-const OBJETIVO_DIARIO = {
+const OBJETIVO_POR_COMIDA = {
   fibra: 12,
   vitaminaC: 32,
   calcio: 400,
   folato: 130,
   hierro: 5.6,
-  b12: 1,
+  b12: 1.3,
   proteinas: 40,
 } as const
 
-type Clave = keyof typeof OBJETIVO_DIARIO
+type Clave = keyof typeof OBJETIVO_POR_COMIDA
 
-const CLAVES = Object.keys(OBJETIVO_DIARIO) as Clave[]
+const CLAVES = Object.keys(OBJETIVO_POR_COMIDA) as Clave[]
 
 // Techos por ración. Por encima, el plato penaliza en proporción a lo que se
 // pasa. Los de serie son holgados a propósito: el que aprieta de verdad es el
@@ -162,13 +169,15 @@ export interface Ajustes {
 }
 
 /**
- * Traduce las preferencias a números. `huecos` es cuántos platos se van a elegir:
- * con cuatro cocinas favoritas y siete días alguna cocina tiene que repetir, así
- * que la cuota se reparte en vez de castigar lo que la propia elección obliga.
+ * Traduce las preferencias a números. `huecos` es cuántos platos se van a elegir,
+ * y manda dos veces. En la cuota de cocina, porque con cuatro favoritas y siete
+ * días alguna tiene que repetir y castigar lo que la propia elección obliga no
+ * tiene sentido. Y en los objetivos de nutrientes, que son por comida: siete
+ * cenas piden siete veces menos que las veintiuna comidas de una semana entera.
  */
 export function ajustesDe(preferencias?: Preferencias, huecos = DIAS_SEMANA): Ajustes {
   const objetivos = Object.fromEntries(
-    CLAVES.map((c) => [c, OBJETIVO_DIARIO[c] * DIAS_SEMANA])
+    CLAVES.map((c) => [c, OBJETIVO_POR_COMIDA[c] * Math.max(huecos, 1)])
   ) as Record<Clave, number>
   const techos = { ...TECHOS_BASE } as Record<Techo, number>
   const pesos = { ...PESOS_BASE }
@@ -354,7 +363,10 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   const descartados = new Set(opciones.descartados ?? [])
   const yaPropuestos = new Set(opciones.yaPropuestos ?? [])
   const aleatorio = prng(semilla)
-  const ajustes = ajustesDe(preferencias, huecos.length)
+  // Lo ya cocinado cuenta en los huecos porque cuenta en el acumulado: si el
+  // lunes ya está puesto, su proteína suma y su cocina ocupa cuota, así que
+  // dejarlo fuera de la cuenta encogería el objetivo de la semana entera.
+  const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length)
 
   // Qué gasta cada receta de la despensa se resuelve una vez por receta y no una
   // por hueco: la misma candidata se mira en los siete días, y cada mirada son

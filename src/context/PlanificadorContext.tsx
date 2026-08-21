@@ -10,6 +10,7 @@ import { repartirSemana, type Hueco } from '../utils/semana'
 import { candidatas } from '../utils/candidatas'
 import {
   ORDEN_MOMENTO,
+  cabeDeNoche,
   esMomento,
   momentoDe,
   momentoPorDefecto,
@@ -40,6 +41,8 @@ export interface InformeSemana {
   conservados: number
   repetidos: number
   tiempoEnsanchado: boolean
+  /** Si la cena ha tenido que aceptar platos que se pasan de `TOPE_CENA`. */
+  cenaEnsanchada: boolean
   huecosVacios: number
   /** Lo que había en casa y la semana se va a gastar, por su nombre. */
   aprovechados: string[]
@@ -47,7 +50,7 @@ export interface InformeSemana {
 
 const INFORME_VACIO: InformeSemana = {
   comidas: 0, cenas: 0, desayunos: 0, conservados: 0, repetidos: 0,
-  tiempoEnsanchado: false, huecosVacios: 0, aprovechados: [],
+  tiempoEnsanchado: false, cenaEnsanchada: false, huecosVacios: 0, aprovechados: [],
 }
 
 /**
@@ -344,9 +347,17 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     const principales = recetas.filter(esPrincipal)
     const desayunos = recetas.filter(esDesayuno)
 
-    // El tiempo es el único límite que se ensancha: si el catálogo no da siete
-    // platos distintos con el techo puesto, antes que repetir seis veces el mismo
-    // se sueltan los minutos. La dieta, el gluten y los vetos no se tocan.
+    // Hasta ahora comida y cena bebían del mismo montón, o sea que no había
+    // ningún criterio que las distinguiera: el galbijjim de 1.100 kcal caía un
+    // martes por la noche con la misma probabilidad que un domingo a mediodía.
+    // La cena tiene su propio montón y la comida se queda con el entero; como el
+    // repartidor llena antes los huecos más estrechos, los platos pesados acaban
+    // a mediodía solos, sin necesidad de un peso que los empuje.
+    const deNoche = principales.filter(cabeDeNoche)
+
+    // Dos límites se ensanchan si el catálogo no da siete platos distintos, y en
+    // este orden: antes una cena de las grandes que un guiso de dos horas un
+    // martes. La dieta, el gluten y los vetos no se tocan nunca.
     const topeDe = (dia: Dia) => (FINDE.includes(dia) ? limites.tiempoMaxFinde : limites.tiempoMax)
     const construir = (dias: Dia[], momento: Momento, pool: RecetaListada[], conTiempo: boolean): Hueco[] =>
       dias.map((dia) => ({
@@ -357,16 +368,28 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     const distintas = (huecos: Hueco[]) =>
       new Set(huecos.flatMap((h) => h.candidatos.map((r) => r.id))).size
 
-    const construirPrincipales = (conTiempo: boolean) => [
+    const construirPrincipales = (conTiempo: boolean, cenasLigeras: boolean) => [
       ...construir(diasConComida, 'comida', principales, conTiempo),
-      ...construir(diasSinCena, 'cena', principales, conTiempo),
+      ...construir(diasSinCena, 'cena', cenasLigeras ? deNoche : principales, conTiempo),
     ]
 
-    let huecosPrincipales = construirPrincipales(true)
+    // La puerta de la cena solo puede vaciar los huecos de la cena, así que se
+    // mide sobre ellos y no sobre el montón entero: la comida bebe de todos los
+    // principales, y la unión de los dos saldría siempre completa aunque no
+    // quedaran siete cenas ligeras distintas. Se suelta solo si el montón ligero
+    // no da para la semana ni con los minutos anchos.
+    const soloCenas = (grupo: Hueco[]) => grupo.filter((h) => h.id.endsWith(':cena'))
+    const llenan = (grupo: Hueco[]) => distintas(grupo) >= grupo.length
+    const cenasLigeras =
+      llenan(soloCenas(construirPrincipales(true, true))) ||
+      llenan(soloCenas(construirPrincipales(false, true)))
+    const cenaEnsanchada = !cenasLigeras
+
+    let huecosPrincipales = construirPrincipales(true, cenasLigeras)
     let tiempoEnsanchado = false
     const estrictas = distintas(huecosPrincipales)
     if (estrictas < huecosPrincipales.length) {
-      const sinTope = construirPrincipales(false)
+      const sinTope = construirPrincipales(false, cenasLigeras)
       // Solo se salta el tiempo si saltárselo resuelve algo: llenar la semana
       // entera, o poder llenar algo cuando con el techo puesto no cabe nada.
       // Servir un guiso de dos horas un martes para ahorrarse una repetición es
@@ -432,6 +455,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       conservados: conservadas.length,
       repetidos: repetidos.size,
       tiempoEnsanchado,
+      cenaEnsanchada,
       huecosVacios: huecos.filter((h) => !porHueco.has(h.id)).length,
       aprovechados,
     }
