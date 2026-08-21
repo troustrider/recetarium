@@ -53,7 +53,9 @@ Se ejecuta desde `server/` (necesita `DATABASE_URL` de `server/.env` y el driver
 
 **Macros contra ingredientes** (`nutrientes.json`): estima los cuatro macros desde la lista de ingredientes y los contrasta con los declarados. ERROR si la proteína o las kcal se desvían más de un 20%; aviso en carbohidratos (30%) y grasas (35%). Detalle abajo.
 
-**Perfil**: aviso si un `principal` baja de 35 g de proteína o un `desayuno` de 25 g, si un `principal` no lleva verdura propia ni guarnición, si algún consejo es metacomentario de autoría, y si el precio se sale del rango 0,80-4,50 €/ración.
+**Perfil**: aviso si un `principal` no lleva verdura propia ni guarnición, si algún consejo es metacomentario de autoría, y si el precio se sale del rango 0,80-4,50 €/ración.
+
+**Proteína** (`criterio-chef.md`): la de la ración se cuenta sumando el plato y su guarnición. Por debajo del suelo (20 g en `principal`, 15 en `desayuno`) avisa siempre. Entre el suelo y el objetivo avisa solo si los `consejos` no declaran la palanca —verbo de acompañar más una fuente con nombre—. El objetivo es 35/25 con carne o pescado y 25/18 sin ellos, y para decidir cuál toca se abstiene igual que los demás gates: un ingrediente sin ficha deja el plato en "no se puede afirmar que sea vegetal" y le pide el objetivo alto. **Nunca es ERROR**: una receta vegana honrada no puede bloquear el `apply` de un lote.
 
 La guarnición cuenta de dos formas, y no son equivalentes. El campo `guarnicion` es la canónica: está estructurado, entra en la lista de la compra y lleva su propia ficha. La frase en `consejos` sigue valiendo para no suspender a las que aún no se han migrado, pero levanta un aviso aparte ("guarnición solo en prosa"), porque una guarnición que solo existe en un texto no se puede comprar ni descontar de la despensa.
 

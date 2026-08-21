@@ -40,6 +40,12 @@ export interface Preferencias {
   cocinasFavoritas: string[]
   /** Cuántos días de la semana llevan desayuno planificado. */
   desayunos: number
+  /**
+   * Cuántos días llevan comida de mediodía. La cena la lleva todo el mundo
+   * todos los días —es lo que la auto-semana ha repartido siempre—, así que no
+   * tiene ajuste: quien no cena ese día lo quita a mano.
+   */
+  comidas: number
   limites: LimitesSemana
 }
 
@@ -61,9 +67,15 @@ export const LIMITES_VACIOS: LimitesSemana = {
   vetados: [],
 }
 
+/**
+ * Ninguna comida de mediodía de serie: la casa planifica cenas, y meter siete
+ * comidas sin que nadie las haya pedido dobla la compra de golpe. Quien las
+ * quiera las sube en "Cómo comemos".
+ */
 export const PREFERENCIAS_POR_DEFECTO: Preferencias = {
   prioridades: [],
   cocinasFavoritas: [],
   desayunos: 3,
+  comidas: 0,
   limites: LIMITES_VACIOS,
 }

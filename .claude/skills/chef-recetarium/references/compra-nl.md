@@ -86,7 +86,7 @@ Guanciale, pera asiática, tteok fresco, pescado crudo de calidad sashimi, queso
 | pan rallado japonés | panko | El *paneermeel* normal es pan rallado fino |
 | salsa de soja | sojasaus | *Ketjap asin* es la salada, *ketjap manis* la dulce |
 
-## Proteína por euro (para llegar a ≥35 g por ración)
+## Proteína por euro (para llegar al objetivo de la ración)
 
 Ordenado por eficiencia real en estas dos cadenas:
 
@@ -99,11 +99,17 @@ Ordenado por eficiencia real en estas dos cadenas:
 | gehakt (half-om-half) | ~17 g | Albóndigas, ragús, köfte |
 | skyr | ~11 g | Igual que el kwark, más ácido |
 | atún en lata escurrido | ~25 g | Emergencias (🐟, no para Karim) |
-| lentejas cocidas | ~9 g | Suma con carne, no la sustituye si el objetivo es 35 g |
+| lentejas cocidas | ~9 g | Suma con carne; sola sostiene un plato vegetal, cuyo objetivo es 25 g |
 | tofu firme | ~12-16 g | Salteados |
+| tempeh | ~19 g | La más densa de la despensa vegetal: fermentado, aguanta plancha y guiso |
+| garbanzos cocidos | ~8 g | Guisos, ensaladas, hummus |
+| seitán | ~24 g | Estofados y salteados; nada para celíacos |
+| edamame | ~11 g | Guarnición que sí suma |
 | queso curado rallado | ~25 g | Refuerzo, pero aporta mucha grasa |
 
-**Palancas para subir una receta a 35 g sin desfigurarla:** subir la carne de 300 a 400 g por 2 raciones; añadir un huevo; rematar con 30 g de queso rallado; acompañar de un lácteo proteico en vez de pan; añadir legumbre al plato de cereal. La palanca elegida se explica en `consejos` si cambia el plato respecto a la versión canónica.
+**Palancas para subir una receta sin desfigurarla:** subir la carne de 300 a 400 g por 2 raciones; añadir un huevo; rematar con 30 g de queso rallado; acompañar de un lácteo proteico en vez de pan; añadir legumbre al plato de cereal. En vegetal: doblar la legumbre, cambiar tofu por tempeh o seitán, rematar con semillas o levadura de cerveza. La palanca elegida se explica en `consejos` si cambia el plato respecto a la versión canónica.
+
+Y cuando la palanca es de acompañamiento y no de plato, **se declara en `consejos` con una fuente concreta**: es lo que el validador lee para dar por buena una receta entre el suelo y el objetivo. "Sírvelo con pan" no es una palanca; "acompáñalo de 200 g de yogur griego" sí.
 
 ## Precio y estacionalidad
 

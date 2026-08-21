@@ -27,7 +27,7 @@ Aplican a toda receta que entregues, la propongas o la insertes. Ninguna es opci
 |---|---|
 | **Procedencia** | Nivel A, B o C de `canon-recetas.md`, declarado |
 | **No negociables** | Todos los del plato, presentes en los pasos |
-| **Proteína** | ≥35 g/ración en principales para Karim; ≥25 g en desayunos. **El canon manda sobre el macro**: si llegar exige romper un ratio, se declara el número real y la palanca va fuera del plato (`criterio-chef.md`) |
+| **Proteína** | Suelo de 20 g en principales y 15 g en desayunos: por debajo no sirve para su hueco. Objetivo de 35/25 con carne o pescado y de 25/18 sin ellos; entre suelo y objetivo hace falta declarar la palanca en `consejos`. **El canon manda sobre el macro** (`criterio-chef.md`) |
 | **Macros ciertos** | Proteína y kcal a ≤20% de lo que dan los ingredientes según `nutrientes.json` |
 | **Ficha completa** | Todo ingrediente con ficha entera: macros, micros, `hemo` si es animal, `glu` + `sust` si lleva gluten. Uno sin ficha deja la receta entera en "gluten no afirmable" (`nutricion-ficha.md`) |
 | **Comida completa** | Un principal lleva verdura propia o declara su guarnición en `consejos`, y entonces esa guarnición no cuenta en los macros |
@@ -37,7 +37,7 @@ Aplican a toda receta que entregues, la propongas o la insertes. Ninguna es opci
 | **Coherencia** | Ingredientes ↔ pasos en las dos direcciones; macros ↔ cantidades |
 | **Contrato** | Checklist completo de `contrato-receta.md` |
 
-Si una puerta no se cumple y no puedes arreglarla, dilo en la respuesta en vez de entregar y callar. Una receta entregada con 24 g de proteína sin avisar es peor que no entregar nada. Y **nunca se cierra una puerta cambiando el número**: retocar los macros para que cuadren con el objetivo es el único fallo de esta skill que no se ve leyendo la receta.
+Si una puerta no se cumple y no puedes arreglarla, dilo en la respuesta en vez de entregar y callar. Una receta entregada con 24 g de proteína sin avisar es peor que no entregar nada —entregarla diciendo que son 24 y con qué se completa es correcto—. Y **nunca se cierra una puerta cambiando el número**: retocar los macros para que cuadren con el objetivo es el único fallo de esta skill que no se ve leyendo la receta.
 
 ## Flujo de trabajo
 
@@ -75,7 +75,7 @@ La regla del modo: **no se diseña una tanda sin auditar antes el bloque que va 
 
 ### 5. Revisión — "esta receta está floja", "arregla la de X"
 
-Para subir recetas antiguas al estándar actual. Buena parte de las que ya están en la BD tienen pasos de una línea sin tiempos ni cantidades, y hay principales por debajo de los 35 g de proteína.
+Para subir recetas antiguas al estándar actual. Buena parte de las que ya están en la BD tienen pasos de una línea sin tiempos ni cantidades, y hay principales por debajo del suelo de proteína.
 
 1. Lee la receta completa por id.
 2. Diagnostica contra las puertas de calidad: lista concreta de qué falla.

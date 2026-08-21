@@ -41,6 +41,34 @@ function Chip({ activo, onClick, children, titulo }: {
   )
 }
 
+/** Cuántos días de la semana llevan un hueco puesto, de 0 a 7. */
+function Dias({ titulo, valor, onCambiar, vacio }: {
+  titulo: string
+  valor: number
+  onCambiar: (n: number) => void
+  vacio: string
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="w-20 shrink-0 text-[11px] font-semibold text-gray-600 dark:text-gray-300">
+        {titulo}
+      </span>
+      <input
+        type="range"
+        min={0}
+        max={7}
+        value={valor}
+        onChange={(e) => onCambiar(Number(e.target.value))}
+        aria-label={`${titulo} a la semana`}
+        className="flex-1 accent-orange-500"
+      />
+      <span className="text-xs font-bold text-gray-700 dark:text-gray-200 tabular-nums w-16 text-right">
+        {valor === 0 ? vacio : `${valor} / 7`}
+      </span>
+    </div>
+  )
+}
+
 function Seccion({ titulo, nota, children }: { titulo: string; nota?: string; children: React.ReactNode }) {
   return (
     <div className="px-4 py-3.5 border-b border-gray-100 dark:border-gray-800">
@@ -59,8 +87,8 @@ interface Props {
 }
 
 export default function PanelSemana({ cocinas, onCerrar }: Props) {
-  const { preferencias, aplicar, alternarCocina, setDesayunos, setLimites } = usePreferencias()
-  const { prioridades, cocinasFavoritas, desayunos, limites } = preferencias
+  const { preferencias, aplicar, alternarCocina, setDesayunos, setComidas, setLimites } = usePreferencias()
+  const { prioridades, cocinasFavoritas, desayunos, comidas, limites } = preferencias
   const [vetado, setVetado] = useState('')
 
   const preset = presetDe(prioridades)
@@ -123,20 +151,23 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </p>
         </Seccion>
 
-        <Seccion titulo="Desayunos" nota="Se reparten por la semana y tapan lo que las cenas no dan.">
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min={0}
-              max={7}
-              value={desayunos}
-              onChange={(e) => setDesayunos(Number(e.target.value))}
-              aria-label="Desayunos a la semana"
-              className="flex-1 accent-orange-500"
+        <Seccion
+          titulo="Huecos del día"
+          nota="La cena va todos los días. Los desayunos y las comidas, los que digas, y se reparten por la semana en vez de amontonarse."
+        >
+          <div className="flex flex-col gap-2.5">
+            <Dias
+              titulo="Desayunos"
+              valor={desayunos}
+              onCambiar={setDesayunos}
+              vacio="ninguno"
             />
-            <span className="text-xs font-bold text-gray-700 dark:text-gray-200 tabular-nums w-16 text-right">
-              {desayunos === 0 ? 'ninguno' : `${desayunos} / 7`}
-            </span>
+            <Dias
+              titulo="Comidas"
+              valor={comidas}
+              onCambiar={setComidas}
+              vacio="solo ceno"
+            />
           </div>
         </Seccion>
 
@@ -185,6 +216,13 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
               Sin gluten
             </Chip>
           </div>
+
+          {limites.dieta && (
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+              Una semana sin carne ni pescado empuja la proteína sola: entre dos platos que valgan,
+              sale el que más trae.
+            </p>
+          )}
 
           <div className="mt-3">
             <input
