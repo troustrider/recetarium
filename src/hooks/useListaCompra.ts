@@ -2,7 +2,8 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Receta, RecetaListada, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
-import { claveIngrediente, canonNombre, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
+import { claveIngrediente, claveNombre, canonNombre, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
+import { juntarMedidas, type Medida } from '../utils/medidas'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
 import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
@@ -15,6 +16,8 @@ export interface IngredienteAgrupado extends Ingrediente {
   quedaPoco?: boolean
   yaTengo?: number
   desglose?: ParteReceta[]
+  /** Lo que pide el mismo ingrediente en otra magnitud, que no se puede sumar. */
+  otrasMedidas?: Medida[]
 }
 
 export interface EntradaLista {
@@ -125,16 +128,20 @@ function useListaCompra() {
   )
 
   const { listaCompra, enDespensa } = useMemo(() => {
-    const mapa = new Map<string, IngredienteAgrupado>()
+    // Una fila por ingrediente, no por ingrediente y unidad: la lechuga que un
+    // plato pide en gramos y otro en hojas es la misma lechuga y se compra una
+    // vez. Lo que comparte magnitud se suma; lo que no, se queda al lado.
+    const mapa = new Map<string, IngredienteAgrupado & { medidas: Medida[] }>()
 
     for (const { receta, raciones, conGuarnicion } of seleccionadas) {
       for (const ing of ingredientesDe(receta, conGuarnicion)) {
         const nombre = canonNombre(ing.nombre)
-        const clave = claveIngrediente(nombre, ing.unidad)
+        const clave = claveNombre(nombre)
+        const unidad = canonUnidad(nombre, ing.unidad)
         const existente = mapa.get(clave)
         const cantidad = ing.cantidad * (raciones / racionesBase(receta))
         if (existente) {
-          existente.cantidad += cantidad
+          existente.medidas.push({ cantidad, unidad })
           if (!existente.recetas.includes(receta.nombre)) {
             existente.recetas.push(receta.nombre)
           }
@@ -145,8 +152,9 @@ function useListaCompra() {
           mapa.set(clave, {
             ...ing,
             nombre,
-            unidad: canonUnidad(nombre, ing.unidad),
+            unidad,
             cantidad,
+            medidas: [{ cantidad, unidad }],
             recetas: [receta.nombre],
             desglose: [{ receta: receta.nombre, cantidad }],
             clave,
@@ -155,17 +163,26 @@ function useListaCompra() {
       }
     }
 
-    for (const ex of extras) {
-      const clave = claveIngrediente(ex.nombre, ex.unidad)
-      mapa.set(clave, { ...ex, unidad: canonUnidad(ex.nombre, ex.unidad), recetas: [], esExtra: true, clave })
+    for (const item of mapa.values()) {
+      const { principal, otras } = juntarMedidas(item.medidas)
+      item.cantidad = principal.cantidad
+      item.unidad = principal.unidad
+      if (otras.length === 0) continue
+      item.otrasMedidas = otras
+      // Con dos magnitudes en juego, el desglose por receta estaría en unidades
+      // distintas y no querría decir nada.
+      item.desglose = undefined
     }
 
     const comprar: IngredienteAgrupado[] = []
     const yaHay: IngredienteAgrupado[] = []
-    const deReceta = [...mapa.values()].filter((i) => !i.esExtra && !descartados.has(i.clave))
+    const deReceta = [...mapa.values()].filter((i) => !descartados.has(i.clave))
     const reparto = repartirDespensa(deReceta, despensa)
 
-    comprar.push(...[...mapa.values()].filter((i) => i.esExtra))
+    for (const ex of extras) {
+      const clave = claveIngrediente(ex.nombre, ex.unidad)
+      comprar.push({ ...ex, unidad: canonUnidad(ex.nombre, ex.unidad), recetas: [], esExtra: true, clave })
+    }
     const conDesglose = (item: IngredienteAgrupado, yaCubierto: number): IngredienteAgrupado => {
       if (!seDesglosa(item.familia) || (item.desglose?.length ?? 0) < 2) {
         return { ...item, desglose: undefined }
@@ -191,7 +208,18 @@ function useListaCompra() {
     return { listaCompra: comprar.sort(porFamilia), enDespensa: yaHay.sort(porFamilia) }
   }, [seleccionadas, extras, despensa, descartados])
 
-  const compra: CosteCompra = useMemo(() => calcularCosteCompra(listaCompra), [listaCompra])
+  // Lo que va en otra magnitud se cobra como ítem aparte: es lo único que puede
+  // hacerlo sin inventarse un factor, y si no dejaría de contar en el total.
+  const compra: CosteCompra = useMemo(
+    () =>
+      calcularCosteCompra(
+        listaCompra.flatMap((i) => [
+          i,
+          ...(i.otrasMedidas ?? []).map((m) => ({ nombre: i.nombre, ...m })),
+        ])
+      ),
+    [listaCompra]
+  )
 
   return useMemo(
     () => ({

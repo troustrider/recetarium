@@ -168,6 +168,12 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   const preferenciasRef = useRef<Preferencias>(preferencias)
   useEffect(() => { preferenciasRef.current = preferencias }, [preferencias])
 
+  // Lo que la auto-semana recuerda entre pasadas: lo que has quitado a mano y lo
+  // que colocó la última vez. Va en refs y no en el estado compartido porque es
+  // de quien está delante y de esta sesión: no hay que arrastrarlo al otro móvil.
+  const descartadosRef = useRef<Set<string>>(new Set())
+  const yaPropuestosRef = useRef<Set<string>>(new Set())
+
   const seleccionadasRef = useRef(seleccionadas)
   const estaSeleccionadaRef = useRef(estaSeleccionada)
   useEffect(() => { seleccionadasRef.current = seleccionadas }, [seleccionadas])
@@ -222,6 +228,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     raciones = racionesBase(receta),
     momento: Momento = momentoPorDefecto(receta.tipo)
   ) => {
+    descartadosRef.current.delete(receta.id)
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: [
@@ -231,12 +238,17 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }))
   }, [cambiarPlan])
 
+  // Quitar un plato a mano deja huella: sin ella, la siguiente auto-semana lo
+  // vuelve a poner porque sigue siendo la mejor nota. Lo cocinado no cuenta, que
+  // eso no es rechazarlo.
   const quitar = useCallback((dia: Dia, entradaId: string) => {
+    const entrada = plan[dia].find((e) => e.id === entradaId)
+    if (entrada && !entrada.cocinada) descartadosRef.current.add(entrada.receta.id)
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: prev[dia].filter((e) => e.id !== entradaId),
     }))
-  }, [cambiarPlan])
+  }, [cambiarPlan, plan])
 
   // El techo nunca puede quedar por debajo de las porciones de la receta: si no,
   // una receta de 6 bajaba sola a 4 al primer toque del stepper.
@@ -289,6 +301,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   const limpiar = useCallback(() => {
     huerfanasRef.current = []
+    descartadosRef.current.clear()
     cambiarPlan(PLAN_VACIO)
   }, [cambiarPlan])
 
@@ -384,7 +397,13 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       preferencias: prefs,
       yaEnLaSemana: hechas,
       despensa,
+      descartados: descartadosRef.current,
+      yaPropuestos: yaPropuestosRef.current,
     })
+
+    // Solo se recuerda la última pasada: así alterna entre dos semanas buenas en
+    // vez de ir bajando de calidad a cada pulsación.
+    yaPropuestosRef.current = new Set([...porHueco.values()].map((r) => r.id))
 
     for (const hueco of huecos) {
       const receta = porHueco.get(hueco.id)
@@ -418,7 +437,12 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     }
   }, [cambiarPlan, plan])
 
+  // Deshacer un quitado devuelve el plato al plan, así que deja de estar
+  // descartado: lo que vuelve a estar puesto no puede pesar en su contra.
   const restaurarPlan = useCallback((anterior: Plan) => {
+    for (const dia of DIAS) {
+      for (const e of anterior[dia]) descartadosRef.current.delete(e.receta.id)
+    }
     cambiarPlan(anterior)
   }, [cambiarPlan])
 

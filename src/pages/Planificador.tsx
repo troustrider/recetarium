@@ -763,15 +763,15 @@ function Planificador() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-end justify-between gap-4 pb-4 border-b border-gray-100 dark:border-gray-800">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4 pb-4 border-b border-gray-100 dark:border-gray-800">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-500 dark:text-orange-400 mb-1">Semana</p>
           <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-gray-100">Planificador</h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <motion.button
             onClick={() => setPanelAbierto(true)}
-            className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             whileTap={{ scale: 0.95 }}
             title="Qué buscamos esta semana, cuántos desayunos y qué no entra"
           >
@@ -788,7 +788,7 @@ function Planificador() {
               })
             }}
             disabled={recetas.length === 0}
-            className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
+            className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
             title="Rellena los huecos libres —cenas, y los desayunos y comidas que hayas pedido— repartiendo verdura, macros y micronutrientes, con su guarnición puesta. Prefiere los platos que gastan lo que hay en casa, empezando por lo abierto y lo que caduca. Lo que ya has marcado como hecho se queda y cuenta para el reparto"
           >
@@ -802,7 +802,7 @@ function Planificador() {
                 limpiar()
                 registrar('Semana vaciada', () => restaurarPlan(anterior))
               }}
-              className="text-xs font-semibold text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+              className="whitespace-nowrap text-xs font-semibold text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
               whileTap={{ scale: 0.95 }}
             >
               Limpiar semana

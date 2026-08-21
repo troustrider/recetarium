@@ -10,6 +10,7 @@ interface IngredienteAgrupado {
   quedaPoco?: boolean
   yaTengo?: number
   desglose?: { receta: string; cantidad: number }[]
+  otrasMedidas?: { cantidad: number; unidad: string }[]
 }
 
 interface Props {
@@ -24,7 +25,7 @@ function capitalize(s: string) {
 }
 
 function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {
-  const { nombre, cantidad, unidad, esExtra, quedaPoco, yaTengo, desglose } = ingrediente
+  const { nombre, cantidad, unidad, esExtra, quedaPoco, yaTengo, desglose, otrasMedidas } = ingrediente
 
   return (
     <motion.li
@@ -62,8 +63,13 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
           </span>
         )}
       </span>
-      <span className="text-sm font-bold text-orange-600 tabular-nums shrink-0">
+      <span className="text-sm font-bold text-orange-600 tabular-nums shrink-0 text-right">
         {formatCantidad(cantidad, unidad)}
+        {otrasMedidas?.map((m) => (
+          <span key={m.unidad} className="font-normal text-gray-400 dark:text-gray-500">
+            {' · +'}{formatCantidad(m.cantidad, m.unidad)}
+          </span>
+        ))}
       </span>
       {onRemove && (
         <button

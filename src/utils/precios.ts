@@ -120,11 +120,11 @@ export interface CosteCompra {
 
 export function costeCompra(items: ItemPrecio[]): CosteCompra {
   let total = 0
-  const sinPrecio: string[] = []
+  const sinPrecio = new Set<string>()
   for (const item of items) {
     const precio = precioDe(item)
-    if (precio == null) sinPrecio.push(item.nombre)
+    if (precio == null) sinPrecio.add(item.nombre)
     else total += precio
   }
-  return { total: redondearCentimos(total), sinPrecio }
+  return { total: redondearCentimos(total), sinPrecio: [...sinPrecio] }
 }
