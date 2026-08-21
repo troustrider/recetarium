@@ -1,8 +1,12 @@
-# Traspaso: lo que queda del planificador
+# Traspaso del planificador
 
-Estado de la rama `claude/recipe-gates-meal-visual-ploj2e` al cerrar la sesión
-remota. Lo de arriba está hecho y verificado (`tsc -b` limpio, 414 tests web en
-verde). Lo de abajo está diagnosticado pero **sin implementar**.
+Cerrado el 21 de agosto de 2026. Los cinco puntos están implementados y en
+`main`: los tres primeros venían de la sesión remota
+(`claude/recipe-gates-meal-visual-ploj2e`, ya borrada), y el 3, el 4 y el 5 se
+terminaron al traer la rama. `tsc -b` limpio y la suite entera en verde (29
+ficheros web y 11 de servidor).
+
+Queda una comprobación que esta máquina no puede hacer, al final del documento.
 
 ## Hecho
 
@@ -45,11 +49,7 @@ dibuja si tiene algo. Preferencia `comidas` (0-7) simétrica a `desayunos`, por
 defecto **0**, para que la auto-semana siga haciendo lo de siempre salvo que se
 pida otra cosa.
 
-## Pendiente
-
-### 3. La auto-semana repite las mismas recetas
-
-**Diagnosticado, no implementado.**
+### 3. La auto-semana repetía las mismas recetas
 
 Causa: en `src/utils/semana.ts:372-383` la nota de cada candidata es
 determinista salvo un `aleatorio() * 0.25`, y el término de despensa
@@ -58,8 +58,8 @@ mismos platos ganan siempre. Además `autollenar` borra lo no cocinado y
 recalcula desde cero, así que **quitar una receta a mano no deja ninguna
 huella**: la siguiente pasada la vuelve a elegir porque sigue siendo la mejor.
 
-Plan acordado — dos memorias, las dos como penalización y no como filtro (con
-el recetario justo, un plato descartado sigue siendo mejor que un día vacío):
+Hecho — dos memorias, las dos como penalización y no como filtro (con el
+recetario justo, un plato descartado sigue siendo mejor que un día vacío):
 
 - `descartados`: recetas que el usuario ha quitado del plan a mano. Penalización
   fuerte (~5). Se limpian al añadirlas de nuevo a mano, al `limpiar()` la semana
@@ -73,11 +73,11 @@ Dónde: ambas como `Iterable<string>` opcionales en `OpcionesReparto`
 (`src/utils/semana.ts`), restadas en la nota del bucle de elección. Los dos
 `Set` viven en refs de `PlanificadorContext` — `quitar` (solo si la entrada no
 estaba cocinada) alimenta el primero, el final de `autollenar` reescribe el
-segundo con lo que acaba de colocar.
+segundo con lo que acaba de colocar. Los descartes se limpian al volver a añadir
+el plato a mano, al vaciar la semana y al deshacer, que devuelve el plan
+anterior: lo que vuelve a estar puesto no puede pesar en su contra.
 
-### 4. La lechuga sale dos veces en la lista de la compra
-
-**Diagnosticado, con el helper ya escrito y sin enchufar.**
+### 4. La lechuga salía dos veces en la lista de la compra
 
 Causa: `src/hooks/useListaCompra.ts:133` agrupa por
 `claveIngrediente(nombre, unidad)`, que es `nombre__unidad`. La misma lechuga
@@ -95,7 +95,7 @@ fila por ingrediente, sumando lo que comparte magnitud (250 g + 1 kg = 1,25 kg)
 y dejando lo que no al lado de la principal, en la misma línea. Manda la unidad
 que se puede comprobar en la tienda: peso/volumen > pieza > medida de cocina.
 
-Queda por hacer:
+Hecho, en este orden:
 
 1. `src/utils/ingredientes.ts`: `claveNombre(nombre)` =
    `normalizar(canonNombre(nombre))`. `claveIngrediente` se queda como está para
@@ -107,22 +107,33 @@ Queda por hacer:
 3. `src/components/lista-compra/ResumenIngrediente.tsx`: pintar las otras
    medidas junto a la principal (`100 g · + 12 hoja`).
 4. `desglose` solo aplica a carnes y pescados (`seDesglosa`), que van en gramos,
-   así que casi nunca se mezcla; aun así **descártalo si el ítem acaba con
-   `otrasMedidas`**, porque sus cantidades estarían en unidades distintas.
-5. `costeCompra` debe seguir viendo las otras medidas (pasarlas como ítems
-   aparte) o dejarán de contar en el total. Aprovecha y deduplica `sinPrecio`.
+   así que casi nunca se mezcla; aun así se descarta si el ítem acaba con
+   `otrasMedidas`, porque sus cantidades estarían en unidades distintas.
+5. `costeCompra` sigue viendo las otras medidas, que van como ítems aparte, o
+   dejarían de contar en el total. `sinPrecio` pasa a ser un `Set`.
 
-### 5. El planificador descuadra el layout en móvil
+### 5. El planificador descuadraba el layout en móvil
 
-**Diagnosticado, no implementado.** La cabecera de `src/pages/Planificador.tsx`
-(~línea 633) es un `flex ... justify-between` sin `wrap`: título más tres
+La cabecera de `src/pages/Planificador.tsx`
+era un `flex ... justify-between` sin `wrap`: título más tres
 botones no caben en 390 px, "Auto-semana" parte en dos líneas y "Limpiar
 semana" se sale por la derecha, y eso es lo que mete scroll horizontal en toda
 la página.
 
-Arreglo: apilar en móvil y dejar que la fila de botones envuelva —
+Arreglo aplicado: apilar en móvil y dejar que la fila de botones envuelva —
 `flex-col gap-3 sm:flex-row sm:items-end sm:justify-between` en el contenedor y
 `flex-wrap items-center gap-2 sm:gap-3` en el grupo de botones, con
-`whitespace-nowrap` en cada botón para que no se parta el texto. Compruébalo a
-390 px antes de darlo por bueno: el chip del planificador ya iba justo de ancho
-y los carriles de momento le quitan sitio.
+`whitespace-nowrap` en cada botón para que no se parta el texto.
+
+## Lo único que queda
+
+**Verlo a 390 px.** Es lo que pedía el punto 5 y esta máquina no puede hacerlo:
+sin credenciales de Google en local no hay sesión, y sin sesión la app se queda
+en la landing, así que al planificador no se llega desde el navegador. En cuanto
+haya login propio funcionando, mirar la cabecera y los carriles de momento a
+390 px, que el chip ya iba justo de ancho.
+
+**El `audit` del chef sobre la base de datos entera**, que viene del punto 1 y
+sigue sin correr. No hay deuda —relajar un criterio no rompe ninguna receta que
+ya pasaba—, pero es lo que saca la lista de recetas entre el suelo y su objetivo
+de proteína sin palanca declarada, que es lo accionable de aquel cambio.

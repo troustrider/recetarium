@@ -360,3 +360,34 @@ describe('lo cocinado no vuelve', () => {
     expect(porHueco.size).toBe(0)
   })
 })
+
+describe('lo que recuerda entre pasadas', () => {
+  it('un plato quitado a mano cede el sitio al que no lo estaba', () => {
+    const quitada = receta({ categoria: 'a' })
+    const otra = receta({ categoria: 'b' })
+    const { porHueco } = repartirSemana(
+      [{ id: 'lunes', candidatos: [quitada, otra] }],
+      { descartados: [quitada.id], semilla: 1 }
+    )
+    expect(porHueco.get('lunes')!.id).toBe(otra.id)
+  })
+
+  it('pero vuelve antes que dejar el día vacío', () => {
+    const quitada = receta()
+    const { porHueco } = repartirSemana(
+      [{ id: 'lunes', candidatos: [quitada] }],
+      { descartados: [quitada.id], semilla: 1 }
+    )
+    expect(porHueco.get('lunes')!.id).toBe(quitada.id)
+  })
+
+  it('volver a pulsar no repite lo de la pasada anterior', () => {
+    const anterior = receta({ categoria: 'a' })
+    const nueva = receta({ categoria: 'b' })
+    const { porHueco } = repartirSemana(
+      [{ id: 'lunes', candidatos: [anterior, nueva] }],
+      { yaPropuestos: [anterior.id], semilla: 1 }
+    )
+    expect(porHueco.get('lunes')!.id).toBe(nueva.id)
+  })
+})

@@ -707,3 +707,21 @@ describe('límites duros de la auto-semana', () => {
     expect(puestas.every((e) => e.receta.id === 'r3')).toBe(true)
   })
 })
+
+describe('la semana recuerda lo que quitaste', () => {
+  const AMPLIO = Array.from({ length: 14 }, (_, i) =>
+    receta(`a${i}`, `Plato ${i}`, [{ nombre: `verdura ${i}`, cantidad: 100, unidad: 'g', familia: 'verduras' }])
+  )
+
+  it('quitar un plato a mano y rehacer la semana no lo devuelve', async () => {
+    const { result } = await montarHidratado()
+    act(() => { result.current.plan.autollenar(AMPLIO, 2) })
+
+    const quitada = result.current.plan.plan.Lunes[0]
+    act(() => result.current.plan.quitar('Lunes', quitada.id))
+    act(() => { result.current.plan.autollenar(AMPLIO, 2) })
+
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas.some((e) => e.receta.id === quitada.receta.id)).toBe(false)
+  })
+})

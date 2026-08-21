@@ -60,6 +60,16 @@ const PESOS_BASE = {
  */
 const TOPE_APROVECHAMIENTO = 2
 
+/**
+ * Lo que pesa la memoria de las pasadas anteriores. Las dos penalizan en vez de
+ * filtrar: con el recetario justo, un plato que quitaste sigue siendo mejor que
+ * un día vacío. Quitar a mano pesa lo bastante como para que no vuelva salvo que
+ * no quede nada; haber salido en la pasada anterior solo lo empuja al banquillo,
+ * así que volver a pulsar da otra semana sin arrasar con la calidad.
+ */
+const PENALIZACION_DESCARTADO = 5
+const PENALIZACION_YA_PROPUESTO = 0.6
+
 type Peso = keyof typeof PESOS_BASE
 
 // Qué mueve cada prioridad. Es una tabla y no código a propósito: añadir una
@@ -326,6 +336,10 @@ export interface OpcionesReparto {
   yaEnLaSemana?: RecetaListada[]
   /** Lo que hay en casa, para preferir los platos que lo gastan. */
   despensa?: ItemAprovechable[]
+  /** Recetas que se quitaron del plan a mano: no se vetan, pesan en contra. */
+  descartados?: Iterable<string>
+  /** Lo que colocó la pasada anterior, para que volver a pulsar cambie la semana. */
+  yaPropuestos?: Iterable<string>
   semilla?: number
 }
 
@@ -337,6 +351,8 @@ export interface OpcionesReparto {
  */
 export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}): Reparto {
   const { preferencias, yaEnLaSemana = [], despensa = [], semilla = Date.now() } = opciones
+  const descartados = new Set(opciones.descartados ?? [])
+  const yaPropuestos = new Set(opciones.yaPropuestos ?? [])
   const aleatorio = prng(semilla)
   const ajustes = ajustesDe(preferencias, huecos.length)
 
@@ -386,7 +402,9 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
       const nota =
         ganancia(a, acc, ajustes) +
         ajustes.pesos.aprovechar * gananciaDespensa(usadosDe(receta), acc, indice) -
-        penalizacion(receta, a, acc, ajustes) +
+        penalizacion(receta, a, acc, ajustes) -
+        (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
+        (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0) +
         aleatorio() * 0.25
       if (nota > mejorNota) {
         mejorNota = nota

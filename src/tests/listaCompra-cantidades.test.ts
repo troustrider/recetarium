@@ -86,3 +86,38 @@ describe('useListaCompra — lo que va por piezas', () => {
     expect(result.current.listaCompra[0]).toMatchObject({ cantidad: 250.5, unidad: 'g' })
   })
 })
+
+describe('useListaCompra — el mismo ingrediente en dos unidades', () => {
+  const enGramos: Receta = {
+    ...receta, id: 'r5',
+    ingredientes: [{ nombre: 'lechuga', cantidad: 100, unidad: 'g', familia: 'verduras' }],
+  }
+  const enHojas: Receta = {
+    ...receta, id: 'r6',
+    ingredientes: [{ nombre: 'lechuga', cantidad: 4, unidad: 'hojas', familia: 'verduras' }],
+  }
+
+  it('sale una sola fila, con la medida de la tienda delante', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(enGramos))
+    act(() => result.current.toggleReceta(enHojas))
+
+    const filas = result.current.listaCompra.filter((i) => i.nombre === 'lechuga')
+    expect(filas).toHaveLength(1)
+    expect(filas[0]).toMatchObject({ cantidad: 100, unidad: 'g' })
+    expect(filas[0].otrasMedidas).toEqual([{ cantidad: 4, unidad: 'hoja' }])
+  })
+
+  it('lo que comparte magnitud se suma en vez de quedarse al lado', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(enGramos))
+    act(() => result.current.toggleReceta({
+      ...receta, id: 'r7',
+      ingredientes: [{ nombre: 'lechuga', cantidad: 0.4, unidad: 'kg', familia: 'verduras' }],
+    }))
+
+    const lechuga = result.current.listaCompra.find((i) => i.nombre === 'lechuga')
+    expect(lechuga).toMatchObject({ cantidad: 500, unidad: 'g' })
+    expect(lechuga!.otrasMedidas).toBeUndefined()
+  })
+})
