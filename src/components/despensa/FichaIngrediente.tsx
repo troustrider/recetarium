@@ -4,6 +4,8 @@ import { ShoppingCart, Check, Trash2, X, Pencil } from 'lucide-react'
 import { useDespensa, type IngredienteDespensa, type CambiosIngrediente } from '../../context/DespensaContext'
 import { FAMILIAS, mismoIngrediente } from '../../utils/despensa'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
+import { diasTrasAbrir } from '../../utils/trasAbrir'
+import { sumarDias } from '../../utils/caducidadEstimada'
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)
@@ -229,7 +231,7 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
         )}
       </div>
 
-      <label className="flex items-center justify-between gap-3 px-4 py-2.5 mb-4 text-sm rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-pointer">
+      <label className="flex items-center justify-between gap-3 px-4 py-2.5 mb-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-pointer">
         Caducidad
         <input
           type="date"
@@ -238,6 +240,8 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
           className="bg-transparent text-right text-sm text-gray-700 dark:text-gray-200 outline-none cursor-pointer"
         />
       </label>
+
+      <Apertura item={item} onEditar={onEditar} />
 
       <motion.button
         onClick={onALista}
@@ -261,6 +265,58 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
         Quitar de la despensa
       </button>
     </>
+  )
+}
+
+/**
+ * El paquete abierto. Existe porque la fecha impresa deja de valer en cuanto se
+ * abre el envase: la nata caduca en octubre hasta que la abres, y desde ahí son
+ * tres días. Marcarlo recorta la caducidad, y con ella se enteran de golpe el
+ * aviso de la despensa, la lista de la compra y la auto-semana.
+ */
+function Apertura({ item, onEditar }: { item: IngredienteDespensa; onEditar: (c: CambiosIngrediente) => void }) {
+  const dias = diasTrasAbrir(item.nombre, item.familia)
+  const abierto = item.abierto != null
+
+  return (
+    <div
+      className={`mb-4 text-sm rounded-xl border transition-colors ${
+        abierto
+          ? 'border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-900/10'
+          : 'border-gray-200 dark:border-gray-700'
+      }`}
+    >
+      <label className="flex items-center justify-between gap-3 px-4 py-2.5 cursor-pointer">
+        <span className="text-gray-500 dark:text-gray-400">Paquete abierto</span>
+        <input
+          type="checkbox"
+          checked={abierto}
+          onChange={(e) => onEditar({ abierto: e.target.checked ? sumarDias(0) : null })}
+          className="w-4 h-4 accent-amber-500"
+          aria-label="Marcar el paquete como abierto"
+        />
+      </label>
+
+      {abierto && (
+        <div className="px-4 pb-3 -mt-0.5">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs text-gray-400 dark:text-gray-500">Se abrió el</span>
+            <input
+              type="date"
+              value={item.abierto}
+              onChange={(e) => e.target.value && onEditar({ abierto: e.target.value })}
+              aria-label="Día en que se abrió"
+              className="bg-transparent text-right text-sm text-gray-700 dark:text-gray-200 outline-none cursor-pointer"
+            />
+          </div>
+          <p className="mt-1.5 text-[11px] text-amber-700/80 dark:text-amber-400/80">
+            {dias == null
+              ? 'Abierto aguanta lo mismo: la caducidad se queda como estaba.'
+              : `Abierto aguanta unos ${dias} días, y la caducidad ya lo cuenta.`}
+          </p>
+        </div>
+      )}
+    </div>
   )
 }
 

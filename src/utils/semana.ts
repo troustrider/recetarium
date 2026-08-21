@@ -1,5 +1,6 @@
 import type { RecetaListada } from '../types/receta'
 import type { Preferencias, Prioridad } from '../types/preferencias'
+import { aprovechaDe, indiceDespensa, type IndiceDespensa, type ItemAprovechable } from './aprovechamiento'
 
 // Lo que una semana de comer debería sumar, por día y por ración. Es el objetivo
 // de la semana entera, no de los platos que se planifiquen: cuantas más comidas
@@ -47,7 +48,17 @@ const PESOS_BASE = {
   saborRepetido: 0.2,
   reparto: 0.8,
   noFavorita: 0.5,
+  aprovechar: 0.35,
 }
+
+/**
+ * Cuánta despensa se le reconoce a un plato como mucho. Sin tope, un guiso que
+ * toca ocho cosas de la nevera ganaba siempre, aunque dejara la semana entera
+ * sin verdura: aprovechar es un motivo para elegir un plato, no una excusa para
+ * comer mal. Con el tope, gastar lo que caduca vale como el mayor de los pesos
+ * de la tabla de arriba, ni más.
+ */
+const TOPE_APROVECHAMIENTO = 2
 
 type Peso = keyof typeof PESOS_BASE
 
@@ -182,6 +193,8 @@ interface Acumulado {
   cocinas: Map<string, number>
   verduras: Set<string>
   sabores: Map<string, number>
+  /** Índices de la despensa que la semana ya tiene comprometidos. */
+  aprovechados: Set<number>
 }
 
 function acumuladoVacio(): Acumulado {
@@ -191,10 +204,12 @@ function acumuladoVacio(): Acumulado {
     cocinas: new Map(),
     verduras: new Set(),
     sabores: new Map(),
+    aprovechados: new Set(),
   }
 }
 
-function acumular(acc: Acumulado, receta: RecetaListada) {
+function acumular(acc: Acumulado, receta: RecetaListada, usados: number[] = []) {
+  for (const i of usados) acc.aprovechados.add(i)
   const a = aporteDe(receta)
   for (const clave of CLAVES) acc.nutrientes[clave] += a[clave]
   for (const macro of MACROS) acc.macros[macro] += a[macro]
@@ -227,6 +242,20 @@ function ganancia(a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
     g += (despues - antes) / objetivo
   }
   return g
+}
+
+/**
+ * Lo que el plato salva de la despensa que la semana no haya salvado ya. Cuenta
+ * cada ítem una vez: si el lunes se lleva el brik de nata abierto, el martes no
+ * puntúa por el mismo brik, igual que un nutriente deja de sumar cuando la
+ * semana ya llega a su objetivo.
+ */
+function gananciaDespensa(usados: number[], acc: Acumulado, indice: IndiceDespensa): number {
+  let g = 0
+  for (const i of usados) {
+    if (!acc.aprovechados.has(i)) g += indice.pesos[i]
+  }
+  return Math.min(g, TOPE_APROVECHAMIENTO)
 }
 
 function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
@@ -275,12 +304,16 @@ export interface Reparto {
   porHueco: Map<string, RecetaListada>
   /** Huecos que han tenido que repetir un plato porque no quedaban candidatas. */
   repetidos: Set<string>
+  /** Lo que hay en casa y la semana se va a gastar, por su nombre en la despensa. */
+  aprovechados: string[]
 }
 
 export interface OpcionesReparto {
   preferencias?: Preferencias
   /** Platos que ya están puestos y no se tocan: los cocinados. */
   yaEnLaSemana?: RecetaListada[]
+  /** Lo que hay en casa, para preferir los platos que lo gastan. */
+  despensa?: ItemAprovechable[]
   semilla?: number
 }
 
@@ -291,10 +324,27 @@ export interface OpcionesReparto {
  * cuatro opciones a un día que no las necesitaba.
  */
 export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}): Reparto {
-  const { preferencias, yaEnLaSemana = [], semilla = Date.now() } = opciones
+  const { preferencias, yaEnLaSemana = [], despensa = [], semilla = Date.now() } = opciones
   const aleatorio = prng(semilla)
   const ajustes = ajustesDe(preferencias, huecos.length)
 
+  // Qué gasta cada receta de la despensa se resuelve una vez por receta y no una
+  // por hueco: la misma candidata se mira en los siete días, y cada mirada son
+  // sus ingredientes contra la despensa entera.
+  const indice = indiceDespensa(despensa)
+  const cacheUsados = new Map<string, number[]>()
+  const usadosDe = (receta: RecetaListada): number[] => {
+    if (indice.items.length === 0) return []
+    let usados = cacheUsados.get(receta.id)
+    if (!usados) {
+      usados = aprovechaDe(receta, indice)
+      cacheUsados.set(receta.id, usados)
+    }
+    return usados
+  }
+
+  // Lo cocinado no reserva despensa: si su bote sigue en la lista es que quedó,
+  // y quedarse sin gastar es justo lo que hay que arreglar esta semana.
   const acc = acumuladoVacio()
   for (const receta of yaEnLaSemana) acumular(acc, receta)
 
@@ -321,19 +371,27 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     let mejorNota = -Infinity
     for (const receta of entre) {
       const a = aporteDe(receta)
-      const nota = ganancia(a, acc, ajustes) - penalizacion(receta, a, acc, ajustes) + aleatorio() * 0.25
+      const nota =
+        ganancia(a, acc, ajustes) +
+        ajustes.pesos.aprovechar * gananciaDespensa(usadosDe(receta), acc, indice) -
+        penalizacion(receta, a, acc, ajustes) +
+        aleatorio() * 0.25
       if (nota > mejorNota) {
         mejorNota = nota
         mejor = receta
       }
     }
 
-    acumular(acc, mejor)
+    acumular(acc, mejor, usadosDe(mejor))
     usadas.add(mejor.id)
     porHueco.set(hueco.id, mejor)
   }
 
-  return { porHueco, repetidos }
+  return {
+    porHueco,
+    repetidos,
+    aprovechados: [...acc.aprovechados].map((i) => indice.items[i].nombre),
+  }
 }
 
 export interface Cobertura {
@@ -397,10 +455,11 @@ export function semanaEquilibrada(
   n: number,
   semilla = Date.now(),
   yaEnLaSemana: RecetaListada[] = [],
-  preferencias?: Preferencias
+  preferencias?: Preferencias,
+  despensa: ItemAprovechable[] = []
 ): RecetaListada[] {
   const huecos = Array.from({ length: n }, (_, i) => ({ id: String(i), candidatos: recetas }))
-  const { porHueco, repetidos } = repartirSemana(huecos, { preferencias, yaEnLaSemana, semilla })
+  const { porHueco, repetidos } = repartirSemana(huecos, { preferencias, yaEnLaSemana, semilla, despensa })
   return huecos
     .filter((h) => porHueco.has(h.id) && !repetidos.has(h.id))
     .map((h) => porHueco.get(h.id)!)

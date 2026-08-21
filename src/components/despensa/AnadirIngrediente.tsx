@@ -5,7 +5,8 @@ import { useDespensa } from '../../context/DespensaContext'
 import { FAMILIAS, estaEnDespensa } from '../../utils/despensa'
 import { normalizar } from '../../utils/ingredientes'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
-import { caducidadEstimada, diasEstimados } from '../../utils/caducidadEstimada'
+import { caducidadEstimada, diasEstimados, sumarDias } from '../../utils/caducidadEstimada'
+import { caducidadAlAbrir, diasTrasAbrir } from '../../utils/trasAbrir'
 import useIngredientesConocidos from '../../hooks/useIngredientesConocidos'
 
 function capitalize(s: string) {
@@ -28,6 +29,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
   const [cantidad, setCantidad] = useState('')
   const [unidad, setUnidad] = useState(unidadPorDefecto('otros'))
   const [cantidadManual, setCantidadManual] = useState(false)
+  const [yaAbierto, setYaAbierto] = useState(false)
 
   const nq = normalizar(nombre)
   const sugerencias = nq
@@ -38,8 +40,13 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
   const puedeAñadir = nombre.trim().length > 1 && !yaExiste
   const mostrarCantidad = requiereCantidad(familia) || cantidadManual
 
-  const estimada = caducidadTocada || nombre.trim().length < 2 ? null : caducidadEstimada(nombre, familia)
+  const sinAbrir = caducidadTocada || nombre.trim().length < 2 ? null : caducidadEstimada(nombre, familia)
+  const estimada =
+    yaAbierto && nombre.trim().length > 1
+      ? caducidadAlAbrir({ nombre, familia, caducidad: sinAbrir ?? undefined }, sumarDias(0)) ?? null
+      : sinAbrir
   const valorCaducidad = caducidadTocada ? caducidad : estimada ?? ''
+  const diasAbierto = nombre.trim().length > 1 ? diasTrasAbrir(nombre, familia) : null
 
   function cambiarFamilia(f: string) {
     setFamilia(f)
@@ -56,12 +63,14 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
     const n = Number(cantidad)
     añadir(nombre, familia, {
       caducidad: valorCaducidad || undefined,
+      ...(yaAbierto ? { abierto: sumarDias(0) } : {}),
       ...(cantidad !== '' && n > 0 ? { cantidad: n, unidad } : {}),
     })
     setNombre('')
     setCaducidad('')
     setCaducidadTocada(false)
     setCantidad('')
+    setYaAbierto(false)
   }
 
   return (
@@ -159,9 +168,30 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
 
             {estimada && (
               <p className="px-1 mt-1.5 text-[11px] text-orange-600/80 dark:text-orange-400/80">
-                Caducidad estimada ({diasEstimados(nombre, familia)} días). Cámbiala si el envase trae otra.
+                {yaAbierto && diasAbierto != null
+                  ? `Abierto aguanta unos ${diasAbierto} días, y la fecha ya lo cuenta.`
+                  : `Caducidad estimada (${diasEstimados(nombre, familia)} días). Cámbiala si el envase trae otra.`}
               </p>
             )}
+
+            {/* Ya abierto: arranca la cuenta atrás desde hoy en vez de desde la
+                fecha del envase, que en cuanto se abre deja de valer. */}
+            <label
+              className={`flex items-center justify-between gap-3 px-4 py-2.5 mt-2 text-sm rounded-xl border cursor-pointer transition-colors ${
+                yaAbierto
+                  ? 'border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-900/10'
+                  : 'border-gray-200 dark:border-gray-700'
+              }`}
+            >
+              <span className="text-gray-500 dark:text-gray-400">Ya lo he abierto</span>
+              <input
+                type="checkbox"
+                checked={yaAbierto}
+                onChange={(e) => setYaAbierto(e.target.checked)}
+                className="w-4 h-4 accent-amber-500"
+                aria-label="Marcar que el paquete ya está abierto"
+              />
+            </label>
 
             {mostrarCantidad ? (
               <div className="flex gap-2 mt-2 mb-4">
