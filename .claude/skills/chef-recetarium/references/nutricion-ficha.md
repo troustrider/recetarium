@@ -73,6 +73,7 @@ Se guarda con sus tres modificadores porque el número solo no dice nada:
 - **Hemo** (carne, pescado, marisco): se absorbe unas 3 veces mejor y los inhibidores le afectan poco.
 - **Vitamina C en la misma comida**: multiplica la absorción del hierro vegetal. A partir de ~30 mg se nota. Un pimiento rojo, un chorro de limón al final, tomate fresco, perejil.
 - **Calcio en la misma comida**: compite. A partir de ~250 mg frena. Es el yogur, el queso rallado por encima, la salsa de lácteo.
+- **Café y té en la misma comida**: sus polifenoles inhiben el hierro no hemo, y bastante. No está en la ficha de ningún ingrediente porque no se cocina con ellos, pero es la combinación real del desayuno: el bloque de desayunos de la BD está lleno de huevo, legumbre y verdura de hoja, y al lado hay un café. Si el desayuno se diseña por el hierro, la vitamina C tiene que estar dentro del plato para compensarlo.
 
 Esto es cocina, no etiquetado. Si diseñas un plato de legumbre o de verdura de hoja, **acábalo con algo de vitamina C** y la misma receta pasa de hierro poco aprovechable a hierro aprovechable, sin tocar ni un gramo de proteína. Un limón exprimido al servir vale. Y si el plato ya es de lenteja o garbanzo, piensa dos veces antes de rematarlo con yogur o con una lluvia de queso: no está prohibido, pero sabe qué estás pagando por ello.
 

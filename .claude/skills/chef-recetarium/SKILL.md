@@ -27,7 +27,7 @@ Aplican a toda receta que entregues, la propongas o la insertes. Ninguna es opci
 |---|---|
 | **Procedencia** | Nivel A, B o C de `canon-recetas.md`, declarado |
 | **No negociables** | Todos los del plato, presentes en los pasos |
-| **Proteína** | Suelo de 20 g en principales y 15 g en desayunos: por debajo no sirve para su hueco. Objetivo de 35/25 con carne o pescado y de 25/18 sin ellos; entre suelo y objetivo hace falta declarar la palanca en `consejos`. **El canon manda sobre el macro** (`criterio-chef.md`) |
+| **Proteína** | Suelo de catálogo de 20 g en principales y 15 g en desayunos. Objetivo de 35/25 con carne o pescado y de 25/18 sin ellos; entre suelo y objetivo hace falta declarar la palanca en `consejos`. **El canon manda sobre el macro** (`criterio-chef.md`). El suelo del hueco donde se come es otro y más alto: `momentos-del-dia.md` |
 | **Macros ciertos** | Proteína y kcal a ≤20% de lo que dan los ingredientes según `nutrientes.json` |
 | **Ficha completa** | Todo ingrediente con ficha entera: macros, micros, `hemo` si es animal, `glu` + `sust` si lleva gluten. Uno sin ficha deja la receta entera en "gluten no afirmable" (`nutricion-ficha.md`) |
 | **Comida completa** | Un principal lleva verdura propia o declara su guarnición en `consejos`, y entonces esa guarnición no cuenta en los macros |
@@ -62,6 +62,8 @@ Busca en la BD las recetas que maximicen esos ingredientes (match por nombre nor
 ### 2. Criterios — "postre barato", "cena <20 min alta en proteína", "algo turco"
 
 Filtra primero lo existente por SQL (tiempo, precio, macros, tipo, categoria). Solo propón recetas nuevas si lo existente no cubre el criterio, y dilo explícitamente. Tabla compacta: nombre, tiempo, €/ración, proteína, por qué encaja, y marca cuáles ya están en la BD.
+
+**Si la petición nombra el hueco** ("¿qué ceno?", "algo para la comida del sábado"), filtra por el hueco y no por `tipo`: son criterios distintos y las puertas de cada uno están en `momentos-del-dia.md`. Di si un candidato bueno se ha caído por la puerta del hueco. Un galbijjim de 1.100 kcal no es una mala receta, es una comida.
 
 ### 3. Alta — "añádela" / "métela en el recetarium"
 
@@ -117,6 +119,7 @@ Español, directo, sin relleno. Pocas propuestas (2-4) y concretas, no listados 
 | `contrato-receta.md` | Antes de generar cualquier JSON, y para el checklist final |
 | `precios-nl.md` | Al estimar `precioPorPorcion` |
 | `nutricion-ficha.md` | Al declarar macros y **siempre que uses un ingrediente nuevo** |
+| `momentos-del-dia.md` | Cuando la petición nombre desayuno, comida o cena, y al tocar el autollenado de la semana |
 | `tandas.md` | Siempre que la petición sea un lote de recetas nuevas, no una sola |
 | `validador.md` | Antes de escribir un lote, y siempre que cambies un criterio de calidad |
 | `acceso-datos.md` | Para leer o escribir en la BD |

@@ -176,6 +176,14 @@ describe('ajustesDe', () => {
     expect(ajustesDe().cuotaFavorita).toBe(1)
   })
 
+  it('el objetivo escala con los huecos, porque es por comida y no por día', () => {
+    const unaCena = ajustesDe(undefined, 1)
+    const semanaDeCenas = ajustesDe(undefined, 7)
+    const semanaEntera = ajustesDe(undefined, 21)
+    expect(semanaDeCenas.objetivos.proteinas).toBe(unaCena.objetivos.proteinas * 7)
+    expect(semanaEntera.objetivos.proteinas).toBe(semanaDeCenas.objetivos.proteinas * 3)
+  })
+
   it('una prioridad desconocida no revienta el cálculo', () => {
     const a = ajustesDe(con({ prioridades: ['inventada' as Prioridad] }))
     expect(a.objetivos).toEqual(ajustesDe().objetivos)
