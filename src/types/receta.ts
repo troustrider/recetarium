@@ -1,4 +1,4 @@
-export type Categoria = string
+type Categoria = string
 
 export type Sabor = 'salado' | 'dulce' | 'amargo' | 'umami' | 'acido'
 
@@ -11,7 +11,7 @@ export interface Ingrediente {
   familia: string
 }
 
-export interface FuenteGluten {
+interface FuenteGluten {
   nombre: string
   certeza: 'si' | 'depende'
   sustituto: string | null
@@ -31,9 +31,9 @@ export interface Micros {
   estimadoDe: 'completo' | 'parcial'
 }
 
-export type OrigenAnimal = 'carne' | 'pescado' | 'lacteo' | 'huevo' | 'miel'
+type OrigenAnimal = 'carne' | 'pescado' | 'lacteo' | 'huevo' | 'miel'
 
-export interface FuenteAnimal {
+interface FuenteAnimal {
   nombre: string
   origen: OrigenAnimal
   certeza: 'si' | 'depende'
@@ -45,7 +45,7 @@ export interface Apto {
   animal: FuenteAnimal[]
 }
 
-export interface Guarnicion {
+interface Guarnicion {
   nombre: string
   ingredientes: Ingrediente[]
   pasos: string[]

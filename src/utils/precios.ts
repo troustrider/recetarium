@@ -3,7 +3,7 @@ import { normalizar, canonUnidad } from './ingredientes'
 import { convertir } from './cantidades'
 import { mismoIngrediente, despensaCubre } from './despensa'
 
-export interface EntradaPrecio {
+interface EntradaPrecio {
   nombre: string
   euros: number
   unidad: string
@@ -48,7 +48,7 @@ export function buscarPrecio(nombre: string): EntradaPrecio | null {
   return candidatas.reduce((a, b) => (b.nombre.length > a.nombre.length ? b : a))
 }
 
-export interface ItemPrecio {
+interface ItemPrecio {
   nombre: string
   cantidad: number
   unidad: string

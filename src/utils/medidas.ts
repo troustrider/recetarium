@@ -19,7 +19,7 @@ function enUnidadDe({ cantidad, unidad }: Medida, destino: string): number | nul
   return convertir(cantidad, unidad, destino)
 }
 
-export interface MedidasJuntas {
+interface MedidasJuntas {
   principal: Medida
   /** Las que no se pueden sumar a la principal sin inventarse un factor. */
   otras: Medida[]

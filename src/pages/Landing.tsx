@@ -61,7 +61,6 @@ function Landing() {
     <div className="relative min-h-dvh overflow-hidden bg-stone-50 dark:bg-gray-950 flex flex-col items-center justify-center px-4 py-10 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <MosaicoLanding />
 
-      {/* Muestra del producto a los lados, desde lg. */}
       <MuestraTarjeta
         receta={MUESTRA[0]}
         className="hidden lg:block absolute left-[8%] xl:left-[14%] top-1/2 -translate-y-[70%] -rotate-6"
@@ -71,13 +70,6 @@ function Landing() {
         className="hidden lg:block absolute right-[8%] xl:right-[14%] top-1/2 -translate-y-[30%] rotate-6"
       />
 
-      {/* Y en móvil, que es la vía de entrada principal, un abanico asomando por
-          abajo. Sin esto la muestra del producto solo existía en escritorio.
-          Va cortado por el borde inferior a propósito: sugiere que hay más sin
-          añadir nada que tocar a una pantalla cuyo único trabajo es que pulses
-          entrar, y sin el deslizamiento horizontal, que en iOS se pelea con el
-          gesto de volver atrás. El recorte lo hace el overflow-hidden del
-          contenedor, así que no genera scroll. */}
       <div
         aria-hidden
         className="lg:hidden absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-end"
@@ -97,8 +89,6 @@ function Landing() {
       </button>
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Resplandor cálido detrás de la marca. Decorativo, y por debajo de
-            todo el texto para no tocar el contraste. */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-16 w-72 h-72 rounded-full blur-3xl opacity-40 dark:opacity-25 bg-orange-300 dark:bg-orange-500"
@@ -109,11 +99,6 @@ function Landing() {
             <Marca tamano={56} />
           </div>
 
-          {/* La etiqueta va pegada al wordmark y no en una esquina flotante:
-              así se lee como parte del nombre, que es lo que es ahora mismo, y
-              no como un aviso que compita con el botón de entrar. Reutiliza el
-              tratamiento de las demás etiquetas de la app (versalitas
-              espaciadas en naranja), así que no introduce estilo nuevo. */}
           <div className="mt-5 flex items-baseline justify-center gap-2">
             <h1 className="font-display font-bold text-3xl tracking-tight text-gray-900 dark:text-gray-50">
               Recetarium

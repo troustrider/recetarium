@@ -66,7 +66,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
       exit={{ opacity: 0, scale: 1.02 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
     >
-      {/* Bloom del color de sabor — misma identidad que el hero */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: `radial-gradient(120% 60% at 50% 0%, ${luz.bloom}, transparent 70%)` }}
@@ -76,7 +75,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
         style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '22px 22px' }}
       />
 
-      {/* Cabecera */}
       <header className="relative flex items-start justify-between gap-3 px-5 pb-3" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}>
         <div className="min-w-0">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50 flex items-center gap-1.5">
@@ -93,7 +91,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
         </button>
       </header>
 
-      {/* Progreso por pasos */}
       <div className="relative px-5 flex gap-1.5">
         {pasos.map((_, i) => (
           <button
@@ -106,7 +103,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
         ))}
       </div>
 
-      {/* Paso actual */}
       <div className="relative flex-1 overflow-y-auto px-6 flex flex-col justify-center min-h-0">
         <AnimatePresence mode="wait">
           <motion.div
@@ -151,7 +147,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
         </AnimatePresence>
       </div>
 
-      {/* Bandeja de temporizadores activos (de cualquier paso) */}
       <AnimatePresence>
         {timers.length > 0 && (
           <motion.div
@@ -177,7 +172,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
         )}
       </AnimatePresence>
 
-      {/* Controles */}
       <footer className="relative px-5 pt-2 pb-[calc(env(safe-area-inset-bottom)+1rem)] flex items-center gap-3 border-t border-white/10">
         <button
           onClick={() => setIngredientesOpen(true)}
@@ -216,7 +210,6 @@ function ModoCocina({ receta, multiplicador, onClose }: Props) {
         )}
       </footer>
 
-      {/* Hoja de ingredientes */}
       <AnimatePresence>
         {ingredientesOpen && (
           <>

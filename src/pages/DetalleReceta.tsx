@@ -116,7 +116,6 @@ function DetalleReceta() {
   return (
     <div className="flex flex-col gap-8">
 
-      {/* Header con imagen opcional */}
       {receta.imagen ? (
         <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-56 rounded-2xl overflow-hidden">
           <img
@@ -139,7 +138,6 @@ function DetalleReceta() {
         </motion.div>
       ) : (
         <div className="flex flex-col gap-5">
-          {/* Header visual sin imagen — destino del morph desde la card */}
           <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
             <span
               className="absolute top-1/2 -translate-y-1/2 left-5 font-display font-black leading-none select-none pointer-events-none whitespace-nowrap"
@@ -160,7 +158,6 @@ function DetalleReceta() {
               className="absolute top-4 right-4"
             />
           </motion.div>
-          {/* Metadatos + título */}
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-1">
               {[receta.categoria, receta.sabor, `${receta.tiempoPreparacion} min`].filter(Boolean).join(' / ')}
@@ -305,8 +302,6 @@ function DetalleReceta() {
         </div>
       </section>
 
-      {/* Guarnición. Va en su propio bloque y con su ficha aparte porque es
-          opcional: las kcal y el gluten de arriba son los del plato solo. */}
       {full?.guarnicion && (
         <section className="bg-lime-50/60 dark:bg-lime-900/10 border border-lime-100 dark:border-lime-900/30 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-1">

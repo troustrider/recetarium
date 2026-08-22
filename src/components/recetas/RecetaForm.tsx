@@ -238,7 +238,6 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         </div>
       </div>
 
-      {/* Coste y nutrición (opcional, por porción) */}
       <div>
         <h3 className={LABEL_CLASS}>Coste y nutrición <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional, por porción)</span></h3>
         <div className="grid grid-cols-2 gap-2 mb-2">
@@ -259,7 +258,6 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         </div>
       </div>
 
-      {/* Ingredientes */}
       <div>
         <h3 className={LABEL_CLASS}>Ingredientes</h3>
         {form.ingredientes.length > 0 && (
@@ -311,7 +309,6 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         {errores.ingredientes && <p className="mt-1 text-xs text-red-500">{errores.ingredientes}</p>}
       </div>
 
-      {/* Pasos con drag & drop */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className={LABEL_CLASS}>Pasos</h3>
@@ -370,7 +367,6 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         {errores.pasos && <p className="mt-1 text-xs text-red-500">{errores.pasos}</p>}
       </div>
 
-      {/* Consejos del chef (opcional) */}
       <div>
         <h3 className={LABEL_CLASS}>Consejos del chef <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span></h3>
         {(form.consejos ?? []).length > 0 && (
@@ -412,8 +408,6 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
         </div>
       </div>
 
-      {/* Guarnición (opcional). Va aparte del plato porque es opcional al
-          cocinarlo: sus kcal y su gluten no cuentan como los del plato. */}
       <div>
         <label className="flex items-center gap-2 mb-2 cursor-pointer">
           <input

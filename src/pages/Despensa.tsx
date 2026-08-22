@@ -111,7 +111,6 @@ function Despensa() {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Hero editorial — mismo lenguaje que el catálogo */}
       <div className="relative rounded-3xl overflow-hidden" style={{ backgroundColor: '#1c0f02' }}>
         <svg className="absolute inset-0 w-full h-full pointer-events-none select-none" style={{ opacity: 0.13 }} aria-hidden="true">
           <filter id="despensa-grain">
@@ -161,7 +160,6 @@ function Despensa() {
         </div>
       </div>
 
-      {/* Buscador único: filtra lo que hay y añade lo que falta */}
       <div className="relative -mt-10 mx-4 sm:mx-6 z-10">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         <input
@@ -202,7 +200,6 @@ function Despensa() {
         )}
       </div>
 
-      {/* Bento: lo urgente y lo que ya podéis cocinar */}
       {despensa.length > 0 && (
         <div className="flex gap-3">
           {avisos.length > 0 && (
@@ -244,7 +241,6 @@ function Despensa() {
         </div>
       )}
 
-      {/* Pestañas por familia */}
       {familiasPresentes.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1 -mb-1 [scrollbar-width:none]">
           {['todos', ...familiasPresentes].map((f) => {
@@ -267,7 +263,6 @@ function Despensa() {
         </div>
       )}
 
-      {/* Cuerpo */}
       {despensa.length === 0 ? (
         <div className="text-center py-14">
           <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">

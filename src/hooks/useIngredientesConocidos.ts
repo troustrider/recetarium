@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useRecetasContext } from '../context'
 import { normalizar } from '../utils/ingredientes'
 
-export interface IngredienteConocido {
+interface IngredienteConocido {
   nombre: string
   familia: string
 }

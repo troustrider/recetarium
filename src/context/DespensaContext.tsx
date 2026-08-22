@@ -7,7 +7,7 @@ import { caducidadAlAbrir } from '../utils/trasAbrir'
 import { convertir, redondear, unidadMedible } from '../utils/cantidades'
 import type { ConsumoIngrediente } from '../utils/consumo'
 
-export type EstadoDespensa = 'lleno' | 'poco'
+type EstadoDespensa = 'lleno' | 'poco'
 
 export interface IngredienteDespensa {
   nombre: string
@@ -19,7 +19,7 @@ export interface IngredienteDespensa {
   unidad?: string
 }
 
-export interface AltaIngrediente {
+interface AltaIngrediente {
   caducidad?: string
   /** Se da de alta ya abierto: la caducidad nace recortada. */
   abierto?: string

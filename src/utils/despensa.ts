@@ -126,21 +126,21 @@ export function faltantes(receta: Pick<Receta, 'ingredientes'>, despensa: { nomb
     .map((ing) => ing.nombre)
 }
 
-export type CoberturaDespensa = 'cubierto' | 'parcial' | 'poco' | 'no'
+type CoberturaDespensa = 'cubierto' | 'parcial' | 'poco' | 'no'
 
-export interface ItemCompra {
+interface ItemCompra {
   nombre: string
   cantidad: number
   unidad: string
 }
 
-export interface Reparto {
+interface Reparto {
   cobertura: CoberturaDespensa
   aComprar: number // en la unidad del ítem de la lista
   yaTengo: number // idem; 0 cuando no hay cantidad que descontar
 }
 
-export interface ItemDespensa {
+interface ItemDespensa {
   nombre: string
   estado?: string
   caducidad?: string
@@ -236,7 +236,7 @@ export function porAgotarse<T extends { estado: string; caducidad?: string }>(de
   return despensa.filter((d) => d.estado === 'poco' || caducaPronto(d))
 }
 
-export interface InfoCaducidad {
+interface InfoCaducidad {
   dias: number
   label: string
   urgente: boolean // hoy, mañana o ya caducado

@@ -36,7 +36,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
 
   return (
     <div className="relative">
-      {/* Trigger + chips */}
       <div className="flex items-center gap-2 flex-wrap">
         <button
           type="button"
@@ -96,7 +95,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
         </AnimatePresence>
       </div>
 
-      {/* Panel: el fondo ES el sabor seleccionado */}
       <AnimatePresence>
         {open && (
           <>
@@ -110,18 +108,15 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
               exit={{ opacity: 0, y: -8, scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 420, damping: 32 }}
             >
-              {/* Fondo animado — cambia con el sabor */}
               <motion.div
                 className="absolute inset-0"
                 animate={{ background: panelBg }}
                 transition={{ duration: 0.35, ease: 'easeInOut' }}
               />
-              {/* Luz cenital — esquina superior derecha */}
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_5%,rgba(255,255,255,0.16)_0%,transparent_55%)] pointer-events-none" />
 
               <div className="relative z-10 flex flex-col">
 
-                {/* Cabecera: label del sabor activo */}
                 <div className="px-5 pt-5 pb-4 border-b border-white/10">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-1">Perfil de sabor</p>
                   <div className="flex items-center justify-between">
@@ -138,9 +133,7 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                       </motion.p>
                     </AnimatePresence>
 
-                    {/* Selectores de sabor — 5 puntos: neutral + 4 sabores */}
                     <div className="flex items-center gap-2">
-                      {/* Punto neutral */}
                       <button
                         type="button"
                         onClick={() => onChange({ ...filtros, sabor: '' })}
@@ -169,7 +162,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   </div>
                 </div>
 
-                {/* Categoría — glass pills */}
                 {categorias.length > 0 && (
                   <div className="px-5 py-3.5 border-b border-white/10">
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-2">Tipo de cocina</p>
@@ -192,7 +184,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   </div>
                 )}
 
-                {/* Ingrediente — input glass con sugerencias */}
                 <div className="px-5 py-3.5 border-b border-white/10">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-2">Con ingrediente</p>
                   <input
@@ -210,7 +201,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   )}
                 </div>
 
-                {/* Sin gluten — solo deja pasar las confirmadas, no las dudosas */}
                 <div className="px-5 py-3.5 border-b border-white/10">
                   <button
                     type="button"
@@ -224,7 +214,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   </button>
                 </div>
 
-                {/* Tiempo — glass segmented control */}
                 <div className="px-5 py-3.5">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/50 mb-2">Tiempo máx.</p>
                   <div className="flex gap-1 bg-black/20 rounded-xl p-1">
@@ -245,7 +234,6 @@ function FiltroBar({ filtros, categorias, ingredientes = [], onChange }: Props) 
                   </div>
                 </div>
 
-                {/* Limpiar */}
                 {activeCount > 0 && (
                   <div className="px-5 pb-4 flex justify-end">
                     <button

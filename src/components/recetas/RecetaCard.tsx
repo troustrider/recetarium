@@ -60,7 +60,6 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
       transition={{ duration: 0.25, ease: 'easeOut', delay: reduce ? 0 : Math.min(index, 8) * 0.04 }}
     >
       <Contenedor>
-        {/* Zona visual — origen del morph hacia la cabecera de la ficha */}
         <motion.div layoutId={recetaVisualLayoutId(id)} className="relative h-36 overflow-hidden">
           {imagen ? (
             <img
@@ -71,14 +70,12 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
             />
           ) : (
             <div className="absolute inset-0 overflow-hidden" style={{ backgroundColor: SABOR_BG[sabor] }}>
-              {/* Nombre como watermark tipográfico — identidad única por receta */}
               <span
                 className="absolute top-1/2 -translate-y-1/2 left-3 font-display font-black leading-none select-none pointer-events-none whitespace-nowrap"
                 style={{ fontSize: '72px', color: 'rgba(255,255,255,0.07)' }}
               >
                 {nombre}
               </span>
-              {/* Trama de puntos */}
               <div
                 className="absolute inset-0"
                 style={{
@@ -89,12 +86,10 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
             </div>
           )}
 
-          {/* Overlay oscuro al hacer hover cuando hay imagen */}
           {imagen && (
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300" />
           )}
 
-          {/* Badge categoría — kicker editorial: chip oscuro, punto naranja, esquinas rectas */}
           {categoria && (
             <span className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/55 backdrop-blur-md text-white/90 text-[10px] font-bold uppercase tracking-widest pl-2 pr-2.5 py-1 rounded-md">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
@@ -102,7 +97,6 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
             </span>
           )}
 
-          {/* Badge de despensa — estado: color solo cuando es accionable (verde listo, ámbar cerca), neutro si quedan muchos */}
           {faltan != null && (
             <span
               className={`absolute bottom-3 left-3 flex items-center gap-1 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${
@@ -118,7 +112,6 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
             </span>
           )}
 
-          {/* Botón favorito — esquina superior derecha */}
           <motion.button
             onClick={(e) => { e.stopPropagation(); onToggleFavorita(id) }}
             className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-sm transition-colors ${
@@ -137,7 +130,6 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
           </motion.button>
         </motion.div>
 
-        {/* Contenido */}
         <div className="p-4">
           <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug line-clamp-2 min-h-[2.75rem] group-hover:text-orange-700 dark:group-hover:text-orange-400 transition-colors">
             <Link

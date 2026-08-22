@@ -13,7 +13,7 @@ export interface Timer {
   finAt: number | null
 }
 
-export interface TimerSpec {
+interface TimerSpec {
   id: string
   etiqueta: string
   stepIndex: number
