@@ -4,20 +4,14 @@ import { Clock, Check, ShoppingBasket } from 'lucide-react'
 import type { RecetaListada } from '../../types/receta'
 import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
 import { prefetchDetalleReceta } from '../../utils/prefetch'
+import { Link } from 'react-router-dom'
 
 const HOVER_CAPAZ =
   typeof window !== 'undefined' ? window.matchMedia?.('(hover: hover)').matches ?? false : false
 
-// En claro la tarjeta blanca cae sobre un fondo stone-50 casi idéntico: sin
-// borde propio se deshilacha contra la página. El modo oscuro ya se recortaba
-// con su borde gray-800, así que aquí se le da el equivalente claro.
 const CLASES_TARJETA =
   'bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm shadow-black/5 hover:shadow-xl dark:shadow-none transition-shadow duration-300'
 
-// El vuelco va en CSS y no en muelles de framer: el catálogo llega a tener
-// cientos de tarjetas montadas a la vez y un motion.div con dos muelles y su
-// transform 3D en cada una multiplica por tres el coste de cada salto del
-// índice alfabético. Así solo paga transform la tarjeta que tienes debajo.
 function Tilt({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -44,7 +38,6 @@ function Tilt({ children }: { children: ReactNode }) {
 
 interface Props {
   receta: RecetaListada
-  onClick: (id: string) => void
   onToggleFavorita: (id: string) => void
   faltan?: number
   onToggleLista?: (receta: RecetaListada) => void
@@ -52,7 +45,7 @@ interface Props {
   index?: number
 }
 
-function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, enLista, index = 0 }: Props) {
+function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, index = 0 }: Props) {
   const { id, nombre, categoria, sabor, tiempoPreparacion, favorita, imagen, proteinas, calorias } = receta
 
   const reduce = useReducedMotion()
@@ -60,8 +53,7 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
 
   return (
     <motion.article
-      className="cursor-pointer group"
-      onClick={() => onClick(id)}
+      className="cursor-pointer group relative"
       onMouseEnter={prefetchDetalleReceta}
       initial={{ opacity: 0, y: reduce ? 0 : 16 }}
       animate={{ opacity: 1, y: 0 }}
@@ -129,7 +121,7 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
           {/* Botón favorito — esquina superior derecha */}
           <motion.button
             onClick={(e) => { e.stopPropagation(); onToggleFavorita(id) }}
-            className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-sm transition-colors ${
+            className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-sm transition-colors ${
               favorita
                 ? 'bg-red-500 text-white'
                 : 'bg-white/90 dark:bg-gray-900/85 text-gray-400 hover:text-red-500'
@@ -148,7 +140,12 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
         {/* Contenido */}
         <div className="p-4">
           <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug line-clamp-2 min-h-[2.75rem] group-hover:text-orange-700 dark:group-hover:text-orange-400 transition-colors">
-            {nombre}
+            <Link
+              to={`/recetas/${id}`}
+              className="outline-none after:content-[''] after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-orange-400"
+            >
+              {nombre}
+            </Link>
           </h3>
           <div className="mt-3 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
             <span className="flex items-center gap-1">
@@ -168,7 +165,7 @@ function RecetaCard({ receta, onClick, onToggleFavorita, faltan, onToggleLista, 
               <span className="text-xs text-gray-500 dark:text-gray-500">Ver receta</span>
               <motion.button
                 onClick={(e) => { e.stopPropagation(); onToggleLista(receta) }}
-                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${
+                className={`relative z-10 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors ${
                   enLista
                     ? 'bg-orange-700 dark:bg-orange-600 text-white'
                     : 'text-orange-700 dark:text-orange-400 border border-gray-300 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-600'

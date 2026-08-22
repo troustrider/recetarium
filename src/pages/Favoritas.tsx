@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useRecetasContext } from '../context'
@@ -7,14 +7,15 @@ import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import RecetaCard from '../components/recetas/RecetaCard'
+import useTitulo from '../hooks/useTitulo'
 
 function Favoritas() {
   const { recetas, loading, error, cargar, toggleFavorita } = useRecetasContext()
+  useTitulo('Favoritas')
   const favoritas = useMemo(() => recetas.filter((r) => r.favorita), [recetas])
   const { filtros, setFiltros, recetasFiltradas } = useFiltros(favoritas)
   const navigate = useNavigate()
 
-  const abrirReceta = useCallback((id: string) => navigate(`/recetas/${id}`), [navigate])
 
   const categorias = useMemo(
     () => [...new Set(favoritas.map((r) => r.categoria))].filter(Boolean).sort(),
@@ -74,7 +75,6 @@ function Favoritas() {
                 <RecetaCard
                   key={receta.id}
                   receta={receta}
-                  onClick={abrirReceta}
                   onToggleFavorita={toggleFavorita}
                 />
               ))}
