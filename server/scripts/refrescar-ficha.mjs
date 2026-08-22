@@ -3,11 +3,6 @@ import 'dotenv/config'
 import { neon } from '@neondatabase/serverless'
 import { fichaNutricional } from '../src/lib/nutricion.js'
 
-// Recalcula lo que el servidor deriva de los ingredientes (hierro, sin_gluten,
-// micros, apto) sin tocar los macros curados a mano. Hace falta cuando cambian las
-// reglas de estimación: las recetas ya guardadas conservan la ficha vieja hasta
-// que alguien las reedita.
-
 const sql = neon(process.env.DATABASE_URL)
 const args = process.argv.slice(2)
 const dry = args.includes('--dry')

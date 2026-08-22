@@ -11,17 +11,6 @@ export interface ItemAprovechable {
   abierto?: string
 }
 
-/**
- * Cuánto vale gastar cada cosa esta semana. Dos motivos distintos que la
- * auto-semana trataba igual —o sea, no trataba—:
- *
- * - **Lo que se va a echar a perder.** Un paquete abierto o una fecha encima
- *   es comida que se tira si no entra en el plan. Manda sobre todo lo demás.
- * - **El fondo de despensa.** El bote de garbanzos y el paquete de arroz no
- *   corren prisa, pero están pagados: una semana que los usa es una compra más
- *   corta. Pesa poco a propósito, lo justo para desempatar entre dos platos
- *   parecidos, nunca para imponer uno peor.
- */
 const PESO = {
   urgente: 1,    // caducado, o caduca hoy o mañana
   pronto: 0.8,   // dentro del umbral de aviso, o paquete abierto
@@ -34,9 +23,6 @@ const PESO = {
 function pesoDe(item: ItemAprovechable): number {
   const dias = item.caducidad != null ? diasHastaCaducidad(item.caducidad) : null
 
-  // Una fecha lejana no dice nada: desde que la despensa seca también estima
-  // caducidad, el bote de garbanzos trae fecha para dentro de dos años. Así que
-  // la fecha manda solo mientras aprieta, y a partir de ahí decide qué es.
   const porFecha =
     dias == null ? null
     : dias <= 1 ? PESO.urgente
@@ -44,9 +30,6 @@ function pesoDe(item: ItemAprovechable): number {
     : dias <= 7 ? PESO.proximo
     : null
 
-  // Un paquete abierto sin fecha no es menos urgente por no tenerla: se abrió,
-  // y lo que no se sabe es cuándo. Con fecha ya la lleva recortada por
-  // `caducidadAlAbrir`, así que ahí manda la fecha.
   const base =
     porFecha ??
     (item.abierto != null
@@ -65,22 +48,11 @@ export interface IndiceDespensa {
   pesos: number[]
 }
 
-/**
- * La despensa vista como "qué merece la pena gastar", ya sin lo que no se come.
- * Se resuelve una vez por semana y no por plato: quien la use habla de índices,
- * no de nombres, para poder contar una sola vez el mismo bote aunque lo pidan
- * dos platos distintos.
- */
 export function indiceDespensa(despensa: ItemAprovechable[]): IndiceDespensa {
   const items = despensa.filter((item) => !esDeHogar(item))
   return { items, pesos: items.map(pesoDe) }
 }
 
-/**
- * Qué ítems de la despensa gasta una receta, con su guarnición puesta, que es
- * como la auto-semana la planifica. La sal y la pimienta quedan fuera: están en
- * todas las casas y en todas las recetas, así que puntuarlas no distingue nada.
- */
 export function aprovechaDe(receta: RecetaListada, indice: IndiceDespensa): number[] {
   const ingredientes = ingredientesDe(receta, true).filter(
     (ing) => canonUnidad(ing.nombre, ing.unidad) !== 'al gusto'

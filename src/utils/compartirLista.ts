@@ -1,9 +1,5 @@
 import type { IngredienteAgrupado } from '../hooks/useListaCompra'
-import { formatCantidad } from './ingredientes'
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
+import { formatCantidad, capitalize } from './ingredientes'
 
 export function textoLista(items: IngredienteAgrupado[]): string {
   const lineas = ['🛒 Lista de compra', '']

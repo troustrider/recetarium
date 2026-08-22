@@ -2,22 +2,6 @@ import { nucleoOrdenado } from './despensa'
 import { normalizar } from './ingredientes'
 import { sumarDias } from './caducidadEstimada'
 
-/**
- * Lo que dura un paquete **desde que se abre**, que no tiene nada que ver con lo
- * que ponía su fecha impresa. Un brik de nata caduca en octubre hasta que lo
- * abres; a partir de ahí son tres días y la fecha de fuera miente.
- *
- * Es el hueco que la despensa no sabía contar: `caducidadEstimada` estima desde
- * que la compras, y el resto de la casa se fía de `caducidad`. Al abrir un
- * paquete se recorta esa fecha con esta tabla, así que todo lo que ya mira la
- * caducidad —el aviso, la lista de la compra y la auto-semana— se entera sin
- * cambiar nada más.
- *
- * Los números son de conservación en frigorífico y del lado prudente: cuando la
- * horquilla es "3-5 días" aquí van 3. Lo que no está en la tabla es que abrirlo
- * no lo estropea (arroz, harina, especias): esos devuelven `null` y su fecha se
- * queda como estaba.
- */
 const DIAS_TRAS_ABRIR: Record<string, number> = {
   // Lácteos: lo que más engaña, porque el envase cerrado dura meses
   nata: 3, 'nata para cocinar': 3, 'nata montada': 5, 'crema agria': 7, 'creme fraiche': 7,
@@ -36,9 +20,6 @@ const DIAS_TRAS_ABRIR: Record<string, number> = {
   hummus: 3, guacamole: 2, tofu: 3, tempeh: 5, seitan: 4,
   ensalada: 2, brotes: 2, canonigos: 2, espinacas: 3, rucula: 2,
 
-  // Bote y lata. La legumbre y el maíz no están aquí a propósito: "garbanzos"
-  // es tanto el bote como la bolsa de secos, y son la familia —`conservas` o
-  // `legumbres`— y no el nombre quien distingue el uno de la otra.
   'tomate triturado': 4, passata: 4, 'tomate frito': 5, 'salsa de tomate': 5,
   atun: 2, sardinas: 2, caballa: 2, berberechos: 2,
   aceitunas: 14, pepinillos: 30, alcaparras: 30,
@@ -61,12 +42,6 @@ const TABLA = new Map(
   Object.entries(DIAS_TRAS_ABRIR).map(([nombre, dias]) => [nucleoOrdenado(nombre).join(' '), dias])
 )
 
-/**
- * Una lata o un bote abiertos dejan de ser una conserva: lo que los conservaba
- * era el cierre. Es la única familia con regla propia porque la regla es de
- * verdad uniforme —pásalo a un tupper y cómetelo en dos o tres días—; en las
- * demás manda el ingrediente, y un queso curado y una mozzarella no se parecen.
- */
 const DIAS_POR_FAMILIA: Record<string, number> = {
   conservas: 3,
 }
@@ -99,12 +74,6 @@ export interface ItemAbrible {
   caducidad?: string
 }
 
-/**
- * La caducidad que le queda a un ítem al abrirlo: la que ya tenía o la que da
- * el paquete abierto, la que caiga antes. Abrir nunca alarga la vida de nada, y
- * un yogur que caducaba pasado mañana sigue caducando pasado mañana aunque la
- * tabla diga cuatro días.
- */
 export function caducidadAlAbrir(item: ItemAbrible, abierto: string): string | undefined {
   const tras = caducidadTrasAbrir(item.nombre, item.familia, abierto)
   if (tras == null) return item.caducidad

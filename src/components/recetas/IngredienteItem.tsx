@@ -1,14 +1,10 @@
 import type { Ingrediente } from '../../types/receta'
-import { formatCantidad, canonUnidad } from '../../utils/ingredientes'
+import { formatCantidad, canonUnidad, capitalize } from '../../utils/ingredientes'
 
 interface Props {
   ingrediente: Ingrediente
   multiplicador?: number
   onRemove?: () => void
-}
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 function IngredienteItem({ ingrediente, multiplicador = 1, onRemove }: Props) {

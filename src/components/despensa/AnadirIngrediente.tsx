@@ -3,15 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X } from 'lucide-react'
 import { useDespensa } from '../../context/DespensaContext'
 import { FAMILIAS, estaEnDespensa } from '../../utils/despensa'
-import { normalizar } from '../../utils/ingredientes'
+import { normalizar, capitalize } from '../../utils/ingredientes'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
 import { caducidadEstimada, diasEstimados, sumarDias } from '../../utils/caducidadEstimada'
 import { caducidadAlAbrir, diasTrasAbrir } from '../../utils/trasAbrir'
 import useIngredientesConocidos from '../../hooks/useIngredientesConocidos'
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
 
 interface Props {
   abierto: boolean
