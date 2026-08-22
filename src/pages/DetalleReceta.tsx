@@ -117,7 +117,7 @@ function DetalleReceta() {
     <div className="flex flex-col gap-8">
 
       {receta.imagen ? (
-        <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-56 rounded-2xl overflow-hidden">
+        <motion.div layoutId={recetaVisualLayoutId(receta.id)} transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.8 }} className="relative h-56 rounded-2xl overflow-hidden">
           <img
             src={receta.imagen}
             alt={receta.nombre}
@@ -138,7 +138,7 @@ function DetalleReceta() {
         </motion.div>
       ) : (
         <div className="flex flex-col gap-5">
-          <motion.div layoutId={recetaVisualLayoutId(receta.id)} className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
+          <motion.div layoutId={recetaVisualLayoutId(receta.id)} transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.8 }} className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
             <span
               className="absolute top-1/2 -translate-y-1/2 left-5 font-display font-black leading-none select-none pointer-events-none whitespace-nowrap"
               style={{ fontSize: '96px', color: 'rgba(255,255,255,0.06)' }}
