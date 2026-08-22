@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { formatCantidad } from '../../utils/ingredientes'
+import { formatCantidad, capitalize } from '../../utils/ingredientes'
 
 interface IngredienteAgrupado {
   nombre: string
@@ -18,10 +18,6 @@ interface Props {
   checked: boolean
   onToggle: () => void
   onRemove?: () => void
-}
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {

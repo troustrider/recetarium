@@ -3,11 +3,7 @@ import { PackageOpen } from 'lucide-react'
 import type { IngredienteDespensa } from '../../context/DespensaContext'
 import { infoCaducidad } from '../../utils/despensa'
 import { requiereCantidad } from '../../utils/cantidades'
-import { formatCantidad } from '../../utils/ingredientes'
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
+import { formatCantidad, capitalize } from '../../utils/ingredientes'
 
 interface Props {
   item: IngredienteDespensa

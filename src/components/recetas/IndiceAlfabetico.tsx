@@ -13,9 +13,6 @@ const LINEA = 140
 function IndiceAlfabetico({ letras, onSeleccionar }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const ultima = useRef<string | null>(null)
-  // Al arrastrar mandamos el dedo, no el clic: el navegador sintetiza un clic
-  // tras el toque y lo lanza sobre la letra que haya bajo el dedo ya con la
-  // página movida, que rara vez es la que se pulsó. Ese clic hay que comérselo.
   const delPuntero = useRef(false)
   const pendiente = useRef<number | null>(null)
   const frame = useRef(0)
@@ -27,9 +24,6 @@ function IndiceAlfabetico({ letras, onSeleccionar }: Props) {
 
   const activa = bajoElDedo ?? enPantalla
 
-  // Un salto por fotograma: si el dedo cruza cinco letras antes de que
-  // pintemos, solo vale la última. Sin esto cada letra pisada encola su propio
-  // salto y el arrastre se atasca.
   const atender = useCallback(() => {
     frame.current = 0
     const y = pendiente.current
@@ -68,9 +62,6 @@ function IndiceAlfabetico({ letras, onSeleccionar }: Props) {
     ultima.current = null
   }
 
-  // La letra que se está viendo se calcula aquí y no en el catálogo: si viviera
-  // arriba, cada píxel de scroll repintaría la parrilla entera (~1,2 s con 430
-  // recetas montadas). Aquí solo se repintan las 26 letras.
   useEffect(() => {
     let pedido = false
     const calcular = () => {
@@ -107,9 +98,6 @@ function IndiceAlfabetico({ letras, onSeleccionar }: Props) {
         className="fixed right-0 z-20 w-7 flex flex-col items-stretch select-none touch-none
                    top-[calc(env(safe-area-inset-top)+5.5rem)] bottom-24 sm:bottom-10"
         onPointerDown={(e) => {
-          // Corta el clic de compatibilidad que el navegador dispara tras el
-          // toque: como la página ya se ha movido, ese clic cae donde haya
-          // quedado el dedo y llega a abrir la receta que pille debajo.
           if (e.cancelable) e.preventDefault()
           e.currentTarget.setPointerCapture?.(e.pointerId)
           delPuntero.current = true

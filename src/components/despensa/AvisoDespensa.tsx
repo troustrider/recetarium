@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingCart } from 'lucide-react'
 import { useDespensa, useListaCompraContext } from '../../context'
 import { mismoIngrediente, caducaPronto, porAgotarse, diasHastaCaducidad } from '../../utils/despensa'
+import { capitalize } from '../../utils/ingredientes'
 
 const SNOOZE_KEY = 'recetarium-aviso-despensa'
 
@@ -13,10 +14,6 @@ function leerVistos(): string[] {
   } catch {
     return []
   }
-}
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 function motivo(item: { estado: string; caducidad?: string }): string {

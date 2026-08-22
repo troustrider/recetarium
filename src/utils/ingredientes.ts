@@ -9,6 +9,10 @@ export function ingredientesDe(
   return [...receta.ingredientes, ...receta.guarnicion.ingredientes]
 }
 
+export function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 export function normalizar(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
 }
@@ -41,11 +45,6 @@ export function claveIngrediente(nombre: string, unidad: string): string {
   return `${normalizar(nombre)}__${canonUnidad(nombre, unidad)}`
 }
 
-/**
- * La misma lechuga aunque una receta la pida en gramos y otra en hojas. La lista
- * de la compra agrupa por aquí, que es como se compra; `claveIngrediente` se
- * queda para los extras, donde cada unidad sí es una línea aparte a propósito.
- */
 export function claveNombre(nombre: string): string {
   return normalizar(canonNombre(nombre))
 }

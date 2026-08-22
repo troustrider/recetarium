@@ -3,15 +3,6 @@ import type { LimitesSemana } from '../types/preferencias'
 import { aptaPara } from './nutricion'
 import { normalizar } from './ingredientes'
 
-/**
- * Los límites duros de la semana. Lo que no los cumple no se cocina, y de estos
- * solo el tiempo se puede ensanchar cuando el catálogo no da: la dieta, el gluten
- * y los vetos no se relajan nunca, porque no son una preferencia de comodidad.
- *
- * `aptaPara` solo deja pasar `true`: una receta cuya ficha no permite afirmar que
- * es vegetariana se queda fuera. Es preferible una semana más corta que un plato
- * con dashi dentro.
- */
 export function cumpleLimites(
   receta: RecetaListada,
   limites: LimitesSemana,

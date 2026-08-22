@@ -14,7 +14,6 @@ export interface EntradaPrecio {
 }
 
 export const PRECIOS: EntradaPrecio[] = tabla.precios
-export const CADENAS: string[] = tabla.meta.cadenas
 
 const COCINA: Record<string, { g?: number; ml?: number }> = {
   cucharada: { g: 12, ml: 15 },
@@ -103,9 +102,6 @@ function enUnidadBase(
   const enBase = COCINA[normalizar(unidad)]?.[dim]
   if (enBase != null) return cantidad * enBase
 
-  // Último recurso: para cobrar, 1 g y 1 ml cuestan lo mismo. La nata agria se
-  // vende por litro y las recetas la piden en gramos. La despensa sí los
-  // distingue y ahí `convertir` sigue negándose a cruzarlos.
   return convertir(cantidad, unidad, dim === 'g' ? 'ml' : 'g')
 }
 

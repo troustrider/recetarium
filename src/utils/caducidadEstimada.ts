@@ -10,17 +10,6 @@ const DIAS_POR_FAMILIA: Record<string, number> = {
   huevos: 21,
 }
 
-/**
- * La despensa seca. Antes no se estimaba —un bote de garbanzos no se echa a
- * perder el martes— y el resultado era que media despensa no tenía fecha, y sin
- * fecha no hay ni aviso ni forma de saber qué lleva dos años al fondo del
- * armario. Las fechas de aquí son largas a propósito: no son una alarma, son un
- * punto de partida que el envase corrige.
- *
- * Van por familia y no por ingrediente porque es la familia la que decide: el
- * atún fresco dura dos días y el mismo atún en lata dos años, y lo único que los
- * distingue en la despensa es estar en `pescados` o en `conservas`.
- */
 const DIAS_POR_FAMILIA_SECA: Record<string, number> = {
   cereales: 365,
   legumbres: 540,
@@ -32,11 +21,6 @@ const DIAS_POR_FAMILIA_SECA: Record<string, number> = {
   'frutos secos': 180,
 }
 
-/**
- * Lo que dentro de una familia seca no dura lo que su familia. La mitad son
- * frescos que viven en el estante del pan, y la otra mitad son botes que duran
- * bastante más de lo que dice su familia.
- */
 const DIAS_SECOS: Record<string, number> = {
   // "pasta fresca" y "pan rallado" no están: el núcleo del nombre les quita el
   // descriptor y quedan en "pasta" y "pan", así que taparían al seco y al fresco.
@@ -88,11 +72,6 @@ const DIAS_CONGELADO = 180
 /** Lo que no se come: ni se estima ni cuenta para nada. */
 const FAMILIA_SIN_COMIDA = 'hogar'
 
-/**
- * A partir de aquí un ingrediente es fondo de armario y no una carrera contra el
- * reloj. Es el corte que separa "cómetelo esta semana" de "está ahí para cuando
- * haga falta", y lo usa la auto-semana para decidir cuánto vale gastarlo.
- */
 export const UMBRAL_NO_PERECEDERO_DIAS = 60
 
 function diasSecos(nucleo: string[], fam: string): number | null {

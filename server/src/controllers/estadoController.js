@@ -3,9 +3,6 @@ import { hogarDe } from '../lib/hogar.js'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
-// Misma lista que MOMENTOS en src/utils/momentos.ts. Falta en los planes
-// guardados antes de los tres huecos, y por eso es opcional: el front deduce
-// el momento de las entradas que no lo traen.
 const MOMENTOS = ['desayuno', 'comida', 'cena']
 
 function validarPlan(plan) {

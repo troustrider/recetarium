@@ -2,9 +2,6 @@ import { cabeceraSesion, olvidarToken } from '../auth'
 
 export const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
-// El service worker cachea las respuestas de /api por URL, sin la sesión en la
-// clave. Al soltar la sesión hay que tirar esa caché o el siguiente que entre en
-// este dispositivo puede leer la despensa y el plan del hogar anterior.
 export async function limpiarCacheApi(): Promise<void> {
   if (!('caches' in window)) return
   try {

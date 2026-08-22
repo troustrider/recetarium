@@ -99,10 +99,6 @@ export function estimarMacros(r) {
 const NO_VEGETARIANO = new Set(['carne', 'pescado'])
 const NO_VEGANO = new Set(['carne', 'pescado', 'lacteo', 'huevo', 'miel'])
 
-// Mismo criterio que el gluten: lo que depende de la marca cuenta como que lo
-// lleva, y un ingrediente sin ficha deja la receta en "no se puede afirmar"
-// (null) en vez de darla por apta. Es un fallo silencioso caro: quien filtra por
-// vegetariana confía en el filtro.
 function aptoPara(animal, prohibidos) {
   const relevantes = animal.fuentes.filter((f) => prohibidos.has(f.origen))
   if (relevantes.some((f) => f.certeza === 'si')) return false

@@ -32,9 +32,6 @@ function limpiarFragmento(): void {
   window.history.replaceState(null, '', `${origin}${pathname}${search}`)
 }
 
-// La vuelta de nuestro OAuth trae la sesión en el fragmento: no viaja al
-// servidor, no queda en los registros ni en el Referer. Se guarda y se borra de
-// la barra en cuanto se lee.
 export function capturarToken(): string | null {
   const guardado = tokenGuardado()
   if (guardado) return guardado

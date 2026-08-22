@@ -39,11 +39,6 @@ export interface FuenteAnimal {
   certeza: 'si' | 'depende'
 }
 
-/**
- * Lo calcula el servidor desde los ingredientes, como `sinGluten`. `null` no es
- * "no": es "no se puede afirmar" —falta la ficha de algún ingrediente o alguno
- * depende de la marca—, y el filtro solo deja pasar `true`.
- */
 export interface Apto {
   vegetariana: boolean | null
   vegana: boolean | null

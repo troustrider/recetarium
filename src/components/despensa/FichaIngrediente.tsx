@@ -6,10 +6,7 @@ import { FAMILIAS, mismoIngrediente } from '../../utils/despensa'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
 import { diasTrasAbrir } from '../../utils/trasAbrir'
 import { sumarDias } from '../../utils/caducidadEstimada'
-
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
+import { capitalize } from '../../utils/ingredientes'
 
 interface Props {
   item: IngredienteDespensa | null
@@ -268,12 +265,6 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
   )
 }
 
-/**
- * El paquete abierto. Existe porque la fecha impresa deja de valer en cuanto se
- * abre el envase: la nata caduca en octubre hasta que la abres, y desde ahí son
- * tres días. Marcarlo recorta la caducidad, y con ella se enteran de golpe el
- * aviso de la despensa, la lista de la compra y la auto-semana.
- */
 function Apertura({ item, onEditar }: { item: IngredienteDespensa; onEditar: (c: CambiosIngrediente) => void }) {
   const dias = diasTrasAbrir(item.nombre, item.familia)
   const abierto = item.abierto != null

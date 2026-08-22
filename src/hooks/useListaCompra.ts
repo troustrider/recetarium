@@ -128,9 +128,6 @@ function useListaCompra() {
   )
 
   const { listaCompra, enDespensa } = useMemo(() => {
-    // Una fila por ingrediente, no por ingrediente y unidad: la lechuga que un
-    // plato pide en gramos y otro en hojas es la misma lechuga y se compra una
-    // vez. Lo que comparte magnitud se suma; lo que no, se queda al lado.
     const mapa = new Map<string, IngredienteAgrupado & { medidas: Medida[] }>()
 
     for (const { receta, raciones, conGuarnicion } of seleccionadas) {

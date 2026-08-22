@@ -42,12 +42,6 @@ export function fuentesGluten(receta: RecetaListada) {
 
 export type Dieta = 'vegetariana' | 'vegana'
 
-/**
- * La guarnición cuenta: un salteado de verdura acabado en mantequilla deja de ser
- * vegano, y un plato vegetariano con guarnición de bacon no lo es. Solo devuelve
- * `true` cuando se puede afirmar de las dos partes; `null` en cuanto una de ellas
- * no se puede afirmar. Nunca da por apto lo que no consta.
- */
 export function aptaPara(receta: RecetaListada, dieta: Dieta): boolean | null {
   // Una receta guardada antes de que existiera el flag tampoco se afirma: sin
   // ficha calculada no hay nada que garantizar.

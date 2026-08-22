@@ -6,12 +6,6 @@ export interface Medida {
   unidad: string
 }
 
-/**
- * Qué unidad manda cuando el mismo ingrediente llega en varias. Gana la que se
- * puede comprobar en la tienda: el peso o el volumen antes que la pieza, y la
- * pieza antes que la medida de cocina, que es la que no dice nada delante del
- * estante ("12 hojas" no es una cantidad de lechuga que se pueda pedir).
- */
 const RANGO: Record<string, number> = {
   g: 3, kg: 3, ml: 3, cl: 3, l: 3,
   ud: 2,
@@ -31,15 +25,6 @@ export interface MedidasJuntas {
   otras: Medida[]
 }
 
-/**
- * Junta las medidas de un mismo ingrediente en una sola línea de la compra.
- *
- * Las que comparten magnitud se suman (250 g de un plato + 1 kg de otro = 1,25
- * kg). Las que no, no se convierten: una hoja de laurel y una hoja de lechuga
- * pesan cosas distintas, y el único factor honesto depende del producto. Se
- * quedan al lado de la principal, en la misma línea, porque el problema que
- * resuelve esto es que la misma lechuga salía dos veces en la lista.
- */
 export function juntarMedidas(medidas: Medida[]): MedidasJuntas {
   const grupos: Medida[] = []
   for (const medida of medidas) {

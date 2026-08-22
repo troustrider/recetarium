@@ -14,11 +14,6 @@ export interface IngredienteDespensa {
   familia: string
   estado: EstadoDespensa
   caducidad?: string // YYYY-MM-DD
-  /**
-   * El día que se abrió el paquete, YYYY-MM-DD. Lo que hay dentro deja de durar
-   * lo que dice el envase y pasa a durar lo que dice `trasAbrir`, así que al
-   * ponerlo se recorta la caducidad. Sin abrir, no está.
-   */
   abierto?: string
   cantidad?: number
   unidad?: string
@@ -63,9 +58,6 @@ const CLAVE_SINCRONIZADA = 'recetarium-despensa-sincronizada'
 const yaSincronizada = () => localStorage.getItem(CLAVE_SINCRONIZADA) === '1'
 const marcarSincronizada = () => localStorage.setItem(CLAVE_SINCRONIZADA, '1')
 
-// Una despensa vacía en el servidor significa dos cosas distintas: que el otro
-// móvil la vació, o que este aún no ha subido nunca la suya. Sin la marca, la
-// caché local resucitaba lo borrado y además lo volvía a subir.
 function hidratarDespensa(
   remota: IngredienteDespensaDTO[],
   actual: IngredienteDespensa[]
@@ -200,9 +192,6 @@ export function DespensaProvider({ children }: { children: ReactNode }) {
           if (cambios.estado != null) sig.estado = cambios.estado
           if (cambios.caducidad === null) delete sig.caducidad
           else if (cambios.caducidad != null) sig.caducidad = cambios.caducidad
-          // Abrir recorta la caducidad a lo que aguante el paquete abierto.
-          // Desmarcarlo no la devuelve: lo abierto no se vuelve a cerrar, y
-          // adivinar la fecha de antes sería peor que dejar que se edite a mano.
           if (cambios.abierto === null) delete sig.abierto
           else if (cambios.abierto != null) {
             sig.abierto = cambios.abierto
