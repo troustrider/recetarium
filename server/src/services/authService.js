@@ -23,15 +23,6 @@ export async function consumirEstado(estado) {
   return fila ?? null
 }
 
-export async function limpiarEstadosCaducados() {
-  const filas = await sql`
-    DELETE FROM oauth_estados
-    WHERE creado_en <= now() - (${MINUTOS_ESTADO} || ' minutes')::interval
-    RETURNING estado
-  `
-  return filas.length
-}
-
 export async function guardarUsuario(perfil) {
   const [fila] = await sql`
     INSERT INTO usuarios (email, nombre, imagen, google_sub, visto_en)
@@ -68,10 +59,5 @@ export async function usuarioDeSesion(token) {
 
 export async function borrarSesionesDe(usuarioId) {
   const filas = await sql`DELETE FROM sesiones WHERE usuario_id = ${usuarioId} RETURNING token_hash`
-  return filas.length
-}
-
-export async function limpiarSesionesCaducadas() {
-  const filas = await sql`DELETE FROM sesiones WHERE expira_en <= now() RETURNING token_hash`
   return filas.length
 }
