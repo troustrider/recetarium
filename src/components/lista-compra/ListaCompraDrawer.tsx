@@ -89,8 +89,6 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                       {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'}
                       {compra.total > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {compra.total.toFixed(2)} €</span></>}
                     </p>
-                    {/* Nunca se estima lo que no se sabe: si falta precio de
-                        algo, se dice, en vez de dar un total corto por bueno. */}
                     {compra.sinPrecio.length > 0 && (
                       <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
                         Sin contar {compra.sinPrecio.length}{' '}

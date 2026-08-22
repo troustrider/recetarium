@@ -5,9 +5,9 @@ const HIERRO_MEDIO = 2.5
 const VITC_POTENCIA = 30
 const CALCIO_FRENA = 250
 
-export type NivelHierro = 'alto' | 'medio' | 'bajo'
+type NivelHierro = 'alto' | 'medio' | 'bajo'
 
-export interface SenalHierro {
+interface SenalHierro {
   hierro: number
   nivel: NivelHierro
   hemo: boolean

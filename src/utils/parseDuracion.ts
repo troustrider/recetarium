@@ -1,4 +1,4 @@
-export interface Duracion {
+interface Duracion {
   segundos: number
   etiqueta: string
 }

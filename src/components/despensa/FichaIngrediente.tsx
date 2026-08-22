@@ -40,7 +40,6 @@ function FichaIngrediente({ item, enLista, onEditar, onALista, onQuitar, onClose
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-9 h-1 rounded-full bg-gray-200 dark:bg-gray-700 mx-auto mb-4" />
-            {/* La key reinicia el modo edición al cambiar de ingrediente */}
             <Cuerpo
               key={item.nombre}
               item={item}

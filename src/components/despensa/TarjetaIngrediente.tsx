@@ -32,7 +32,6 @@ function TarjetaIngrediente({ item, onClick }: Props) {
       onClick={onClick}
       className={`relative overflow-hidden text-left rounded-2xl border p-3.5 flex flex-col gap-2.5 shadow-sm dark:shadow-none transition-colors ${tinte}`}
     >
-      {/* Cifra fantasma: días restantes como marca de agua cuando urge */}
       {cad != null && cad.pronto && (
         <span
           aria-hidden="true"
@@ -48,8 +47,6 @@ function TarjetaIngrediente({ item, onClick }: Props) {
         {capitalize(item.nombre)}
       </span>
 
-      {/* Abierto: la fecha de la tarjeta ya viene recortada, pero sin decir por
-          qué parece un error de quien la puso. */}
       {item.abierto != null && (
         <span className="-mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
           <PackageOpen className="w-3 h-3" />

@@ -82,7 +82,7 @@ const KCAL_POR_GRAMO: Record<Macro, number> = { proteinas: 4, carbohidratos: 4, 
 
 const FAMILIA_VERDURA = 'verduras'
 
-export interface Aporte extends Record<Clave, number>, Record<Techo, number> {
+interface Aporte extends Record<Clave, number>, Record<Techo, number> {
   carbohidratos: number
   grasas: number
 }
@@ -131,7 +131,7 @@ function prng(semilla: number): () => number {
   }
 }
 
-export interface Ajustes {
+interface Ajustes {
   objetivos: Record<Clave, number>
   techos: Record<Techo, number>
   pesos: Record<Peso, number>
@@ -327,7 +327,7 @@ export interface Hueco {
   dia?: string
 }
 
-export interface Reparto {
+interface Reparto {
   porHueco: Map<string, RecetaListada>
   /** Huecos que han tenido que repetir un plato porque no quedaban candidatas. */
   repetidos: Set<string>
@@ -335,7 +335,7 @@ export interface Reparto {
   aprovechados: string[]
 }
 
-export interface OpcionesReparto {
+interface OpcionesReparto {
   preferencias?: Preferencias
   /** Platos que ya están puestos y no se tocan: los cocinados. */
   yaEnLaSemana?: RecetaListada[]
@@ -424,7 +424,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   }
 }
 
-export interface Cobertura {
+interface Cobertura {
   clave: Clave
   aportado: number
   objetivo: number
@@ -432,13 +432,13 @@ export interface Cobertura {
   ratio: number
 }
 
-export interface Exceso {
+interface Exceso {
   clave: Techo
   media: number
   techo: number
 }
 
-export interface ResumenSemana {
+interface ResumenSemana {
   coberturas: Cobertura[]
   excesos: Exceso[]
   platos: number

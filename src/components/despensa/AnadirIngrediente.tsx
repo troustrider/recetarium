@@ -170,8 +170,6 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
               </p>
             )}
 
-            {/* Ya abierto: arranca la cuenta atrás desde hoy en vez de desde la
-                fecha del envase, que en cuanto se abre deja de valer. */}
             <label
               className={`flex items-center justify-between gap-3 px-4 py-2.5 mt-2 text-sm rounded-xl border cursor-pointer transition-colors ${
                 yaAbierto

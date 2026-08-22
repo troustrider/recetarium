@@ -4,7 +4,7 @@ import { elegirDeDespensa, stockInicial } from './despensa'
 import { racionesBase } from '../hooks/useListaCompra'
 import type { RecetaListada } from '../types/receta'
 
-export interface EntradaCocinada {
+interface EntradaCocinada {
   receta: RecetaListada
   raciones: number
   conGuarnicion?: boolean

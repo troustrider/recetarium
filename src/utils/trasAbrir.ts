@@ -68,7 +68,7 @@ export function caducidadTrasAbrir(nombre: string, familia: string, abierto: str
   return dias == null ? null : sumarDias(dias, new Date(`${abierto}T12:00:00`))
 }
 
-export interface ItemAbrible {
+interface ItemAbrible {
   nombre: string
   familia: string
   caducidad?: string

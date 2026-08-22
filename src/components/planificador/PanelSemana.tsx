@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { usePreferencias } from '../../context'
 import { MAX_COCINAS, type Dieta } from '../../types/preferencias'
 import { NOMBRE_PRIORIDAD, PRESETS, presetDe, type Preset } from '../../utils/presets'
+import Capa from '../shared/Capa'
 
 const TIEMPOS: { valor: number | null; label: string }[] = [
   { valor: null, label: 'Sin tope' },
@@ -103,21 +103,7 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
   }
 
   return (
-    <>
-      <motion.div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onCerrar}
-      />
-      <motion.div
-        className="fixed inset-x-4 top-16 bottom-8 max-w-md mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 overflow-y-auto"
-        initial={{ opacity: 0, y: -16, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -8, scale: 0.97 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      >
+    <Capa onCerrar={onCerrar} clases="fixed inset-x-4 top-16 bottom-8 max-w-md mx-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 overflow-y-auto">
         <div className="sticky top-0 flex items-start justify-between gap-3 px-4 py-3.5 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-500 dark:text-orange-400">
@@ -263,7 +249,6 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
             cuidar, lo que diga tu médico va por delante.
           </p>
         </div>
-      </motion.div>
-    </>
+    </Capa>
   )
 }

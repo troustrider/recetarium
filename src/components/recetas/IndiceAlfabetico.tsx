@@ -131,7 +131,6 @@ function IndiceAlfabetico({ letras, onSeleccionar }: Props) {
         ))}
       </div>
 
-      {/* Burbuja bajo el dedo — sin ella no se sabe dónde has soltado */}
       <AnimatePresence>
         {arrastrando && activa && (
           <motion.div

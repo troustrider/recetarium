@@ -1,6 +1,6 @@
 import { apiJson } from './http'
 
-export interface SesionDTO {
+interface SesionDTO {
   id: string
   email: string
   ip: string | null
@@ -10,7 +10,7 @@ export interface SesionDTO {
   activa: boolean
 }
 
-export interface ResumenUsuarioDTO {
+interface ResumenUsuarioDTO {
   email: string
   sesiones: number
   activas: number
@@ -19,7 +19,7 @@ export interface ResumenUsuarioDTO {
   ultimoAcceso: string
 }
 
-export interface IpNuevaDTO {
+interface IpNuevaDTO {
   email: string
   ip: string
   vistaPrimeroEn: string

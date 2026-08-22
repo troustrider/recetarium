@@ -75,15 +75,9 @@ function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-dvh bg-stone-50 dark:bg-gray-950 transition-colors duration-200">
-      {/* pt safe-area: en la PWA instalada desde Safari (black-translucent) el
-          contenido se dibuja bajo la barra de estado; sin esto el header queda
-          pisado por el reloj/notch. En navegador el inset es 0 y no cambia nada. */}
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30 shadow-sm dark:shadow-none pt-[env(safe-area-inset-top)]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
 
-          {/* Marca. Lleva al catálogo, y se nota que se puede pulsar: sin
-              respuesta al pasar por encima ni al hundirla, un logo que navega
-              parece decoración. */}
           <NavLink
             to="/"
             onClick={() => setMobileOpen(false)}
@@ -98,7 +92,6 @@ function Layout({ children }: { children: ReactNode }) {
             </span>
           </NavLink>
 
-          {/* Search — desktop */}
           <form onSubmit={handleSearch} className="flex-1 max-w-xs hidden sm:block mx-2">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -112,7 +105,6 @@ function Layout({ children }: { children: ReactNode }) {
             </div>
           </form>
 
-          {/* Desktop nav */}
           <nav className="hidden sm:flex items-center gap-4 ml-auto">
             {LINKS_MAIN.map(({ to, label }) => (
               <NavLink key={to} to={to} end={to === '/'}
@@ -127,7 +119,6 @@ function Layout({ children }: { children: ReactNode }) {
               </NavLink>
             ))}
 
-            {/* Más — desktop */}
             <div className="relative">
               <button
                 onClick={() => setMenuOpen((o) => !o)}
@@ -172,9 +163,7 @@ function Layout({ children }: { children: ReactNode }) {
             </div>
           </nav>
 
-          {/* Iconos derechos — siempre visibles */}
           <div className="flex items-center gap-1 ml-auto sm:ml-0">
-            {/* Cart */}
             <motion.button
               onClick={() => setListaOpen(true)}
               className="relative hidden sm:block p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -189,13 +178,8 @@ function Layout({ children }: { children: ReactNode }) {
               )}
             </motion.button>
 
-            {/* Divisor de escritorio, entre el carrito y la cuenta. */}
             <span aria-hidden className="hidden sm:block w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
 
-            {/* Dark mode. El tema no es una utilidad de la tarea como el
-                carrito ni identidad como la cuenta: es un ajuste de la propia
-                interfaz, y va apartado entre divisores. El último sitio es del
-                avatar, en las dos vistas. */}
             <motion.button
               onClick={toggle}
               className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -205,10 +189,8 @@ function Layout({ children }: { children: ReactNode }) {
               {dark ? <SunIcon /> : <MoonIcon />}
             </motion.button>
 
-            {/* Divisor entre el tema y el bloque de menú y cuenta. */}
             <span aria-hidden className="w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
 
-            {/* Hamburger — solo mobile */}
             <motion.button
               onClick={() => setMobileOpen((o) => !o)}
               className="sm:hidden p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -218,15 +200,8 @@ function Layout({ children }: { children: ReactNode }) {
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </motion.button>
 
-            {/* Solo en móvil: en escritorio el avatar ya viene detrás del
-                divisor del tema, pero aquí el hamburguesa se cuela en medio y la
-                cuenta se quedaba pegada a él sin separación. */}
             <span aria-hidden className="sm:hidden w-px h-6 bg-gray-200 dark:bg-gray-800 mx-1.5" />
 
-            {/* La cuenta es lo último: identidad al borde, y en móvil es donde
-                cae el pulgar. Cambia de forma además de sitio, círculo con foto
-                frente a iconos de contorno. Su desplegable no repite la
-                navegación, que ya está en la barra inferior. */}
             <div className="relative">
               <motion.button
                 onClick={() => setCuentaOpen((o) => !o)}
@@ -287,7 +262,6 @@ function Layout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        {/* Mobile menu — slide-down */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -298,7 +272,6 @@ function Layout({ children }: { children: ReactNode }) {
               transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
               style={{ overflow: 'hidden' }}
             >
-              {/* Search mobile */}
               <div className="px-4 pt-3 pb-2">
                 <form onSubmit={handleSearch}>
                   <div className="relative">
@@ -313,7 +286,6 @@ function Layout({ children }: { children: ReactNode }) {
                   </div>
                 </form>
               </div>
-              {/* Links */}
               <nav className="px-2 pb-3 flex flex-col">
                 {ALL_LINKS.map(({ to, label }) => (
                   <NavLink key={to} to={to} end={to === '/'}

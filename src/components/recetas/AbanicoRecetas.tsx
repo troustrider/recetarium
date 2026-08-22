@@ -103,11 +103,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
         </motion.button>
       </div>
 
-      {/* Las cartas de los extremos se salen de pantalla a propósito, pero sin
-          recortarlas la página entera se volvía arrastrable de lado. El recorte
-          llega hasta el borde de la pantalla —los márgenes negativos se comen el
-          padding de main— y es solo horizontal, para no cortar ni la carta
-          levantada ni su sombra. */}
       <div
         ref={ref}
         role="listbox"
@@ -165,7 +160,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               whileTap={{ scale: isA ? 1.1 : scale }}
             >
-              {/* Foto de la receta si la tiene; si no, watermark tipográfico */}
               {receta.imagen ? (
                 <img
                   src={receta.imagen}
@@ -175,12 +169,10 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                 />
               ) : (
                 <>
-                  {/* Bloom del sabor */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{ background: `radial-gradient(ellipse 120% 85% at 80% -8%, ${bloom} 0%, transparent 68%)` }}
                   />
-                  {/* Trama de puntos */}
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
@@ -188,7 +180,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                       backgroundSize: '18px 18px',
                     }}
                   />
-                  {/* Watermark tipográfico */}
                   <span
                     className="absolute top-7 -left-0.5 font-display font-black leading-none whitespace-nowrap pointer-events-none"
                     style={{ fontSize: '52px', color: 'rgba(255,255,255,0.14)' }}
@@ -197,10 +188,8 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                   </span>
                 </>
               )}
-              {/* Scrim inferior */}
               <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(6,8,10,0.9) 100%)' }} />
 
-              {/* Badge estado despensa */}
               {faltan != null && (
                 <span
                   className={`absolute top-2.5 left-2.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${
@@ -216,7 +205,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                 </span>
               )}
 
-              {/* Favorito */}
               <button
                 onClick={(e) => { e.stopPropagation(); onToggleFavorita(receta.id) }}
                 className={`absolute top-2.5 right-2.5 p-1.5 rounded-full transition-colors ${
@@ -227,7 +215,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                 <Heart className="w-3.5 h-3.5" fill={receta.favorita ? 'currentColor' : 'none'} strokeWidth={2} />
               </button>
 
-              {/* Contenido */}
               <div className="absolute left-3 right-3 bottom-3">
                 <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/55 mb-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
@@ -241,7 +228,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
                 </p>
               </div>
 
-              {/* Atenuado si no está activa — foco cinematográfico */}
               <motion.div
                 className="absolute inset-0 pointer-events-none bg-[#05070a]"
                 animate={{ opacity: isA ? 0 : Math.min(0.55, 0.2 + ad * 0.08) }}
@@ -252,7 +238,6 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
         })}
       </div>
 
-      {/* Puntos de navegación */}
       <div className="flex items-center justify-center gap-1.5">
         {recetas.map((r, i) => (
           <button
