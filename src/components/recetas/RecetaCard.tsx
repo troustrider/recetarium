@@ -2,7 +2,7 @@ import { memo, useRef, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Clock, Check, ShoppingBasket } from 'lucide-react'
 import type { RecetaListada } from '../../types/receta'
-import { SABOR_BG, recetaVisualLayoutId } from '../../utils/sabores'
+import { SABOR_BG } from '../../utils/sabores'
 import { prefetchDetalleReceta } from '../../utils/prefetch'
 import { Link } from 'react-router-dom'
 
@@ -60,7 +60,7 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
       transition={{ duration: 0.25, ease: 'easeOut', delay: reduce ? 0 : Math.min(index, 8) * 0.04 }}
     >
       <Contenedor>
-        <motion.div layoutId={recetaVisualLayoutId(id)} transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.8 }} className="relative h-36 overflow-hidden">
+        <div className="relative h-36 overflow-hidden">
           {imagen ? (
             <img
               src={imagen}
@@ -128,7 +128,7 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
                 d="M11.998 21.5C11.998 21.5 3 15.5 3 9a5 5 0 0 1 8.998-3.002A5 5 0 0 1 21 9c0 6.5-9.002 12.5-9.002 12.5z" />
             </svg>
           </motion.button>
-        </motion.div>
+        </div>
 
         <div className="p-4">
           <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug line-clamp-2 min-h-[2.75rem] group-hover:text-orange-700 dark:group-hover:text-orange-400 transition-colors">

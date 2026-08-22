@@ -11,7 +11,7 @@ import { escalarPasos, tieneCantidadesEscalables } from '../utils/escalarPasos'
 import ModoCocina from '../components/cocina/ModoCocina'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
-import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
+import { SABOR_BG } from '../utils/sabores'
 import useTitulo from '../hooks/useTitulo'
 
 const PORCIONES_POR_DEFECTO = 2
@@ -117,7 +117,7 @@ function DetalleReceta() {
     <div className="flex flex-col gap-8">
 
       {receta.imagen ? (
-        <motion.div layoutId={recetaVisualLayoutId(receta.id)} transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.8 }} className="relative h-56 rounded-2xl overflow-hidden">
+        <div className="relative h-56 rounded-2xl overflow-hidden">
           <img
             src={receta.imagen}
             alt={receta.nombre}
@@ -135,10 +135,10 @@ function DetalleReceta() {
             </p>
             <h1 className="font-display text-3xl font-bold text-white leading-tight">{receta.nombre}</h1>
           </div>
-        </motion.div>
+        </div>
       ) : (
         <div className="flex flex-col gap-5">
-          <motion.div layoutId={recetaVisualLayoutId(receta.id)} transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.8 }} className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
+          <div className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
             <span
               className="absolute top-1/2 -translate-y-1/2 left-5 font-display font-black leading-none select-none pointer-events-none whitespace-nowrap"
               style={{ fontSize: '96px', color: 'rgba(255,255,255,0.06)' }}
@@ -157,7 +157,7 @@ function DetalleReceta() {
               onClick={() => toggleFavorita(receta.id)}
               className="absolute top-4 right-4"
             />
-          </motion.div>
+          </div>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 mb-1">
               {[receta.categoria, receta.sabor, `${receta.tiempoPreparacion} min`].filter(Boolean).join(' / ')}

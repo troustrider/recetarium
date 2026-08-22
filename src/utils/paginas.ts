@@ -19,14 +19,35 @@ const PROFUNDAS = [/^\/recetas\//, /^\/admin\//]
  */
 export const esProfunda = (ruta: string) => PROFUNDAS.some((p) => p.test(ruta))
 
+/**
+ * `sinAnimar` es la transición que ya condujo el dedo: la pantalla que se va
+ * quedó fuera de cuadro y la que llega está en su sitio. Animarlas otra vez es
+ * el latigazo de verlas volver atrás para repetir el camino.
+ */
+export interface Paso {
+  atras: boolean
+  sinAnimar: boolean
+}
+
+const QUIETO: Paso = { atras: false, sinAnimar: false }
+
+// La clave solo puede aparecer cuando hay algo que decir: un `transition`
+// presente y en `undefined` deja la salida sin completar, y `AnimatePresence`
+// no retira nunca la pantalla anterior.
+const YA = (sinAnimar: boolean) => (sinAnimar ? { transition: { duration: 0 } } : null)
+
 export const FUNDIDO: Variants = {
   entra: { opacity: 0 },
   quieta: { opacity: 1 },
-  sale: { opacity: 0 },
+  sale: ({ sinAnimar }: Paso = QUIETO) => ({ opacity: 0, ...YA(sinAnimar) }),
 }
 
 export const PILA: Variants = {
-  entra: (atras: boolean) => ({ x: atras ? '-28%' : '100%', opacity: atras ? 0.55 : 1 }),
+  entra: ({ atras }: Paso = QUIETO) => ({ x: atras ? '-28%' : '100%', opacity: atras ? 0.55 : 1 }),
   quieta: { x: '0%', opacity: 1 },
-  sale: (atras: boolean) => ({ x: atras ? '100%' : '-28%', opacity: atras ? 1 : 0.55 }),
+  sale: ({ atras, sinAnimar }: Paso = QUIETO) => ({
+    x: atras ? '100%' : '-28%',
+    opacity: atras ? 1 : 0.55,
+    ...YA(sinAnimar),
+  }),
 }
