@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
 import {
+  type Hueco,
   LIMITES_VACIOS,
   MAX_COCINAS,
   MAX_PRIORIDADES,
@@ -15,8 +16,7 @@ interface PreferenciasCtx {
   preferencias: Preferencias
   alternarPrioridad: (prioridad: Prioridad) => void
   alternarCocina: (cocina: string) => void
-  setDesayunos: (n: number) => void
-  setComidas: (n: number) => void
+  setHuecos: (hueco: Hueco, n: number) => void
   setLimites: (limites: Partial<LimitesSemana>) => void
   aplicar: (preferencias: Preferencias) => void
   reiniciar: () => void
@@ -24,11 +24,6 @@ interface PreferenciasCtx {
 
 const PreferenciasContext = createContext<PreferenciasCtx | null>(null)
 
-/**
- * Lo que llega del servidor puede ser {} —hogar que nunca las ha tocado— o unas
- * preferencias guardadas con una versión anterior a la que le falte un campo. En
- * los dos casos se completan con las de por defecto en vez de romper la pantalla.
- */
 function completar(guardadas: Partial<Preferencias> | null | undefined): Preferencias {
   return {
     ...PREFERENCIAS_POR_DEFECTO,
@@ -69,14 +64,8 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
     })
   }, [cambiar])
 
-  const enDias = (n: number) => Math.max(0, Math.min(7, Math.round(n)))
-
-  const setDesayunos = useCallback((n: number) => {
-    cambiar((prev) => ({ ...prev, desayunos: enDias(n) }))
-  }, [cambiar])
-
-  const setComidas = useCallback((n: number) => {
-    cambiar((prev) => ({ ...prev, comidas: enDias(n) }))
+  const setHuecos = useCallback((hueco: Hueco, n: number) => {
+    cambiar((prev) => ({ ...prev, [hueco]: Math.max(0, Math.min(7, Math.round(n))) }))
   }, [cambiar])
 
   const setLimites = useCallback((limites: Partial<LimitesSemana>) => {
@@ -87,8 +76,8 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
   const reiniciar = useCallback(() => cambiar(PREFERENCIAS_POR_DEFECTO), [cambiar])
 
   const valor = useMemo(
-    () => ({ preferencias, alternarPrioridad, alternarCocina, setDesayunos, setComidas, setLimites, aplicar, reiniciar }),
-    [preferencias, alternarPrioridad, alternarCocina, setDesayunos, setComidas, setLimites, aplicar, reiniciar]
+    () => ({ preferencias, alternarPrioridad, alternarCocina, setHuecos, setLimites, aplicar, reiniciar }),
+    [preferencias, alternarPrioridad, alternarCocina, setHuecos, setLimites, aplicar, reiniciar]
   )
 
   return <PreferenciasContext.Provider value={valor}>{children}</PreferenciasContext.Provider>

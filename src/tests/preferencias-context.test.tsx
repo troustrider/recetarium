@@ -78,10 +78,10 @@ describe('preferencias del hogar', () => {
 
   it('los desayunos se acotan a la semana', async () => {
     const { result } = await montar()
-    act(() => result.current.setDesayunos(99))
+    act(() => result.current.setHuecos('desayunos', 99))
     expect(result.current.preferencias.desayunos).toBe(7)
 
-    act(() => result.current.setDesayunos(-2))
+    act(() => result.current.setHuecos('desayunos', -2))
     expect(result.current.preferencias.desayunos).toBe(0)
   })
 

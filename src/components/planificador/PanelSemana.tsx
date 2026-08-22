@@ -87,8 +87,8 @@ interface Props {
 }
 
 export default function PanelSemana({ cocinas, onCerrar }: Props) {
-  const { preferencias, aplicar, alternarCocina, setDesayunos, setComidas, setLimites } = usePreferencias()
-  const { prioridades, cocinasFavoritas, desayunos, comidas, limites } = preferencias
+  const { preferencias, aplicar, alternarCocina, setHuecos, setLimites } = usePreferencias()
+  const { prioridades, cocinasFavoritas, desayunos, comidas, cenas, limites } = preferencias
   const [vetado, setVetado] = useState('')
 
   const preset = presetDe(prioridades)
@@ -153,20 +153,26 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
 
         <Seccion
           titulo="Huecos del día"
-          nota="La cena va todos los días. Los desayunos y las comidas, los que digas, y se reparten por la semana en vez de amontonarse."
+          nota="Cuántos días de la semana lleva cada comida. Se reparten por la semana en vez de amontonarse."
         >
           <div className="flex flex-col gap-2.5">
             <Dias
               titulo="Desayunos"
               valor={desayunos}
-              onCambiar={setDesayunos}
+              onCambiar={(n) => setHuecos('desayunos', n)}
               vacio="ninguno"
             />
             <Dias
               titulo="Comidas"
               valor={comidas}
-              onCambiar={setComidas}
-              vacio="solo ceno"
+              onCambiar={(n) => setHuecos('comidas', n)}
+              vacio="ninguna"
+            />
+            <Dias
+              titulo="Cenas"
+              valor={cenas}
+              onCambiar={(n) => setHuecos('cenas', n)}
+              vacio="ninguna"
             />
           </div>
         </Seccion>
