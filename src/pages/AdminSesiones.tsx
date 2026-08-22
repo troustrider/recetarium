@@ -4,6 +4,7 @@ import { getPanelSesiones, type PanelSesiones } from '../api/sesiones'
 import Invitaciones from '../components/admin/Invitaciones'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
+import useTitulo from '../hooks/useTitulo'
 
 function dispositivo(agente: string | null) {
   if (!agente) return { texto: 'desconocido', Icono: Monitor }
@@ -38,6 +39,7 @@ function Tarjeta({ titulo, children }: { titulo: string; children: React.ReactNo
 }
 
 function AdminSesiones() {
+  useTitulo('Accesos')
   const [datos, setDatos] = useState<PanelSesiones | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [cargando, setCargando] = useState(true)

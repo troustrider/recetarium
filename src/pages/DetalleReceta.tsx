@@ -12,6 +12,7 @@ import ModoCocina from '../components/cocina/ModoCocina'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import { SABOR_BG, recetaVisualLayoutId } from '../utils/sabores'
+import useTitulo from '../hooks/useTitulo'
 
 const PORCIONES_POR_DEFECTO = 2
 
@@ -63,6 +64,7 @@ function DetalleReceta() {
 
   const cached = useMemo(() => recetas.find((r) => r.id === id) ?? null, [recetas, id])
   const receta = fetched ?? cached
+  useTitulo(receta?.nombre)
   const full = fetched ?? (cached && cached.ingredientes.length > 0 ? cached : null)
   const detalleListo = !!full
 

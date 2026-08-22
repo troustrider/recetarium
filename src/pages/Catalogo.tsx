@@ -15,14 +15,11 @@ import IndiceAlfabetico from '../components/recetas/IndiceAlfabetico'
 import FiltroBar from '../components/shared/FiltroBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
+import useTitulo from '../hooks/useTitulo'
 
 const POR_TANDA = 24
 const MAX_FALTAN = 3
 const MIN_PARA_INDICE = 30
-// Dónde empieza un elemento dentro del documento. El salto se ancla en el
-// bloque de la sección y no en su cabecera: la cabecera es sticky y, en cuanto
-// se pega arriba, tanto su rect como su offsetTop devuelven la posición pegada
-// —y scrollIntoView la da por "ya visible" y se niega a saltar—.
 function alturaEnDocumento(el: HTMLElement): number {
   let y = 0
   for (let e: HTMLElement | null = el; e; e = e.offsetParent as HTMLElement | null) y += e.offsetTop
@@ -54,6 +51,7 @@ function prngDesde(seed: number): () => number {
 }
 
 function Catalogo() {
+  useTitulo('Catálogo')
   const { recetas, loading, error, cargar, toggleFavorita } = useRecetasContext()
   const { toggleReceta, estaSeleccionada, cargarAleatorias } = useListaCompraContext()
   const { filtros, setFiltros, orden, setOrden, recetasFiltradas } = useFiltros(recetas)
@@ -63,7 +61,6 @@ function Catalogo() {
   const [soloDisponibles, setSoloDisponibles] = useState(() => searchParams.get('disponibles') === '1')
   const navigate = useNavigate()
 
-  const abrirReceta = useCallback((id: string) => navigate(`/recetas/${id}`), [navigate])
 
   const conDespensa = despensa.length > 0
   const faltanPorReceta = useMemo(
@@ -187,9 +184,6 @@ function Catalogo() {
     (letra: string) => {
       const i = secciones?.get(letra)
       if (i == null) return
-      // Una tanda de más por debajo del objetivo: si la lista se acaba justo
-      // ahí, al documento no le queda alto para subir la letra hasta arriba y
-      // el navegador deja el salto a medias, en la sección anterior.
       const necesarias = Math.min(
         resultados.length,
         Math.ceil((i + 1) / POR_TANDA) * POR_TANDA + POR_TANDA
@@ -198,9 +192,6 @@ function Catalogo() {
       const destino = inicioDeSeccion(letra)
       if (destino == null) return
       window.scrollTo(0, destino)
-      // Si el documento no daba de sí (últimas letras), al montar la siguiente
-      // tanda sí dará: se remata en el fotograma siguiente. Si mientras tanto
-      // se ha pedido otra letra —un arrastre—, este remate sobra.
       if (Math.abs(window.scrollY - destino) < 2) return
       letraPedida.current = letra
       requestAnimationFrame(() => {
@@ -218,9 +209,6 @@ function Catalogo() {
     recetas: { receta: RecetaListada; index: number }[]
   }
 
-  // Cada letra va en su propio bloque para que su cabecera se despegue cuando
-  // entra la siguiente. Colgando todas de la misma parrilla se quedaban las 26
-  // pegadas en los mismos 64 px, una encima de otra.
   const grupos = useMemo<Grupo[]>(() => {
     const tanda = resultados.slice(0, visibles)
     if (!secciones) {
@@ -403,7 +391,6 @@ function Catalogo() {
                             key={receta.id}
                             receta={receta}
                             index={index}
-                            onClick={abrirReceta}
                             onToggleFavorita={toggleFavorita}
                             faltan={faltanPorReceta?.get(receta.id)}
                             onToggleLista={toggleReceta}

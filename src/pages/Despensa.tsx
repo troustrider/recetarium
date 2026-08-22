@@ -7,13 +7,14 @@ import {
 } from 'lucide-react'
 import { useDespensa, type IngredienteDespensa } from '../context/DespensaContext'
 import { useListaCompraContext, useCompradosContext, useRecetasContext, useDeshacer } from '../context'
-import { normalizar } from '../utils/ingredientes'
+import { normalizar, capitalize } from '../utils/ingredientes'
 import { FAMILIAS, mismoIngrediente, estaEnDespensa, porAgotarse, faltantes } from '../utils/despensa'
 import { caducidadEstimada } from '../utils/caducidadEstimada'
 import TarjetaIngrediente from '../components/despensa/TarjetaIngrediente'
 import FichaIngrediente from '../components/despensa/FichaIngrediente'
 import AnadirIngrediente from '../components/despensa/AnadirIngrediente'
 import useIngredientesConocidos from '../hooks/useIngredientesConocidos'
+import useTitulo from '../hooks/useTitulo'
 
 const ICONO_FAMILIA: Record<string, LucideIcon> = {
   verduras: Carrot, frutas: Apple, carnes: Beef, pescados: Fish, 'lácteos': Milk, huevos: Egg,
@@ -21,11 +22,8 @@ const ICONO_FAMILIA: Record<string, LucideIcon> = {
   condimentos: Droplet, salsas: BottleWine, bebidas: CupSoda, otros: ShoppingBasket,
 }
 
-function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1)
-}
-
 function Despensa() {
+  useTitulo('Despensa')
   const { despensa, añadir, reponer, editar, quitar, vaciar, restaurarDespensa } = useDespensa()
   const { registrar } = useDeshacer()
   const { listaCompra, addExtra } = useListaCompraContext()

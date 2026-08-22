@@ -1,9 +1,11 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import Layout from './components/shared/Layout'
 import LoadingSpinner from './components/shared/LoadingSpinner'
 import InstallPrompt from './components/shared/InstallPrompt'
+import useScrollDeRuta from './hooks/useScrollDeRuta'
+import useDeslizarAtras from './hooks/useDeslizarAtras'
 
 const Catalogo      = lazy(() => import('./pages/Catalogo'))
 const Favoritas     = lazy(() => import('./pages/Favoritas'))
@@ -17,10 +19,8 @@ const AdminSesiones = lazy(() => import('./pages/AdminSesiones'))
 
 function App() {
   const location = useLocation()
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
+  useScrollDeRuta()
+  useDeslizarAtras()
 
   return (
     <MotionConfig reducedMotion="user">

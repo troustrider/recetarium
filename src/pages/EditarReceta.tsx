@@ -6,6 +6,7 @@ import RecetaForm from '../components/recetas/RecetaForm'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import type { Receta } from '../types/receta'
+import useTitulo from '../hooks/useTitulo'
 
 type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
@@ -13,6 +14,7 @@ function EditarReceta() {
   const { id } = useParams<{ id: string }>()
   const { actualizar, recetas } = useRecetasContext()
   const { receta, loading, error } = useReceta(id!)
+  useTitulo(receta ? `Editar ${receta.nombre}` : 'Editar receta')
 
   const categorias = useMemo(
     () => [...new Set(recetas.map((r) => r.categoria))].filter(Boolean).sort(),

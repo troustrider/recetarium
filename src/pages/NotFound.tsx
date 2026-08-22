@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import useTitulo from '../hooks/useTitulo'
 
 function NotFound() {
+  useTitulo('Página no encontrada')
   return (
     <main className="p-8 text-center">
       <h1 className="text-4xl font-bold">404</h1>

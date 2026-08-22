@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChefHat, ShoppingCart, Search, Menu, X, BookOpen, ShoppingBasket, CalendarDays } from 'lucide-react'
 import Avatar from './Avatar'
 import useDarkMode from '../../hooks/useDarkMode'
+import useCapa from '../../hooks/useCapa'
 import { useListaCompraContext } from '../../context'
 import { useSesion } from '../../context/SesionContext'
 import ListaCompraDrawer from '../lista-compra/ListaCompraDrawer'
@@ -58,6 +59,13 @@ function Layout({ children }: { children: ReactNode }) {
   const [listaOpen, setListaOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
 
+  useCapa(cuentaOpen, () => setCuentaOpen(false))
+  useCapa(menuOpen, () => setMenuOpen(false))
+  useCapa(mobileOpen, () => setMobileOpen(false))
+  // El cajón sí entra en el historial: ocupa la pantalla entera en móvil, así
+  // que atrás —y el gesto de deslizar— tienen que cerrarlo y no sacarte de aquí.
+  useCapa(listaOpen, () => setListaOpen(false), true)
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     const q = searchValue.trim()
@@ -73,12 +81,19 @@ function Layout({ children }: { children: ReactNode }) {
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30 shadow-sm dark:shadow-none pt-[env(safe-area-inset-top)]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
 
-          {/* Brand */}
-          <NavLink to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-orange-500 rounded-xl flex items-center justify-center shadow-sm shadow-orange-400/30 dark:shadow-orange-900/30">
+          {/* Marca. Lleva al catálogo, y se nota que se puede pulsar: sin
+              respuesta al pasar por encima ni al hundirla, un logo que navega
+              parece decoración. */}
+          <NavLink
+            to="/"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Ir al catálogo"
+            className="group flex items-center gap-2 shrink-0 rounded-xl transition-transform active:scale-95"
+          >
+            <div className="w-8 h-8 bg-orange-500 rounded-xl flex items-center justify-center shadow-sm shadow-orange-400/30 dark:shadow-orange-900/30 transition-shadow group-hover:shadow-md group-hover:shadow-orange-400/50">
               <ChefHat className="w-4 h-4 text-white" strokeWidth={2.2} />
             </div>
-            <span className="font-display font-bold text-gray-900 dark:text-gray-100 text-lg tracking-tight">
+            <span className="font-display font-bold text-gray-900 dark:text-gray-100 text-lg tracking-tight transition-colors group-hover:text-orange-500 dark:group-hover:text-orange-400">
               Recetarium
             </span>
           </NavLink>
