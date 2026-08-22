@@ -22,17 +22,22 @@ function App() {
   useScrollDeRuta()
   useDeslizarAtras()
 
+
   return (
     <MotionConfig reducedMotion="user">
       <Layout>
         <Suspense fallback={<LoadingSpinner />}>
-          <AnimatePresence mode="wait">
+          {/* Sin `mode="wait"`: las dos pantallas tienen que coexistir un
+              instante para que la foto de la tarjeta pueda crecer hasta la
+              cabecera de la ficha. `popLayout` saca de la caja a la que se va,
+              así que la que llega no espera ni empuja. */}
+          <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={location.pathname}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
+              transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
             >
               <Routes location={location}>
                 <Route index element={<Catalogo />} />

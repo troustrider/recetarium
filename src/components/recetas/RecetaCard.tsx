@@ -60,7 +60,7 @@ function RecetaCard({ receta, onToggleFavorita, faltan, onToggleLista, enLista, 
       transition={{ duration: 0.25, ease: 'easeOut', delay: reduce ? 0 : Math.min(index, 8) * 0.04 }}
     >
       <Contenedor>
-        <motion.div layoutId={recetaVisualLayoutId(id)} className="relative h-36 overflow-hidden">
+        <motion.div layoutId={recetaVisualLayoutId(id)} transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.8 }} className="relative h-36 overflow-hidden">
           {imagen ? (
             <img
               src={imagen}
