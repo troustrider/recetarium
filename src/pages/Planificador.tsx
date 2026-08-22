@@ -31,18 +31,8 @@ import {
   type Momento,
 } from '../utils/momentos'
 import type { RecetaListada, Sabor } from '../types/receta'
+import useTitulo from '../hooks/useTitulo'
 
-/**
- * Cada momento del día tiene su color y su icono, y los tres se usan en el
- * mismo sitio: el carril que agrupa los platos de ese hueco y el botón del chip
- * que lo cambia. Amanecer, mediodía y noche, que es lo que hace que la semana
- * se lea sin tener que leerla: el ámbar arriba, el azul en medio y el índigo
- * abajo, en cada fila.
- *
- * No compiten con la franja de sabor porque no ocupan el mismo sitio: el sabor
- * va al canto del chip y es del plato; el momento tiñe el chip entero y es de
- * la semana. Un mismo plato cambia de momento sin cambiar de sabor.
- */
 const MOMENTO_ESTILO: Record<Momento, {
   Icono: typeof Sunrise
   texto: string
@@ -140,14 +130,15 @@ function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, onGuarnicion, on
           cambia en rueda: desayuno → comida → cena. Es el mismo icono que
           encabeza el carril, así que el chip nunca queda huérfano de su grupo
           —al arrastrarlo, por ejemplo, que es cuando el carril no se ve—. */}
-      <button
+      <motion.button
         onClick={() => onMomento(siguienteMomento(momento))}
         aria-label={`${NOMBRE_MOMENTO[momento]}. Cambiar a ${NOMBRE_MOMENTO[siguienteMomento(momento)].toLowerCase()}`}
         title={`${NOMBRE_MOMENTO[momento]}: toca para pasarlo a ${NOMBRE_MOMENTO[siguienteMomento(momento)].toLowerCase()}`}
         className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${estilo.boton}`}
+        whileTap={{ scale: 0.8 }}
       >
         <estilo.Icono className="w-3.5 h-3.5" />
-      </button>
+      </motion.button>
 
       {/* Hecha. Va al principio, como la casilla de una lista de tareas: es el
           estado del plato, se lee antes que nada y queda lejos del stepper y de
@@ -446,9 +437,6 @@ interface FilaDiaProps {
 function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, onGuarnicion, onMomento, isDragOver }: FilaDiaProps) {
   const { setNodeRef } = useDroppable({ id: dia })
 
-  // Solo se dibujan los carriles que tienen algo. Tres carriles fijos por día
-  // son veintiuno en la pantalla, casi todos vacíos: el día se cuenta por lo
-  // que hay, no por lo que podría haber.
   const carriles = MOMENTOS
     .map((momento) => ({ momento, entradas: entradas.filter((e) => momentoDe(e) === momento) }))
     .filter((c) => c.entradas.length > 0)
@@ -481,11 +469,12 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, on
             return (
               <motion.div
                 key={momento}
+                layout
                 className="flex flex-wrap items-center gap-x-2 gap-y-1.5 min-w-0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
+                transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
               >
                 {/* Ancho fijo a partir de `sm` para que los chips de los tres
                     carriles empiecen en la misma vertical: si no, "Desayuno"
@@ -499,11 +488,13 @@ function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones, onCocinar, on
                 {delCarril.map((entrada) => (
                   <motion.div
                     key={entrada.id}
+                    layoutId={entrada.id}
+                    layout
                     className="min-w-0 max-w-full"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.85 }}
-                    transition={{ duration: 0.15 }}
+                    transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
                   >
                     <RecetaChip
                       entrada={entrada}
@@ -543,9 +534,6 @@ interface SelectorProps {
 function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar }: SelectorProps) {
   const [busqueda, setBusqueda] = useState('')
 
-  // El momento se elige antes que el plato, porque es lo que decide qué plato
-  // tiene sentido. Mientras no se toque va en `null` y lo pone la receta: quien
-  // busca "tostada con huevo" quiere un desayuno y no hace falta que lo diga.
   const [momento, setMomento] = useState<Momento | null>(null)
   const filtradas = useMemo(() => {
     const lista = recetas.filter((r) => r.nombre.toLowerCase().includes(busqueda.toLowerCase()))
@@ -656,6 +644,7 @@ function SelectorReceta({ dia, recetas, faltanPorReceta, onSeleccionar, onCerrar
 }
 
 function Planificador() {
+  useTitulo('Planificador')
   const { plan, dias, añadir, quitar, setRaciones, setMomento, setGuarnicionPlan, marcarCocinada, mover, limpiar, autollenar, restaurarPlan } = usePlanificador()
   const { recetas } = useRecetasContext()
   const { pendientes, quitarPendiente, restaurarPendientes } = usePendientesPlan()

@@ -1,19 +1,12 @@
 import type { RecetaListada } from '../types/receta'
 import type { Preferencias, Prioridad } from '../types/preferencias'
 import { aprovechaDe, indiceDespensa, type IndiceDespensa, type ItemAprovechable } from './aprovechamiento'
+import { claveNombre, ingredientesDe } from './ingredientes'
 
-// Lo que debería traer **una comida**, no un día entero: es en torno a un tercio
-// de las referencias para un adulto (fibra 25-30 g/día, vitamina C 110 mg, calcio
-// 950 mg, folato 330 µg, hierro 11 mg, B12 4 µg) y de los 130 g de proteína que
-// fija `entrenador-personal`.
-//
-// Estaba escrito como objetivo diario y multiplicado por siete días, que era
-// correcto mientras el plan repartía una sola comida al día. Con los tres huecos
-// puestos dejó de serlo: un principal de 43 g saturaba él solo la proteína del
-// día entero y el reparto dejaba de valorarla en las otras dos comidas. Ahora
-// escala con los huecos que el plan llena, así que una semana de siete cenas
-// mide igual que antes y una de veintiuna comidas mide lo que de verdad pide.
 const DIAS_SEMANA = 7
+
+const PROTEINA_ALTA_DIARIA = 125
+const COMIDAS_AL_DIA = 3
 
 const OBJETIVO_POR_COMIDA = {
   fibra: 12,
@@ -29,9 +22,6 @@ type Clave = keyof typeof OBJETIVO_POR_COMIDA
 
 const CLAVES = Object.keys(OBJETIVO_POR_COMIDA) as Clave[]
 
-// Techos por ración. Por encima, el plato penaliza en proporción a lo que se
-// pasa. Los de serie son holgados a propósito: el que aprieta de verdad es el
-// que se elige como prioridad.
 const TECHOS_BASE = {
   saturadas: 12,
   sal: 3,
@@ -56,24 +46,15 @@ const PESOS_BASE = {
   reparto: 0.8,
   noFavorita: 0.5,
   aprovechar: 0.35,
+  compartir: 0.5,
 }
 
-/**
- * Cuánta despensa se le reconoce a un plato como mucho. Sin tope, un guiso que
- * toca ocho cosas de la nevera ganaba siempre, aunque dejara la semana entera
- * sin verdura: aprovechar es un motivo para elegir un plato, no una excusa para
- * comer mal. Con el tope, gastar lo que caduca vale como el mayor de los pesos
- * de la tabla de arriba, ni más.
- */
 const TOPE_APROVECHAMIENTO = 2
 
-/**
- * Lo que pesa la memoria de las pasadas anteriores. Las dos penalizan en vez de
- * filtrar: con el recetario justo, un plato que quitaste sigue siendo mejor que
- * un día vacío. Quitar a mano pesa lo bastante como para que no vuelva salvo que
- * no quede nada; haber salido en la pasada anterior solo lo empuja al banquillo,
- * así que volver a pulsar da otra semana sin arrasar con la calidad.
- */
+const TOPE_COMPARTIR = 1.5
+
+const rarezaDe = (veces: number) => 1 / (1 + veces)
+
 const PENALIZACION_DESCARTADO = 5
 const PENALIZACION_YA_PROPUESTO = 0.6
 
@@ -93,9 +74,6 @@ const EFECTO: Record<Prioridad, { objetivo?: Partial<Record<Clave, number>>; tec
   ligera:         { techo: { calorias: 600 } },
 }
 
-// Reparto de referencia de la energía de la semana. No es un dogma: es el punto
-// medio del recetario (principales de 35-45 g de proteína) y lo que evita que la
-// semana se vaya entera a pasta o entera a fritura.
 const MACROS = ['proteinas', 'carbohidratos', 'grasas'] as const
 type Macro = typeof MACROS[number]
 
@@ -137,12 +115,6 @@ export function aporteDe(receta: RecetaListada): Aporte {
   return total
 }
 
-/**
- * La verdura del plato. Mira primero la guarnición, que es donde va casi siempre,
- * y si no la hay busca en los ingredientes del propio plato: un guiso de lentejas
- * con puerro y zanahoria no es un plato sin verdura, y contarlo como tal era
- * penalizar justo a los platos que se quieren.
- */
 function verduraDe(receta: RecetaListada): string | null {
   const enGuarnicion = receta.guarnicion?.ingredientes.find((i) => i.familia === FAMILIA_VERDURA)
   const enPlato = receta.ingredientes?.find((i) => i.familia === FAMILIA_VERDURA)
@@ -166,15 +138,9 @@ export interface Ajustes {
   favoritas: Set<string>
   /** Cuántas veces puede salir una cocina favorita sin que penalice. */
   cuotaFavorita: number
+  proteinaDiaria: number | null
 }
 
-/**
- * Traduce las preferencias a números. `huecos` es cuántos platos se van a elegir,
- * y manda dos veces. En la cuota de cocina, porque con cuatro favoritas y siete
- * días alguna tiene que repetir y castigar lo que la propia elección obliga no
- * tiene sentido. Y en los objetivos de nutrientes, que son por comida: siete
- * cenas piden siete veces menos que las veintiuna comidas de una semana entera.
- */
 export function ajustesDe(preferencias?: Preferencias, huecos = DIAS_SEMANA): Ajustes {
   const objetivos = Object.fromEntries(
     CLAVES.map((c) => [c, OBJETIVO_POR_COMIDA[c] * Math.max(huecos, 1)])
@@ -196,11 +162,11 @@ export function ajustesDe(preferencias?: Preferencias, huecos = DIAS_SEMANA): Aj
     }
   }
 
-  // Una semana sin carne ni pescado parte con el techo de proteína más bajo:
-  // sus platos rondan los 25 g por ración en vez de los 35, y el recetario ya
-  // no los descarta por eso. Para que ese margen no se pierda por el camino, la
-  // dieta empuja la proteína igual que la prioridad "proteína": entre dos
-  // platos veganos gana el que más trae, que es donde se maximiza de verdad.
+  const proteica = (preferencias?.prioridades ?? []).includes('proteina')
+  if (proteica) {
+    objetivos.proteinas = (PROTEINA_ALTA_DIARIA / COMIDAS_AL_DIA) * Math.max(huecos, 1)
+  }
+
   const dieta = preferencias?.limites?.dieta
   if (dieta && !(preferencias?.prioridades ?? []).includes('proteina')) {
     for (const [clave, factor] of Object.entries(EFECTO.proteina.objetivo ?? {})) {
@@ -215,6 +181,7 @@ export function ajustesDe(preferencias?: Preferencias, huecos = DIAS_SEMANA): Aj
     pesos,
     favoritas,
     cuotaFavorita: favoritas.size > 0 ? Math.max(1, Math.ceil(huecos / favoritas.size)) : 1,
+    proteinaDiaria: proteica ? PROTEINA_ALTA_DIARIA : null,
   }
 }
 
@@ -226,6 +193,10 @@ interface Acumulado {
   sabores: Map<string, number>
   /** Índices de la despensa que la semana ya tiene comprometidos. */
   aprovechados: Set<number>
+  /** Ingredientes que la semana ya va a comprar, por nombre canónico. */
+  compra: Set<string>
+  /** Proteína ya colocada en cada día, para la semana proteica. */
+  proteinaPorDia: Map<string, number>
 }
 
 function acumuladoVacio(): Acumulado {
@@ -236,11 +207,15 @@ function acumuladoVacio(): Acumulado {
     verduras: new Set(),
     sabores: new Map(),
     aprovechados: new Set(),
+    compra: new Set(),
+    proteinaPorDia: new Map(),
   }
 }
 
-function acumular(acc: Acumulado, receta: RecetaListada, usados: number[] = []) {
+function acumular(acc: Acumulado, receta: RecetaListada, usados: number[] = [], dia?: string) {
   for (const i of usados) acc.aprovechados.add(i)
+  if (dia) acc.proteinaPorDia.set(dia, (acc.proteinaPorDia.get(dia) ?? 0) + aporteDe(receta).proteinas)
+  for (const clave of clavesDe(receta)) acc.compra.add(clave)
   const a = aporteDe(receta)
   for (const clave of CLAVES) acc.nutrientes[clave] += a[clave]
   for (const macro of MACROS) acc.macros[macro] += a[macro]
@@ -250,10 +225,6 @@ function acumular(acc: Acumulado, receta: RecetaListada, usados: number[] = []) 
   acc.sabores.set(receta.sabor, (acc.sabores.get(receta.sabor) ?? 0) + 1)
 }
 
-// Cuánto se desvía el reparto de energía acumulado del de referencia, de 0
-// (clavado) a 1 (todo en un macro). Una semana sin macros declarados no se
-// desvía: no hay dato que juzgar, y castigarla la dejaría siempre por debajo de
-// las que sí lo traen.
 function desvioReparto(acumulado: Record<Macro, number>): number {
   const kcal = MACROS.reduce((t, m) => t + acumulado[m] * KCAL_POR_GRAMO[m], 0)
   if (kcal === 0) return 0
@@ -264,29 +235,56 @@ function desvioReparto(acumulado: Record<Macro, number>): number {
   return suma / 2
 }
 
-function ganancia(a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
+const acerca = (acumulado: number, suma: number, objetivo: number) =>
+  (Math.min(acumulado + suma, objetivo) - Math.min(acumulado, objetivo)) / objetivo
+
+function ganancia(a: Aporte, acc: Acumulado, ajustes: Ajustes, dia?: string): number {
   let g = 0
   for (const clave of CLAVES) {
-    const objetivo = ajustes.objetivos[clave]
-    const antes = Math.min(acc.nutrientes[clave], objetivo)
-    const despues = Math.min(acc.nutrientes[clave] + a[clave], objetivo)
-    g += (despues - antes) / objetivo
+    if (clave === 'proteinas' && ajustes.proteinaDiaria && dia) {
+      g += acerca(acc.proteinaPorDia.get(dia) ?? 0, a.proteinas, ajustes.proteinaDiaria)
+      continue
+    }
+    g += acerca(acc.nutrientes[clave], a[clave], ajustes.objetivos[clave])
   }
   return g
 }
 
-/**
- * Lo que el plato salva de la despensa que la semana no haya salvado ya. Cuenta
- * cada ítem una vez: si el lunes se lleva el brik de nata abierto, el martes no
- * puntúa por el mismo brik, igual que un nutriente deja de sumar cuando la
- * semana ya llega a su objetivo.
- */
 function gananciaDespensa(usados: number[], acc: Acumulado, indice: IndiceDespensa): number {
   let g = 0
   for (const i of usados) {
     if (!acc.aprovechados.has(i)) g += indice.pesos[i]
   }
   return Math.min(g, TOPE_APROVECHAMIENTO)
+}
+
+const clavesDe = (receta: RecetaListada) =>
+  new Set(ingredientesDe(receta, true).map((i) => claveNombre(i.nombre)))
+
+function gananciaCompartir(
+  receta: RecetaListada,
+  acc: Acumulado,
+  rareza: Map<string, number>
+): number {
+  let g = 0
+  for (const clave of clavesDe(receta)) {
+    if (acc.compra.has(clave)) g += rareza.get(clave) ?? 0
+  }
+  return Math.min(g, TOPE_COMPARTIR)
+}
+
+/** Cuántas candidatas distintas del reparto piden cada ingrediente. */
+function rarezaDeLasCandidatas(huecos: Hueco[]): Map<string, number> {
+  const vistas = new Set<string>()
+  const veces = new Map<string, number>()
+  for (const hueco of huecos) {
+    for (const receta of hueco.candidatos) {
+      if (vistas.has(receta.id)) continue
+      vistas.add(receta.id)
+      for (const clave of clavesDe(receta)) veces.set(clave, (veces.get(clave) ?? 0) + 1)
+    }
+  }
+  return new Map([...veces].map(([clave, n]) => [clave, rarezaDe(n)]))
 }
 
 function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
@@ -306,9 +304,6 @@ function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado, ajustes:
 
   if ((acc.sabores.get(receta.sabor) ?? 0) >= 3) p += pesos.saborRepetido
 
-  // Lo que se pasa de cada techo, en proporción al propio techo: así el mismo
-  // plato apenas roza el techo de serie y pesa de verdad cuando se ha pedido
-  // "menos sal" y el techo baja a la mitad.
   for (const clave of Object.keys(techos) as Techo[]) {
     const techo = techos[clave]
     if (Number.isFinite(techo) && a[clave] > techo) {
@@ -329,6 +324,7 @@ export interface Hueco {
   id: string
   /** Candidatas que cumplen los límites de este hueco concreto. */
   candidatos: RecetaListada[]
+  dia?: string
 }
 
 export interface Reparto {
@@ -349,29 +345,19 @@ export interface OpcionesReparto {
   descartados?: Iterable<string>
   /** Lo que colocó la pasada anterior, para que volver a pulsar cambie la semana. */
   yaPropuestos?: Iterable<string>
+  proteinaPorDia?: Map<string, number>
   semilla?: number
 }
 
-/**
- * Reparte platos por huecos manteniendo una sola cuenta de la semana. Los huecos
- * más estrechos se llenan primero: si el martes solo admite platos de 20 minutos
- * y el sábado admite cualquiera, elegir antes por el martes evita gastarle sus
- * cuatro opciones a un día que no las necesitaba.
- */
 export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}): Reparto {
   const { preferencias, yaEnLaSemana = [], despensa = [], semilla = Date.now() } = opciones
   const descartados = new Set(opciones.descartados ?? [])
   const yaPropuestos = new Set(opciones.yaPropuestos ?? [])
   const aleatorio = prng(semilla)
-  // Lo ya cocinado cuenta en los huecos porque cuenta en el acumulado: si el
-  // lunes ya está puesto, su proteína suma y su cocina ocupa cuota, así que
-  // dejarlo fuera de la cuenta encogería el objetivo de la semana entera.
   const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length)
 
-  // Qué gasta cada receta de la despensa se resuelve una vez por receta y no una
-  // por hueco: la misma candidata se mira en los siete días, y cada mirada son
-  // sus ingredientes contra la despensa entera.
   const indice = indiceDespensa(despensa)
+  const rareza = rarezaDeLasCandidatas(huecos)
   const cacheUsados = new Map<string, number[]>()
   const usadosDe = (receta: RecetaListada): number[] => {
     if (indice.items.length === 0) return []
@@ -387,6 +373,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   // y quedarse sin gastar es justo lo que hay que arreglar esta semana.
   const acc = acumuladoVacio()
   for (const receta of yaEnLaSemana) acumular(acc, receta)
+  for (const [dia, gramos] of opciones.proteinaPorDia ?? []) acc.proteinaPorDia.set(dia, gramos)
 
   // Lo ya cocinado no se vuelve a proponer ni cuando toca repetir: acabas de
   // comértelo. Si hay que repetir, se repite de lo elegido en esta pasada.
@@ -412,8 +399,9 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     for (const receta of entre) {
       const a = aporteDe(receta)
       const nota =
-        ganancia(a, acc, ajustes) +
-        ajustes.pesos.aprovechar * gananciaDespensa(usadosDe(receta), acc, indice) -
+        ganancia(a, acc, ajustes, hueco.dia) +
+        ajustes.pesos.aprovechar * gananciaDespensa(usadosDe(receta), acc, indice) +
+        ajustes.pesos.compartir * gananciaCompartir(receta, acc, rareza) -
         penalizacion(receta, a, acc, ajustes) -
         (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
         (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0) +
@@ -424,7 +412,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
       }
     }
 
-    acumular(acc, mejor, usadosDe(mejor))
+    acumular(acc, mejor, usadosDe(mejor), hueco.dia)
     usadas.add(mejor.id)
     porHueco.set(hueco.id, mejor)
   }
@@ -456,11 +444,6 @@ export interface ResumenSemana {
   platos: number
 }
 
-/**
- * Qué trae la semana puesta, para poder contarla en vez de enseñar un número.
- * No es una nota ni un aprobado: es de dónde viene cada cosa y qué se queda
- * corto, que es lo único accionable.
- */
 export function resumenSemana(recetas: RecetaListada[], preferencias?: Preferencias): ResumenSemana {
   const ajustes = ajustesDe(preferencias, recetas.length || 1)
   const acc = acumuladoVacio()
@@ -486,12 +469,6 @@ export function resumenSemana(recetas: RecetaListada[], preferencias?: Preferenc
   return { coberturas, excesos, platos: recetas.length }
 }
 
-/**
- * Elige `n` platos de un mismo montón. `yaEnLaSemana` son los que ya están
- * puestos y no se tocan (los cocinados): entran en el cálculo como si los hubiese
- * elegido esta misma función, así que lo que devuelve compensa lo que les falta y
- * no repite ni su cocina, ni su verdura, ni el plato en sí.
- */
 export function semanaEquilibrada(
   recetas: RecetaListada[],
   n: number,

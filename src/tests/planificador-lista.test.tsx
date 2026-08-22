@@ -512,7 +512,7 @@ describe('desayunos en la auto-semana', () => {
 
   it('a cero desayunos, la semana es solo de principales', async () => {
     const { result } = await montarHidratado()
-    act(() => result.current.prefs.setDesayunos(0))
+    act(() => result.current.prefs.setHuecos('desayunos', 0))
     let informe!: ReturnType<typeof result.current.plan.autollenar>
     act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
 
@@ -598,7 +598,7 @@ describe('momentos del día', () => {
 
   it('con comidas puestas reparte los dos huecos, sin repetir plato el mismo día', async () => {
     const { result } = await montarHidratado()
-    act(() => result.current.prefs.setComidas(3))
+    act(() => result.current.prefs.setHuecos('comidas', 3))
 
     let informe!: ReturnType<typeof result.current.plan.autollenar>
     act(() => { informe = result.current.plan.autollenar(surtido, 2) })
@@ -620,9 +620,35 @@ describe('momentos del día', () => {
     }
   })
 
+  it('las cenas también se ajustan por días, y los días sin cena se quedan libres', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setHuecos('cenas', 4))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.cenas).toBe(4)
+    const conCena = result.current.plan.dias.filter((d) =>
+      result.current.plan.plan[d].some((e) => e.momento === 'cena')
+    )
+    expect(conCena).toHaveLength(4)
+  })
+
+  it('sin cenas ni comidas la auto-semana solo pone desayunos', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setHuecos('cenas', 0))
+
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    expect(informe.cenas).toBe(0)
+    expect(informe.comidas).toBe(0)
+    expect(informe.desayunos).toBeGreaterThan(0)
+  })
+
   it('una comida ya cocinada cuenta para el cupo y deja su día en paz', async () => {
     const { result } = await montarHidratado()
-    act(() => result.current.prefs.setComidas(2))
+    act(() => result.current.prefs.setHuecos('comidas', 2))
     act(() => result.current.plan.añadir('Jueves', PASTA, 2, 'comida'))
     const hecha = result.current.plan.plan.Jueves[0].id
     act(() => result.current.plan.marcarCocinada('Jueves', hecha, true))
@@ -640,7 +666,7 @@ describe('momentos del día', () => {
 
   it('el día se ordena desayuno, comida y cena', async () => {
     const { result } = await montarHidratado()
-    act(() => result.current.prefs.setComidas(7))
+    act(() => result.current.prefs.setHuecos('comidas', 7))
     act(() => { result.current.plan.autollenar(catalogo, 2) })
 
     const orden = { desayuno: 0, comida: 1, cena: 2 }

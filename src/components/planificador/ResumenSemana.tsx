@@ -25,11 +25,6 @@ const NOMBRE_TECHO: Record<string, string> = {
 const listar = (partes: string[]) =>
   partes.length <= 1 ? partes.join('') : `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`
 
-/**
- * Lo que trae la semana, contado como comida y no como porcentajes. Nada en
- * rojo y nada de "te has pasado": lo que cubre, lo que se queda corto y lo que
- * he tenido que hacer para llenarla.
- */
 export default function ResumenSemana({ recetas, preferencias, informe, onCerrar }: {
   recetas: RecetaListada[]
   preferencias: Preferencias
@@ -60,15 +55,15 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
 
   const avisos = [
     informe.aprovechados.length > 0 &&
-      `Gasta de la despensa ${listar(aprovechados)}${deMas > 0 ? ` y ${deMas} cosa${deMas === 1 ? '' : 's'} más` : ''}.`,
+      `La semana gasta de la despensa ${listar(aprovechados)}${deMas > 0 ? ` y ${deMas} cosa${deMas === 1 ? '' : 's'} más` : ''}.`,
     informe.conservados > 0 &&
       `${informe.conservados} ${informe.conservados === 1 ? 'plato ya hecho se queda' : 'platos ya hechos se quedan'} donde estaban.`,
     informe.tiempoEnsanchado &&
-      'No había platos para toda la semana con ese tiempo, así que he ensanchado los minutos.',
+      'El catálogo no daba para toda la semana con ese tiempo: el límite de minutos se ha ampliado.',
     informe.cenaEnsanchada &&
-      'No daba el catálogo para siete cenas ligeras, así que alguna noche cae un plato de los grandes.',
+      'No hay cenas ligeras para todos los días: alguna es un plato de los grandes.',
     informe.repetidos > 0 &&
-      `${informe.repetidos} ${informe.repetidos === 1 ? 'día repite' : 'días repiten'} plato: no quedaban candidatas distintas. En casa eso son sobras.`,
+      `${informe.repetidos} ${informe.repetidos === 1 ? 'día repite' : 'días repiten'} plato: no quedaban candidatas distintas.`,
     informe.huecosVacios > 0 &&
       `${informe.huecosVacios} ${informe.huecosVacios === 1 ? 'hueco se queda' : 'huecos se quedan'} sin llenar: con estos límites el catálogo no da más.`,
   ].filter(Boolean) as string[]
@@ -110,7 +105,7 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
         {excesos.length > 0 && (
           <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
             De media por plato, {listar(excesos.map((e) => NOMBRE_TECHO[e.clave]))}{' '}
-            {excesos.length === 1 ? 'pasa' : 'pasan'} del techo que has puesto.
+            {excesos.length === 1 ? 'supera' : 'superan'} el techo fijado.
           </p>
         )}
 

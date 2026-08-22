@@ -161,6 +161,11 @@ describe('ajustesDe', () => {
     expect(conProteina.objetivos.fibra).toBe(base.objetivos.fibra)
   })
 
+  it('la semana proteica persigue 125 g al día, y sin ella la proteína va por semana', () => {
+    expect(ajustesDe(conPrioridad('proteina'), 21).proteinaDiaria).toBe(125)
+    expect(ajustesDe().proteinaDiaria).toBeNull()
+  })
+
   it('las prioridades de "menos" bajan el techo, no suben ningún objetivo', () => {
     const a = ajustesDe(conPrioridad('menosSal', 'menosAzucar', 'ligera'))
     expect(a.techos.sal).toBeLessThan(ajustesDe().techos.sal)
@@ -308,6 +313,56 @@ describe('la verdura del propio plato cuenta', () => {
 })
 
 describe('repartirSemana', () => {
+  it('la proteína se cuenta por día: cubierto el día, deja de empujar', () => {
+    const pool = [
+      receta({ categoria: 'a1', proteinas: 120 }),
+      receta({ categoria: 'a2', proteinas: 120 }),
+      receta({ categoria: 'b1', proteinas: 8, micros: { fibra: 14 } }),
+      receta({ categoria: 'b2', proteinas: 8, micros: { fibra: 14 } }),
+    ]
+    const proteica = { preferencias: conPrioridad('proteina'), semilla: 1 }
+    const esProteico = (r: { categoria?: string }) => r.categoria!.startsWith('a')
+
+    const mismoDia = repartirSemana(
+      [
+        { id: 'Lunes:comida', dia: 'Lunes', candidatos: pool },
+        { id: 'Lunes:cena', dia: 'Lunes', candidatos: pool },
+      ],
+      proteica
+    ).porHueco
+    expect(esProteico(mismoDia.get('Lunes:comida')!)).toBe(true)
+    // 120 de los 125 del lunes ya están puestos: al segundo hueco del día le
+    // renta más la verdura que otro plato proteico.
+    expect(esProteico(mismoDia.get('Lunes:cena')!)).toBe(false)
+
+    const diasDistintos = repartirSemana(
+      [
+        { id: 'Lunes:cena', dia: 'Lunes', candidatos: pool },
+        { id: 'Martes:cena', dia: 'Martes', candidatos: pool },
+      ],
+      proteica
+    ).porHueco
+    expect(esProteico(diasDistintos.get('Lunes:cena')!)).toBe(true)
+    expect(esProteico(diasDistintos.get('Martes:cena')!)).toBe(true)
+  })
+
+  it('lo ya cocinado descuenta de la cuenta del día', () => {
+    const pool = [
+      receta({ categoria: 'a1', proteinas: 120 }),
+      receta({ categoria: 'b1', proteinas: 8, micros: { fibra: 14 } }),
+    ]
+    const { porHueco } = repartirSemana(
+      [{ id: 'Lunes:cena', dia: 'Lunes', candidatos: pool }],
+      {
+        preferencias: conPrioridad('proteina'),
+        semilla: 1,
+        proteinaPorDia: new Map([['Lunes', 130]]),
+      }
+    )
+    expect(porHueco.get('Lunes:cena')!.categoria).toBe('b1')
+  })
+
+
   it('llena antes el hueco estrecho para no gastarle su única opción', () => {
     const solo = receta({ categoria: 'a' })
     const otra = receta({ categoria: 'b' })

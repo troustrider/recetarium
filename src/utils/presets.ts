@@ -1,10 +1,5 @@
 import type { Prioridad } from '../types/preferencias'
 
-/**
- * Los presets son la interfaz de verdad: combinaciones con nombre de cocina, no
- * de consulta médica. Cubren lo corriente sin nombrar ninguna condición, porque
- * la app ordena recetas, no prescribe. Cada casa elegirá la suya.
- */
 export interface Preset {
   id: string
   nombre: string
@@ -58,7 +53,7 @@ export const PRESETS: Preset[] = [
   {
     id: 'sinAzucar',
     nombre: 'Menos azúcar',
-    nota: 'Baja el techo de azúcar, que pega sobre todo en los desayunos.',
+    nota: 'Baja el techo de azúcar, que se concentra en los desayunos.',
     prioridades: ['menosAzucar'],
   },
 ]
