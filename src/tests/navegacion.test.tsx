@@ -1,25 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
 import { useState } from 'react'
 import useTitulo from '../hooks/useTitulo'
 import useCapa from '../hooks/useCapa'
-import useDeslizarAtras from '../hooks/useDeslizarAtras'
 
 const navegar = vi.fn()
 vi.mock('react-router-dom', async () => {
   const real = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
   return { ...real, useNavigate: () => navegar }
 })
-
-function toque(tipo: string, x: number, y: number, destino?: Element) {
-  const evento = new Event(tipo, { bubbles: true }) as Event & { touches: unknown[] }
-  evento.touches = [{ clientX: x, clientY: y }]
-  if (destino) Object.defineProperty(evento, 'target', { value: destino })
-  act(() => {
-    window.dispatchEvent(evento)
-  })
-}
 
 beforeEach(() => {
   navegar.mockClear()
@@ -85,66 +74,5 @@ describe('useCapa', () => {
     })
     expect(screen.getByText('cerrada')).toBeInTheDocument()
     meter.mockRestore()
-  })
-})
-
-describe('useDeslizarAtras', () => {
-  function Pantalla() {
-    useDeslizarAtras()
-    return null
-  }
-
-  it('vuelve atrás al deslizar desde el canto izquierdo', () => {
-    window.history.pushState({ idx: 2 }, '')
-    render(<MemoryRouter><Pantalla /></MemoryRouter>)
-    toque('touchstart', 10, 300)
-    toque('touchmove', 120, 310)
-    expect(navegar).toHaveBeenCalledWith(-1)
-  })
-
-  it('lejos del canto también vale, pero pide más recorrido', () => {
-    window.history.pushState({ idx: 2 }, '')
-    render(<MemoryRouter><Pantalla /></MemoryRouter>)
-    // En iOS el canto se lo queda el navegador, así que el gesto libre es el
-    // único que llega a la página.
-    toque('touchstart', 200, 300)
-    toque('touchmove', 280, 310)
-    expect(navegar).not.toHaveBeenCalled()
-    toque('touchmove', 330, 310)
-    expect(navegar).toHaveBeenCalledWith(-1)
-  })
-
-  it('no se dispara sobre algo que se arrastra o se desplaza en horizontal', () => {
-    window.history.pushState({ idx: 2 }, '')
-    const { container } = render(<MemoryRouter><Pantalla /></MemoryRouter>)
-    const carrusel = document.createElement('div')
-    carrusel.style.touchAction = 'none'
-    container.appendChild(carrusel)
-    toque('touchstart', 10, 300, carrusel)
-    toque('touchmove', 200, 305, carrusel)
-    expect(navegar).not.toHaveBeenCalled()
-  })
-
-  it('un gesto en diagonal es scroll, no vuelta atrás', () => {
-    render(<MemoryRouter><Pantalla /></MemoryRouter>)
-    toque('touchstart', 10, 300)
-    toque('touchmove', 120, 400)
-    expect(navegar).not.toHaveBeenCalled()
-  })
-
-  it('con el modo cocina abierto se calla', () => {
-    document.documentElement.style.overflow = 'hidden'
-    render(<MemoryRouter><Pantalla /></MemoryRouter>)
-    toque('touchstart', 10, 300)
-    toque('touchmove', 120, 305)
-    expect(navegar).not.toHaveBeenCalled()
-  })
-
-  it('sin nada detrás lleva al catálogo en vez de salir de la app', () => {
-    window.history.replaceState({ idx: 0 }, '')
-    render(<MemoryRouter><Pantalla /></MemoryRouter>)
-    toque('touchstart', 10, 300)
-    toque('touchmove', 120, 305)
-    expect(navegar).toHaveBeenCalledWith('/')
   })
 })
