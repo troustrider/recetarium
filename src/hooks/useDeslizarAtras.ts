@@ -1,28 +1,51 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const BORDE = 28
-const RECORRIDO = 70
-const DESVIO = 45
+const BORDE = 40
+const RECORRIDO_BORDE = 60
+const RECORRIDO_LIBRE = 110
+const DESVIO = 50
 
 /**
- * Volver atrás deslizando desde el canto izquierdo. Instalada como PWA no hay
- * gesto del navegador, que es justo donde más falta hace.
+ * Volver atrás deslizando a la derecha. Instalada como PWA no hay gesto del
+ * navegador, que es donde más falta hace.
  *
- * Tiene que arrancar en el borde y no en cualquier punto: un deslizamiento libre
- * chocaría con el arrastre de chips del planificador y con los carruseles
- * horizontales. Y se calla con el modo cocina abierto, que bloquea el scroll de
- * la raíz y tiene sus propias flechas para moverse entre pasos.
+ * No basta con el canto izquierdo, que es lo idiomático en iOS: WebKit se queda
+ * ese gesto para su propia navegación y no entrega los `touchmove` a la página,
+ * así que en el iPhone un gesto anclado al borde no llega a verse nunca. Por eso
+ * también vale empezando en cualquier punto, pidiendo a cambio casi el doble de
+ * recorrido para que un arrastre despistado no te saque de la pantalla.
+ *
+ * Lo que se descarta antes de mirar el recorrido: lo que se arrastra —los chips
+ * del planificador declaran `touch-action: none`—, lo que se desplaza en
+ * horizontal —carruseles y tablas— y el modo cocina, que bloquea el scroll de la
+ * raíz y tiene sus propias flechas.
  */
+function intocable(destino: EventTarget | null): boolean {
+  let nodo = destino instanceof Element ? destino : null
+  while (nodo && nodo !== document.body) {
+    const estilo = getComputedStyle(nodo)
+    if (estilo.touchAction === 'none' || estilo.touchAction === 'pan-y') return true
+    const desplazable = /(auto|scroll)/.test(estilo.overflowX) && nodo.scrollWidth > nodo.clientWidth
+    if (desplazable) return true
+    nodo = nodo.parentElement
+  }
+  return false
+}
+
 export default function useDeslizarAtras(): void {
   const navigate = useNavigate()
 
   useEffect(() => {
-    let inicio: { x: number; y: number } | null = null
+    let inicio: { x: number; y: number; borde: boolean } | null = null
 
     const empezar = (e: TouchEvent) => {
       const t = e.touches[0]
-      inicio = e.touches.length === 1 && t.clientX <= BORDE ? { x: t.clientX, y: t.clientY } : null
+      if (e.touches.length !== 1 || intocable(e.target)) {
+        inicio = null
+        return
+      }
+      inicio = { x: t.clientX, y: t.clientY, borde: t.clientX <= BORDE }
     }
 
     const mover = (e: TouchEvent) => {
@@ -32,7 +55,8 @@ export default function useDeslizarAtras(): void {
         inicio = null
         return
       }
-      if (t.clientX - inicio.x < RECORRIDO) return
+      const recorrido = inicio.borde ? RECORRIDO_BORDE : RECORRIDO_LIBRE
+      if (t.clientX - inicio.x < recorrido) return
       inicio = null
       if (document.documentElement.style.overflow === 'hidden') return
       // Sin nada detrás —se ha entrado por un enlace directo— atrás no puede ser
