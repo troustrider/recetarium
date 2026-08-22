@@ -61,7 +61,7 @@ import { requireUser } from '../lib/auth.js'
  *     summary: Cómo quiere comer el hogar (prioridades, cocinas favoritas, límites)
  *     tags: [Plan]
  *     responses:
- *       200: { description: Objeto de preferencias; {} si el hogar no las ha tocado }
+ *       200: { description: "Objeto de preferencias; {} si el hogar no las ha tocado" }
  *   put:
  *     summary: Guardar las preferencias del hogar
  *     tags: [Plan]
