@@ -1,11 +1,12 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useMemo } from 'react'
 import { Routes, Route, useLocation, useNavigationType, type Location } from 'react-router-dom'
 import { AnimatePresence, MotionConfig, motion, useTransform } from 'framer-motion'
 import Layout from './components/shared/Layout'
 import LoadingSpinner from './components/shared/LoadingSpinner'
 import InstallPrompt from './components/shared/InstallPrompt'
-import useScrollDeRuta from './hooks/useScrollDeRuta'
+import useScrollDeRuta, { scrollGuardado } from './hooks/useScrollDeRuta'
 import useArrastreAtras from './hooks/useArrastreAtras'
+import usePilaDeRutas from './hooks/usePilaDeRutas'
 import { FUNDIDO, PILA, esProfunda } from './utils/paginas'
 
 const Catalogo      = lazy(() => import('./pages/Catalogo'))
@@ -39,21 +40,12 @@ function App() {
   const atras = useNavigationType() === 'POP'
   useScrollDeRuta()
 
-  // La ruta que se deja atrás, para dibujarla debajo mientras el dedo arrastra.
-  // Va en estado y no en referencia porque se lee al pintar.
-  const [previa, setPrevia] = useState<Location | null>(null)
-  const actual = useRef(location)
-  useEffect(() => {
-    if (actual.current.key !== location.key) setPrevia(actual.current)
-    actual.current = location
-  }, [location])
-
-  const hayAnterior = ((window.history.state as { idx?: number } | null)?.idx ?? 0) > 0
+  const { indice, previa } = usePilaDeRutas()
   const desliza = esProfunda(location.pathname) || atras
-  const { x, arrastrando, manejadores } = useArrastreAtras(hayAnterior)
+  const { x, arrastrando, porGesto, contenedor } = useArrastreAtras(indice > 0)
+  const paso = useMemo(() => ({ atras, sinAnimar: porGesto }), [atras, porGesto])
   const debajo = useTransform(x, (v) => `${-28 + (28 * Math.min(v / (window.innerWidth || 1), 1))}%`)
   const veloDebajo = useTransform(x, (v) => 0.55 + 0.45 * Math.min(v / (window.innerWidth || 1), 1))
-
 
   return (
     <MotionConfig reducedMotion="user">
@@ -66,23 +58,26 @@ function App() {
               `w-full` es lo mismo para el ancho, que en absoluto se encoge al
               contenido. Y el recorte impide que la pantalla que entra desde la
               derecha asome como scroll horizontal. */}
-          <div className="relative [overflow-x:clip]" {...manejadores}>
+          <div ref={contenedor} className="relative [overflow-x:clip]">
             {arrastrando && previa && (
               <motion.div
-                className="absolute inset-x-0 top-0 w-full"
-                style={{ x: debajo, opacity: veloDebajo }}
+                className="absolute inset-x-0 w-full pointer-events-none"
+                // Se dibuja por su principio, y la ruta de debajo casi nunca
+                // estaba ahí: sin corregir el desplazamiento asoma un trozo
+                // cualquiera del catálogo y al soltar salta a su sitio.
+                style={{ top: window.scrollY - scrollGuardado(previa.key), x: debajo, opacity: veloDebajo }}
                 aria-hidden
               >
                 <Rutas location={previa} />
               </motion.div>
             )}
-            <AnimatePresence mode="popLayout" initial={false} custom={atras}>
+            <AnimatePresence mode="popLayout" initial={false} custom={paso}>
               <motion.div
                 key={location.pathname}
                 className="w-full"
-                custom={atras}
+                custom={paso}
                 variants={desliza ? PILA : FUNDIDO}
-                initial="entra"
+                initial={porGesto ? false : 'entra'}
                 animate="quieta"
                 exit="sale"
                 transition={{ duration: desliza ? 0.32 : 0.16, ease: [0.32, 0.72, 0, 1] }}

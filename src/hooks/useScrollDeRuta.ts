@@ -7,6 +7,13 @@ const MARGEN = 600
 let restaurando = false
 
 /**
+ * Dónde se quedó una ruta. Lo necesita el arrastre de vuelta atrás: la pantalla
+ * que dibuja debajo tiene que aparecer donde el usuario la dejó, no por su
+ * principio, o al soltar el catálogo daría un salto hasta su sitio.
+ */
+export const scrollGuardado = (clave: string) => posiciones.get(clave) ?? 0
+
+/**
  * Arriba al navegar, y donde lo dejaste al volver. Antes subía arriba siempre,
  * también al retroceder, que obliga a buscar otra vez la receta por la que ibas.
  *

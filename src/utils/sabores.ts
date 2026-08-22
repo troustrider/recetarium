@@ -16,4 +16,3 @@ export const LUZ: Record<Sabor, { bg: string; bloom: string; dot: string }> = {
   acido:  { bg: '#14300E', bloom: 'rgba(163,230,53,0.26)', dot: '#a3e635' },
 }
 
-export const recetaVisualLayoutId = (id: string) => `receta-visual-${id}`
