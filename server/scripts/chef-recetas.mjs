@@ -260,6 +260,7 @@ async function guardar(r) {
   const con = JSON.stringify(r.consejos ?? [])
   const f = fichaNutricional(r)
   const mic = JSON.stringify(f.micros)
+  const apt = JSON.stringify(f.apto)
   const gua = guarnicionConFicha(r.guarnicion, r.porciones ?? 1)
   const guaJson = gua ? JSON.stringify(gua) : null
   if (r.id) {
@@ -269,7 +270,7 @@ async function guardar(r) {
         consejos = ${con}, category_id = ${cid}, precio_por_porcion = ${r.precioPorPorcion},
         porciones = ${r.porciones}, calorias = ${r.calorias ?? null}, proteinas = ${r.proteinas ?? null},
         carbohidratos = ${r.carbohidratos ?? null}, grasas = ${r.grasas ?? null}, tipo = ${r.tipo ?? 'principal'},
-        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}, guarnicion = ${guaJson}
+        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}, apto = ${apt}, guarnicion = ${guaJson}
       WHERE id = ${r.id} RETURNING id, nombre`
     if (!row) throw new Error(`id no encontrado: ${r.id}`)
     return { accion: 'UPDATE', ...row }
@@ -277,11 +278,11 @@ async function guardar(r) {
   const [row] = await sql`
     INSERT INTO recetas (nombre, categoria, tiempo_preparacion, ingredientes, pasos, consejos,
       precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo,
-      hierro, sin_gluten, micros, guarnicion)
+      hierro, sin_gluten, micros, apto, guarnicion)
     VALUES (${r.nombre}, ${r.categoria ?? null}, ${r.tiempoPreparacion}, ${ing}, ${pas}, ${con},
       ${r.precioPorPorcion}, ${r.porciones}, ${cid}, ${r.calorias ?? null}, ${r.proteinas ?? null},
       ${r.carbohidratos ?? null}, ${r.grasas ?? null}, ${r.tipo ?? 'principal'},
-      ${f.hierro}, ${f.sinGluten}, ${mic}, ${guaJson})
+      ${f.hierro}, ${f.sinGluten}, ${mic}, ${apt}, ${guaJson})
     RETURNING id, nombre`
   return { accion: 'INSERT', ...row }
 }

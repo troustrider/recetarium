@@ -20,7 +20,7 @@
     "vinagre de vino tinto", "whisky", "amaretto", "vino blanco seco", "azafrán",
     "vino tinto", "vino dulce", "vinagre balsámico", "za'atar", "eneldo", "lima seca",
     "hinojo en semilla", "agua de azahar", "ras el hanout", "enebro en grano",
-    "anís estrellado", "sumac", "achiote", "gochugaru"
+    "anís estrellado", "sumac", "achiote", "gochugaru", "berbere", "baharat"
   ],
 
   "ingredientes": {
@@ -148,11 +148,16 @@
     "garbanzos cocidos de bote":   { "p": 8,    "c": 14,   "gr": 3,   "fib": 5, "sat": 0.3, "sal": 0.5, "fe": 1.6, "ca": 45, "fol": 50 },
     "garbanzos":                   { "p": 8,    "c": 14,   "gr": 3,   "fib": 5, "sat": 0.3, "sal": 0.5, "fe": 1.6, "ca": 45, "fol": 50 },
     "garbanzos secos":             { "p": 19,   "c": 55,   "gr": 6,   "fib": 15, "az": 3, "sat": 0.6, "fe": 6.2, "ca": 105, "fol": 170 },
+    "harina de garbanzo":          { "p": 22,   "c": 58,   "gr": 6.7, "fib": 11, "az": 11, "sat": 0.7, "fe": 4.9, "ca": 45, "fol": 437 },
+    "habas secas":                 { "p": 26,   "c": 58,   "gr": 1.5, "fib": 25, "az": 5, "sat": 0.3, "fe": 6.7, "ca": 103, "fol": 423 },
+    "soja seca":                   { "p": 36,   "c": 30,   "gr": 20,  "fib": 9, "az": 7, "sat": 2.9, "fe": 15.7, "ca": 277, "fol": 375 },
+    "tempeh":                      { "p": 19,   "c": 9,    "gr": 11,  "fib": 6, "az": 1, "sat": 2.2, "fe": 2.7, "ca": 110, "fol": 24 },
     "lentejas cocidas de bote":    { "p": 8,    "c": 13,   "gr": 0.5, "fib": 5, "sat": 0.1, "sal": 0.4, "fe": 2.4, "ca": 20, "fol": 45 },
     "lentejas":                    { "p": 24,   "c": 52,   "gr": 1.5, "fib": 11, "az": 2, "sat": 0.2, "fe": 7.5, "ca": 50, "fol": 200 },
     "lentejas rojas":              { "p": 24,   "c": 56,   "gr": 1.5, "fib": 10, "az": 2, "sat": 0.2, "fe": 7, "ca": 45, "fol": 190 },
     "guisantes secos partidos":    { "p": 24,   "c": 52,   "gr": 1.5, "fib": 22, "az": 8, "sat": 0.2, "fe": 4.5, "ca": 55, "fol": 65 },
     "alubias rojas de bote":       { "p": 8,    "c": 15,   "gr": 0.5, "fib": 6, "sat": 0.1, "sal": 0.5, "fe": 2, "ca": 45, "fol": 40 },
+    "alubias pintas de bote":       { "p": 8,    "c": 15,   "gr": 0.5, "fib": 6, "sat": 0.1, "sal": 0.5, "fe": 2, "ca": 50, "fol": 40 },
     "alubias blancas de bote":     { "p": 8,    "c": 15,   "gr": 0.5, "fib": 6, "sat": 0.1, "sal": 0.5, "fe": 2.2, "ca": 60, "fol": 35 },
     "alubias negras de bote":      { "p": 8,    "c": 15,   "gr": 0.5, "fib": 7, "sat": 0.1, "sal": 0.5, "fe": 2, "ca": 40, "fol": 45 },
     "brotes de soja":              { "p": 3,    "c": 4,    "gr": 0.2, "fib": 1.8, "az": 2, "fe": 0.9, "vc": 13, "ca": 13, "fol": 60 },
@@ -220,6 +225,7 @@
     "cacahuetes":                  { "p": 25,   "c": 16,   "gr": 49,  "fib": 8.5, "az": 4, "sat": 7, "fe": 4.6, "ca": 92, "fol": 240 },
     "crema de cacahuete":          { "p": 25,   "c": 12,   "gr": 50,  "fib": 6, "az": 9, "sat": 10, "sal": 0.5, "fe": 1.9, "ca": 43, "fol": 90 },
     "tahini":                      { "p": 17,   "c": 10,   "gr": 54,  "fib": 9, "az": 0.5, "sat": 7.6, "fe": 8.9, "ca": 426, "fol": 98 },
+    "pasta de pimiento turca":     { "p": 2,    "c": 14,   "gr": 1,   "cucharada": 18, "fib": 3, "az": 8, "sal": 6, "fe": 1.5, "vc": 50, "ca": 25 },
     "sésamo":                      { "p": 18,   "c": 12,   "gr": 50,  "fib": 12, "az": 0.3, "sat": 7, "fe": 14.6, "ca": 975, "fol": 97 },
     "semillas de calabaza":        { "p": 25,   "c": 11,   "gr": 46,  "fib": 6, "az": 1.4, "sat": 8.7, "fe": 8.8, "ca": 46, "fol": 58 },
     "semillas de chía":            { "p": 17,   "c": 8,    "gr": 31,  "fib": 34, "sat": 3.3, "fe": 7.7, "vc": 1.6, "ca": 631, "fol": 49 },
