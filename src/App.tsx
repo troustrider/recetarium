@@ -80,7 +80,12 @@ function App() {
           <AnimatePresence initial={false} custom={paso}>
             <motion.div
               key={location.pathname}
-              className="w-full [grid-area:1/1]"
+              // La que entra empujando tiene que tapar: sin fondo propio —lo
+              // pinta el Layout— la ficha llega transparente y el catálogo, que
+              // se retira al 28% sin llegar a apagarse, se le ve a través. Al
+              // volver no se pone: allí la que se va cruza entera hacia la
+              // derecha y es su transparencia la que deja verla marcharse.
+              className={`w-full [grid-area:1/1] ${atras ? '' : 'bg-stone-50 dark:bg-gray-950'}`}
               custom={paso}
               variants={desliza ? PILA : FUNDIDO}
               initial={porGesto ? false : 'entra'}
