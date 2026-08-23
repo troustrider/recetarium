@@ -30,7 +30,7 @@ export default function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, o
     <div
       ref={setNodeRef}
       style={{ opacity: isDragging && !overlay ? 0.3 : 1 }}
-      className={`relative flex items-center gap-2 border rounded-xl pr-3 py-2 select-none min-w-0 max-w-full overflow-hidden ${
+      className={`relative flex items-center gap-1.5 sm:gap-2 border rounded-xl pr-2 sm:pr-3 py-2 select-none w-full sm:w-auto min-w-0 max-w-full overflow-hidden ${
         // Lo cocinado manda sobre el momento: el verde de "ya está hecha" es el
         // estado del plato de hoy, y el momento seguirá ahí mañana.
         hecha
@@ -97,8 +97,8 @@ export default function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, o
         </button>
       )}
 
-      <Link to={`/recetas/${entrada.receta.id}`} className="min-w-[64px] flex-1 group">
-        <p className={`text-xs font-semibold truncate max-w-[120px] transition-colors ${
+      <Link to={`/recetas/${entrada.receta.id}`} className="min-w-0 sm:min-w-[64px] flex-1 group">
+        <p className={`text-xs font-semibold truncate sm:max-w-[120px] transition-colors ${
           hecha
             ? 'text-gray-400 dark:text-gray-500 line-through'
             : 'text-gray-900 dark:text-gray-100 group-hover:text-orange-500 dark:group-hover:text-orange-400'
