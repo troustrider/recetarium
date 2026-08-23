@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { useLocation, useNavigationType } from 'react-router-dom'
 
 const posiciones = new Map<string, number>()
@@ -41,7 +41,10 @@ export default function useScrollDeRuta(): void {
     return () => window.removeEventListener('scroll', anotar)
   }, [key])
 
-  useEffect(() => {
+  // Antes de pintar, no después: en un efecto normal el navegador llega a
+  // dibujar un cuadro con la pantalla nueva puesta en el scroll de la anterior,
+  // y ese parpadeo es justo lo que se ve al entrar en una receta y al volver.
+  useLayoutEffect(() => {
     const destino = tipo === 'POP' ? posiciones.get(key) ?? 0 : 0
     const limite = performance.now() + MARGEN
     let frame = 0

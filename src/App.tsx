@@ -50,44 +50,55 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <Layout>
-        <Suspense fallback={<LoadingSpinner />}>
-          {/* `relative` no es decorativo: `popLayout` saca de la caja a la
-              pantalla que se va poniéndola en absoluto, y sin un ancestro
-              posicionado su referencia sería el documento entero —perdería el
-              centrado y el margen y saltaría a la esquina antes de irse—. El
-              `w-full` es lo mismo para el ancho, que en absoluto se encoge al
-              contenido. Y el recorte impide que la pantalla que entra desde la
-              derecha asome como scroll horizontal. */}
-          <div ref={contenedor} className="relative [overflow-x:clip]">
-            {arrastrando && previa && (
-              <motion.div
-                className="absolute inset-x-0 w-full pointer-events-none"
-                // Se dibuja por su principio, y la ruta de debajo casi nunca
-                // estaba ahí: sin corregir el desplazamiento asoma un trozo
-                // cualquiera del catálogo y al soltar salta a su sitio.
-                style={{ top: window.scrollY - scrollGuardado(previa.key), x: debajo, opacity: veloDebajo }}
-                aria-hidden
-              >
+        {/* Las dos pantallas comparten casilla de rejilla, que es la manera de
+            superponerlas sin sacar ninguna de la caja. `popLayout` hacía eso
+            mismo poniendo en absoluto a la que se va, y con ello el alto del
+            documento pasaba de golpe al de la que llega: si el scroll no cabía
+            en el nuevo alto el navegador lo recortaba, y ese recorte es el
+            fotograma descolocado que se veía al entrar y al salir. En rejilla
+            el contenedor mide lo que la más alta de las dos y no encoge hasta
+            que la anterior se desmonta, ya con el scroll en su sitio.
+
+            `relative` sostiene la capa del arrastre, `items-start` impide que
+            la más corta se estire hasta la otra, y el recorte lateral impide
+            que la que entra desde la derecha asome como scroll horizontal. */}
+        <div ref={contenedor} className="relative grid items-start [overflow-x:clip]">
+          {arrastrando && previa && (
+            <motion.div
+              className="absolute inset-x-0 w-full pointer-events-none"
+              // Se dibuja por su principio, y la ruta de debajo casi nunca
+              // estaba ahí: sin corregir el desplazamiento asoma un trozo
+              // cualquiera del catálogo y al soltar salta a su sitio.
+              style={{ top: window.scrollY - scrollGuardado(previa.key), x: debajo, opacity: veloDebajo }}
+              aria-hidden
+            >
+              <Suspense fallback={null}>
                 <Rutas location={previa} />
-              </motion.div>
-            )}
-            <AnimatePresence mode="popLayout" initial={false} custom={paso}>
-              <motion.div
-                key={location.pathname}
-                className="w-full"
-                custom={paso}
-                variants={desliza ? PILA : FUNDIDO}
-                initial={porGesto ? false : 'entra'}
-                animate="quieta"
-                exit="sale"
-                transition={{ duration: desliza ? 0.32 : 0.16, ease: [0.32, 0.72, 0, 1] }}
-                style={arrastrando ? { x, boxShadow: '-14px 0 34px rgba(0,0,0,0.28)' } : undefined}
-              >
+              </Suspense>
+            </motion.div>
+          )}
+          <AnimatePresence initial={false} custom={paso}>
+            <motion.div
+              key={location.pathname}
+              className="w-full [grid-area:1/1]"
+              custom={paso}
+              variants={desliza ? PILA : FUNDIDO}
+              initial={porGesto ? false : 'entra'}
+              animate="quieta"
+              exit="sale"
+              transition={{ duration: desliza ? 0.32 : 0.16, ease: [0.32, 0.72, 0, 1] }}
+              style={arrastrando ? { x, boxShadow: '-14px 0 34px rgba(0,0,0,0.28)' } : undefined}
+            >
+              {/* La espera del trozo de código va por pantalla y no envolviendo
+                  a las dos: arriba, un `lazy` sin resolver cambia el árbol
+                  entero por el indicador y desmonta la transición a media
+                  animación, que es la pantalla en blanco de un parpadeo. */}
+              <Suspense fallback={<LoadingSpinner />}>
                 <Rutas location={location} />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </Suspense>
+              </Suspense>
+            </motion.div>
+          </AnimatePresence>
+        </div>
         <InstallPrompt />
       </Layout>
     </MotionConfig>
