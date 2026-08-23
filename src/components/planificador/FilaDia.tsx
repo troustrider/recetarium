@@ -53,7 +53,7 @@ export default function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
               >
-                <span className={`flex items-center gap-1 shrink-0 sm:w-[86px] text-[10px] font-bold uppercase tracking-widest ${texto}`}>
+                <span className={`flex items-center gap-1 w-full sm:w-[86px] shrink-0 text-[10px] font-bold uppercase tracking-widest ${texto}`}>
                   <Icono className="w-3 h-3" />
                   {NOMBRE_MOMENTO[momento]}
                 </span>
@@ -62,7 +62,7 @@ export default function FilaDia({ dia, entradas, onAñadir, onQuitar, onRaciones
                     key={entrada.id}
                     layoutId={entrada.id}
                     layout
-                    className="min-w-0 max-w-full"
+                    className="w-full sm:w-auto min-w-0 max-w-full"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.85 }}
