@@ -2325,6 +2325,142 @@
       "fuente": "estimado",
       "revisado": "2026-08",
       "formato": "bote 20 g · 1,20 €"
+    },
+    {
+      "nombre": "paneer",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bloque 200 g · 2,40 €"
+    },
+    {
+      "nombre": "acelgas",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "manojo 400 g · 1,00 €"
+    },
+    {
+      "nombre": "harina de maíz",
+      "euros": 2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 500 g · 1,00 €"
+    },
+    {
+      "nombre": "harina de garbanzo",
+      "euros": 3.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 500 g · 1,75 €"
+    },
+    {
+      "nombre": "masa quebrada",
+      "euros": 6,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "rollo 230 g · 1,40 €"
+    },
+    {
+      "nombre": "longaniza fresca",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bandeja 300 g · 2,70 €"
+    },
+    {
+      "nombre": "sucuk",
+      "euros": 14,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "pieza 250 g · 3,50 €"
+    },
+    {
+      "nombre": "queso fresco",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tarrina 250 g · 2,25 €"
+    },
+    {
+      "nombre": "kéfir",
+      "euros": 2.5,
+      "unidad": "l",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "botella 1 l · 2,50 €"
+    },
+    {
+      "nombre": "chana dal",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa 500 g · 1,50 €"
+    },
+    {
+      "nombre": "caupí seco",
+      "euros": 3.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa 500 g · 1,75 €"
+    },
+    {
+      "nombre": "dulce de membrillo",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tableta 400 g · 3,20 €"
+    },
+    {
+      "nombre": "panceta fresca",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bandeja 300 g · 2,70 €"
+    },
+    {
+      "nombre": "ontbijtkoek",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 400 g · 2,00 €"
+    },
+    {
+      "nombre": "biscotes",
+      "euros": 6,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 250 g · 1,50 €"
+    },
+    {
+      "nombre": "arándanos",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tarrina 125 g · 1,50 €"
+    },
+    {
+      "nombre": "pan integral",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "barra 400 g · 1,20 €"
     }
   ]
 }
