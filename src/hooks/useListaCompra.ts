@@ -16,6 +16,8 @@ export interface IngredienteAgrupado extends Ingrediente {
   quedaPoco?: boolean
   yaTengo?: number
   desglose?: ParteReceta[]
+  /** Lo que pide cada plato, para la vista por receta. */
+  porReceta?: ParteReceta[]
   /** Lo que pide el mismo ingrediente en otra magnitud, que no se puede sumar. */
   otrasMedidas?: Medida[]
 }
@@ -164,10 +166,12 @@ function useListaCompra() {
       const { principal, otras } = juntarMedidas(item.medidas)
       item.cantidad = principal.cantidad
       item.unidad = principal.unidad
+      item.porReceta = item.desglose
       if (otras.length === 0) continue
       item.otrasMedidas = otras
-      // Con dos magnitudes en juego, el desglose por receta estaría en unidades
+      // Con dos magnitudes en juego, el reparto por receta estaría en unidades
       // distintas y no querría decir nada.
+      item.porReceta = undefined
       item.desglose = undefined
     }
 

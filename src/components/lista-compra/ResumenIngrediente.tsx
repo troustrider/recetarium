@@ -8,6 +8,7 @@ interface IngredienteAgrupado {
   familia: string
   esExtra?: boolean
   quedaPoco?: boolean
+  compartido?: boolean
   yaTengo?: number
   desglose?: { receta: string; cantidad: number }[]
   otrasMedidas?: { cantidad: number; unidad: string }[]
@@ -21,7 +22,7 @@ interface Props {
 }
 
 function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props) {
-  const { nombre, cantidad, unidad, esExtra, quedaPoco, yaTengo, desglose, otrasMedidas } = ingrediente
+  const { nombre, cantidad, unidad, esExtra, quedaPoco, compartido, yaTengo, desglose, otrasMedidas } = ingrediente
 
   return (
     <motion.li
@@ -42,6 +43,7 @@ function ResumenIngrediente({ ingrediente, checked, onToggle, onRemove }: Props)
         {capitalize(nombre)}
         {esExtra && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">manual</span>}
         {quedaPoco && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-amber-500">queda poco</span>}
+        {compartido && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-gray-400">compartido</span>}
         {yaTengo != null && yaTengo > 0 && (
           <span className="block text-[11px] font-normal text-emerald-600 dark:text-emerald-400">
             ya tenéis {formatCantidad(yaTengo, unidad)} en la despensa
