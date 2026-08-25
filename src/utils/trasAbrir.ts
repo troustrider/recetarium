@@ -1,6 +1,6 @@
 import { nucleoOrdenado } from './despensa'
 import { normalizar } from './ingredientes'
-import { sumarDias } from './caducidadEstimada'
+import { diasFrescos, sumarDias, vaAlCongelador } from './caducidadEstimada'
 
 const DIAS_TRAS_ABRIR: Record<string, number> = {
   // Lácteos: lo que más engaña, porque el envase cerrado dura meses
@@ -46,8 +46,14 @@ const DIAS_POR_FAMILIA: Record<string, number> = {
   conservas: 3,
 }
 
-/** Días que aguanta el paquete abierto, o `null` si abrirlo no le hace nada. */
+/**
+ * Días que aguanta el paquete abierto, o `null` si abrirlo no le hace nada. En
+ * lo que vive congelado la casilla es la de descongelar, y entonces aguanta lo
+ * que aguantaría fresco.
+ */
 export function diasTrasAbrir(nombre: string, familia: string): number | null {
+  if (vaAlCongelador(familia)) return diasFrescos(nombre, familia)
+
   // Lo congelado se saca a cachos: abrir la bolsa no arranca ningún reloj.
   if (/congelad/.test(normalizar(nombre))) return null
 

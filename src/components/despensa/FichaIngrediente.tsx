@@ -5,7 +5,7 @@ import { useDespensa, type IngredienteDespensa, type CambiosIngrediente } from '
 import { FAMILIAS, mismoIngrediente } from '../../utils/despensa'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
 import { diasTrasAbrir } from '../../utils/trasAbrir'
-import { sumarDias } from '../../utils/caducidadEstimada'
+import { sumarDias, vaAlCongelador } from '../../utils/caducidadEstimada'
 import { capitalize } from '../../utils/ingredientes'
 
 interface Props {
@@ -267,6 +267,7 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
 function Apertura({ item, onEditar }: { item: IngredienteDespensa; onEditar: (c: CambiosIngrediente) => void }) {
   const dias = diasTrasAbrir(item.nombre, item.familia)
   const abierto = item.abierto != null
+  const congelado = vaAlCongelador(item.familia)
 
   return (
     <div
@@ -277,32 +278,34 @@ function Apertura({ item, onEditar }: { item: IngredienteDespensa; onEditar: (c:
       }`}
     >
       <label className="flex items-center justify-between gap-3 px-4 py-2.5 cursor-pointer">
-        <span className="text-gray-500 dark:text-gray-400">Paquete abierto</span>
+        <span className="text-gray-500 dark:text-gray-400">{congelado ? 'Descongelado' : 'Paquete abierto'}</span>
         <input
           type="checkbox"
           checked={abierto}
           onChange={(e) => onEditar({ abierto: e.target.checked ? sumarDias(0) : null })}
           className="w-4 h-4 accent-amber-500"
-          aria-label="Marcar el paquete como abierto"
+          aria-label={congelado ? 'Marcar como descongelado' : 'Marcar el paquete como abierto'}
         />
       </label>
 
       {abierto && (
         <div className="px-4 pb-3 -mt-0.5">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs text-gray-400 dark:text-gray-500">Se abrió el</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">{congelado ? 'Se sacó el' : 'Se abrió el'}</span>
             <input
               type="date"
               value={item.abierto}
               onChange={(e) => e.target.value && onEditar({ abierto: e.target.value })}
-              aria-label="Día en que se abrió"
+              aria-label={congelado ? 'Día en que se sacó del congelador' : 'Día en que se abrió'}
               className="bg-transparent text-right text-sm text-gray-700 dark:text-gray-200 outline-none cursor-pointer"
             />
           </div>
           <p className="mt-1.5 text-[11px] text-amber-700/80 dark:text-amber-400/80">
             {dias == null
               ? 'Abierto aguanta lo mismo: la caducidad se queda como estaba.'
-              : `Abierto aguanta unos ${dias} días, y la caducidad ya lo cuenta.`}
+              : congelado
+                ? `Descongelado aguanta unos ${dias} días, y la caducidad ya lo cuenta.`
+                : `Abierto aguanta unos ${dias} días, y la caducidad ya lo cuenta.`}
           </p>
         </div>
       )}

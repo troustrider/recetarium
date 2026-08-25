@@ -5,7 +5,7 @@ import { useDespensa } from '../../context/DespensaContext'
 import { FAMILIAS, estaEnDespensa } from '../../utils/despensa'
 import { normalizar, capitalize } from '../../utils/ingredientes'
 import { UNIDADES_DESPENSA, requiereCantidad, unidadPorDefecto } from '../../utils/cantidades'
-import { caducidadEstimada, diasEstimados, sumarDias } from '../../utils/caducidadEstimada'
+import { caducidadEstimada, diasEstimados, sumarDias, vaAlCongelador } from '../../utils/caducidadEstimada'
 import { caducidadAlAbrir, diasTrasAbrir } from '../../utils/trasAbrir'
 import useIngredientesConocidos from '../../hooks/useIngredientesConocidos'
 
@@ -43,6 +43,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
       : sinAbrir
   const valorCaducidad = caducidadTocada ? caducidad : estimada ?? ''
   const diasAbierto = nombre.trim().length > 1 ? diasTrasAbrir(nombre, familia) : null
+  const congelado = vaAlCongelador(familia)
 
   function cambiarFamilia(f: string) {
     setFamilia(f)
@@ -165,7 +166,7 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
             {estimada && (
               <p className="px-1 mt-1.5 text-[11px] text-orange-600/80 dark:text-orange-400/80">
                 {yaAbierto && diasAbierto != null
-                  ? `Abierto aguanta unos ${diasAbierto} días, y la fecha ya lo cuenta.`
+                  ? `${congelado ? 'Descongelado' : 'Abierto'} aguanta unos ${diasAbierto} días, y la fecha ya lo cuenta.`
                   : `Caducidad estimada (${diasEstimados(nombre, familia)} días). Cámbiala si el envase trae otra.`}
               </p>
             )}
@@ -177,13 +178,15 @@ function AnadirIngrediente({ abierto, onClose }: Props) {
                   : 'border-gray-200 dark:border-gray-700'
               }`}
             >
-              <span className="text-gray-500 dark:text-gray-400">Ya lo he abierto</span>
+              <span className="text-gray-500 dark:text-gray-400">
+                {congelado ? 'Ya está descongelado' : 'Ya lo he abierto'}
+              </span>
               <input
                 type="checkbox"
                 checked={yaAbierto}
                 onChange={(e) => setYaAbierto(e.target.checked)}
                 className="w-4 h-4 accent-amber-500"
-                aria-label="Marcar que el paquete ya está abierto"
+                aria-label={congelado ? 'Marcar que ya está descongelado' : 'Marcar que el paquete ya está abierto'}
               />
             </label>
 
