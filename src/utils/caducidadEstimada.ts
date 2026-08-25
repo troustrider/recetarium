@@ -72,6 +72,13 @@ const DIAS_CONGELADO = 180
 /** Lo que no se come: ni se estima ni cuenta para nada. */
 const FAMILIA_SIN_COMIDA = 'hogar'
 
+const FAMILIAS_AL_CONGELADOR = new Set(['carnes'])
+
+/** Lo que entra en casa camino del congelador: la fecha del mostrador no dice nada. */
+export function vaAlCongelador(familia: string): boolean {
+  return FAMILIAS_AL_CONGELADOR.has(normalizar(familia))
+}
+
 export const UMBRAL_NO_PERECEDERO_DIAS = 60
 
 function diasSecos(nucleo: string[], fam: string): number | null {
@@ -85,7 +92,8 @@ function diasSecos(nucleo: string[], fam: string): number | null {
   )
 }
 
-export function diasEstimados(nombre: string, familia: string): number | null {
+/** Lo que duraría fresco, sin mirar si el nombre dice que viene congelado. */
+export function diasFrescos(nombre: string, familia: string): number | null {
   const fam = normalizar(familia)
   if (fam === FAMILIA_SIN_COMIDA) return null
 
@@ -102,8 +110,13 @@ export function diasEstimados(nombre: string, familia: string): number | null {
           ? null
           : nucleo.map((t) => TABLA.get(t)).find((d) => d != null) ?? porFamilia)
 
-  if (base == null) return null
-  return /congelad/.test(normalizar(nombre)) ? DIAS_CONGELADO : base
+  return base
+}
+
+export function diasEstimados(nombre: string, familia: string): number | null {
+  const dias = diasFrescos(nombre, familia)
+  if (dias == null) return null
+  return /congelad/.test(normalizar(nombre)) ? DIAS_CONGELADO : dias
 }
 
 /** Fondo de armario: dura lo bastante como para que no corra prisa gastarlo. */
@@ -120,6 +133,7 @@ export function sumarDias(dias: number, desde = new Date()): string {
 }
 
 export function caducidadEstimada(nombre: string, familia: string, hoy = new Date()): string | null {
+  if (vaAlCongelador(familia)) return null
   const dias = diasEstimados(nombre, familia)
   return dias == null ? null : sumarDias(dias, hoy)
 }

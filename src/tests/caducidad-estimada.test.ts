@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { caducidadEstimada, diasEstimados, esNoPerecedero, sumarDias } from '../utils/caducidadEstimada'
+import { caducidadEstimada, diasEstimados, diasFrescos, esNoPerecedero, sumarDias, vaAlCongelador } from '../utils/caducidadEstimada'
 
 const HOY = new Date('2026-08-09T10:00:00')
 
@@ -92,5 +92,24 @@ describe('caducidadEstimada', () => {
 
   it('cruza el fin de mes y de año sin desviarse', () => {
     expect(sumarDias(30, new Date('2026-12-20T23:30:00'))).toBe('2027-01-19')
+  })
+})
+
+describe('lo que va al congelador', () => {
+  it('la carne entra sin fecha, porque se congela', () => {
+    expect(vaAlCongelador('carnes')).toBe(true)
+    expect(caducidadEstimada('pechuga de pollo', 'carnes', HOY)).toBeNull()
+    expect(caducidadEstimada('carne picada de ternera', 'carnes', HOY)).toBeNull()
+  })
+
+  it('el resto sigue estimando', () => {
+    expect(caducidadEstimada('bacalao', 'pescados', HOY)).toBe('2026-08-11')
+    expect(caducidadEstimada('lechuga', 'verduras', HOY)).toBe('2026-08-14')
+  })
+
+  it('los días de la carne siguen ahí para cuando se descongela', () => {
+    expect(diasEstimados('pechuga de pollo', 'carnes')).toBe(2)
+    expect(diasFrescos('carne picada congelada', 'carnes')).toBe(2)
+    expect(diasEstimados('carne picada congelada', 'carnes')).toBe(180)
   })
 })

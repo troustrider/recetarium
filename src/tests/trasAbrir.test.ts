@@ -72,3 +72,19 @@ describe('caducidadAlAbrir', () => {
     expect(caducidadAlAbrir({ nombre: 'arroz', familia: 'cereales' }, '2026-08-10')).toBeUndefined()
   })
 })
+
+describe('descongelar', () => {
+  it('en la carne la casilla cuenta como sacarla del congelador', () => {
+    expect(diasTrasAbrir('pechuga de pollo', 'carnes')).toBe(2)
+    expect(diasTrasAbrir('lomo de cerdo', 'carnes')).toBe(3)
+    expect(diasTrasAbrir('carne picada congelada', 'carnes')).toBe(2)
+  })
+
+  it('descongelada, la fecha pasa a ser la del fresco', () => {
+    expect(caducidadAlAbrir({ nombre: 'pechuga de pollo', familia: 'carnes' }, '2026-08-25')).toBe('2026-08-27')
+  })
+
+  it('lo congelado de otras familias sigue sin reloj al abrir la bolsa', () => {
+    expect(diasTrasAbrir('brócoli congelado', 'verduras')).toBeNull()
+  })
+})

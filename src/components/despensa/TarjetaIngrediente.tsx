@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion'
-import { PackageOpen } from 'lucide-react'
+import { PackageOpen, Snowflake } from 'lucide-react'
 import type { IngredienteDespensa } from '../../context/DespensaContext'
 import { infoCaducidad } from '../../utils/despensa'
 import { requiereCantidad } from '../../utils/cantidades'
 import { formatCantidad, capitalize } from '../../utils/ingredientes'
+import { vaAlCongelador } from '../../utils/caducidadEstimada'
 
 interface Props {
   item: IngredienteDespensa
@@ -21,6 +22,7 @@ function TarjetaIngrediente({ item, onClick }: Props) {
   const cad = infoCaducidad(item.caducidad)
   const urgente = cad?.urgente ?? false
   const tinte = urgente ? TINTES.rojo : cad?.pronto ? TINTES.ambar : TINTES.neutro
+  const descongelado = vaAlCongelador(item.familia)
 
   return (
     <motion.button
@@ -49,8 +51,8 @@ function TarjetaIngrediente({ item, onClick }: Props) {
 
       {item.abierto != null && (
         <span className="-mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-          <PackageOpen className="w-3 h-3" />
-          Abierto
+          {descongelado ? <Snowflake className="w-3 h-3" /> : <PackageOpen className="w-3 h-3" />}
+          {descongelado ? 'Descongelado' : 'Abierto'}
         </span>
       )}
 
