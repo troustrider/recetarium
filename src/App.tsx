@@ -61,8 +61,14 @@ function App() {
 
             `relative` sostiene la capa del arrastre, `items-start` impide que
             la más corta se estire hasta la otra, y el recorte lateral impide
-            que la que entra desde la derecha asome como scroll horizontal. */}
-        <div ref={contenedor} className="relative grid items-start [overflow-x:clip]">
+            que la que entra desde la derecha asome como scroll horizontal.
+
+            La columna va declarada y no implícita: una pista `auto` mide al
+            menos el mínimo del contenido, así que la fila de familias de la
+            despensa —que ya se desplaza sola— estiraba la casilla a 1560px en
+            una pantalla de 375 y el recorte se comía la página por la derecha.
+            `minmax(0, 1fr)` la deja del ancho que hay. */}
+        <div ref={contenedor} className="relative grid grid-cols-1 items-start [overflow-x:clip]">
           {arrastrando && previa && (
             <motion.div
               className="absolute inset-x-0 w-full pointer-events-none"
