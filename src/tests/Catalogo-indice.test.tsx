@@ -158,6 +158,20 @@ describe('Catálogo — índice alfabético', () => {
     expect(scrollTo).toHaveBeenCalledWith(0, ALTURAS.get('seccion-B'))
   })
 
+  it('mete las letras de fuera del abecedario en su grupo, sin partirlo', () => {
+    contexto.recetas = [
+      { ...RECETAS[0], id: 'ae', nombre: 'Æggekage' },
+      ...RECETAS,
+    ]
+    const c = montar()
+    const ids = secciones(c).map((s) => s.id)
+    expect(ids).not.toContain('seccion-#')
+    const deLaA = secciones(c).filter((s) => s.id === 'seccion-A')
+    expect(deLaA).toHaveLength(1)
+    const nombres = [...deLaA[0].querySelectorAll('h3')].map((h) => h.textContent)
+    expect(nombres[0]).toBe('Æggekage')
+  })
+
   it('no saca índice cuando hay pocas recetas', () => {
     contexto.recetas = RECETAS.slice(0, 12)
     montar()

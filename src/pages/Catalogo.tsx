@@ -6,7 +6,6 @@ import { Dices } from 'lucide-react'
 import { useRecetasContext } from '../context'
 import { useListaCompraContext, useDespensa } from '../context'
 import { faltantes } from '../utils/despensa'
-import { normalizar } from '../utils/ingredientes'
 import useFiltros, { type Orden } from '../hooks/useFiltros'
 import type { RecetaListada } from '../types/receta'
 import RecetaCard from '../components/recetas/RecetaCard'
@@ -35,9 +34,19 @@ function inicioDeSeccion(letra: string): number | null {
   return Math.max(0, alturaEnDocumento(seccion) - tope)
 }
 
+const ABECEDARIO = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+const colador = new Intl.Collator(undefined, { sensitivity: 'base' })
+
+// Misma intercalacion que ordena la lista, para que AE, O barrada y demas caigan en su grupo.
 function inicialDe(nombre: string): string {
-  const c = normalizar(nombre).charAt(0).toUpperCase()
-  return c >= 'A' && c <= 'Z' ? c : '#'
+  const n = nombre.trim()
+  if (!n) return '#'
+  let letra = '#'
+  for (const c of ABECEDARIO) {
+    if (colador.compare(n, c) < 0) break
+    letra = c
+  }
+  return letra
 }
 
 function prngDesde(seed: number): () => number {
