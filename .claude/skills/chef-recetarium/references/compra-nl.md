@@ -17,6 +17,8 @@ Una receta que pide un ingrediente que Karim no puede comprar es una receta que 
 
 Rotterdam Noord tiene supermercados turcos y marroquíes a pie (zona Zwart Janstraat / Noordplein) y tokos asiáticos en la ciudad: cubren casi todo el T3. Pero eso es un viaje aparte, así que una receta entre semana no debe depender de ello.
 
+**Excepción: el turco ya es parada fija.** Karim compra fruta y verdura en Bazaar, así que el surtido turco y de Oriente Medio —bulgur en sus tres grosores, yufka, sucuk, okra congelada, firik, tarhana, melaza de granada, pul biber, kadaif, queso beyaz— **cuenta como T2, no como T3**: se usa con alternativa en `consejos`, sin necesidad de justificar un viaje. Lo que sigue siendo T3 es el toko asiático y el marroquí.
+
 ### La excepción del viaje al toko
 
 Hay ingredientes T3 que **no tienen sustituto honesto**: el doubanjiang del mapo tofu, el gochujang de un jjigae, el tamarindo de un pad thai. Aproximarlos con miso y chile no da el plato, da otro peor con el mismo nombre.
