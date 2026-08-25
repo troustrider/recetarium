@@ -600,10 +600,11 @@
     },
     {
       "nombre": "limon",
-      "euros": 0.4,
+      "euros": 0.45,
       "unidad": "ud",
       "fuente": "estimado",
-      "revisado": "2026-08"
+      "revisado": "2026-08",
+      "formato": "malla de 4"
     },
     {
       "nombre": "lima",
@@ -822,10 +823,11 @@
     },
     {
       "nombre": "pimenton",
-      "euros": 30,
+      "euros": 25,
       "unidad": "kg",
       "fuente": "estimado",
-      "revisado": "2026-08"
+      "revisado": "2026-08",
+      "formato": "tarro 75 g"
     },
     {
       "nombre": "comino",
@@ -1204,10 +1206,11 @@
     },
     {
       "nombre": "pimienta de jamaica",
-      "euros": 30,
+      "euros": 60,
       "unidad": "kg",
       "fuente": "estimado",
-      "revisado": "2026-08"
+      "revisado": "2026-08",
+      "formato": "tarro 30 g"
     },
     {
       "nombre": "pasta de curry japonés",
@@ -2461,6 +2464,102 @@
       "fuente": "estimado",
       "revisado": "2026-08",
       "formato": "barra 400 g · 1,20 €"
+    },
+    {
+      "nombre": "alitas de pollo",
+      "euros": 5.49,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bandeja 1 kg kippenvleugels"
+    },
+    {
+      "nombre": "okra congelada",
+      "euros": 5.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa 450 g Bazaar"
+    },
+    {
+      "nombre": "chalota",
+      "euros": 5.2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "malla 250 g sjalotten"
+    },
+    {
+      "nombre": "firik",
+      "euros": 5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 500 g Bazaar"
+    },
+    {
+      "nombre": "orzo",
+      "euros": 2.6,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 500 g risoni"
+    },
+    {
+      "nombre": "cuscús perla",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 400 g parelcouscous"
+    },
+    {
+      "nombre": "salchicha fresca de cerdo",
+      "euros": 7.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "verse worst bandeja 300 g"
+    },
+    {
+      "nombre": "carne picada de cordero",
+      "euros": 9.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bandeja 500 g lamsgehakt Bazaar"
+    },
+    {
+      "nombre": "tomillo",
+      "euros": 60,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tarro 20 g especiero"
+    },
+    {
+      "nombre": "guisantes congelados",
+      "euros": 2.2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa 750 g"
+    },
+    {
+      "nombre": "cilantro en grano",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tarro 30 g"
+    },
+    {
+      "nombre": "pimentón ahumado",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tarro 75 g"
     }
   ]
 }
