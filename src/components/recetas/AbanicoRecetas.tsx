@@ -117,7 +117,7 @@ function AbanicoRecetas({ recetas, faltanPorReceta, titulo, onOpen, onToggleFavo
           if (e.key === 'ArrowLeft') { mover(-1); e.preventDefault() }
           if (e.key === 'Enter') onOpen(recetas[active].id)
         }}
-        className="relative h-[316px] select-none outline-none touch-pan-y
+        className="relative isolate h-[316px] select-none outline-none touch-pan-y
                    -mx-4 sm:-mx-6 px-4 sm:px-6 overflow-x-clip"
         style={{ perspective: 1300 }}
       >
