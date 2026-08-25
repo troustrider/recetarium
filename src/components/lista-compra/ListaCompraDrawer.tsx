@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, Share2, Check } from 'lucide-react'
@@ -5,8 +6,11 @@ import { useListaCompraContext, useCompradosContext, useDespensa, usePendientesP
 import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
-import { formatCantidad } from '../../utils/ingredientes'
+import { formatCantidad, capitalize } from '../../utils/ingredientes'
 import { esDeHogar } from '../../utils/despensa'
+import type { IngredienteAgrupado } from '../../hooks/useListaCompra'
+
+type Vista = 'familia' | 'plato'
 
 interface Props {
   open: boolean
@@ -19,9 +23,19 @@ function ListaCompraDrawer({ open, onClose }: Props) {
   const { despensa, reponer, restaurarDespensa } = useDespensa()
   const { pendientes, marcarPendientes, restaurarPendientes } = usePendientesPlan()
   const { registrar } = useDeshacer()
+  const [vista, setVista] = useState<Vista>('familia')
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
   const vacia = listaCompra.length === 0 && enDespensa.length === 0
   const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
+
+  const cantidadEn = (ing: IngredienteAgrupado, plato: string) =>
+    ing.porReceta?.find((p) => p.receta === plato)?.cantidad ?? ing.cantidad
+  const platos = seleccionadas.map(({ receta }) => ({
+    receta,
+    comprar: listaCompra.filter((i) => i.recetas.includes(receta.nombre)),
+    tenemos: enDespensa.filter((i) => i.recetas.includes(receta.nombre)),
+  }))
+  const sueltos = listaCompra.filter((i) => i.recetas.length === 0)
 
   function rebobinarTodo() {
     const despensaAntes = despensa
@@ -163,16 +177,89 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                 </div>
               )}
 
-              {familias.map((familia) => (
-                <section key={familia} className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
-                  <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
-                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">{familia}</h3>
-                  </div>
-                  <ul className="px-4">
-                    {listaCompra
-                      .filter((i) => i.familia === familia)
-                      .sort((a, b) => Number(comprados.has(a.clave)) - Number(comprados.has(b.clave)))
-                      .map((ing) => (
+              {seleccionadas.length > 0 && listaCompra.length + enDespensa.length > 0 && (
+                <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                  {(['familia', 'plato'] as Vista[]).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setVista(v)}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                        vista === v
+                          ? 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 shadow-sm'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                      }`}
+                    >
+                      {v === 'familia' ? 'Por familia' : 'Por plato'}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {vista === 'plato' && seleccionadas.length > 0 ? (
+                <>
+                {platos.map(({ receta, comprar: aComprar, tenemos }) => (
+                  <section key={receta.id} className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700 flex items-baseline justify-between gap-2">
+                      <Link
+                        to={`/recetas/${receta.id}`}
+                        onClick={onClose}
+                        className="text-xs font-bold text-gray-700 dark:text-gray-200 truncate hover:underline"
+                      >
+                        {receta.nombre}
+                      </Link>
+                      <span className="text-[10px] font-bold text-gray-400 shrink-0 tabular-nums">
+                        {aComprar.length} por comprar
+                      </span>
+                    </div>
+                    {aComprar.length > 0 && (
+                      <ul className="px-4">
+                        {aComprar
+                          .sort((a, b) => Number(comprados.has(a.clave)) - Number(comprados.has(b.clave)))
+                          .map((ing) => (
+                            <ResumenIngrediente
+                              key={ing.clave}
+                              ingrediente={{
+                                ...ing,
+                                cantidad: cantidadEn(ing, receta.nombre),
+                                yaTengo: undefined,
+                                desglose: undefined,
+                                compartido: ing.recetas.length > 1,
+                              }}
+                              checked={comprados.has(ing.clave)}
+                              onToggle={() => toggle(ing.clave)}
+                              onRemove={() => {
+                                const antes = instantanea()
+                                if (ing.esExtra) removeExtra(ing.clave)
+                                else descartar(ing.clave)
+                                registrar(`Quitado ${ing.nombre}`, () => restaurarLista(antes))
+                              }}
+                            />
+                          ))}
+                      </ul>
+                    )}
+                    {tenemos.length > 0 && (
+                      <ul className="px-4 pb-1">
+                        {tenemos.map((ing) => (
+                          <li key={ing.clave} className="flex items-center gap-3 py-2 text-sm text-gray-400 dark:text-gray-500">
+                            <Check className="w-3.5 h-3.5 shrink-0 text-emerald-500" />
+                            <span className="flex-1 min-w-0 truncate">{capitalize(ing.nombre)}</span>
+                            <span className="text-xs tabular-nums shrink-0">
+                              {formatCantidad(cantidadEn(ing, receta.nombre), ing.unidad)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </section>
+                ))}
+
+                {sueltos.length > 0 && (
+                  <section className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
+                      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">Sin plato</h3>
+                    </div>
+                    <ul className="px-4">
+                      {sueltos.map((ing) => (
                         <ResumenIngrediente
                           key={ing.clave}
                           ingrediente={ing}
@@ -186,38 +273,69 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                           }}
                         />
                       ))}
-                  </ul>
-                </section>
-              ))}
+                    </ul>
+                  </section>
+                )}
+                </>
+              ) : (
+                <>
+                {familias.map((familia) => (
+                  <section key={familia} className="bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-gray-100 dark:border-gray-700">
+                      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">{familia}</h3>
+                    </div>
+                    <ul className="px-4">
+                      {listaCompra
+                        .filter((i) => i.familia === familia)
+                        .sort((a, b) => Number(comprados.has(a.clave)) - Number(comprados.has(b.clave)))
+                        .map((ing) => (
+                          <ResumenIngrediente
+                            key={ing.clave}
+                            ingrediente={ing}
+                            checked={comprados.has(ing.clave)}
+                            onToggle={() => toggle(ing.clave)}
+                            onRemove={() => {
+                              const antes = instantanea()
+                              if (ing.esExtra) removeExtra(ing.clave)
+                              else descartar(ing.clave)
+                              registrar(`Quitado ${ing.nombre}`, () => restaurarLista(antes))
+                            }}
+                          />
+                        ))}
+                    </ul>
+                  </section>
+                ))}
 
-              {enDespensa.length > 0 && (
-                <section className="bg-emerald-50/60 dark:bg-emerald-900/10 rounded-2xl overflow-hidden">
-                  <div className="px-4 py-2.5 border-b border-emerald-100 dark:border-emerald-900/30">
-                    <h3 className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.15em]">
-                      Ya en la despensa ({enDespensa.length})
-                    </h3>
-                  </div>
-                  <ul className="px-4">
-                    {enDespensa.map((ing) => (
-                      <li key={ing.clave} className="flex items-center gap-3 py-2.5 border-b border-emerald-100/60 dark:border-emerald-900/20 last:border-0">
-                        <span className="flex-1 text-sm text-gray-500 dark:text-gray-400">
-                          {ing.nombre.charAt(0).toUpperCase() + ing.nombre.slice(1)}
-                        </span>
-                        <span className="text-xs text-gray-400 tabular-nums shrink-0">
-                          {formatCantidad(ing.cantidad, ing.unidad)}
-                        </span>
-                        <button
-                          onClick={() => addExtra(ing)}
-                          className="shrink-0 p-1 rounded-lg text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
-                          aria-label={`Comprar ${ing.nombre} igualmente`}
-                          title="Comprar igualmente"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
+                {enDespensa.length > 0 && (
+                  <section className="bg-emerald-50/60 dark:bg-emerald-900/10 rounded-2xl overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-emerald-100 dark:border-emerald-900/30">
+                      <h3 className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.15em]">
+                        Ya en la despensa ({enDespensa.length})
+                      </h3>
+                    </div>
+                    <ul className="px-4">
+                      {enDespensa.map((ing) => (
+                        <li key={ing.clave} className="flex items-center gap-3 py-2.5 border-b border-emerald-100/60 dark:border-emerald-900/20 last:border-0">
+                          <span className="flex-1 text-sm text-gray-500 dark:text-gray-400">
+                            {ing.nombre.charAt(0).toUpperCase() + ing.nombre.slice(1)}
+                          </span>
+                          <span className="text-xs text-gray-400 tabular-nums shrink-0">
+                            {formatCantidad(ing.cantidad, ing.unidad)}
+                          </span>
+                          <button
+                            onClick={() => addExtra(ing)}
+                            className="shrink-0 p-1 rounded-lg text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
+                            aria-label={`Comprar ${ing.nombre} igualmente`}
+                            title="Comprar igualmente"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+                </>
               )}
 
               <AnadirManual onAdd={addExtra} />

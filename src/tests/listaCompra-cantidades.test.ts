@@ -121,3 +121,34 @@ describe('useListaCompra — el mismo ingrediente en dos unidades', () => {
     expect(lechuga!.otrasMedidas).toBeUndefined()
   })
 })
+
+describe('useListaCompra — lo que pide cada plato', () => {
+  const otra: Receta = {
+    ...receta, id: 'r3', nombre: 'Salteado de brócoli',
+    ingredientes: [
+      { nombre: 'brócoli', cantidad: 300, unidad: 'g', familia: 'verduras' },
+      { nombre: 'salsa de soja', cantidad: 1, unidad: 'cda', familia: 'salsas' },
+    ],
+  }
+
+  it('guarda el reparto por receta aunque el ingrediente se comparta', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(receta))
+    act(() => result.current.toggleReceta(otra))
+
+    const brocoli = result.current.listaCompra.find((i) => i.nombre === 'brócoli')
+    expect(brocoli?.recetas).toEqual(['Pollo teriyaki', 'Salteado de brócoli'])
+    expect(brocoli?.porReceta).toEqual([
+      { receta: 'Pollo teriyaki', cantidad: 200 },
+      { receta: 'Salteado de brócoli', cantidad: 300 },
+    ])
+  })
+
+  it('lo cubierto por la despensa también sabe de qué plato viene', () => {
+    const { result } = renderHook(() => useListaCompra())
+    act(() => result.current.toggleReceta(receta))
+
+    const arroz = result.current.enDespensa.find((i) => i.nombre === 'arroz')
+    expect(arroz?.porReceta).toEqual([{ receta: 'Pollo teriyaki', cantidad: 300 }])
+  })
+})
