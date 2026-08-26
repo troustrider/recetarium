@@ -1,56 +1,88 @@
 # Traspaso: sinergia y la auto-semana
 
-Estado a 26 de agosto de 2026. El trabajo de sinergia queda cerrado: los diales
-ya están medidos contra la base viva y el bug que quedaba escrito está
-arreglado. Lo que sigue abierto son cuatro cabos, ninguno bloqueante, y un
-hallazgo nuevo que no es del planificador sino del recetario.
+Cerrado el 26 de agosto de 2026. Los cuatro cabos que quedaban abiertos están
+hechos y en `main`, con la suite entera en verde (47 ficheros, 622 tests) y
+`tsc -b` limpio. Lo que queda es trabajo de tienda y de recetario, no de código,
+y está al final.
 
 ## Lo que se cerró
 
-### Los diales, medidos contra las 688 recetas vivas
+### 1. Los diales, medidos contra las 688 recetas vivas
 
-Venían ajustados contra las 88 del seed y había que rehacerlos con el catálogo
-real. Hecho, y **se quedan donde estaban**: `PASO` en 0,25 € y
-`COSTE_DE_TIRARLO_TODO` en 2.
+Venían ajustados contra las 88 del seed. Rehecha la medida con el catálogo real,
+**se quedan donde estaban**: `PASO` en 0,25 € y `COSTE_DE_TIRARLO_TODO` en 2.
 
 Lo que salió de medirlo es más útil que el número: **lo que gobierna el reparto
 no es el coste sino su razón con el paso**, porque la nota redondea a escalones.
 Con la despensa vacía, que es como corre cualquier preset de nutrición, dos
 platos solo se separan por escalones de `COSTE_DE_TIRARLO_TODO / PASO`. Esa
-razón vale 8 hoy.
+razón vale 8. Subirla a 12 baja la basura dos puntos y medio y deja la semana
+proteica en 9 de cada 120 días por encima de 120 g, cuando con 8 son 51. Moverse
+por la línea de razón 8 cambia basura de la cesta por despensa sin gastar, que
+en este modelo valen lo mismo, más treinta platos de variedad de propina.
 
-Subirla a 12 —dejar el paso y poner el coste en 3, que era la tentación, porque
-baja la basura del 12,8% al 10,3% de lo comido— **hunde la semana proteica**:
-los días de tres comidas que llegan a 120 g pasan de 51 de cada 120 a 9. La
-basura parte tan fino que la proteína ya no llega a desempatar nada. Es el
-efecto que el barrido sobre el seed no podía ver, porque allí la cobertura
-semanal de proteína seguía marcando 100% mientras el preset se venía abajo.
+La doctrina y las tablas están en `.claude/skills/chef-recetarium/references/sinergia.md`.
 
-Moverse por la línea de razón 8, que es la que respeta a los presets, tampoco
-sale a cuenta (48 semanas por casilla, sin dieta, despensa de 12):
+### 2. La tabla de precios ya dice de qué envase habla
 
-| paso / coste | despensa gastada | de los que corren prisa | tira | platos distintos |
-|---|---|---|---|---|
-| **0,25 / 2** | **9,0/12** | **4,5/4,8** | **4,21 € — 12,8%** | **198** |
-| 0,50 / 4 | 7,7/12 | 3,8/4,8 | 2,88 € — 8,9% | 169 |
-| 0,75 / 6 | 6,9/12 | 3,4/4,8 | 2,93 € — 8,7% | 148 |
-| 1,00 / 8 | 6,4/12 | 3,2/4,8 | 2,87 € — 8,5% | 134 |
+Era el cabo más rentable y era trabajo de datos. De 369 precios, 228 no decían
+nada del envase, y sin envase la cuenta caía en una suposición plana de 35
+céntimos para todo. Ahora no queda ninguno sin decidir:
 
-Ahorra 1,33 € de basura en la cesta y deja sin gastar 1,3 cosas de casa, que al
-euro por punto que la despensa vale en este mismo modelo es el mismo dinero,
-más treinta platos de variedad de propina. Y la basura deja de bajar a partir
-del segundo escalón: lo que sigue cayendo es la despensa, que es mover la
-basura de la cesta a la nevera, no evitarla.
+- **295 traen tamaño de envase.** Los que empiezan por "típico" son el tamaño
+  corriente del súper, no uno visto en tienda.
+- **74 se marcan `suelto`**: lo que se compra al peso o en el mostrador no deja
+  envase a medias, y eso no es lo mismo que no saber de qué envase hablamos.
+- **23 frutas y verduras cuentan su pieza como envase**, con el peso de una:
+  quien pide media berenjena paga la berenjena entera.
 
-Línea de salida con lo que hay hoy en la base (200 semanas, sin dieta):
+Esto movió tres fixtures de test que usaban espinacas o calabacín para hablar de
+otra cosa: con la tabla al día, esas dos traen envase y metían un segundo efecto
+en medio.
+
+### 3. La lista de la compra enseña la cuenta
+
+`cuentaDeLaCompra` ya sabía lo que se paga en envases enteros, lo que se come y
+lo que sobra, pero se quedaba dentro del planificador. Ahora el cajón de la
+compra lo dice, y señala **el ingrediente que más se queda a medias y el plato
+que lo pide**, que es lo accionable: media bolsa de espinacas en la basura se
+arregla metiendo otra receta que se la acabe.
+
+### 4. El reparto se repasa con la semana entera
+
+El primer plato que se colocaba tenía la cesta vacía y no podía puntuar por
+compartir con nadie. Ahora, ya puesta la semana, cada hueco se vuelve a mirar
+contra los otros veinte y cambia de plato si hay uno que aprovecha mejor lo que
+la semana va a comprar o lo que hay en casa. Solo por un escalón entero de
+compra, y nunca a costa de la verdura.
+
+Medido sobre las 688 vivas (32 semanas, sin dieta): la basura baja del **13,5%
+al 11,8%** de lo comido y la despensa gastada sube de 8,97 a 9,06 de 12. Con una
+ronda basta: la segunda mueve una décima y cuesta otro tanto de tiempo.
+
+### 5. La puerta de la basura, en las tandas
+
+`references/tandas.md` ya obliga: una tanda se diseña con tres o cuatro
+ingredientes puente y **no puede subir el porcentaje de lo comido que se tira**,
+que se mide antes y después de `apply` y se dice en el informe de cierre.
+
+## La línea de salida de hoy
+
+200 semanas contra las 688 recetas vivas, sin dieta, con una despensa de 12
+cosas en casa:
 
 ```
-despensa: gasta 9.0/12  de los que corren prisa 4.4/4.8
-la compra: paga 57.24 €  come 32.79 €  tira 4.07 € (7% de lo pagado, 12% de lo comido)
-la mesa:   fibra 111% del objetivo  proteína 103%  platos sin verdura 7%
+despensa: gasta 9.7/12  de los que corren prisa 4.5/4.8
+la compra: paga 101.88 €  come 49.69 €  tira 5.83 € (6% de lo pagado, 12% de lo comido)
+la mesa:   fibra 105% del objetivo  proteína 106%  platos sin verdura 4%
 ```
 
-Vegetariana tira el 9% de lo comido y vegana el 12%. Ninguna deja huecos vacíos.
+380 platos distintos y 62 cocinas en esas 200 semanas, sin un solo hueco vacío.
+
+El "paga" hay que leerlo con cuidado: son envases nuevos, como si en casa no
+hubiera nada. La botella de aceite y el kilo de arroz duran meses, así que ese
+número es el coste de montar la despensa y no la factura del sábado. El que
+manda es el "tira".
 
 Para repetir la medida:
 
@@ -59,42 +91,15 @@ node --env-file=server/.env server/scripts/volcar-catalogo.mjs catalogo.json
 PASADAS=200 npx vite-node scripts/simular-semana.ts catalogo.json
 ```
 
-El volcado está en `.gitignore`: es una foto de la base y la base manda.
+## Lo que queda, y no es código
 
-### El miso abierto ya no avisa a los tres días
-
-`diasTrasAbrir` caía en la primera palabra cuando no encontraba el nombre
-entero, y en "pasta de miso" esa palabra es "pasta", así que la entrada de la
-pasta fresca le ponía tres días a un bote que aguanta seis meses. Arreglado
-mirando antes el token que no es cabeza ambigua, con la lista de cabezas que ya
-vivía en `despensa.ts`. "Pasta fresca", que no tiene otro token, sigue
-resolviendo por pasta.
-
-## El hallazgo nuevo: la proteína no la pierde el reparto, la pierde el catálogo
-
-La semana proteica persigue 125 g al día **y por día**. Contra las 688 recetas
-vivas, los días con las tres comidas puestas dan 115 g de media y solo 243 de
-cada 600 llegan a 120. Los días de dos comidas se quedan en 81 y no pueden
-llegar, que es lo acordado.
-
-El preset está poniendo lo mejor que hay; lo mejor que hay no basta. Es encargo
-para la próxima tanda, no para el planificador: **falta principal proteico y
-sobre todo desayuno proteico**, que es el hueco donde se caen los días de tres
-comidas.
-
-## Los cabos que siguen abiertos, por orden de rendimiento
-
-1. **Rellenar el envase en `precios.json`.** Solo 137 de 369 precios traen un
-   tamaño legible en `formato` ("tarro 350 g · 2,45 €"). Sin envase, el peso de
-   ese ingrediente cae a una suposición de 0,35 €, así que es la mitad larga de
-   la tabla la que hoy se estima. Es la palanca más barata que queda y es
-   trabajo de datos: hay que verlo en la tienda, no inventarlo.
-2. **Enseñar la cuenta en la app.** `cuentaDeLaCompra` ya devuelve pagado /
-   comido / tirado y el desglose por ingrediente. La lista de la compra puede
-   decir "pagas 24 €, comes 17 €, se te va a estropear 3 €" y señalar el plato
-   que deja medio envase varado.
-3. **El reparto es voraz.** El primer plato que coloca tiene la cesta vacía, así
-   que nunca puede puntuar por compartir. Una segunda pasada de intercambios
-   recuperaría parte de eso. Sin medir.
-4. **La puerta de las tandas.** `references/tandas.md` todavía no obliga a que
-   un lote baje el "tira".
+1. **Confirmar los envases "típico" en la tienda.** Son el tamaño corriente del
+   súper puesto de memoria, no una comprobación. Cada vez que se pase por Dirk,
+   Lidl o el Bazaar, se confirman los que salgan al paso y se les quita la
+   palabra. Los que más pesan son los perecederos que se compran grandes y se
+   usan a cucharadas: nata, miso, tahini, hierbas, quesos frescos.
+2. **La proteína la pierde el catálogo, no el reparto.** La semana proteica
+   persigue 125 g al día y por día: los días de tres comidas dan 120 g de media
+   y 318 de cada 600 llegan a 120. El preset pone lo mejor que hay. Falta
+   principal proteico y **sobre todo desayuno proteico**, que es el hueco donde
+   se caen los días. Es encargo de tanda.

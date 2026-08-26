@@ -7,6 +7,8 @@ Desde el 2026-08-26 esto no es una preferencia más: **es lo primero que mira la
 1. **Manda**: cuántos alimentos de la despensa gasta el plato —los que corren prisa valen más que el fondo de armario— menos qué parte de lo que haya que comprar por él va a acabar en la basura.
 2. **Desempata**, dentro de un escalón de 25 céntimos: la nutrición, los presets, la variedad de cocina y de verdura, y lo ya propuesto.
 
+Y como el primer plato que se coloca tiene la cesta vacía y no puede compartir con nadie, el reparto **se repasa entero una segunda vez** con la semana ya puesta: cada hueco se vuelve a mirar contra los otros veinte y cambia de plato si hay uno que aprovecha mejor lo que la semana ya va a comprar. Solo por un escalón entero, y nunca a costa de la verdura.
+
 La sobra se mide **en fracción de lo que se compra, no en euros sueltos**: en euros, la forma más fácil de no tirar nada es comprar menos comida, y medido así el reparto se iba a platos mínimos —pagaba 8,53 € y comía 3,73 €— tirando en proporción más que antes. En fracción, un plato con cuatro verduras que se acaban va igual de bien que uno sin verdura, y mal solo el que deja media bolsa.
 
 Hasta el 2026-08-26 ese peso era la rareza del ingrediente en el recetario, y la rareza no es lo que se tira: medido sobre las 88 recetas del seed, la correlación entre el peso que daba el reparto y lo perecedero que es el ingrediente era **0,014** —ninguna—, y el cuartil más premiado tenía una vida útil mediana de 180 días frente a 45 del menos premiado. Premiaba compartir canela, cuyo tarro dura dos años, por encima de compartir cilantro, que se pudre en cinco días.
@@ -32,11 +34,19 @@ PASADAS=200 npx vite-node scripts/simular-semana.ts <volcado>.json   # más esta
 
 El envase sale de `formato` en `precios.json` ("tarro 350 g · 2,45 €"), y el reloj de lo que sobra es el del **envase abierto** (`diasTrasAbrir`), no el del cerrado: el brik de leche de coco caduca dentro de un año sin abrir y dura tres días abierto, y lo que sobra de un plato está abierto por definición.
 
+La tabla distingue tres cosas, y desde el 2026-08-26 ninguna entrada se queda sin decidir:
+
+- **Viene en envase**: el brik, el bote, la bolsa, el tarro. Lleva su tamaño en `formato`; el que empieza por "típico" es el tamaño corriente del súper y no un envase visto en tienda, así que se confirma cuando se pase por allí.
+- **Se compra al peso o en el mostrador**: la carne, el pescado, el tomate, la patata. Lleva `suelto: true` y no deja envase a medias, que no es lo mismo que no saber de qué envase hablamos.
+- **La pieza es el envase**: la berenjena, el pepino, el limón. Quien pide media paga entera, y eso sí es sobra.
+
+Ojo al leer "paga": son envases nuevos, como si en casa no hubiera nada. La botella de aceite y el kilo de arroz de una semana duran meses, así que ese número es el coste de montar la despensa, no la factura del sábado. El que manda es **tira**.
+
 Los dos números viejos —**ingredientes compartidos** y **reuso**— se siguen imprimiendo, pero son un proxy y no el objetivo, y **ya no fijan suelo**. Medido sobre las 88 recetas del seed, subiendo el peso de compartir por encima del óptimo los compartidos siguen subiendo del 45% al 54% y el reuso de 2,11 a 2,43 **mientras la basura empeora** de 1,92 € a 2,39 €. Optimizar el proxy más allá de cierto punto cuesta dinero, y el suelo de reuso 2,12 caía justo en esa zona.
 
-Medido el 2026-08-26 contra el catálogo vivo (688 recetas, 200 semanas, sin dieta, despensa de 12 cosas en casa): gasta **9,0 de las 12 cosas de casa**, 4,4 de las 4,8 que corren prisa, y de la compra **paga 57,24 €, come 32,79 € y tira 4,07 €**, que es el 12% de lo comido. En vegetariana tira el 9% y en vegana el 12%. La variedad no es un problema con este pool: 300 platos distintos y 59 cocinas en esas 200 semanas.
+Medido el 2026-08-26 contra el catálogo vivo (688 recetas, 200 semanas, sin dieta, despensa de 12 cosas en casa), ya con la tabla de envases entera y con el segundo repaso puesto: gasta **9,7 de las 12 cosas de casa**, 4,5 de las 4,8 que corren prisa, y **tira el 12% de lo que come**. La variedad no es un problema con este pool: 380 platos distintos y 62 cocinas en esas 200 semanas, y ni un hueco vacío.
 
-Los dos diales que gobiernan esto están en `utils/semana`: `PASO` (0,25 €), el ancho del escalón, y `COSTE_DE_TIRARLO_TODO` (2), lo que pesa la sobra frente a vaciar la despensa. **Se quedan donde estaban, y ahora se sabe por qué.** Lo que manda no es el segundo número sino su razón con el primero, porque la nota redondea a escalones: con la despensa vacía —que es como corre un preset de nutrición— dos platos solo se separan por escalones de `COSTE_DE_TIRARLO_TODO / PASO`. Esa razón vale 8. Subirla a 12 (dejar el paso y poner el coste en 3) baja la basura al 10,3% de lo comido y a cambio hunde la semana proteica: los días de tres comidas que llegan a 120 g pasan de 51 de cada 120 a 9. La basura parte tan fino que la proteína ya no desempata nada.
+Los dos diales que gobiernan esto están en `utils/semana`: `PASO` (0,25 €), el ancho del escalón, y `COSTE_DE_TIRARLO_TODO` (2), lo que pesa la sobra frente a vaciar la despensa. **Se quedan donde estaban, y ahora se sabe por qué.** (Los barridos que siguen se midieron el mismo día, antes de completar los envases y de meter el segundo repaso: los niveles han cambiado, la conclusión no.) Lo que manda no es el segundo número sino su razón con el primero, porque la nota redondea a escalones: con la despensa vacía —que es como corre un preset de nutrición— dos platos solo se separan por escalones de `COSTE_DE_TIRARLO_TODO / PASO`. Esa razón vale 8. Subirla a 12 (dejar el paso y poner el coste en 3) baja la basura al 10,3% de lo comido y a cambio hunde la semana proteica: los días de tres comidas que llegan a 120 g pasan de 51 de cada 120 a 9. La basura parte tan fino que la proteína ya no desempata nada.
 
 Moverse por la línea de razón 8, que es la que respeta a los presets, tampoco sale a cuenta (48 semanas por casilla):
 
@@ -53,7 +63,7 @@ Y un efecto que hay que tener presente: **la semana concentra los perecederos en
 
 El volcado de la base no cabe en el repo y es una foto que caduca: se saca con `node --env-file=server/.env server/scripts/volcar-catalogo.mjs catalogo.json` y se tira después. Los números de arriba salen de esa foto, no del seed.
 
-El mismo comando informa de la semana proteica, que persigue **125 g al día y por día**, no de media. Contra el catálogo vivo los días con las tres comidas puestas dan **115 g de media y solo 243 de cada 600 llegan a 120**, y los de dos comidas se quedan en 81 y no pueden llegar; ahí el reparto maximiza, que es lo acordado. Eso ya no es cosa del reparto sino del recetario: con 688 platos donde elegir, el preset de proteína pone lo mejor que hay y lo mejor que hay no basta. **Falta plato proteico, y sobre todo desayuno proteico**, que es donde se pierden los días de tres comidas.
+El mismo comando informa de la semana proteica, que persigue **125 g al día y por día**, no de media. Contra el catálogo vivo los días con las tres comidas puestas dan **120 g de media y 318 de cada 600 llegan a 120**, y los de dos comidas se quedan en 89 y no pueden llegar; ahí el reparto maximiza, que es lo acordado. Eso ya no es cosa del reparto sino del recetario: con 688 platos donde elegir, el preset de proteína pone lo mejor que hay y lo mejor que hay no basta. **Falta plato proteico, y sobre todo desayuno proteico**, que es donde se pierden los días de tres comidas.
 
 ## Qué obliga al diseñar una tanda
 
