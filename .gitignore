@@ -56,3 +56,6 @@ docs/contexto/
 
 # Copias de conflicto que deja OneDrive al sincronizar desde dos maquinas
 *-DESKTOP-*.*
+
+# Volcados del catálogo para simular la semana: son fotos de la base.
+catalogo*.json
