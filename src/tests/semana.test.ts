@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { semanaEquilibrada, aporteDe, ajustesDe, repartirSemana } from '../utils/semana'
 import { LIMITES_VACIOS, PREFERENCIAS_POR_DEFECTO, type Preferencias, type Prioridad } from '../types/preferencias'
+import { sumarDias } from '../utils/caducidadEstimada'
 import type { Micros, Receta } from '../types/receta'
 
 const con = (over: Partial<Preferencias>): Preferencias => ({ ...PREFERENCIAS_POR_DEFECTO, ...over })
@@ -456,5 +457,36 @@ describe('lo que recuerda entre pasadas', () => {
       { yaPropuestos: [anterior.id], semilla: 1 }
     )
     expect(porHueco.get('lunes')!.id).toBe(nueva.id)
+  })
+
+  it('el segundo repaso cambia el plato que el primero eligió a ciegas', () => {
+    const de = (nombre: string) => receta({
+      categoria: nombre,
+      ingredientes: [{ nombre, cantidad: 200, unidad: 'g', familia: 'verduras' }],
+    })
+    // El lunes se llena primero porque tiene menos candidatas, y con la semana
+    // vacía le renta la espinaca, que es lo que más corre prisa en casa. Cuando
+    // el martes se queda también con espinacas, la espinaca del lunes ya no
+    // rescata nada y el cilantro sí.
+    const conEspinacas = de('espinacas')
+    const conCilantro = de('cilantro')
+    const martes = [de('espinacas'), de('espinacas'), de('espinacas')]
+
+    const { porHueco, aprovechados } = repartirSemana(
+      [
+        { id: 'lunes', dia: 'Lunes', candidatos: [conEspinacas, conCilantro] },
+        { id: 'martes', dia: 'Martes', candidatos: martes },
+      ],
+      {
+        semilla: 1,
+        despensa: [
+          { nombre: 'espinacas', familia: 'verduras', caducidad: sumarDias(1) },
+          { nombre: 'cilantro', familia: 'verduras', caducidad: sumarDias(3) },
+        ],
+      }
+    )
+
+    expect(porHueco.get('lunes')!.id).toBe(conCilantro.id)
+    expect([...aprovechados].sort()).toEqual(['cilantro', 'espinacas'])
   })
 })
