@@ -579,7 +579,8 @@
       "euros": 0.8,
       "unidad": "ud",
       "fuente": "estimado",
-      "revisado": "2026-08"
+      "revisado": "2026-08",
+      "gramosPorUd": 300
     },
     {
       "nombre": "apio",
@@ -2560,6 +2561,224 @@
       "fuente": "estimado",
       "revisado": "2026-08",
       "formato": "tarro 75 g"
+    },
+    {
+      "nombre": "rábano",
+      "euros": 4.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "manojo ~250 g · 1,15 €"
+    },
+    {
+      "nombre": "yuca",
+      "euros": 2.8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "congelada, toko"
+    },
+    {
+      "nombre": "plátano macho",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "gramosPorUd": 200
+    },
+    {
+      "nombre": "soja seca",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "habas secas",
+      "euros": 3.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bakla, Bazaar"
+    },
+    {
+      "nombre": "fideos",
+      "euros": 2.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "costilla de cerdo",
+      "euros": 7,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "cebada perlada",
+      "euros": 2.2,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "parelgort"
+    },
+    {
+      "nombre": "alubias pintas de bote",
+      "euros": 2.25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bote 400 g · 0,90 €"
+    },
+    {
+      "nombre": "chayote",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "gramosPorUd": 200,
+      "formato": "toko / christophine"
+    },
+    {
+      "nombre": "molokhia congelada",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "paquete 400 g · 1,60 € · súper turco"
+    },
+    {
+      "nombre": "maíz pozolero de bote",
+      "euros": 4.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "lata 400 g · 1,80 € · tienda latina"
+    },
+    {
+      "nombre": "cebollitas perla",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "chipotles en adobo",
+      "euros": 12,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "lata 200 g · 2,40 € · tienda latina"
+    },
+    {
+      "nombre": "vinagre de caña",
+      "euros": 3,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "suka, toko filipino"
+    },
+    {
+      "nombre": "salchicha de frankfurt",
+      "euros": 8,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "knakworst / Frankfurter"
+    },
+    {
+      "nombre": "panceta ahumada",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "gerookt spek"
+    },
+    {
+      "nombre": "kielbasa ahumada",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "tienda polaca"
+    },
+    {
+      "nombre": "tkemali",
+      "euros": 9,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bote 400 g · 3,60 € · tienda de Europa del Este"
+    },
+    {
+      "nombre": "berbere",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "bolsa 100 g · 3 € · tienda africana / online"
+    },
+    {
+      "nombre": "jarrete de ternera",
+      "euros": 11,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "runderschenkel, con hueso"
+    },
+    {
+      "nombre": "azafrán",
+      "euros": 1.5,
+      "unidad": "ud",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "sobre de 0,5 g",
+      "gramosPorUd": 0.5
+    },
+    {
+      "nombre": "fenogreco",
+      "euros": 25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "romero",
+      "euros": 40,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "mejorana",
+      "euros": 40,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "pan de centeno",
+      "euros": 3.5,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "barra 500 g · 1,75 €"
+    },
+    {
+      "nombre": "cayena",
+      "euros": 35,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08"
+    },
+    {
+      "nombre": "chiles secos",
+      "euros": 28,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-08",
+      "formato": "guajillo y ancho, tienda latina"
     }
   ]
 }
