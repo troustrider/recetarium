@@ -84,6 +84,13 @@ const EUROS_POR_PUNTO_DE_DESPENSA = 1
  */
 const COSTE_DE_TIRARLO_TODO = 2
 
+/**
+ * Cuántas veces se repasa la semana entera cambiando platos que ya no son los
+ * mejores. Con una basta: la segunda ronda cambia una décima de punto de basura
+ * y cuesta otro tanto de tiempo.
+ */
+const RONDAS_DE_CAMBIO = 1
+
 const PENALIZACION_DESCARTADO = 5
 const PENALIZACION_YA_PROPUESTO = 0.6
 
@@ -414,6 +421,39 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     .map((hueco, i) => ({ hueco, i }))
     .sort((a, b) => a.hueco.candidatos.length - b.hueco.candidatos.length || a.i - b.i)
 
+  // Primero manda la compra: qué vacía de casa y qué va a dejar sin usar.
+  // Lo descartado a mano cae varios escalones, para que descartar se note.
+  // Volver a pulsar tiene que dar otra semana, así que lo ya propuesto pesa
+  // aquí arriba: mueve un par de escalones, lo justo para desempatar entre
+  // platos que van igual de bien, nunca para tapar una despensa que vaciar.
+  // Dentro del escalón deciden la nutrición, los presets y la variedad.
+  const notaDe = (receta: RecetaListada, contra: Acumulado, dia?: string) => {
+    const prioridad =
+      prioridadDeLaCompra(receta, contra, indice, usadosDe(receta), enCasa) -
+      (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
+      (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0)
+    const a = aporteDe(receta)
+    return (
+      MANDA * Math.round(prioridad / PASO) +
+      ganancia(a, contra, ajustes, dia) -
+      penalizacion(receta, a, contra, ajustes) +
+      aleatorio() * 0.25
+    )
+  }
+
+  const mejorDe = (entre: RecetaListada[], contra: Acumulado, dia?: string) => {
+    let mejor = entre[0]
+    let mejorNota = -Infinity
+    for (const receta of entre) {
+      const nota = notaDe(receta, contra, dia)
+      if (nota > mejorNota) {
+        mejorNota = nota
+        mejor = receta
+      }
+    }
+    return { mejor, nota: mejorNota }
+  }
+
   for (const { hueco } of orden) {
     const libres = hueco.candidatos.filter((r) => !usadas.has(r.id))
     // Sin candidatas nuevas se repite un plato antes que dejar el día vacío: en
@@ -422,40 +462,65 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     if (entre.length === 0) continue
     if (libres.length === 0) repetidos.add(hueco.id)
 
-    let mejor = entre[0]
-    let mejorNota = -Infinity
-    for (const receta of entre) {
-      const a = aporteDe(receta)
-      // Primero manda la compra: qué vacía de casa y qué va a dejar sin usar.
-      // Lo descartado a mano cae varios escalones, para que descartar se note.
-      // Volver a pulsar tiene que dar otra semana, así que lo ya propuesto pesa
-      // aquí arriba: mueve un par de escalones, lo justo para desempatar entre
-      // platos que van igual de bien, nunca para tapar una despensa que vaciar.
-      const prioridad =
-        prioridadDeLaCompra(receta, acc, indice, usadosDe(receta), enCasa) -
-        (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
-        (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0)
-      // Dentro del escalón deciden la nutrición, los presets y la variedad.
-      const nota =
-        MANDA * Math.round(prioridad / PASO) +
-        ganancia(a, acc, ajustes, hueco.dia) -
-        penalizacion(receta, a, acc, ajustes) +
-        aleatorio() * 0.25
-      if (nota > mejorNota) {
-        mejorNota = nota
-        mejor = receta
-      }
-    }
-
+    const { mejor } = mejorDe(entre, acc, hueco.dia)
     acumular(acc, mejor, usadosDe(mejor), hueco.dia, enCasa)
     usadas.add(mejor.id)
     porHueco.set(hueco.id, mejor)
   }
 
+  // La semana entera contra cada hueco, ahora que hay semana. El primer plato
+  // que se colocó tenía la cesta vacía y no podía puntuar por compartir con
+  // nadie; visto con los otros veinte dentro, a veces hay uno que aprovecha
+  // mejor lo que la semana ya va a comprar.
+  const dias = new Map(huecos.map((h) => [h.id, h.dia]))
+  const sinElHueco = (salta: string): Acumulado => {
+    const otro = acumuladoVacio()
+    for (const receta of yaEnLaSemana) acumular(otro, receta, [], undefined, enCasa)
+    for (const [dia, gramos] of opciones.proteinaPorDia ?? []) otro.proteinaPorDia.set(dia, gramos)
+    for (const [id, receta] of porHueco) {
+      if (id !== salta) acumular(otro, receta, usadosDe(receta), dias.get(id), enCasa)
+    }
+    return otro
+  }
+
+  for (let ronda = 0; ronda < RONDAS_DE_CAMBIO; ronda++) {
+    let cambios = 0
+    for (const { hueco } of orden) {
+      const actual = porHueco.get(hueco.id)
+      // El hueco que tuvo que repetir plato no tenía de dónde elegir.
+      if (!actual || repetidos.has(hueco.id)) continue
+
+      const puestas = new Set([...porHueco].filter(([id]) => id !== hueco.id).map(([, r]) => r.id))
+      const entre = hueco.candidatos.filter((r) => !puestas.has(r.id) && !intocables.has(r.id))
+      if (entre.length <= 1) continue
+
+      const contra = sinElHueco(hueco.id)
+      const { mejor, nota } = mejorDe(entre, contra, hueco.dia)
+      // Solo se cambia por un escalón entero de compra: si la diferencia está
+      // dentro del escalón, es la nutrición o el azar, y por eso no se rehace
+      // una semana que ya estaba bien.
+      if (mejor.id === actual.id || nota <= notaDe(actual, contra, hueco.dia) + MANDA / 2) continue
+      // Y nunca a costa de la verdura: sin esta línea el cambio se lleva por
+      // delante cuatro puntos de platos sin verdura, que es lo que la nota solo
+      // desempata dentro del escalón y aquí se estaría saltando.
+      if (verduraDe(actual) && !verduraDe(mejor)) continue
+
+      porHueco.set(hueco.id, mejor)
+      usadas.delete(actual.id)
+      usadas.add(mejor.id)
+      cambios++
+    }
+    if (cambios === 0) break
+  }
+
+  const finales = acumuladoVacio()
+  for (const receta of yaEnLaSemana) acumular(finales, receta, [], undefined, enCasa)
+  for (const [id, receta] of porHueco) acumular(finales, receta, usadosDe(receta), dias.get(id), enCasa)
+
   return {
     porHueco,
     repetidos,
-    aprovechados: [...acc.aprovechados].map((i) => indice.items[i].nombre),
+    aprovechados: [...finales.aprovechados].map((i) => indice.items[i].nombre),
   }
 }
 
