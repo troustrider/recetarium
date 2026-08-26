@@ -1,4 +1,4 @@
-import { nucleoOrdenado } from './despensa'
+import { CABEZAS_AMBIGUAS, nucleoOrdenado } from './despensa'
 import { normalizar } from './ingredientes'
 import { diasFrescos, sumarDias, vaAlCongelador } from './caducidadEstimada'
 
@@ -60,8 +60,13 @@ export function diasTrasAbrir(nombre: string, familia: string): number | null {
   const nucleo = nucleoOrdenado(nombre)
   if (nucleo.length === 0) return null
 
+  // Cuando la cabeza del nombre es ambigua el ingrediente es el otro token:
+  // "pasta de miso" es miso, no pasta fresca, y el reloj es de meses.
+  const propio = nucleo.find((t) => !CABEZAS_AMBIGUAS.has(t) && TABLA.has(t))
+
   return (
     TABLA.get(nucleo.join(' ')) ??
+    (propio == null ? undefined : TABLA.get(propio)) ??
     TABLA.get(nucleo[0]) ??
     DIAS_POR_FAMILIA[normalizar(familia)] ??
     null

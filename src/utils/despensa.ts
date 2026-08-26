@@ -48,7 +48,7 @@ function singular(t: string): string {
 }
 
 const ALIAS_RAIZ = new Map(Object.entries(ALIAS_TOKENS).map(([k, v]) => [singular(k), singular(v)]))
-const CABEZAS_AMBIGUAS = new Set(CABEZAS_AMBIGUAS_NOMBRES.map(singular))
+export const CABEZAS_AMBIGUAS = new Set(CABEZAS_AMBIGUAS_NOMBRES.map(singular))
 
 function aplicarAlias(token: string): string {
   return ALIAS_RAIZ.get(token) ?? token
