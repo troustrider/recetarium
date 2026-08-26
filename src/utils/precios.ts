@@ -11,6 +11,8 @@ interface EntradaPrecio {
   revisado: string
   formato?: string
   gramosPorUd?: number
+  /** Se compra por peso o por pieza: no hay envase que quede a medias. */
+  suelto?: boolean
 }
 
 export const PRECIOS: EntradaPrecio[] = tabla.precios
