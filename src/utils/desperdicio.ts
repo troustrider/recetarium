@@ -42,6 +42,15 @@ export function envaseDeFormato(formato: string, euros: number, unidadPrecio: st
   return { cantidad: enBase, unidad: dim, euros: (euros / porBase) * enBase }
 }
 
+/**
+ * Lo que se compra por peso o por pieza: la fruta, la verdura suelta, la carne
+ * del mostrador. No hay envase que quede a medias, así que no deja sobra que
+ * temer, y eso no es lo mismo que no saber de qué envase hablamos.
+ */
+export function seVendeSuelto(nombre: string): boolean {
+  return buscarPrecio(nombre)?.suelto === true
+}
+
 const CACHE_ENVASE = new Map<string, Envase | null>()
 
 export function envaseDe(nombre: string): Envase | null {
@@ -128,6 +137,7 @@ export function desperdicioDe(ing: Ingrediente): number {
 export const COBERTURA_ENVASES = () => ({
   total: PRECIOS.length,
   con: PRECIOS.filter((p) => p.formato && envaseDeFormato(p.formato, p.euros, p.unidad)).length,
+  sueltos: PRECIOS.filter((p) => p.suelto).length,
 })
 
 export interface LineaCuenta {
@@ -224,9 +234,10 @@ export function loQueAnade(cesta: Cesta, plato: ConIngredientes, omitir?: (nombr
     if (omitir?.(ing.nombre)) continue
     const envase = envaseDe(ing.nombre)
     if (!envase) {
-      // Sin envase anotado no hay euros que contar, pero abrirlo sigue dejando
-      // sobra: cuenta como una suposición, y lo ya abierto no añade nada.
-      if (!cesta.has(claveNombre(ing.nombre))) {
+      // Lo que se vende suelto se compra a la medida: no deja envase a medias.
+      // Sin envase anotado tampoco hay euros que contar, pero abrirlo sigue
+      // dejando sobra: cuenta como una suposición, y lo ya abierto no añade nada.
+      if (!seVendeSuelto(ing.nombre) && !cesta.has(claveNombre(ing.nombre))) {
         basura += VARADO_SUPUESTO * riesgoDe(ing)
         compra += VARADO_SUPUESTO
       }
@@ -274,7 +285,7 @@ export function cuentaDeLaCompra(platos: ConIngredientes[]): Cuenta {
     for (const ing of lineasDe(plato)) {
       const envase = envaseDe(ing.nombre)
       const cantidad = envase ? enBase(ing.cantidad, ing.nombre, ing.unidad, envase.unidad) : null
-      if (cantidad == null) sinEnvase.add(ing.nombre)
+      if (cantidad == null && !seVendeSuelto(ing.nombre)) sinEnvase.add(ing.nombre)
     }
     anadirALaCesta(cesta, plato)
   }

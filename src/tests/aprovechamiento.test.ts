@@ -117,7 +117,9 @@ describe('la auto-semana prefiere lo que hay en casa', () => {
     semanaEquilibrada(pool, n, semilla, [], undefined, despensa)
 
   it('elige el plato que gasta lo que está a punto de caducar', () => {
-    const pool = [receta(['ternera', 'arroz']), receta(['espinacas', 'nata'])]
+    // Tomate y no espinacas: la bolsa de espinacas deja media bolsa varada y
+    // eso es otra cuenta. Aquí lo que se mira es lo que hay en casa.
+    const pool = [receta(['ternera', 'arroz']), receta(['tomate', 'nata'])]
     const despensa = [item({ nombre: 'nata', familia: 'lácteos', caducidad: sumarDias(1) })]
     for (const semilla of [1, 2, 3, 4, 5]) {
       expect(conDespensa(pool, despensa, 1, semilla)[0].id).toBe(pool[1].id)

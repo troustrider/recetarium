@@ -122,10 +122,12 @@ describe('semanaEquilibrada', () => {
   })
 
   it('no repite la verdura ni la cocina de lo que ya está puesto', () => {
+    // Las dos verduras se compran por peso, así que ninguna deja envase a
+    // medias: aquí solo se mira la repetición, que es lo que desempata.
     const puesta = receta({ categoria: 'italiana', guarnicion: guarnicion('brócoli', { fibra: 4 }) })
     const pool = [
       receta({ categoria: 'italiana', guarnicion: guarnicion('brócoli', { fibra: 4 }) }),
-      receta({ categoria: 'japonesa', guarnicion: guarnicion('espinacas', { fibra: 4 }) }),
+      receta({ categoria: 'japonesa', guarnicion: guarnicion('tomate', { fibra: 4 }) }),
     ]
     const semana = semanaEquilibrada(pool, 1, 4, [puesta])
     expect(semana[0].categoria).toBe('japonesa')
@@ -302,7 +304,7 @@ describe('la verdura del propio plato cuenta', () => {
   it('un guiso con verdura dentro no se penaliza como plato sin verdura', () => {
     const pool = [
       receta({ categoria: 'a' }),
-      conVerduraDentro('calabacín', { categoria: 'b' }),
+      conVerduraDentro('brócoli', { categoria: 'b' }),
     ]
     expect(semanaEquilibrada(pool, 1, 6, [], conPrioridad('fibra'))[0].categoria).toBe('b')
   })

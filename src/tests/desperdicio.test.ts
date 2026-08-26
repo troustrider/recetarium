@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   envaseDeFormato, envaseDe, desperdicioDe, cuentaDeLaCompra,
-  cestaVacia, anadirALaCesta, loQueAnade, fraccionQueSeTira,
+  cestaVacia, anadirALaCesta, loQueAnade, fraccionQueSeTira, seVendeSuelto,
 } from '../utils/desperdicio'
 import type { Ingrediente } from '../types/receta'
 
@@ -65,6 +65,19 @@ describe('la cuenta de la compra', () => {
     if (uno.lineas.length === 0) return
     expect(dos.tirado).toBeLessThan(uno.tirado)
     expect(dos.comido).toBeGreaterThan(uno.comido)
+  })
+
+  it('lo que se compra al peso no deja envase a medias', () => {
+    expect(seVendeSuelto('tomate')).toBe(true)
+    expect(seVendeSuelto('espinacas')).toBe(false)
+    const tomate = plato([ing('tomate', 150, 'g', 'verduras')])
+    expect(cuentaDeLaCompra([tomate]).sinEnvase).not.toContain('tomate')
+    expect(fraccionQueSeTira(cestaVacia(), tomate)).toBe(0)
+  })
+
+  it('pero la pieza sí es envase: media berenjena se paga entera', () => {
+    const media = plato([ing('berenjena', 150, 'g', 'verduras')])
+    expect(fraccionQueSeTira(cestaVacia(), media)).toBeGreaterThan(0)
   })
 
   it('lo que no tiene envase conocido queda fuera de la cuenta, y se dice', () => {
