@@ -78,6 +78,8 @@ la mesa:   fibra 105% del objetivo  proteína 106%  platos sin verdura 4%
 ```
 
 380 platos distintos y 62 cocinas en esas 200 semanas, sin un solo hueco vacío.
+En vegetariana y en vegana el tirado baja al 9% de lo comido, con el pool mucho
+más estrecho: 107 y 36 platos distintos.
 
 El "paga" hay que leerlo con cuidado: son envases nuevos, como si en casa no
 hubiera nada. La botella de aceite y el kilo de arroz duran meses, así que ese
