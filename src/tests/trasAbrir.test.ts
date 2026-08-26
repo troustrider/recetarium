@@ -19,6 +19,12 @@ describe('diasTrasAbrir', () => {
     expect(diasTrasAbrir('leche de coco', 'bebidas')).toBe(3) // el específico gana al genérico
   })
 
+  it('con la cabeza ambigua manda el otro token', () => {
+    expect(diasTrasAbrir('pasta de miso', 'salsas')).toBe(180)
+    expect(diasTrasAbrir('pasta fresca', 'cereales')).toBe(3)
+    expect(diasTrasAbrir('caldo de pollo', 'otros')).toBe(4)
+  })
+
   it('una lata abierta deja de ser una conserva', () => {
     expect(diasTrasAbrir('alcachofas', 'conservas')).toBe(3)
     expect(diasTrasAbrir('garbanzos', 'conservas')).toBe(3)
