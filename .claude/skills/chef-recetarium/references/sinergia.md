@@ -34,20 +34,26 @@ El envase sale de `formato` en `precios.json` ("tarro 350 g · 2,45 €"), y el 
 
 Los dos números viejos —**ingredientes compartidos** y **reuso**— se siguen imprimiendo, pero son un proxy y no el objetivo, y **ya no fijan suelo**. Medido sobre las 88 recetas del seed, subiendo el peso de compartir por encima del óptimo los compartidos siguen subiendo del 45% al 54% y el reuso de 2,11 a 2,43 **mientras la basura empeora** de 1,92 € a 2,39 €. Optimizar el proxy más allá de cierto punto cuesta dinero, y el suelo de reuso 2,12 caía justo en esa zona.
 
-Medido el 2026-08-26 sobre las 88 recetas del seed (200 semanas, sin dieta, con una despensa de 12 cosas en casa), al pasar la despensa y la sobra a mandar:
+Medido el 2026-08-26 contra el catálogo vivo (688 recetas, 200 semanas, sin dieta, despensa de 12 cosas en casa): gasta **9,0 de las 12 cosas de casa**, 4,4 de las 4,8 que corren prisa, y de la compra **paga 57,24 €, come 32,79 € y tira 4,07 €**, que es el 12% de lo comido. En vegetariana tira el 9% y en vegana el 12%. La variedad no es un problema con este pool: 300 platos distintos y 59 cocinas en esas 200 semanas.
 
-| | despensa gastada | de los que corren prisa | paga | come | **tira** | proteína | sin verdura |
-|---|---|---|---|---|---|---|---|
-| antes | 8,9/12 | 6,2/7,1 | 15,65 € | 8,47 € | 2,52 € — 30% de lo comido | 95% | 3% |
-| ahora | **9,7/12** | **6,7/7,1** | 20,97 € | 11,67 € | **1,87 € — 16% de lo comido** | 90% | 6% |
+Los dos diales que gobiernan esto están en `utils/semana`: `PASO` (0,25 €), el ancho del escalón, y `COSTE_DE_TIRARLO_TODO` (2), lo que pesa la sobra frente a vaciar la despensa. **Se quedan donde estaban, y ahora se sabe por qué.** Lo que manda no es el segundo número sino su razón con el primero, porque la nota redondea a escalones: con la despensa vacía —que es como corre un preset de nutrición— dos platos solo se separan por escalones de `COSTE_DE_TIRARLO_TODO / PASO`. Esa razón vale 8. Subirla a 12 (dejar el paso y poner el coste en 3) baja la basura al 10,3% de lo comido y a cambio hunde la semana proteica: los días de tres comidas que llegan a 120 g pasan de 51 de cada 120 a 9. La basura parte tan fino que la proteína ya no desempata nada.
 
-Lo que cuesta: la proteína baja del 95% al 90% del objetivo y los platos sin verdura pasan del 3% al 6%. La variedad no sufre (82 platos distintos en 200 semanas frente a 80). La factura sube, pero porque la semana trae más comida: el euro pagado por euro comido baja de 1,86 a 1,80.
+Moverse por la línea de razón 8, que es la que respeta a los presets, tampoco sale a cuenta (48 semanas por casilla):
+
+| paso / coste | despensa gastada | de los que corren prisa | **tira** | platos distintos | sin verdura |
+|---|---|---|---|---|---|
+| **0,25 / 2** | **9,0/12** | **4,5/4,8** | **4,21 € — 12,8%** | **198** | 6% |
+| 0,50 / 4 | 7,7/12 | 3,8/4,8 | 2,88 € — 8,9% | 169 | 8% |
+| 0,75 / 6 | 6,9/12 | 3,4/4,8 | 2,93 € — 8,7% | 148 | 8% |
+| 1,00 / 8 | 6,4/12 | 3,2/4,8 | 2,87 € — 8,5% | 134 | 9% |
+
+Ahorra 1,33 € de basura en la cesta y deja sin gastar 1,3 cosas de casa, que al euro por punto que vale la despensa en este mismo modelo es justo lo mismo, más treinta platos de variedad de propina. La basura, además, deja de bajar a partir del segundo escalón: lo que sigue cayendo es la despensa. Cuidado con leer solo el "tira": la sobra que mide son los envases de la compra de la semana, no lo que se pudre en la nevera de casa.
 
 Y un efecto que hay que tener presente: **la semana concentra los perecederos en unos pocos**. Siete verduras distintas son siete bolsas empezadas; el reparto prefiere tres o cuatro que se acaben. Es la respuesta correcta a "que no sobre nada", y a la vez lo que hay que vigilar para que la semana no se vuelva monótona: para eso están la penalización de verdura repetida y la de cocina repetida, que siguen desempatando dentro del escalón.
 
-**Esos números son del seed, no del catálogo vivo**, que ronda las 594 recetas y no cabe en el repo. Hay que rehacer la medida con un volcado de la base antes de tratarlos como la línea de salida.
+El volcado de la base no cabe en el repo y es una foto que caduca: se saca con `node --env-file=server/.env server/scripts/volcar-catalogo.mjs catalogo.json` y se tira después. Los números de arriba salen de esa foto, no del seed.
 
-El mismo comando informa de la semana proteica, que persigue **125 g al día y por día**, no de media: los días con las tres comidas puestas dan 133 g de media y 49 de cada 60 llegan a 120. Los días de solo dos comidas se quedan en 104 y no pueden llegar; ahí el reparto maximiza, que es lo acordado.
+El mismo comando informa de la semana proteica, que persigue **125 g al día y por día**, no de media. Contra el catálogo vivo los días con las tres comidas puestas dan **115 g de media y solo 243 de cada 600 llegan a 120**, y los de dos comidas se quedan en 81 y no pueden llegar; ahí el reparto maximiza, que es lo acordado. Eso ya no es cosa del reparto sino del recetario: con 688 platos donde elegir, el preset de proteína pone lo mejor que hay y lo mejor que hay no basta. **Falta plato proteico, y sobre todo desayuno proteico**, que es donde se pierden los días de tres comidas.
 
 ## Qué obliga al diseñar una tanda
 
