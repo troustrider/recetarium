@@ -3,6 +3,7 @@ import { repartirSemana, type Hueco } from '../src/utils/semana'
 import { candidatas } from '../src/utils/candidatas'
 import { cabeDeNoche } from '../src/utils/momentos'
 import { claveNombre } from '../src/utils/ingredientes'
+import { cuentaDeLaCompra, COBERTURA_ENVASES } from '../src/utils/desperdicio'
 import { PREFERENCIAS_POR_DEFECTO, type Preferencias } from '../src/types/preferencias'
 import type { RecetaListada } from '../src/types/receta'
 
@@ -57,7 +58,7 @@ export function sinergia(platos: RecetaListada[]) {
   return { distintos, compartidos, reuso: lineas / distintos, ratio: compartidos / distintos }
 }
 
-const PASADAS = 20
+const PASADAS = Number(process.env.PASADAS ?? 20)
 
 /** Proteína y número de comidas de cada día de la semana repartida. */
 function proteinaPorDia(porHueco: Map<string, RecetaListada>) {
@@ -74,7 +75,8 @@ function main() {
   const recetas: RecetaListada[] = JSON.parse(readFileSync(process.argv[2], 'utf8'))
   const dietas: (Preferencias['limites']['dieta'])[] = [null, 'vegetariana', 'vegana']
 
-  console.log(`catálogo: ${recetas.length} recetas\n`)
+  const cob = COBERTURA_ENVASES()
+  console.log(`catálogo: ${recetas.length} recetas | envase conocido en ${cob.con}/${cob.total} precios\n`)
 
   const proteica: Preferencias = {
     ...PREFERENCIAS_POR_DEFECTO,
@@ -109,6 +111,9 @@ function main() {
     const platos = new Set<string>()
     let ratio = 0
     let reuso = 0
+    let pagado = 0
+    let comido = 0
+    let tirado = 0
 
     for (let i = 0; i < PASADAS; i++) {
       const { huecos, porHueco, repetidos } = simular(recetas, prefs, 1000 + i)
@@ -119,6 +124,10 @@ function main() {
       const s = sinergia(puestas.filter(esPrincipal))
       ratio += s.ratio
       reuso += s.reuso
+      const c = cuentaDeLaCompra(puestas)
+      pagado += c.pagado
+      comido += c.comido
+      tirado += c.tirado
     }
 
     const etiqueta = dieta ?? 'sin dieta'
@@ -128,6 +137,10 @@ function main() {
       `  cocinas ${cocinas.size}` +
       `  ingredientes compartidos ${(100 * ratio / PASADAS).toFixed(0)}%` +
       `  reuso ${(reuso / PASADAS).toFixed(2)}`)
+    console.log(`${' '.repeat(14)} la compra: paga ${(pagado / PASADAS).toFixed(2)} €` +
+      `  come ${(comido / PASADAS).toFixed(2)} €` +
+      `  tira ${(tirado / PASADAS).toFixed(2)} € (${(100 * tirado / (pagado || 1)).toFixed(0)}% de lo pagado,` +
+      ` ${(100 * tirado / (comido || 1)).toFixed(0)}% de lo comido)`)
   }
 }
 
