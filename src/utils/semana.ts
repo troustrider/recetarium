@@ -1,7 +1,9 @@
 import type { RecetaListada } from '../types/receta'
 import type { Preferencias, Prioridad } from '../types/preferencias'
 import { aprovechaDe, indiceDespensa, type IndiceDespensa, type ItemAprovechable } from './aprovechamiento'
+import { despensaCubre } from './despensa'
 import { claveNombre, ingredientesDe } from './ingredientes'
+import { desperdicioDe, riesgoDe } from './desperdicio'
 
 const DIAS_SEMANA = 7
 
@@ -46,14 +48,16 @@ const PESOS_BASE = {
   reparto: 0.8,
   noFavorita: 0.5,
   aprovechar: 0.35,
-  compartir: 0.5,
+  compartir: 0.75,
 }
 
 const TOPE_APROVECHAMIENTO = 2
 
+/** Tope de la ganancia de compartir, en euros de basura evitada por plato. */
 const TOPE_COMPARTIR = 1.5
 
-const rarezaDe = (veces: number) => 1 / (1 + veces)
+/** Lo que se supone que se tira de un perecedero sin envase anotado. */
+const DESPERDICIO_SUPUESTO = 0.35
 
 const PENALIZACION_DESCARTADO = 5
 const PENALIZACION_YA_PROPUESTO = 0.6
@@ -264,27 +268,47 @@ const clavesDe = (receta: RecetaListada) =>
 function gananciaCompartir(
   receta: RecetaListada,
   acc: Acumulado,
-  rareza: Map<string, number>
+  valor: Map<string, number>
 ): number {
   let g = 0
   for (const clave of clavesDe(receta)) {
-    if (acc.compra.has(clave)) g += rareza.get(clave) ?? 0
+    if (acc.compra.has(clave)) g += valor.get(clave) ?? 0
   }
   return Math.min(g, TOPE_COMPARTIR)
 }
 
-/** Cuántas candidatas distintas del reparto piden cada ingrediente. */
-function rarezaDeLasCandidatas(huecos: Hueco[]): Map<string, number> {
+/**
+ * Lo que vale compartir cada ingrediente, en euros de basura evitada.
+ *
+ * Antes esto era la rareza en el recetario, y la rareza no es lo que se tira: la
+ * canela sale en pocas recetas y el tarro dura dos años, mientras que el
+ * cilantro sale en muchas y se pudre en cinco días. Lo que se tira es el envase
+ * que se compra entero, se usa a cucharadas y no llega a la próxima compra, y
+ * eso es lo que un segundo plato rescata.
+ */
+function valorDeCompartir(huecos: Hueco[], indice: IndiceDespensa): Map<string, number> {
   const vistas = new Set<string>()
-  const veces = new Map<string, number>()
+  const valor = new Map<string, number>()
+  // Lo que ya está en casa no se compra, así que compartirlo no evita ninguna
+  // basura: de eso se ocupa el aprovechamiento, y contarlo aquí lo premiaría dos veces.
+  const enCasa = (nombre: string) => indice.items.some((item) => despensaCubre(item.nombre, nombre))
   for (const hueco of huecos) {
     for (const receta of hueco.candidatos) {
       if (vistas.has(receta.id)) continue
       vistas.add(receta.id)
-      for (const clave of clavesDe(receta)) veces.set(clave, (veces.get(clave) ?? 0) + 1)
+      for (const ing of ingredientesDe(receta, true)) {
+        const clave = claveNombre(ing.nombre)
+        if (valor.has(clave)) continue
+        if (enCasa(ing.nombre)) { valor.set(clave, 0); continue }
+        const riesgo = riesgoDe(ing)
+        if (riesgo === 0) { valor.set(clave, 0); continue }
+        // Sin envase anotado no se sabe cuánto se vara, pero sí que se estropea.
+        const euros = desperdicioDe(ing)
+        valor.set(clave, euros > 0 ? euros : DESPERDICIO_SUPUESTO * riesgo)
+      }
     }
   }
-  return new Map([...veces].map(([clave, n]) => [clave, rarezaDe(n)]))
+  return valor
 }
 
 function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
@@ -357,7 +381,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length)
 
   const indice = indiceDespensa(despensa)
-  const rareza = rarezaDeLasCandidatas(huecos)
+  const valor = valorDeCompartir(huecos, indice)
   const cacheUsados = new Map<string, number[]>()
   const usadosDe = (receta: RecetaListada): number[] => {
     if (indice.items.length === 0) return []
@@ -401,7 +425,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
       const nota =
         ganancia(a, acc, ajustes, hueco.dia) +
         ajustes.pesos.aprovechar * gananciaDespensa(usadosDe(receta), acc, indice) +
-        ajustes.pesos.compartir * gananciaCompartir(receta, acc, rareza) -
+        ajustes.pesos.compartir * gananciaCompartir(receta, acc, valor) -
         penalizacion(receta, a, acc, ajustes) -
         (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
         (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0) +
