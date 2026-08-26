@@ -6,7 +6,7 @@ import { useListaCompraContext, useCompradosContext, useDespensa, usePendientesP
 import ResumenIngrediente from './ResumenIngrediente'
 import AnadirManual from './AnadirManual'
 import { compartirLista } from '../../utils/compartirLista'
-import { formatCantidad, capitalize } from '../../utils/ingredientes'
+import { formatCantidad, capitalize, claveNombre } from '../../utils/ingredientes'
 import { esDeHogar } from '../../utils/despensa'
 import type { IngredienteAgrupado } from '../../hooks/useListaCompra'
 
@@ -18,7 +18,7 @@ interface Props {
 }
 
 function ListaCompraDrawer({ open, onClose }: Props) {
-  const { seleccionadas, listaCompra, enDespensa, compra, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar, instantanea, restaurarLista } = useListaCompraContext()
+  const { seleccionadas, listaCompra, enDespensa, compra, cuenta, toggleReceta, setRaciones, vaciar, addExtra, removeExtra, descartar, instantanea, restaurarLista } = useListaCompraContext()
   const { comprados, toggle, limpiar, restaurarComprados } = useCompradosContext()
   const { despensa, reponer, restaurarDespensa } = useDespensa()
   const { pendientes, marcarPendientes, restaurarPendientes } = usePendientesPlan()
@@ -27,6 +27,13 @@ function ListaCompraDrawer({ open, onClose }: Props) {
   const familias = [...new Set(listaCompra.map((i) => i.familia))]
   const vacia = listaCompra.length === 0 && enDespensa.length === 0
   const totalComprados = listaCompra.filter((i) => comprados.has(i.clave)).length
+
+  // Lo que se paga son envases enteros, y del perecedero que solo pide un plato
+  // se tira lo que sobra: decirlo aquí es lo que deja arreglarlo con otra receta.
+  const aMedias = cuenta.lineas.find((l) => l.tirado >= 0.2)
+  const culpables = aMedias
+    ? listaCompra.find((i) => claveNombre(i.nombre) === claveNombre(aMedias.nombre))?.recetas ?? []
+    : []
 
   const cantidadEn = (ing: IngredienteAgrupado, plato: string) =>
     ing.porReceta?.find((p) => p.receta === plato)?.cantidad ?? ing.cantidad
@@ -103,6 +110,18 @@ function ListaCompraDrawer({ open, onClose }: Props) {
                       {listaCompra.length} {listaCompra.length === 1 ? 'ingrediente' : 'ingredientes'}
                       {compra.total > 0 && <> · <span className="font-bold text-gray-500 dark:text-gray-300">≈ {compra.total.toFixed(2)} €</span></>}
                     </p>
+                    {cuenta.tirado >= 0.3 && (
+                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
+                        En envases enteros pagas {cuenta.pagado.toFixed(2)} € y se estropea{' '}
+                        <span className="font-bold">{cuenta.tirado.toFixed(2)} €</span>
+                        {aMedias && (
+                          <>
+                            , sobre todo {aMedias.nombre}
+                            {culpables.length === 1 && <> (solo lo pide {culpables[0]})</>}
+                          </>
+                        )}
+                      </p>
+                    )}
                     {compra.sinPrecio.length > 0 && (
                       <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 leading-snug">
                         Sin contar {compra.sinPrecio.length}{' '}
