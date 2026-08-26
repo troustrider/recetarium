@@ -4,6 +4,9 @@ import { candidatas } from '../src/utils/candidatas'
 import { cabeDeNoche } from '../src/utils/momentos'
 import { claveNombre } from '../src/utils/ingredientes'
 import { cuentaDeLaCompra, COBERTURA_ENVASES } from '../src/utils/desperdicio'
+import { esNoPerecedero, sumarDias } from '../src/utils/caducidadEstimada'
+import type { ItemAprovechable } from '../src/utils/aprovechamiento'
+import { resumenSemana } from '../src/utils/semana'
 import { PREFERENCIAS_POR_DEFECTO, type Preferencias } from '../src/types/preferencias'
 import type { RecetaListada } from '../src/types/receta'
 
@@ -19,7 +22,32 @@ const repartidos = (dias: string[], cuantos: number) => {
   return Array.from({ length: cuantos }, (_, i) => dias[Math.floor(i * paso)])
 }
 
-export function simular(recetas: RecetaListada[], prefs: Preferencias, semilla: number) {
+/**
+ * Una despensa de casa: lo que hay abierto o a punto de caducar, que es lo que
+ * la auto-semana tiene que gastar antes que nada.
+ */
+export function despensaDeCasa(recetas: RecetaListada[], cuantos: number, semilla: number): ItemAprovechable[] {
+  const vistos = new Map<string, { nombre: string; familia: string }>()
+  for (const r of recetas) {
+    for (const i of r.ingredientes) {
+      const clave = claveNombre(i.nombre)
+      if (!vistos.has(clave)) vistos.set(clave, { nombre: i.nombre, familia: i.familia })
+    }
+  }
+  const todos = [...vistos.values()]
+  const items: ItemAprovechable[] = []
+  let s = semilla
+  const siguiente = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648
+  while (items.length < cuantos && todos.length > 0) {
+    const cual = todos.splice(Math.floor(siguiente() * todos.length), 1)[0]
+    // La mitad, perecederos que corren prisa; el resto, fondo de armario.
+    const perecedero = !esNoPerecedero(cual.nombre, cual.familia)
+    items.push(perecedero ? { ...cual, caducidad: sumarDias(items.length % 4) } : cual)
+  }
+  return items
+}
+
+export function simular(recetas: RecetaListada[], prefs: Preferencias, semilla: number, despensa: ItemAprovechable[] = []) {
   const { limites } = prefs
   const principales = recetas.filter(esPrincipal)
   const desayunos = recetas.filter(esDesayuno)
@@ -39,8 +67,8 @@ export function simular(recetas: RecetaListada[], prefs: Preferencias, semilla: 
     ...construir(repartidos(DIAS, prefs.desayunos), 'desayuno', desayunos, false),
   ]
 
-  const { porHueco, repetidos } = repartirSemana(huecos, { preferencias: prefs, semilla })
-  return { huecos, porHueco, repetidos, principales, desayunos, deNoche }
+  const { porHueco, repetidos, aprovechados } = repartirSemana(huecos, { preferencias: prefs, semilla, despensa })
+  return { huecos, porHueco, repetidos, aprovechados, principales, desayunos, deNoche }
 }
 
 /** Cuántos ingredientes de la compra los pide más de un plato de la semana. */
@@ -98,6 +126,8 @@ function main() {
   }
   console.log()
 
+  const DESPENSA = Number(process.env.DESPENSA ?? 12)
+
   for (const dieta of dietas) {
     const prefs: Preferencias = {
       ...PREFERENCIAS_POR_DEFECTO,
@@ -114,9 +144,18 @@ function main() {
     let pagado = 0
     let comido = 0
     let tirado = 0
+    let gastados = 0
+    let gastadosFrescos = 0
+    let enCasa = 0
+    let enCasaFrescos = 0
+    let fibra = 0
+    let proteinas = 0
+    let sinVerdura = 0
+    let conPlato = 0
 
     for (let i = 0; i < PASADAS; i++) {
-      const { huecos, porHueco, repetidos } = simular(recetas, prefs, 1000 + i)
+      const despensa = DESPENSA > 0 ? despensaDeCasa(recetas, DESPENSA, 7000 + i) : []
+      const { huecos, porHueco, repetidos, aprovechados } = simular(recetas, prefs, 1000 + i, despensa)
       vacios += huecos.filter((h) => !porHueco.has(h.id)).length
       repes += repetidos.size
       const puestas = [...porHueco.values()]
@@ -128,6 +167,21 @@ function main() {
       pagado += c.pagado
       comido += c.comido
       tirado += c.tirado
+
+      const frescos = new Set(despensa.filter((d) => !esNoPerecedero(d.nombre, d.familia)).map((d) => d.nombre))
+      enCasa += despensa.length
+      enCasaFrescos += frescos.size
+      gastados += aprovechados.length
+      gastadosFrescos += aprovechados.filter((n) => frescos.has(n)).length
+
+      const resumen = resumenSemana(puestas, prefs)
+      fibra += resumen.coberturas.find((c) => c.clave === 'fibra')?.ratio ?? 0
+      proteinas += resumen.coberturas.find((c) => c.clave === 'proteinas')?.ratio ?? 0
+      for (const r of puestas) {
+        conPlato++
+        const verduras = [...r.ingredientes, ...(r.guarnicion?.ingredientes ?? [])]
+        if (!verduras.some((i) => i.familia === 'verduras')) sinVerdura++
+      }
     }
 
     const etiqueta = dieta ?? 'sin dieta'
@@ -137,10 +191,15 @@ function main() {
       `  cocinas ${cocinas.size}` +
       `  ingredientes compartidos ${(100 * ratio / PASADAS).toFixed(0)}%` +
       `  reuso ${(reuso / PASADAS).toFixed(2)}`)
+    console.log(`${' '.repeat(14)} despensa: gasta ${(gastados / PASADAS).toFixed(1)}/${(enCasa / PASADAS).toFixed(0)}` +
+      `  de los que corren prisa ${(gastadosFrescos / PASADAS).toFixed(1)}/${(enCasaFrescos / PASADAS).toFixed(1)}`)
     console.log(`${' '.repeat(14)} la compra: paga ${(pagado / PASADAS).toFixed(2)} €` +
       `  come ${(comido / PASADAS).toFixed(2)} €` +
       `  tira ${(tirado / PASADAS).toFixed(2)} € (${(100 * tirado / (pagado || 1)).toFixed(0)}% de lo pagado,` +
       ` ${(100 * tirado / (comido || 1)).toFixed(0)}% de lo comido)`)
+    console.log(`${' '.repeat(14)} la mesa:   fibra ${(100 * fibra / PASADAS).toFixed(0)}% del objetivo` +
+      `  proteína ${(100 * proteinas / PASADAS).toFixed(0)}%` +
+      `  platos sin verdura ${(100 * sinVerdura / (conPlato || 1)).toFixed(0)}%`)
   }
 }
 

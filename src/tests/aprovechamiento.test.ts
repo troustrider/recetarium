@@ -146,15 +146,44 @@ describe('la auto-semana prefiere lo que hay en casa', () => {
     }
   })
 
-  it('aprovechar no arrastra la semana entera: el fondo de despensa solo desempata', () => {
-    // Mismo plato salvo por la proteína: el que la trae gana aunque el otro use
-    // dos cosas del armario.
+  it('vaciar la despensa manda por delante de la proteína', () => {
+    // Mismo plato salvo por la proteína, y el flojo gasta dos cosas del armario:
+    // gana el flojo. La nutrición decide dentro del escalón, no por encima de él.
     const proteico = receta(['tofu'], { proteinas: 40, calorias: 400 })
     const flojo = receta(['arroz', 'lentejas'], { proteinas: 5, calorias: 400 })
     const despensa = [
       item({ nombre: 'arroz', familia: 'cereales' }),
       item({ nombre: 'lentejas', familia: 'legumbres' }),
     ]
-    expect(conDespensa([proteico, flojo], despensa, 1, 2)[0].id).toBe(proteico.id)
+    expect(conDespensa([proteico, flojo], despensa, 1, 2)[0].id).toBe(flojo.id)
+  })
+
+  it('gasta el que corre prisa antes que el que espera en el armario', () => {
+    const conFresco = receta(['nata'], { proteinas: 20, calorias: 400 })
+    const conFondo = receta(['arroz'], { proteinas: 20, calorias: 400 })
+    const despensa = [
+      item({ nombre: 'nata', familia: 'lácteos', caducidad: sumarDias(1) }),
+      item({ nombre: 'arroz', familia: 'cereales' }),
+    ]
+    expect(conDespensa([conFondo, conFresco], despensa, 1, 3)[0].id).toBe(conFresco.id)
+  })
+
+  it('cuantos más alimentos de casa gaste, mejor', () => {
+    const tres = receta(['nata', 'arroz', 'lentejas'], { proteinas: 20, calorias: 400 })
+    const uno = receta(['nata'], { proteinas: 20, calorias: 400 })
+    const despensa = [
+      item({ nombre: 'nata', familia: 'lácteos', caducidad: sumarDias(1) }),
+      item({ nombre: 'arroz', familia: 'cereales' }),
+      item({ nombre: 'lentejas', familia: 'legumbres' }),
+    ]
+    expect(conDespensa([uno, tres], despensa, 1, 3)[0].id).toBe(tres.id)
+  })
+
+  it('entre dos que dejan la misma sobra, vuelve a decidir la nutrición', () => {
+    // Los dos son fondo de armario y no dejan nada que se estropee, así que van
+    // en el mismo escalón y ahí sí manda la proteína.
+    const proteico = receta(['lentejas'], { proteinas: 40, calorias: 400 })
+    const flojo = receta(['arroz'], { proteinas: 5, calorias: 400 })
+    expect(conDespensa([proteico, flojo], [], 1, 2)[0].id).toBe(proteico.id)
   })
 })

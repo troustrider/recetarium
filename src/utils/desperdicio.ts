@@ -72,6 +72,9 @@ export function enBase(cantidad: number, nombre: string, unidad: string, dim: 'g
   return null
 }
 
+/** Lo que se supone que se vara de un perecedero cuyo envase no está anotado. */
+export const VARADO_SUPUESTO = 0.35
+
 /** Lo que sobra de un perecedero no llega al siguiente plan. */
 export const DIAS_HASTA_LA_PROXIMA_COMPRA = 7
 
@@ -151,38 +154,144 @@ export interface Cuenta {
   lineas: LineaCuenta[]
 }
 
-/** Qué cuesta de verdad una lista de platos: envases enteros, no cucharadas. */
-export function cuentaDeLaCompra(platos: { ingredientes: Ingrediente[]; guarnicion?: { ingredientes: Ingrediente[] } | null }[]): Cuenta {
-  const pedido = new Map<string, { ing: Ingrediente; base: number }>()
-  const sinEnvase = new Set<string>()
+interface Pedido {
+  ing: Ingrediente
+  /** Lo que piden entre todos los platos, en la unidad del envase. */
+  base: number
+  envase: Envase
+  riesgo: number
+}
 
-  for (const plato of platos) {
-    for (const ing of [...plato.ingredientes, ...(plato.guarnicion?.ingredientes ?? [])]) {
-      const envase = envaseDe(ing.nombre)
-      if (!envase) { sinEnvase.add(ing.nombre); continue }
-      const cantidad = enBase(ing.cantidad, ing.nombre, ing.unidad, envase.unidad)
-      if (cantidad == null) { sinEnvase.add(ing.nombre); continue }
-      const clave = claveNombre(ing.nombre)
-      const prev = pedido.get(clave)
-      if (prev) prev.base += cantidad
-      else pedido.set(clave, { ing, base: cantidad })
+/** Lo que la semana lleva pedido, para poder preguntar qué añade un plato más. */
+export type Cesta = Map<string, Pedido>
+
+export const cestaVacia = (): Cesta => new Map()
+
+interface ConIngredientes {
+  ingredientes: Ingrediente[]
+  guarnicion?: { ingredientes: Ingrediente[] } | null
+}
+
+const lineasDe = (plato: ConIngredientes): Ingrediente[] =>
+  [...plato.ingredientes, ...(plato.guarnicion?.ingredientes ?? [])]
+
+/** Lo que se tira de una línea de la cesta: lo que sobra del envase, si se pierde. */
+function tiradoDe(pedido: Pedido): number {
+  if (pedido.base <= 0 || pedido.riesgo === 0) return 0
+  const { envase, base } = pedido
+  const envases = Math.ceil(base / envase.cantidad)
+  return (envases - base / envase.cantidad) * envase.euros * pedido.riesgo
+}
+
+/** Mete un plato en la cesta. `omitir` deja fuera lo que ya está en casa. */
+export function anadirALaCesta(
+  cesta: Cesta,
+  plato: ConIngredientes,
+  omitir?: (nombre: string) => boolean
+): void {
+  for (const ing of lineasDe(plato)) {
+    if (omitir?.(ing.nombre)) continue
+    const envase = envaseDe(ing.nombre)
+    if (!envase) continue
+    const cantidad = enBase(ing.cantidad, ing.nombre, ing.unidad, envase.unidad)
+    if (cantidad == null || cantidad <= 0) continue
+    const clave = claveNombre(ing.nombre)
+    const prev = cesta.get(clave)
+    if (prev) prev.base += cantidad
+    else cesta.set(clave, { ing, base: cantidad, envase, riesgo: riesgoDe(ing) })
+  }
+}
+
+export interface LoQueAnade {
+  /** Euros de envase que este plato deja sin usar, de más o de menos. */
+  basura: number
+  /** Euros de envase nuevo que hay que comprar por él. */
+  compra: number
+}
+
+/**
+ * Qué le hace a la cesta meter este plato, sin meterlo.
+ *
+ * La basura baja cuando el plato se come lo que ya estaba abierto y sobraba, y
+ * sube cuando abre un envase nuevo de algo que no llega a la próxima compra.
+ */
+export function loQueAnade(cesta: Cesta, plato: ConIngredientes, omitir?: (nombre: string) => boolean): LoQueAnade {
+  const suma = new Map<string, { ing: Ingrediente; cantidad: number; envase: Envase }>()
+  let basura = 0
+  let compra = 0
+
+  for (const ing of lineasDe(plato)) {
+    if (omitir?.(ing.nombre)) continue
+    const envase = envaseDe(ing.nombre)
+    if (!envase) {
+      // Sin envase anotado no hay euros que contar, pero abrirlo sigue dejando
+      // sobra: cuenta como una suposición, y lo ya abierto no añade nada.
+      if (!cesta.has(claveNombre(ing.nombre))) {
+        basura += VARADO_SUPUESTO * riesgoDe(ing)
+        compra += VARADO_SUPUESTO
+      }
+      continue
     }
+    const cantidad = enBase(ing.cantidad, ing.nombre, ing.unidad, envase.unidad)
+    if (cantidad == null || cantidad <= 0) continue
+    const clave = claveNombre(ing.nombre)
+    const prev = suma.get(clave)
+    if (prev) prev.cantidad += cantidad
+    else suma.set(clave, { ing, cantidad, envase })
+  }
+
+  for (const [clave, { ing, cantidad, envase }] of suma) {
+    const antes = cesta.get(clave)
+    const base = (antes?.base ?? 0) + cantidad
+    const riesgo = antes?.riesgo ?? riesgoDe(ing)
+    basura += tiradoDe({ ing, base, envase, riesgo }) - (antes ? tiradoDe(antes) : 0)
+    const envasesAntes = antes ? Math.ceil(antes.base / envase.cantidad) : 0
+    compra += (Math.ceil(base / envase.cantidad) - envasesAntes) * envase.euros
+  }
+
+  return { basura, compra }
+}
+
+/**
+ * Qué parte de lo que hay que comprar por este plato se va a la basura, de 0 a 1.
+ *
+ * En fracción y no en euros a propósito: en euros, la manera más fácil de no
+ * tirar nada es comprar menos comida, y una semana que compra la mitad no es
+ * una semana mejor. En fracción, un plato con cuatro verduras que se acaban va
+ * igual de bien que uno sin verdura ninguna, y mal solo el que deja media bolsa.
+ */
+export function fraccionQueSeTira(cesta: Cesta, plato: ConIngredientes, omitir?: (nombre: string) => boolean): number {
+  const { basura, compra } = loQueAnade(cesta, plato, omitir)
+  if (compra <= 0) return 0
+  return Math.max(0, Math.min(1, basura / compra))
+}
+
+/** Qué cuesta de verdad una lista de platos: envases enteros, no cucharadas. */
+export function cuentaDeLaCompra(platos: ConIngredientes[]): Cuenta {
+  const cesta = cestaVacia()
+  const sinEnvase = new Set<string>()
+  for (const plato of platos) {
+    for (const ing of lineasDe(plato)) {
+      const envase = envaseDe(ing.nombre)
+      const cantidad = envase ? enBase(ing.cantidad, ing.nombre, ing.unidad, envase.unidad) : null
+      if (cantidad == null) sinEnvase.add(ing.nombre)
+    }
+    anadirALaCesta(cesta, plato)
   }
 
   let pagado = 0, comido = 0, tirado = 0
   const lineas: LineaCuenta[] = []
-  for (const [, item] of pedido) {
+  for (const [, item] of cesta) {
     if (item.base <= 0) continue
-    const envase = envaseDe(item.ing.nombre)!
-    const envases = Math.ceil(item.base / envase.cantidad)
-    const pago = envases * envase.euros
-    const como = (item.base / envase.cantidad) * envase.euros
-    const dias = diasDeLaSobra(item.ing.nombre, item.ing.familia)
-    // Lo que sobra de un no perecedero se guarda y se gasta otro día; lo del
-    // perecedero se pierde, y solo eso cuenta.
-    const sobra = (pago - como) * riesgoDe({ ...item.ing, cantidad: item.base, unidad: envase.unidad })
+    const envases = Math.ceil(item.base / item.envase.cantidad)
+    const pago = envases * item.envase.euros
+    const como = (item.base / item.envase.cantidad) * item.envase.euros
+    const sobra = tiradoDe(item)
     pagado += pago; comido += como; tirado += sobra
-    lineas.push({ nombre: item.ing.nombre, necesita: item.base, envase: envase.cantidad, envases, pagado: pago, tirado: sobra, dias })
+    lineas.push({
+      nombre: item.ing.nombre, necesita: item.base, envase: item.envase.cantidad,
+      envases, pagado: pago, tirado: sobra, dias: diasDeLaSobra(item.ing.nombre, item.ing.familia),
+    })
   }
 
   const céntimos = (n: number) => Math.round(n * 100) / 100

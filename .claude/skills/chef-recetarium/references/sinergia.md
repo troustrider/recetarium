@@ -2,7 +2,12 @@
 
 Objetivo permanente del recetario, no de una tanda suelta. Una semana bien planificada no es solo siete platos correctos: es siete platos que **comparten lista de la compra**, para que el gasto baje y para que nada se compre y se pudra a medias.
 
-El planificador ya prefiere los platos que gastan lo que hay en casa (`despensa` en `repartirSemana`). Esto es lo otro: que los platos de la misma semana se necesiten entre ellos, y el reparto lo puntúa (`gananciaCompartir`) pesando cada ingrediente compartido por **los euros de envase que se rescatan al compartirlo** (`valorDeCompartir`, sobre `utils/desperdicio`).
+Desde el 2026-08-26 esto no es una preferencia más: **es lo primero que mira la auto-semana**, por delante de la proteína y de cualquier preset. El reparto puntúa en dos escalones (`prioridadDeLaCompra` en `utils/semana`):
+
+1. **Manda**: cuántos alimentos de la despensa gasta el plato —los que corren prisa valen más que el fondo de armario— menos qué parte de lo que haya que comprar por él va a acabar en la basura.
+2. **Desempata**, dentro de un escalón de 25 céntimos: la nutrición, los presets, la variedad de cocina y de verdura, y lo ya propuesto.
+
+La sobra se mide **en fracción de lo que se compra, no en euros sueltos**: en euros, la forma más fácil de no tirar nada es comprar menos comida, y medido así el reparto se iba a platos mínimos —pagaba 8,53 € y comía 3,73 €— tirando en proporción más que antes. En fracción, un plato con cuatro verduras que se acaban va igual de bien que uno sin verdura, y mal solo el que deja media bolsa.
 
 Hasta el 2026-08-26 ese peso era la rareza del ingrediente en el recetario, y la rareza no es lo que se tira: medido sobre las 88 recetas del seed, la correlación entre el peso que daba el reparto y lo perecedero que es el ingrediente era **0,014** —ninguna—, y el cuartil más premiado tenía una vida útil mediana de 180 días frente a 45 del menos premiado. Premiaba compartir canela, cuyo tarro dura dos años, por encima de compartir cilantro, que se pudre en cinco días.
 
@@ -29,14 +34,16 @@ El envase sale de `formato` en `precios.json` ("tarro 350 g · 2,45 €"), y el 
 
 Los dos números viejos —**ingredientes compartidos** y **reuso**— se siguen imprimiendo, pero son un proxy y no el objetivo, y **ya no fijan suelo**. Medido sobre las 88 recetas del seed, subiendo el peso de compartir por encima del óptimo los compartidos siguen subiendo del 45% al 54% y el reuso de 2,11 a 2,43 **mientras la basura empeora** de 1,92 € a 2,39 €. Optimizar el proxy más allá de cierto punto cuesta dinero, y el suelo de reuso 2,12 caía justo en esa zona.
 
-Medido el 2026-08-26 sobre las 88 recetas del seed (200 semanas, sin dieta), al cambiar el peso de rareza a euros:
+Medido el 2026-08-26 sobre las 88 recetas del seed (200 semanas, sin dieta, con una despensa de 12 cosas en casa), al pasar la despensa y la sobra a mandar:
 
-| | compartidos | reuso | paga | come | **tira** |
-|---|---|---|---|---|---|
-| rareza (antes) | 40% | 1,84 | 13,90 € | 7,76 € | 2,29 € — 30% de lo comido |
-| desperdicio (ahora) | 45% | 2,11 | 14,98 € | 8,73 € | **1,92 € — 22% de lo comido** |
+| | despensa gastada | de los que corren prisa | paga | come | **tira** | proteína | sin verdura |
+|---|---|---|---|---|---|---|---|
+| antes | 8,9/12 | 6,2/7,1 | 15,65 € | 8,47 € | 2,52 € — 30% de lo comido | 95% | 3% |
+| ahora | **9,7/12** | **6,7/7,1** | 20,97 € | 11,67 € | **1,87 € — 16% de lo comido** | 90% | 6% |
 
-Cuesta variedad: 72 platos distintos en 200 semanas frente a 76, y una cocina menos. Es el canje aceptado.
+Lo que cuesta: la proteína baja del 95% al 90% del objetivo y los platos sin verdura pasan del 3% al 6%. La variedad no sufre (82 platos distintos en 200 semanas frente a 80). La factura sube, pero porque la semana trae más comida: el euro pagado por euro comido baja de 1,86 a 1,80.
+
+Y un efecto que hay que tener presente: **la semana concentra los perecederos en unos pocos**. Siete verduras distintas son siete bolsas empezadas; el reparto prefiere tres o cuatro que se acaben. Es la respuesta correcta a "que no sobre nada", y a la vez lo que hay que vigilar para que la semana no se vuelva monótona: para eso están la penalización de verdura repetida y la de cocina repetida, que siguen desempatando dentro del escalón.
 
 **Esos números son del seed, no del catálogo vivo**, que ronda las 594 recetas y no cabe en el repo. Hay que rehacer la medida con un volcado de la base antes de tratarlos como la línea de salida.
 

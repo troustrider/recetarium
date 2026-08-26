@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { envaseDeFormato, envaseDe, desperdicioDe, cuentaDeLaCompra } from '../utils/desperdicio'
+import {
+  envaseDeFormato, envaseDe, desperdicioDe, cuentaDeLaCompra,
+  cestaVacia, anadirALaCesta, loQueAnade, fraccionQueSeTira,
+} from '../utils/desperdicio'
 import type { Ingrediente } from '../types/receta'
 
 const ing = (nombre: string, cantidad: number, unidad: string, familia: string): Ingrediente =>
@@ -68,5 +71,40 @@ describe('la cuenta de la compra', () => {
     const cuenta = cuentaDeLaCompra([plato([ing('unicornio en conserva', 1, 'ud', 'otros')])])
     expect(cuenta.sinEnvase).toContain('unicornio en conserva')
     expect(cuenta.pagado).toBe(0)
+  })
+})
+
+describe('lo que un plato más le hace a la cesta', () => {
+  const plato = (ingredientes: Ingrediente[]) => ({ ingredientes })
+
+  it('el que se acaba lo que ya estaba abierto no añade basura', () => {
+    const envase = envaseDe('espinacas')!
+    const cesta = cestaVacia()
+    anadirALaCesta(cesta, plato([ing('espinacas', envase.cantidad / 3, 'g', 'verduras')]))
+    const segundo = plato([ing('espinacas', (2 * envase.cantidad) / 3, 'g', 'verduras')])
+    expect(loQueAnade(cesta, segundo).basura).toBeLessThan(0)
+    expect(fraccionQueSeTira(cesta, segundo)).toBe(0)
+  })
+
+  it('abrir un envase nuevo para una cucharada lo tira casi entero', () => {
+    const cesta = cestaVacia()
+    expect(fraccionQueSeTira(cesta, plato([ing('espinacas', 20, 'g', 'verduras')]))).toBeGreaterThan(0.8)
+  })
+
+  it('el que se acaba el envase justo no tira nada', () => {
+    const envase = envaseDe('espinacas')!
+    const cesta = cestaVacia()
+    expect(fraccionQueSeTira(cesta, plato([ing('espinacas', envase.cantidad, 'g', 'verduras')]))).toBe(0)
+  })
+
+  it('el fondo de armario no cuenta: se guarda y se gasta otro día', () => {
+    const cesta = cestaVacia()
+    expect(fraccionQueSeTira(cesta, plato([ing('arroz', 100, 'g', 'cereales')]))).toBe(0)
+  })
+
+  it('lo que ya está en casa no se compra, así que no deja sobra que evitar', () => {
+    const cesta = cestaVacia()
+    const enCasa = (nombre: string) => nombre === 'espinacas'
+    expect(fraccionQueSeTira(cesta, plato([ing('espinacas', 20, 'g', 'verduras')]), enCasa)).toBe(0)
   })
 })

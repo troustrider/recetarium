@@ -2,8 +2,7 @@ import type { RecetaListada } from '../types/receta'
 import type { Preferencias, Prioridad } from '../types/preferencias'
 import { aprovechaDe, indiceDespensa, type IndiceDespensa, type ItemAprovechable } from './aprovechamiento'
 import { despensaCubre } from './despensa'
-import { claveNombre, ingredientesDe } from './ingredientes'
-import { desperdicioDe, riesgoDe } from './desperdicio'
+import { anadirALaCesta, cestaVacia, fraccionQueSeTira, type Cesta } from './desperdicio'
 
 const DIAS_SEMANA = 7
 
@@ -51,13 +50,30 @@ const PESOS_BASE = {
   compartir: 0.75,
 }
 
-const TOPE_APROVECHAMIENTO = 2
+/**
+ * Tope de lo que puntúa vaciar la despensa. Alto a propósito: la prioridad es
+ * usar el mayor número de alimentos que hay en casa, no dos.
+ */
+const TOPE_APROVECHAMIENTO = 8
 
-/** Tope de la ganancia de compartir, en euros de basura evitada por plato. */
-const TOPE_COMPARTIR = 1.5
+/**
+ * Lo que manda por delante de todo: vaciar la despensa y no dejar sobras.
+ *
+ * Va en un escalón aparte y no sumando con el resto, para que sea prioridad
+ * absoluta y no una preferencia más. Dentro de un mismo escalón —platos que van
+ * igual de bien en despensa y en basura— deciden la nutrición, los presets y la
+ * variedad, que es lo que evita que la semana se vuelva un menú de castigo.
+ */
+const MANDA = 100
 
-/** Lo que se supone que se tira de un perecedero sin envase anotado. */
-const DESPERDICIO_SUPUESTO = 0.35
+/** Ancho del escalón, en euros. Por debajo de esto dos platos van igual de bien. */
+const PASO = 0.25
+
+/** Lo que vale en euros gastar un alimento de la despensa antes de que se pierda. */
+const EUROS_POR_PUNTO_DE_DESPENSA = 1
+
+/** Lo que cuesta, en esos mismos euros, un plato que tire todo lo que compra. */
+const COSTE_DE_TIRARLO_TODO = 2
 
 const PENALIZACION_DESCARTADO = 5
 const PENALIZACION_YA_PROPUESTO = 0.6
@@ -197,8 +213,8 @@ interface Acumulado {
   sabores: Map<string, number>
   /** Índices de la despensa que la semana ya tiene comprometidos. */
   aprovechados: Set<number>
-  /** Ingredientes que la semana ya va a comprar, por nombre canónico. */
-  compra: Set<string>
+  /** Lo que la semana ya va a comprar, con cantidades, para saber qué sobra. */
+  compra: Cesta
   /** Proteína ya colocada en cada día, para la semana proteica. */
   proteinaPorDia: Map<string, number>
 }
@@ -211,15 +227,21 @@ function acumuladoVacio(): Acumulado {
     verduras: new Set(),
     sabores: new Map(),
     aprovechados: new Set(),
-    compra: new Set(),
+    compra: cestaVacia(),
     proteinaPorDia: new Map(),
   }
 }
 
-function acumular(acc: Acumulado, receta: RecetaListada, usados: number[] = [], dia?: string) {
+function acumular(
+  acc: Acumulado,
+  receta: RecetaListada,
+  usados: number[] = [],
+  dia?: string,
+  enCasa?: (nombre: string) => boolean
+) {
   for (const i of usados) acc.aprovechados.add(i)
   if (dia) acc.proteinaPorDia.set(dia, (acc.proteinaPorDia.get(dia) ?? 0) + aporteDe(receta).proteinas)
-  for (const clave of clavesDe(receta)) acc.compra.add(clave)
+  anadirALaCesta(acc.compra, receta, enCasa)
   const a = aporteDe(receta)
   for (const clave of CLAVES) acc.nutrientes[clave] += a[clave]
   for (const macro of MACROS) acc.macros[macro] += a[macro]
@@ -262,53 +284,24 @@ function gananciaDespensa(usados: number[], acc: Acumulado, indice: IndiceDespen
   return Math.min(g, TOPE_APROVECHAMIENTO)
 }
 
-const clavesDe = (receta: RecetaListada) =>
-  new Set(ingredientesDe(receta, true).map((i) => claveNombre(i.nombre)))
-
-function gananciaCompartir(
+/**
+ * Lo que la despensa y la basura dicen de este plato, en euros.
+ *
+ * Suma lo que rescata de casa antes de que se pierda y resta lo que va a dejar
+ * sin usar de lo que haya que comprar. Es lo único que decide qué plato entra,
+ * salvo empate.
+ */
+function prioridadDeLaCompra(
   receta: RecetaListada,
   acc: Acumulado,
-  valor: Map<string, number>
+  indice: IndiceDespensa,
+  usados: number[],
+  enCasa: (nombre: string) => boolean
 ): number {
-  let g = 0
-  for (const clave of clavesDe(receta)) {
-    if (acc.compra.has(clave)) g += valor.get(clave) ?? 0
-  }
-  return Math.min(g, TOPE_COMPARTIR)
-}
-
-/**
- * Lo que vale compartir cada ingrediente, en euros de basura evitada.
- *
- * Antes esto era la rareza en el recetario, y la rareza no es lo que se tira: la
- * canela sale en pocas recetas y el tarro dura dos años, mientras que el
- * cilantro sale en muchas y se pudre en cinco días. Lo que se tira es el envase
- * que se compra entero, se usa a cucharadas y no llega a la próxima compra, y
- * eso es lo que un segundo plato rescata.
- */
-function valorDeCompartir(huecos: Hueco[], indice: IndiceDespensa): Map<string, number> {
-  const vistas = new Set<string>()
-  const valor = new Map<string, number>()
-  // Lo que ya está en casa no se compra, así que compartirlo no evita ninguna
-  // basura: de eso se ocupa el aprovechamiento, y contarlo aquí lo premiaría dos veces.
-  const enCasa = (nombre: string) => indice.items.some((item) => despensaCubre(item.nombre, nombre))
-  for (const hueco of huecos) {
-    for (const receta of hueco.candidatos) {
-      if (vistas.has(receta.id)) continue
-      vistas.add(receta.id)
-      for (const ing of ingredientesDe(receta, true)) {
-        const clave = claveNombre(ing.nombre)
-        if (valor.has(clave)) continue
-        if (enCasa(ing.nombre)) { valor.set(clave, 0); continue }
-        const riesgo = riesgoDe(ing)
-        if (riesgo === 0) { valor.set(clave, 0); continue }
-        // Sin envase anotado no se sabe cuánto se vara, pero sí que se estropea.
-        const euros = desperdicioDe(ing)
-        valor.set(clave, euros > 0 ? euros : DESPERDICIO_SUPUESTO * riesgo)
-      }
-    }
-  }
-  return valor
+  return (
+    EUROS_POR_PUNTO_DE_DESPENSA * gananciaDespensa(usados, acc, indice) -
+    COSTE_DE_TIRARLO_TODO * fraccionQueSeTira(acc.compra, receta, enCasa)
+  )
 }
 
 function penalizacion(receta: RecetaListada, a: Aporte, acc: Acumulado, ajustes: Ajustes): number {
@@ -381,7 +374,9 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length)
 
   const indice = indiceDespensa(despensa)
-  const valor = valorDeCompartir(huecos, indice)
+  // Lo que ya está en casa no se compra: no deja sobra que evitar, y de gastarlo
+  // se ocupa el aprovechamiento. Contarlo aquí lo premiaría dos veces.
+  const enCasa = (nombre: string) => indice.items.some((item) => despensaCubre(item.nombre, nombre))
   const cacheUsados = new Map<string, number[]>()
   const usadosDe = (receta: RecetaListada): number[] => {
     if (indice.items.length === 0) return []
@@ -396,7 +391,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   // Lo cocinado no reserva despensa: si su bote sigue en la lista es que quedó,
   // y quedarse sin gastar es justo lo que hay que arreglar esta semana.
   const acc = acumuladoVacio()
-  for (const receta of yaEnLaSemana) acumular(acc, receta)
+  for (const receta of yaEnLaSemana) acumular(acc, receta, [], undefined, enCasa)
   for (const [dia, gramos] of opciones.proteinaPorDia ?? []) acc.proteinaPorDia.set(dia, gramos)
 
   // Lo ya cocinado no se vuelve a proponer ni cuando toca repetir: acabas de
@@ -422,13 +417,20 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     let mejorNota = -Infinity
     for (const receta of entre) {
       const a = aporteDe(receta)
-      const nota =
-        ganancia(a, acc, ajustes, hueco.dia) +
-        ajustes.pesos.aprovechar * gananciaDespensa(usadosDe(receta), acc, indice) +
-        ajustes.pesos.compartir * gananciaCompartir(receta, acc, valor) -
-        penalizacion(receta, a, acc, ajustes) -
+      // Primero manda la compra: qué vacía de casa y qué va a dejar sin usar.
+      // Lo descartado a mano cae varios escalones, para que descartar se note.
+      // Volver a pulsar tiene que dar otra semana, así que lo ya propuesto pesa
+      // aquí arriba: mueve un par de escalones, lo justo para desempatar entre
+      // platos que van igual de bien, nunca para tapar una despensa que vaciar.
+      const prioridad =
+        prioridadDeLaCompra(receta, acc, indice, usadosDe(receta), enCasa) -
         (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
-        (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0) +
+        (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0)
+      // Dentro del escalón deciden la nutrición, los presets y la variedad.
+      const nota =
+        MANDA * Math.round(prioridad / PASO) +
+        ganancia(a, acc, ajustes, hueco.dia) -
+        penalizacion(receta, a, acc, ajustes) +
         aleatorio() * 0.25
       if (nota > mejorNota) {
         mejorNota = nota
@@ -436,7 +438,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
       }
     }
 
-    acumular(acc, mejor, usadosDe(mejor), hueco.dia)
+    acumular(acc, mejor, usadosDe(mejor), hueco.dia, enCasa)
     usadas.add(mejor.id)
     porHueco.set(hueco.id, mejor)
   }
