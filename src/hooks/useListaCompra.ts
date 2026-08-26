@@ -7,6 +7,7 @@ import { juntarMedidas, type Medida } from '../utils/medidas'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
 import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
+import { cuentaDeLaCompra, type Cuenta } from '../utils/desperdicio'
 import { useDespensa } from '../context/DespensaContext'
 
 export interface IngredienteAgrupado extends Ingrediente {
@@ -222,15 +223,30 @@ function useListaCompra() {
     [listaCompra]
   )
 
+  // La misma lista, pero en envases enteros: nadie compra dos cucharadas de
+  // tahini. Lo que sobra de un perecedero no llega a la próxima compra.
+  const cuenta: Cuenta = useMemo(
+    () =>
+      cuentaDeLaCompra([
+        {
+          ingredientes: listaCompra.flatMap((i) => [
+            i as Ingrediente,
+            ...(i.otrasMedidas ?? []).map((m) => ({ nombre: i.nombre, familia: i.familia, ...m })),
+          ]),
+        },
+      ]),
+    [listaCompra]
+  )
+
   return useMemo(
     () => ({
-      seleccionadas, listaCompra, enDespensa, extras, coste, compra,
+      seleccionadas, listaCompra, enDespensa, extras, coste, compra, cuenta,
       toggleReceta, setRaciones, setGuarnicion, estaSeleccionada, vaciar,
       cargarAleatorias, addExtra, removeExtra, descartar,
       instantanea, restaurarLista,
     }),
     [
-      seleccionadas, listaCompra, enDespensa, extras, coste, compra,
+      seleccionadas, listaCompra, enDespensa, extras, coste, compra, cuenta,
       toggleReceta, setRaciones, setGuarnicion, estaSeleccionada, vaciar,
       cargarAleatorias, addExtra, removeExtra, descartar,
       instantanea, restaurarLista,

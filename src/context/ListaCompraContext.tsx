@@ -1,6 +1,7 @@
 import { createContext, useContext, type ReactNode } from 'react'
 import useListaCompra, { type IngredienteAgrupado, type EntradaLista, type InstantaneaLista } from '../hooks/useListaCompra'
 import type { RecetaListada, Ingrediente } from '../types/receta'
+import type { Cuenta } from '../utils/desperdicio'
 
 interface ListaCompraContextValue {
   seleccionadas: EntradaLista[]
@@ -9,6 +10,7 @@ interface ListaCompraContextValue {
   extras: Ingrediente[]
   coste: number
   compra: { total: number; sinPrecio: string[] }
+  cuenta: Cuenta
   toggleReceta: (receta: RecetaListada) => void
   setRaciones: (id: string, raciones: number) => void
   setGuarnicion: (id: string, conGuarnicion: boolean) => void
