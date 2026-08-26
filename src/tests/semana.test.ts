@@ -87,7 +87,10 @@ describe('semanaEquilibrada', () => {
     expect(semana.map((r) => r.categoria)).toContain('c')
   })
 
-  it('reparte la verdura en vez de servir la misma siete veces', () => {
+  it('concentra la verdura en unas pocas, pero no en una sola', () => {
+    // Siete verduras distintas son siete bolsas empezadas y siete medias bolsas
+    // en la basura, así que la semana agrupa los platos que se acaban el mismo
+    // paquete. Lo que no vale es servir la misma los siete días.
     const verduras = ['brócoli', 'espinacas', 'tomate', 'zanahoria', 'judías verdes', 'pepino', 'lechuga']
     const recetas = verduras.flatMap((v, i) =>
       Array.from({ length: 3 }, () =>
@@ -96,7 +99,8 @@ describe('semanaEquilibrada', () => {
     )
     const semana = semanaEquilibrada(recetas, 7, 3)
     const distintas = new Set(semana.map((r) => r.guarnicion!.ingredientes[0].nombre))
-    expect(distintas.size).toBeGreaterThanOrEqual(5)
+    expect(distintas.size).toBeGreaterThanOrEqual(2)
+    expect(distintas.size).toBeLessThanOrEqual(4)
   })
 
   it('no repite un plato que ya está puesto en la semana', () => {
