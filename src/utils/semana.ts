@@ -72,7 +72,16 @@ const PASO = 0.25
 /** Lo que vale en euros gastar un alimento de la despensa antes de que se pierda. */
 const EUROS_POR_PUNTO_DE_DESPENSA = 1
 
-/** Lo que cuesta, en esos mismos euros, un plato que tire todo lo que compra. */
+/**
+ * Lo que cuesta, en esos mismos euros, un plato que tire todo lo que compra.
+ *
+ * Lo que gobierna a los presets no es este número, es su razón con `PASO`: la
+ * nota redondea a escalones, así que con la despensa vacía dos platos solo se
+ * separan por cuántos escalones de `COSTE_DE_TIRARLO_TODO / PASO` los separa la
+ * sobra. Medido contra el catálogo vivo, esa razón vale 8 y ahí la semana
+ * proteica llega a 120 g en 51 de 120 días; a 12 se queda en 9 de 120, porque
+ * la basura parte tan fino que la proteína ya no desempata nada.
+ */
 const COSTE_DE_TIRARLO_TODO = 2
 
 const PENALIZACION_DESCARTADO = 5

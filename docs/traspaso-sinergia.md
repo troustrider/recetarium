@@ -1,83 +1,94 @@
 # Traspaso: sinergia y la auto-semana
 
-Lo que queda por hacer del trabajo de sinergia, y por qué hace falta la base
-delante para rematarlo. Escrito el 2026-08-26.
+Estado a 26 de agosto de 2026. El trabajo de sinergia queda cerrado: los diales
+ya están medidos contra la base viva y el bug que quedaba escrito está
+arreglado. Lo que sigue abierto son cuatro cabos, ninguno bloqueante, y un
+hallazgo nuevo que no es del planificador sino del recetario.
 
-## Lo que ya está (y está empujado)
+## Lo que se cerró
 
-Dos commits en `claude/recipe-synergy-issue-6tmv3l`:
+### Los diales, medidos contra las 688 recetas vivas
 
-- **`5e7912d` Compartir se paga en euros de basura, no en lo raro que sea.**
-  `utils/desperdicio` lee el envase real desde `formato` en precios.json y el
-  reloj del envase abierto (`diasTrasAbrir`), y con eso mide qué se paga, qué se
-  come y qué se tira. El reparto deja de puntuar compartir por rareza.
-- **`7abfd1e` La auto-semana elige primero por la despensa y por lo que va a
-  sobrar.** El reparto decide en dos escalones: manda lo que vacía de casa menos
-  qué fracción de la compra va a quedarse sin usar; la nutrición, los presets y
-  la variedad desempatan dentro de un escalón de 25 céntimos.
+Venían ajustados contra las 88 del seed y había que rehacerlos con el catálogo
+real. Hecho, y **se quedan donde estaban**: `PASO` en 0,25 € y
+`COSTE_DE_TIRARLO_TODO` en 2.
 
-La doctrina está en `.claude/skills/chef-recetarium/references/sinergia.md`.
+Lo que salió de medirlo es más útil que el número: **lo que gobierna el reparto
+no es el coste sino su razón con el paso**, porque la nota redondea a escalones.
+Con la despensa vacía, que es como corre cualquier preset de nutrición, dos
+platos solo se separan por escalones de `COSTE_DE_TIRARLO_TODO / PASO`. Esa
+razón vale 8 hoy.
 
-## Lo que falta: ajustar los dos diales contra el catálogo vivo
+Subirla a 12 —dejar el paso y poner el coste en 3, que era la tentación, porque
+baja la basura del 12,8% al 10,3% de lo comido— **hunde la semana proteica**:
+los días de tres comidas que llegan a 120 g pasan de 51 de cada 120 a 9. La
+basura parte tan fino que la proteína ya no llega a desempatar nada. Es el
+efecto que el barrido sobre el seed no podía ver, porque allí la cobertura
+semanal de proteína seguía marcando 100% mientras el preset se venía abajo.
 
-Los dos números que gobiernan el comportamiento están en `src/utils/semana.ts`:
+Moverse por la línea de razón 8, que es la que respeta a los presets, tampoco
+sale a cuenta (48 semanas por casilla, sin dieta, despensa de 12):
 
-| Dial | Hoy | Qué hace |
-|---|---|---|
-| `PASO` | 0,25 € | Cuánto margen hay antes de que la nutrición pueda decidir. Más alto = come mejor y tira más. |
-| `COSTE_DE_TIRARLO_TODO` | 2 | Cuánto pesa la sobra frente a vaciar la despensa. Más alto = menos basura, menos despensa gastada. |
+| paso / coste | despensa gastada | de los que corren prisa | tira | platos distintos |
+|---|---|---|---|---|
+| **0,25 / 2** | **9,0/12** | **4,5/4,8** | **4,21 € — 12,8%** | **198** |
+| 0,50 / 4 | 7,7/12 | 3,8/4,8 | 2,88 € — 8,9% | 169 |
+| 0,75 / 6 | 6,9/12 | 3,4/4,8 | 2,93 € — 8,7% | 148 |
+| 1,00 / 8 | 6,4/12 | 3,2/4,8 | 2,87 € — 8,5% | 134 |
 
-**Están ajustados contra las 88 recetas del seed, no contra las 688 vivas.** El
-pool real es 5,4 veces mayor, así que el reparto tiene muchas más ocasiones de
-encontrar un plato que vacíe la despensa *y* no deje sobra: es de esperar que el
-óptimo se mueva.
+Ahorra 1,33 € de basura en la cesta y deja sin gastar 1,3 cosas de casa, que al
+euro por punto que la despensa vale en este mismo modelo es el mismo dinero,
+más treinta platos de variedad de propina. Y la basura deja de bajar a partir
+del segundo escalón: lo que sigue cayendo es la despensa, que es mover la
+basura de la cesta a la nevera, no evitarla.
 
-### Cómo rehacerlo
+Línea de salida con lo que hay hoy en la base (200 semanas, sin dieta):
+
+```
+despensa: gasta 9.0/12  de los que corren prisa 4.4/4.8
+la compra: paga 57.24 €  come 32.79 €  tira 4.07 € (7% de lo pagado, 12% de lo comido)
+la mesa:   fibra 111% del objetivo  proteína 103%  platos sin verdura 7%
+```
+
+Vegetariana tira el 9% de lo comido y vegana el 12%. Ninguna deja huecos vacíos.
+
+Para repetir la medida:
 
 ```bash
 node --env-file=server/.env server/scripts/volcar-catalogo.mjs catalogo.json
 PASADAS=200 npx vite-node scripts/simular-semana.ts catalogo.json
 ```
 
-El simulador imprime, por dieta: huecos vacíos, platos distintos, cocinas,
-ingredientes compartidos y reuso, y luego las tres líneas que importan:
+El volcado está en `.gitignore`: es una foto de la base y la base manda.
 
-```
-despensa: gasta N/12  de los que corren prisa M/7
-la compra: paga X €  come Y €  tira Z € (…% de lo pagado, …% de lo comido)
-la mesa:   fibra …% del objetivo  proteína …%  platos sin verdura …%
-```
+### El miso abierto ya no avisa a los tres días
 
-Barre los dos diales (ambos leen variable de entorno si los conviertes a
-`Number(process.env.X ?? …)` un rato, como se hizo para medir) y quédate con el
-que minimiza **el porcentaje de lo comido que se tira** sin hundir la proteína
-ni los platos distintos.
+`diasTrasAbrir` caía en la primera palabra cuando no encontraba el nombre
+entero, y en "pasta de miso" esa palabra es "pasta", así que la entrada de la
+pasta fresca le ponía tres días a un bote que aguanta seis meses. Arreglado
+mirando antes el token que no es cabeza ambigua, con la lista de cabezas que ya
+vivía en `despensa.ts`. "Pasta fresca", que no tiene otro token, sigue
+resolviendo por pasta.
 
-### Contra qué comparar
+## El hallazgo nuevo: la proteína no la pierde el reparto, la pierde el catálogo
 
-Medido sobre el seed (88 recetas, 200 semanas, despensa de 12 cosas):
+La semana proteica persigue 125 g al día **y por día**. Contra las 688 recetas
+vivas, los días con las tres comidas puestas dan 115 g de media y solo 243 de
+cada 600 llegan a 120. Los días de dos comidas se quedan en 81 y no pueden
+llegar, que es lo acordado.
 
-| | despensa | prisa | paga | come | tira | proteína | sin verdura | platos |
-|---|---|---|---|---|---|---|---|---|
-| antes | 8,9/12 | 6,2/7,1 | 15,65 € | 8,47 € | 2,52 € (30%) | 95% | 3% | 80 |
-| ahora | 9,7/12 | 6,7/7,1 | 20,97 € | 11,67 € | 1,87 € (16%) | 90% | 6% | 82 |
+El preset está poniendo lo mejor que hay; lo mejor que hay no basta. Es encargo
+para la próxima tanda, no para el planificador: **falta principal proteico y
+sobre todo desayuno proteico**, que es el hueco donde se caen los días de tres
+comidas.
 
-Barrido de `COSTE_DE_TIRARLO_TODO` sobre el seed: con 1 vacía más despensa
-(10,5/12) pero tira el 21%; con 4 empeora en las dos cosas. Por eso quedó en 2.
+## Los cabos que siguen abiertos, por orden de rendimiento
 
-## Lo que se sabe de la base viva (consultado el 2026-08-26)
-
-- 688 recetas vivas: 473 principales, 121 desayunos, el resto postres y entrantes.
-- Todas con `micros` y `apto` rellenos.
-- 408 nombres de ingrediente distintos en 7.215 líneas.
-- El volcado en JSON ocupa ~1 MB.
-
-## Los otros cabos, por orden de rendimiento
-
-1. **Rellenar el envase en `precios.json`.** Solo 129 de 341 precios traen un
+1. **Rellenar el envase en `precios.json`.** Solo 137 de 369 precios traen un
    tamaño legible en `formato` ("tarro 350 g · 2,45 €"). Sin envase, el peso de
-   ese ingrediente cae a una suposición de 0,35 €. Es la palanca más barata que
-   queda y es trabajo de datos.
+   ese ingrediente cae a una suposición de 0,35 €, así que es la mitad larga de
+   la tabla la que hoy se estima. Es la palanca más barata que queda y es
+   trabajo de datos: hay que verlo en la tienda, no inventarlo.
 2. **Enseñar la cuenta en la app.** `cuentaDeLaCompra` ya devuelve pagado /
    comido / tirado y el desglose por ingrediente. La lista de la compra puede
    decir "pagas 24 €, comes 17 €, se te va a estropear 3 €" y señalar el plato
@@ -87,18 +98,3 @@ Barrido de `COSTE_DE_TIRARLO_TODO` sobre el seed: con 1 vacía más despensa
    recuperaría parte de eso. Sin medir.
 4. **La puerta de las tandas.** `references/tandas.md` todavía no obliga a que
    un lote baje el "tira".
-
-## Un bug encontrado y no arreglado
-
-`diasTrasAbrir('pasta de miso')` devuelve **3 días**: el núcleo del nombre
-colisiona con `pasta fresca` en la tabla de `trasAbrir.ts`. Es el mismo choque
-contra el que avisa el comentario de `caducidadEstimada.ts`, pero `trasAbrir.ts`
-no lleva la guarda.
-
-Síntoma real: un bote de miso abierto en la despensa avisa a los tres días.
-
-No se arregló porque la corrección es una decisión de datos, no de código: en
-"pasta de miso" el ingrediente es el segundo token y en "nata para cocinar" es
-el primero, así que el *fallback* por primera palabra acierta casi siempre y
-falla justo en los nombres con el sustantivo detrás. Toca una tabla de la que
-dependen la despensa y sus tests.
