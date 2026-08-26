@@ -95,6 +95,8 @@ Criterio de reparto tal como se usa hoy en la BD: especias, hierbas, sal y pimie
 
 **El arroz va siempre en `vaso`**, no en gramos: vaso de cristal medio de cualquier casa, ~200 ml, ~180 g de arroz crudo (0,36 € a 2 €/kg). El agua de cocción se mide con el mismo vaso, así la proporción aguanta al escalar comensales. Detalle en `tecnica.md`.
 
+**La verdura que se compra por piezas va en `ud`**, no en gramos: cebolla, cebolla roja, cebolleta, pimiento, zanahoria, calabacín, berenjena, puerro, aguacate, tomate. En la cocina se cuentan, no se pesan, y la despensa ya las guarda así. Usa fracciones cuando toque (`0.25`, `0.5`, `0.75`), que la app las pinta como ¼, ½ y ¾. Equivalencia de referencia para la cebolla: 150 g = 1 ud. La excepción es la verdura que de verdad se compra a peso (cebollitas perla, champiñones, judías verdes).
+
 **Nombres de ingrediente:** minúsculas, sin marca, específicos ("pechuga de pollo", no "pollo" si importa el corte). Antes de nombrar uno, mira cómo se llama ya en la BD y reutiliza ese nombre exacto — la lista de la compra agrupa por nombre normalizado y cada variante crea una línea duplicada.
 
 **Sal y pimienta:** `{ "nombre": "sal", "cantidad": 1, "unidad": "pizca", "familia": "especias" }` — la app las muestra como "al gusto".

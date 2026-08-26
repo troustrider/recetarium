@@ -425,14 +425,16 @@
       "euros": 0.2,
       "unidad": "ud",
       "fuente": "estimado",
-      "revisado": "2026-08"
+      "revisado": "2026-08",
+      "gramosPorUd": 150
     },
     {
       "nombre": "cebolla roja",
       "euros": 0.25,
       "unidad": "ud",
       "fuente": "estimado",
-      "revisado": "2026-08"
+      "revisado": "2026-08",
+      "gramosPorUd": 150
     },
     {
       "nombre": "cebolleta",
