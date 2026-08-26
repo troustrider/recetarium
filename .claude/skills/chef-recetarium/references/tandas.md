@@ -127,6 +127,7 @@ Sobre ese esqueleto, cuatro condiciones:
 - **Cada receta declara su nivel de procedencia antes de escribirse** (A/B/C de `canon-recetas.md`) y **de dónde sale su proteína**. Si no sabes de dónde va a salir, la receta no está diseñada: está deseada.
 - **Cocinas ausentes primero.** Una tanda es la ocasión barata de meter las que faltan. Míralo por `categoria` sobre el bloque entero.
 - **Nada de fusión de relleno.** Si un hueco no se llena con un plato documentado, se deja el hueco y se dice, en vez de inventar un nivel C para cuadrar el número.
+- **La tanda trae su despensa compartida.** Se eligen tres o cuatro ingredientes puente —caros o perecederos, no la cebolla— y cada uno aparece en tres o cuatro platos de la tanda con papeles distintos. Es lo que decide si el lote baja o sube la basura de la semana, y se diseña aquí: plato a plato ya no se arregla (`sinergia.md`).
 
 Y la condición propia del bloque, que hay que poner en el diseño y no descubrir al escribir:
 
@@ -139,7 +140,7 @@ Y la condición propia del bloque, que hay que poner en el diseño y no descubri
 
 ### Lo que se entrega al final de la fase 3
 
-Tabla por tramos: `# | plato | cocina | de dónde sale la proteína | nota`, con las marcas de cuota visibles. Y debajo, el bloque **"los números que mueve esto"**: antes y después de las cuatro medidas de la fase 1. Ese bloque es lo que convierte la tanda en una decisión y no en una lista de sugerencias.
+Tabla por tramos: `# | plato | cocina | de dónde sale la proteína | nota`, con las marcas de cuota visibles, y la lista de ingredientes puente con en cuántos platos cae cada uno. Y debajo, el bloque **"los números que mueve esto"**: antes y después de las cuatro medidas de la fase 1. Ese bloque es lo que convierte la tanda en una decisión y no en una lista de sugerencias.
 
 Karim aprueba o veta aquí, plato a plato. No se escribe una sola receta antes.
 
@@ -189,6 +190,17 @@ No es motivo para descartarlo. La skill exige que el plato sea real y esté bien
 ## Fase 6 — Cerrar la deuda que abrió la auditoría
 
 Los defectos de 1.4 se arreglan después de la tanda, en modo Revisión, **de uno en uno y con aprobación individual**. Una tanda que añade 25 recetas limpias y deja 8 rotas detrás no ha mejorado el recetario, lo ha diluido.
+
+### La puerta de la basura
+
+Una tanda no puede subir lo que la semana tira. Se mide antes de `apply` y después, con el mismo volcado de siempre:
+
+```bash
+node --env-file=server/.env server/scripts/volcar-catalogo.mjs catalogo.json
+PASADAS=200 npx vite-node scripts/simular-semana.ts catalogo.json
+```
+
+El número es **el porcentaje de lo comido que se tira**, sin dieta. Hoy está en el 12%. Si después de la tanda sube, el lote ha metido platos que abren envases que nadie más se acaba, y lo que se toca son los ingredientes puente, no las recetas una a una. Se dice en el informe de cierre, suba o baje.
 
 ---
 
