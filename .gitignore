@@ -21,6 +21,9 @@ recetas_live.json
 # Cache de busquedas de Unsplash: ahorra peticiones entre tandas, no versionar
 server/scripts/unsplash-cache.json
 
+# Volcados de candidatos de una tanda: se regeneran, no versionar
+server/scripts/candidatos*.json
+
 # Environment variables
 .env
 .env.*
