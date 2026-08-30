@@ -22,8 +22,8 @@ if (!process.env.DATABASE_URL) { console.error('Falta DATABASE_URL'); process.ex
 const sql = neon(process.env.DATABASE_URL)
 
 const RENDER = '&w=800&h=600&q=80&fit=crop&crop=entropy'
-const EXTRA = { ø: 'o', æ: 'ae', å: 'a', ß: 'ss', đ: 'd', ı: 'i', ð: 'd', þ: 'th', ł: 'l' }
-const deaccent = (s) => s.toLowerCase().replace(/[øæåßđıðþł]/g, (c) => EXTRA[c])
+const EXTRA = { ø: 'o', æ: 'ae', œ: 'oe', å: 'a', ß: 'ss', đ: 'd', ı: 'i', ð: 'd', þ: 'th', ł: 'l' }
+const deaccent = (s) => s.toLowerCase().replace(/[øæœåßđıðþł]/g, (c) => EXTRA[c])
   .normalize('NFD').replace(/[̀-ͯ]/g, '')
 const slug = (url) => url.match(/photo-[a-z0-9-]+/i)?.[0] ?? null
 
@@ -195,6 +195,231 @@ const MANUAL = Object.fromEntries(Object.entries({
   'Polenta con ragu de setas': ['polenta with mushroom sauce plate', ['polenta']],
   'Maqluba de ternera': ['middle eastern rice beef eggplant platter', ['rice']],
   'Minestrone': ['italian vegetable soup bowl', ['soup', 'vegetable', 'minestrone']],
+  'Galette bretona de huevo y queso': ['buckwheat galette folded egg cheese plate', ['galette', 'crepe']],
+  'Harcha con queso fresco': ['moroccan semolina flatbread griddle plate', ['harcha', 'semolina', 'flatbread']],
+  'Jangjorim con arroz y huevo': ['korean soy braised beef side dish rice', ['jangjorim', 'braised beef', 'soy braised']],
+  'Lobio de alubias rojas y nueces': ['georgian red bean stew walnuts bowl', ['lobio', 'bean stew', 'red bean']],
+  'Aloo paratha con yogur': ['indian stuffed flatbread paratha with yogurt', ['paratha']],
+  'Boxty con huevo': ['irish potato pancake plate fried egg', ['boxty', 'potato pancake', 'potato cake']],
+  'Migas extremenas con huevo': ['spanish migas fried breadcrumbs pan', ['migas', 'breadcrumb']],
+  'Pan con chicharron': ['peruvian pork sandwich bread plate', ['chicharron', 'pork sandwich']],
+  'Akara con pan': ['west african bean fritters plate', ['akara', 'bean fritter', 'fritter']],
+  'Sopa a la minuta': ['peruvian beef noodle soup bowl', ['minuta', 'beef noodle soup', 'noodle soup']],
+  'Fette biscottate con ricotta y miel': ['rusk toast topped ricotta honey', ['rusk', 'biscottate', 'toast']],
+  'Melanzane ripiene di ricotta': ['baked stuffed eggplant halves ricotta', ['stuffed eggplant', 'stuffed aubergine']],
+  'Molokhia con pollo': ['egyptian molokhia green stew chicken rice', ['molokhia', 'mulukhiyah', 'green stew']],
+  'Jok con tofu crujiente': ['thai rice congee bowl porridge', ['jok', 'congee', 'porridge']],
+  'Tofu hanbagu': ['japanese hamburg steak patty plate sauce', ['hanbagu', 'hamburg steak', 'tofu patty']],
+  'Tofu no kabayaki don': ['glazed tofu rice bowl donburi', ['kabayaki', 'glazed tofu', 'tofu rice']],
+  'Orecchiette con brocoli y salchicha': ['orecchiette pasta broccoli sausage plate', ['orecchiette']],
+  'Pasta e ceci': ['italian pasta and chickpea soup bowl', ['pasta e ceci', 'chickpea pasta', 'chickpea soup']],
+  'Chiles rellenos de queso': ['mexican stuffed poblano peppers cheese plate', ['chiles rellenos', 'stuffed pepper', 'stuffed poblano']],
+  'Kao fu hong shao': ['chinese braised wheat gluten mushrooms bowl', ['kao fu', 'wheat gluten', 'braised gluten']],
+  'Nasi lemak vegetariano': ['nasi lemak coconut rice banana leaf plate', ['nasi lemak']],
+  'Tempeh goreng con nasi y sambal': ['fried tempeh rice sambal plate', ['tempeh', 'tempe']],
+  'Nasi uduk con huevo': ['indonesian coconut rice plate egg', ['nasi uduk', 'coconut rice']],
+  'Pasta alla Norma': ['pasta alla norma eggplant tomato basil', ['alla norma', 'eggplant pasta']],
+  'Acorda alentejana': ['portuguese bread soup egg coriander bowl', ['acorda', 'bread soup']],
+  'Afelia': ['cypriot pork stew red wine coriander', ['afelia', 'pork stew']],
+  'Biftekia gemista': ['greek stuffed burger patties baked plate', ['biftekia', 'stuffed burger', 'stuffed patty']],
+  'Oeufs a la coque con mouillettes': ['soft boiled egg in egg cup toast soldiers', ['soft boiled egg', 'boiled egg', 'egg cup']],
+  'Tavuklu pilav': ['turkish chicken rice pilaf plate', ['pilav', 'pilaf', 'chicken rice']],
+  'Bissara': ['moroccan fava bean soup olive oil bowl', ['bissara', 'fava bean soup', 'bean soup']],
+  'Cerkez tavugu': ['circassian chicken walnut sauce plate', ['circassian', 'walnut sauce', 'chicken walnut']],
+  'Coliflor gratinada': ['cauliflower cheese gratin baked dish', ['cauliflower']],
+  'Fakes': ['greek lentil soup bowl', ['fakes', 'lentil soup']],
+  'Gyeran jjim': ['korean steamed egg custard bowl', ['gyeran', 'steamed egg', 'egg custard']],
+  'Keftedes tiganites': ['greek fried meatballs plate', ['keftedes', 'fried meatball', 'meatball']],
+  'Bo luc lac': ['vietnamese shaking beef cubes plate', ['shaking beef', 'luc lac', 'beef cubes']],
+  'Pad see ew jay': ['thai stir fried wide rice noodles plate', ['pad see ew', 'wide rice noodle', 'stir fried noodle']],
+  'Bun bo Nam Bo': ['vietnamese rice noodle salad bowl herbs', ['bun bo', 'noodle salad', 'rice noodle']],
+  'Dau hu sot ca chua': ['tofu in tomato sauce bowl vietnamese', ['tofu tomato', 'tofu in tomato']],
+  'Xoi man': ['vietnamese savoury sticky rice bowl', ['xoi', 'sticky rice']],
+  'Pad krapow tao hu': ['thai basil stir fry tofu rice fried egg', ['krapow', 'basil tofu', 'thai basil']],
+  'Tostada de crema de cacahuete y platano': ['peanut butter banana toast slices plate', ['peanut butter toast', 'banana toast', 'peanut butter']],
+  'Cuscus marroqui de ternera y siete verduras': ['moroccan couscous vegetables platter', ['couscous']],
+  'Lentejas de Puy con huevo mollet': ['puy lentils soft boiled egg plate', ['puy lentil', 'lentil']],
+  'Mi can kho tieu': ['braised seitan black pepper claypot', ['seitan', 'wheat gluten']],
+  'Sopa de lentejas con platano macho': ['lentil soup bowl plantain', ['lentil soup', 'lentil']],
+  'Dan dan mian vegetariano': ['dan dan noodles bowl chili sesame', ['dan dan', 'sesame noodle']],
+  'Guiso de lentejas argentino': ['lentil stew bowl chorizo', ['lentil stew', 'lentil']],
+  'Pot-au-feu': ['french pot au feu boiled beef vegetables broth', ['pot au feu', 'beef broth', 'boiled beef']],
+  'Egg banjo': ['british fried egg sandwich white bread', ['egg sandwich', 'fried egg']],
+  'Perico': ['venezuelan scrambled eggs tomato onion', ['scrambled egg', 'perico']],
+  'Tacu tacu con salsa criolla': ['peruvian tacu tacu rice beans patty plate', ['tacu tacu', 'rice and beans']],
+  'Doro wat': ['ethiopian doro wat chicken stew injera', ['doro wat', 'ethiopian stew', 'injera']],
+  'Hirino sto fourno me patates lemonates': ['greek roast pork lemon potatoes tray', ['roast pork', 'pork potatoes']],
+  'Tas kebabi': ['turkish beef stew rice plate', ['tas kebab', 'beef stew']],
+  'Ga kho gung': ['vietnamese braised chicken ginger claypot', ['braised chicken', 'chicken ginger']],
+  'Doufu gan chao qincai': ['stir fried tofu strips celery plate', ['tofu celery', 'tofu strips', 'dried tofu']],
+  'Dau hu chien sa ot': ['fried tofu lemongrass chili vietnamese', ['lemongrass tofu', 'fried tofu']],
+  'Kare-kare de verduras': ['filipino kare kare peanut stew vegetables', ['kare kare', 'peanut stew']],
+  'Adobong manok': ['filipino chicken adobo soy vinegar rice plate', ['adobo', 'braised chicken']],
+  'Adobong tokwa at kabute': ['braised tofu mushrooms soy sauce bowl', ['braised tofu', 'tofu mushroom']],
+  'Agedashi dofu': ['agedashi tofu crispy cubes broth bowl', ['agedashi', 'fried tofu']],
+  'Anali kizli': ['turkish soup bulgur meatballs chickpeas bowl', ['meatball soup', 'chickpea soup']],
+  'Anda bhurji': ['indian spiced scrambled eggs masala plate', ['bhurji', 'spiced scrambled', 'masala egg']],
+  'Arpa sehriyeli tavuk sote': ['chicken saute with orzo pasta plate', ['orzo']],
+  'Ash-e mast': ['persian yogurt soup herbs legumes bowl', ['yogurt soup', 'persian soup']],
+  'Ash-e reshteh': ['persian noodle and bean soup herbs bowl', ['persian soup', 'bean soup', 'noodle soup']],
+  'Bableves': ['hungarian bean soup sour cream bowl', ['bean soup']],
+  'Barbunya pilaki': ['turkish borlotti beans olive oil cold dish', ['borlotti', 'beans in olive oil']],
+  'Bauernfruhstuck': ['german potato bacon egg skillet breakfast', ['potato omelette', 'farmer breakfast', 'potato and egg']],
+  'Bekri meze': ['greek pork stew peppers tomato bowl', ['pork stew']],
+  'Beoseot bulgogi': ['korean mushroom bulgogi stir fry pan', ['mushroom bulgogi', 'bulgogi']],
+  'Beoseot deopbap': ['korean rice bowl mushrooms vegetables', ['deopbap', 'mushroom rice bowl']],
+  'Bindaetteok': ['korean mung bean pancake plate', ['mung bean pancake', 'bindaetteok']],
+  'Bistek Tagalog': ['filipino beef steak onions rice plate', ['beef steak onion', 'bistek']],
+  'Brunswick stew': ['southern brunswick stew bowl corn beans', ['brunswick', 'chicken stew']],
+  'Burghul bi dfeen': ['bulgur with chickpeas and beef platter', ['bulgur']],
+  'Calentado paisa': ['colombian rice beans breakfast fried egg plate', ['calentado', 'rice and beans']],
+  'Canja de galinha': ['chicken and rice soup bowl lemon', ['chicken soup', 'chicken rice soup']],
+  'Cazuela de vacuno': ['chilean beef pumpkin corn soup bowl', ['beef soup', 'pumpkin soup']],
+  'Chakhokhbili': ['georgian chicken tomato herb stew pot', ['chicken stew']],
+  'Chapati con maharagwe': ['chapati flatbread with coconut bean stew', ['chapati', 'bean stew']],
+  'Charquican': ['chilean charquican mashed pumpkin stew plate', ['charquican', 'pumpkin stew']],
+  'Chashushuli': ['georgian beef tomato stew bowl', ['beef stew']],
+  'Chirbuli': ['eggs poached in tomato walnut sauce pan', ['eggs in tomato', 'poached egg tomato']],
+  'Ca ri chay': ['vietnamese vegetarian coconut curry tofu bowl', ['coconut curry', 'vegetarian curry']],
+  'Dak gomtang': ['korean clear chicken soup bowl', ['gomtang', 'chicken soup']],
+  'Dakbokkeumtang': ['korean spicy braised chicken potatoes pot', ['spicy chicken', 'braised chicken']],
+  'Doenjang jjigae de tofu y calabacin': ['korean soybean paste stew tofu stone pot', ['jjigae', 'soybean paste stew']],
+  'Domatokeftedes': ['greek tomato fritters plate', ['tomato fritter', 'fritters']],
+  'Egg podimas': ['south indian scrambled egg curry leaves plate', ['podimas', 'scrambled egg curry']],
+  'Eggah de puerro': ['baked herb omelette slices plate', ['omelette', 'frittata']],
+  'Eiersalade broodje': ['egg salad sandwich on bread plate', ['egg salad sandwich', 'egg salad']],
+  'Elarji': ['georgian cheese cornmeal porridge bowl', ['elarji', 'cheese polenta', 'cornmeal']],
+  'Enfrijoladas': ['mexican tortillas in black bean sauce plate', ['enfrijoladas', 'bean sauce']],
+  'Entomatadas de queso': ['mexican tortillas in tomato sauce cheese plate', ['entomatadas', 'tomato sauce tortilla']],
+  'Etli bamya': ['okra stew with beef and tomato bowl', ['okra stew', 'okra']],
+  'Etli nohut yemegi': ['chickpea stew with beef tomato bowl', ['chickpea stew']],
+  'Etli turlu': ['turkish vegetable and meat casserole baked', ['turlu', 'vegetable stew', 'vegetable casserole']],
+  'Fasolakia me kima': ['green beans stewed with minced meat tomato', ['green bean stew', 'green beans tomato']],
+  'Fasolia bi lahme': ['white bean stew with beef tomato bowl', ['bean stew']],
+  'Fasolka po bretonsku': ['polish white beans sausage tomato bowl', ['baked beans', 'bean stew']],
+  'Fattet batenjan': ['levantine eggplant chickpea yogurt platter pita', ['fatteh', 'eggplant yogurt']],
+  'Fava santorini': ['greek yellow split pea puree olive oil onion', ['split pea puree', 'fava dip']],
+  'Fideos a la cazuela con costilla y chorizo': ['spanish noodle stew with ribs and chorizo pot', ['noodle stew', 'fideos']],
+  'Freekeh bi djej': ['freekeh green wheat pilaf with chicken platter', ['freekeh']],
+  'Frijoles charros': ['mexican charro beans bacon chorizo bowl', ['charro beans', 'bean soup']],
+  'Ful medames': ['egyptian fava bean stew bowl olive oil bread', ['ful medames', 'fava bean']],
+  'Gaeng keow wan jay': ['thai green curry tofu vegetables bowl', ['green curry']],
+  'Gibanica': ['serbian filo cheese pie slice baked', ['gibanica', 'cheese pie', 'filo pie']],
+  'Gigantes plaki': ['greek baked giant beans tomato sauce dish', ['giant beans', 'baked beans']],
+  'Goma dare soba': ['cold soba noodles sesame sauce bowl', ['soba']],
+  'Griessbrei': ['semolina milk pudding bowl cinnamon', ['semolina pudding', 'semolina porridge']],
+  'Gulyasleves': ['hungarian goulash soup bowl paprika', ['goulash']],
+  'Hirino me prasa': ['greek pork and leek stew pot', ['pork stew', 'pork leek']],
+  'Hirino me selino avgolemono': ['greek pork celery lemon egg sauce stew', ['pork stew', 'avgolemono']],
+  'Ispanakli borek': ['turkish spinach feta filo pastry slices', ['borek', 'spinach pie', 'filo pastry']],
+  'Jia chang doufu': ['sichuan home style tofu peppers plate', ['home style tofu', 'braised tofu']],
+  'Kadinbudu kofte': ['turkish fried meat and rice croquettes plate', ['kofte', 'meat croquette', 'fried meatball']],
+  'Kaisersemmel con Liptauer': ['austrian bread roll with paprika cheese spread', ['liptauer', 'cheese spread', 'bread roll']],
+  'Kenchinjiru': ['japanese clear vegetable tofu soup bowl', ['vegetable soup', 'tofu soup']],
+  'Khagineh': ['persian sweet saffron omelette plate', ['sweet omelette', 'saffron egg']],
+  'Khai krata': ['thai skillet eggs with sausage pan', ['skillet egg', 'pan eggs', 'fried egg pan']],
+  'Kharcho': ['georgian beef rice walnut soup bowl', ['beef soup', 'rice soup']],
+  'Kibbet lakteen': ['pumpkin bulgur kibbeh baked tray', ['kibbeh', 'bulgur pie']],
+  'Kik alicha': ['ethiopian yellow split pea stew injera', ['split pea stew', 'ethiopian stew', 'injera']],
+  'Kokoras krasatos': ['greek rooster in red wine sauce with pasta', ['rooster wine', 'chicken red wine', 'chicken stew']],
+  'Kolokithakia gemista me kima': ['stuffed zucchini with rice and meat baked', ['stuffed zucchini', 'stuffed courgette']],
+  'Kolokithokeftedes': ['greek zucchini feta fritters plate', ['zucchini fritter', 'courgette fritter']],
+  'Kongbiji jjigae': ['korean ground soybean stew pot kimchi', ['jjigae', 'soybean stew']],
+  'Kotopoulo kapama': ['greek braised chicken tomato cinnamon pot', ['braised chicken', 'chicken tomato']],
+  'Kotopoulo me bamies': ['chicken with okra in tomato sauce pot', ['okra', 'okra stew']],
+  'Kotopoulo me fasolakia': ['chicken with green beans tomato stew', ['green bean stew', 'chicken stew']],
+  'Kotosoupa avgolemono': ['greek chicken lemon rice soup bowl', ['avgolemono', 'chicken soup']],
+  'Koupepia': ['stuffed vine leaves rolls on a plate', ['vine leaves', 'dolma', 'stuffed grape leaves']],
+  'Kousa mahshi bi laban': ['stuffed zucchini in yogurt sauce platter', ['stuffed zucchini', 'yogurt sauce']],
+  'Kreatopita': ['greek meat filo pie slice baked', ['meat pie', 'filo pie']],
+  'Kuru fasulye': ['turkish white bean stew tomato bowl rice', ['bean stew', 'white beans']],
+  'Kefir con muesli y twarog': ['bowl of kefir with granola and cottage cheese', ['granola', 'muesli', 'kefir']],
+  'Kiymali karnabahar': ['cauliflower with minced meat tomato bake', ['cauliflower']],
+  'Kiymali pirasa': ['braised leeks with minced meat and rice pot', ['leek', 'braised leek']],
+  'Linsensuppe mit Wurstchen': ['german lentil soup with sausage bowl', ['lentil soup']],
+  'Maghmour': ['lebanese eggplant chickpea tomato stew bowl', ['eggplant stew', 'eggplant chickpea']],
+  'Massaman jay': ['thai massaman curry potatoes tofu bowl', ['massaman']],
+  'Matar paneer': ['indian paneer and pea curry bowl', ['matar paneer', 'paneer curry', 'paneer']],
+  'Mercimek koftesi': ['turkish red lentil bulgur patties lettuce plate', ['lentil kofte', 'lentil balls', 'lentil patties']],
+  'Michirones': ['spanish stewed dried broad beans chorizo bowl', ['broad bean', 'fava bean stew']],
+  'Mirza ghasemi': ['persian smoked eggplant tomato egg dish', ['eggplant egg', 'smoked eggplant']],
+  'Misir wot': ['ethiopian spicy red lentil stew injera', ['lentil stew', 'ethiopian stew', 'injera']],
+  'Miyeokguk': ['korean seaweed soup bowl with beef', ['seaweed soup']],
+  'Moros y cristianos': ['cuban black beans and rice plate', ['black beans and rice', 'rice and beans']],
+  'Moschari lemonato': ['greek lemon braised veal with potatoes plate', ['braised veal', 'lemon beef', 'beef stew']],
+  'Msabbaha': ['whole chickpeas with tahini olive oil plate', ['msabbaha', 'chickpea plate', 'hummus']],
+  'Mujaddara': ['lentils and rice with caramelized onions platter', ['mujaddara', 'lentils and rice']],
+  'Mucver': ['turkish zucchini fritters plate with yogurt', ['zucchini fritter', 'courgette fritter']],
+  'Nalesniki con requeson': ['polish crepes filled with cottage cheese plate', ['crepe', 'pancake roll', 'blintz']],
+  'Nargesi': ['persian spinach and eggs skillet', ['spinach egg', 'eggs spinach']],
+  'Nohutlu bulgur pilavi': ['bulgur pilaf with chickpeas plate', ['bulgur', 'bulgur pilaf']],
+  'Ontbijtkoek con huttenkase': ['dutch spiced cake slices with cottage cheese', ['spiced cake', 'gingerbread slice', 'cottage cheese']],
+  'Orman kebabi': ['turkish beef stew with potatoes and peas plate', ['beef stew']],
+  'Palacsinta con turo': ['hungarian pancakes filled with cottage cheese plate', ['pancake', 'crepe']],
+  'Papadzules': ['yucatan tortillas in pumpkin seed sauce plate', ['papadzules', 'pumpkin seed sauce']],
+  'Papas arrugadas con mojo picon': ['canary wrinkled potatoes with mojo sauce', ['wrinkled potato', 'mojo', 'papas arrugadas']],
+  'Papaz yahnisi': ['turkish beef and shallot stew bowl', ['beef stew', 'onion stew']],
+  'Pasta e fagioli': ['italian pasta and bean soup bowl', ['pasta e fagioli', 'bean soup', 'pasta bean']],
+  'Pastitsada de pollo': ['corfu chicken in spiced tomato sauce with pasta', ['pastitsada', 'chicken tomato pasta']],
+  'Peynirli gozleme': ['turkish gozleme flatbread with cheese griddle', ['gozleme', 'stuffed flatbread']],
+  'Pipian verde de pepitas': ['mexican green pumpkin seed sauce plate', ['pipian', 'green mole', 'pumpkin seed sauce']],
+  'Placki ziemniaczane': ['polish potato pancakes with sour cream plate', ['potato pancake', 'potato fritter']],
+  'Porotos granados': ['chilean bean pumpkin and corn stew bowl', ['bean stew', 'pumpkin stew']],
+  'Poulet basquaise': ['french basque chicken with peppers tomato pot', ['basquaise', 'chicken peppers', 'chicken stew']],
+  'Pozole rojo': ['mexican red pozole soup bowl hominy garnish', ['pozole', 'hominy']],
+  'Puuro con leche y bayas': ['oat porridge bowl with berries', ['porridge', 'oatmeal']],
+  'Rajas con crema y elote': ['mexican poblano strips in cream with corn', ['rajas', 'pepper strips cream']],
+  'Rakott krumpli': ['hungarian layered potato egg sour cream bake', ['layered potato', 'potato casserole', 'potato bake']],
+  'Revithada de Sifnos': ['greek baked chickpeas in clay pot lemon', ['baked chickpeas', 'chickpea stew']],
+  'Ribollita': ['tuscan bread and bean soup bowl kale', ['ribollita', 'bread soup', 'bean soup']],
+  'Sac kavurma': ['turkish beef saute with peppers in iron pan', ['kavurma', 'beef saute', 'meat pan']],
+  'Shchi': ['russian cabbage soup bowl sour cream', ['cabbage soup']],
+  'Shiro wot': ['ethiopian chickpea flour stew injera platter', ['shiro', 'ethiopian stew', 'injera']],
+  'Sinigang na baboy': ['filipino sour tamarind pork soup bowl vegetables', ['sinigang', 'tamarind soup', 'sour soup']],
+  'Skyr con rugbraud y arandanos': ['skyr yogurt bowl with rye bread and blueberries', ['skyr', 'yogurt bowl', 'rye bread']],
+  'Sofrito corfiota': ['greek veal in garlic parsley white sauce plate', ['veal', 'beef garlic sauce']],
+  'Sopa azteca': ['mexican tortilla soup bowl with strips', ['tortilla soup']],
+  'Sopa da pedra': ['portuguese bean and pork soup bowl', ['bean soup']],
+  'Soutzoukakia Smyrneika': ['greek baked meat rolls in tomato sauce', ['meatball tomato', 'meat rolls', 'meatballs sauce']],
+  'Stifado de ternera': ['greek beef and shallot stew pot cinnamon', ['stifado', 'beef stew', 'onion stew']],
+  'Strammer Max': ['german open sandwich ham fried egg rye bread', ['open sandwich', 'ham and egg', 'fried egg bread']],
+  'Suan la tang': ['chinese hot and sour soup bowl tofu', ['hot and sour soup']],
+  'Sucuklu yumurta': ['turkish eggs with sucuk sausage in a pan', ['sucuk', 'eggs sausage pan']],
+  'Sulu kofte': ['turkish meatball soup with bulgur bowl', ['meatball soup']],
+  'Tallarines verdes con bistec apanado': ['peruvian green basil spaghetti with breaded steak', ['green spaghetti', 'pesto pasta steak', 'basil pasta']],
+  'Tantanmen vegano': ['japanese tantanmen sesame ramen bowl', ['tantanmen', 'sesame ramen', 'ramen']],
+  'Tavuk guvec': ['turkish chicken casserole clay pot vegetables', ['guvec', 'chicken casserole']],
+  'Tavuk kanat izgara': ['grilled chicken wings on a plate', ['chicken wings']],
+  'Tavuk kavurma': ['turkish chicken saute with peppers pan', ['chicken saute', 'chicken pan']],
+  'Tavuklu firik pilavi': ['freekeh pilaf with chicken platter', ['freekeh', 'pilaf']],
+  'Tavce gravce': ['macedonian baked beans in clay pot paprika', ['baked beans', 'bean stew']],
+  'Tempe orek': ['indonesian sweet fried tempeh strips plate', ['tempeh', 'tempe']],
+  'Terbiyeli kofte': ['turkish meatballs in lemon egg sauce bowl', ['meatball', 'meatballs sauce']],
+  'Tibs': ['ethiopian sauteed beef strips with peppers pan', ['tibs', 'beef saute', 'ethiopian']],
+  'Tigania hirini': ['greek pan fried pork pieces with peppers skillet', ['pork pan', 'fried pork']],
+  'Tigrillo': ['ecuadorian mashed plantain with egg and cheese plate', ['plantain egg', 'mashed plantain', 'tigrillo']],
+  'Tinola': ['filipino ginger chicken soup bowl greens', ['tinola', 'chicken ginger soup', 'chicken soup']],
+  'Torta pasqualina': ['italian savoury chard ricotta egg pie slice', ['savory pie', 'chard pie', 'spinach pie']],
+  'Tortang talong': ['filipino eggplant omelette on a plate', ['eggplant omelette', 'eggplant egg']],
+  'Tteokguk': ['korean rice cake soup bowl egg', ['tteokguk', 'rice cake soup']],
+  'Tvorog con smetana y miel': ['bowl of cottage cheese with sour cream honey walnuts', ['cottage cheese', 'quark bowl']],
+  'Xihongshi chao jidan': ['chinese scrambled eggs with tomato plate', ['egg and tomato', 'tomato egg']],
+  'Yachaejeon': ['korean vegetable pancake sliced plate', ['vegetable pancake', 'jeon']],
+  'Yayla corbasi': ['turkish yogurt and rice soup bowl mint', ['yogurt soup']],
+  'Youvarlakia avgolemono': ['greek meatball soup with lemon egg sauce bowl', ['meatball soup', 'avgolemono']],
+  'Yogurtlu makarna con nueces': ['pasta with garlic yogurt sauce and walnuts plate', ['yogurt pasta', 'pasta yogurt']],
+  'Yudofu': ['japanese simmered tofu in clear broth pot', ['simmered tofu', 'tofu pot', 'tofu broth']],
+  'Yumurtali ispanak': ['turkish spinach with eggs and yogurt pan', ['spinach egg', 'eggs spinach']],
+  'Yuxiang qiezi con tofu': ['sichuan fish fragrant eggplant with tofu plate', ['eggplant garlic sauce', 'braised eggplant']],
+  'Zacusca con huevo': ['romanian roasted eggplant pepper spread with egg', ['zacusca', 'eggplant spread', 'pepper spread']],
+  'Zarangollo murciano': ['spanish scrambled zucchini onion egg pan', ['zucchini egg', 'courgette egg']],
+  'Aeggekage': ['danish thick omelette with bacon and tomato pan', ['omelette', 'egg cake']],
+  'Cokertme kebabi': ['turkish beef strips with straw potatoes yogurt plate', ['kebab yogurt', 'beef potato yogurt']],
+  'Islama kofte': ['turkish meatballs with soaked bread plate', ['kofte', 'meatball']],
+  'Izmir kofte': ['turkish baked meatballs with potatoes tomato sauce', ['kofte', 'meatball potato']],
+  'Icli kofte al horno': ['stuffed bulgur kibbeh baked on a plate', ['kibbeh', 'bulgur ball']],
+  'Gnocchi alla romana': ['roman semolina gnocchi baked discs parmesan', ['semolina gnocchi', 'gnocchi alla romana', 'baked semolina']],
+  'Kuku sabzi': ['persian herb frittata green slices plate', ['herb frittata', 'kuku', 'herb omelette']],
   ...REVISION_VISUAL,
 }).map(([k, v]) => [clave(k), v]))
 
@@ -204,7 +429,7 @@ const DISH = {
   risotto: 'risotto', tiramisu: 'tiramisu', teriyaki: 'teriyaki', satay: 'satay',
   yakitori: 'yakitori', shawarma: 'shawarma', shoarma: 'shawarma', shakshuka: 'shakshuka',
   menemen: 'menemen', skyr: 'skyr', souvlaki: 'souvlaki', gyros: 'gyros', kofte: 'kofte',
-  piccata: 'piccata', quesadillas: 'quesadilla', poke: 'poke bowl', nasi: 'nasi goreng',
+  piccata: 'piccata', quesadillas: 'quesadilla', poke: 'poke bowl',
   miso: 'miso', kung: 'kung pao', pesto: 'pesto', chili: 'chili con carne', larb: 'larb',
   bolonesa: 'bolognese', kapsalon: 'kapsalon', stamppot: 'stamppot', uitsmijter: 'uitsmijter',
   maafe: 'peanut stew', sundubu: 'sundubu jjigae', lomo: 'lomo saltado', frittata: 'frittata',
@@ -338,8 +563,8 @@ function analyze(nombre) {
   const tokens = (s) => s.replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(Boolean)
   const propios = new Set(tokens(cabeza))
 
-  const en = [], named = [], adj = [], ings = []
-  let dish = null, firstIng = null, pos = 0
+  const en = [], named = [], adj = []
+  let dish = null, pos = 0
   for (const t of tokens(plano)) {
     if (STOP.has(t) || t.length < 3) continue
     pos++
@@ -347,15 +572,12 @@ function analyze(nombre) {
     const tr = DISH[t] || LEX[t]
     if (tr) {
       for (const w of tr.split(' ')) if (!en.includes(w)) en.push(w)
-      if (LEX[t] && !DISH[t] && !MODO.has(tr) && !ings.includes(tr)) ings.push(tr)
       if (DISH[t] && !dish) dish = tr
-      if (!firstIng) firstIng = tr
       continue
     }
     if (t.length >= 4 && propios.has(t) && pos <= 2 && !named.includes(t)) named.push(t)
   }
 
-  const primary = dish || firstIng
   const planes = []
   const manual = MANUAL[clave(cabeza)]
   if (manual) return [{ query: manual[0], require: manual[1], terms: manual[0].split(' ') }]
@@ -366,26 +588,19 @@ function analyze(nombre) {
       terms: [...named, ...en],
     })
   }
-  if (primary) {
+  if (dish) {
     planes.push({
       query: `${en.join(' ')} ${adj[0] ?? ''} food`.replace(/\s+/g, ' ').trim(),
-      require: primary.split(' ').slice(0, 1),
+      require: dish.split(' ').slice(0, 1),
       terms: en,
     })
     if (en.length > 1) {
       planes.push({
-        query: `${primary} ${adj[0] ?? ''} food`.replace(/\s+/g, ' ').trim(),
-        require: primary.split(' ').slice(0, 1),
-        terms: [primary],
+        query: `${dish} ${adj[0] ?? ''} food`.replace(/\s+/g, ' ').trim(),
+        require: dish.split(' ').slice(0, 1),
+        terms: [dish],
       })
     }
-  }
-  if (ings.length) {
-    planes.push({
-      query: `${en.join(' ')} ${adj[0] ?? ''} food`.replace(/\s+/g, ' ').trim(),
-      require: ings.flatMap((i) => i.split(' ')),
-      terms: en,
-    })
   }
   return planes.length ? planes : null
 }
@@ -497,6 +712,48 @@ if (ANALYZE) {
   process.exit(0)
 }
 
+const VOLCAR = Number(arg('--volcar')) || 0
+const PAGINAS = (arg('--paginas') || '1').split(',').map(Number)
+if (VOLCAR) {
+  const salida = []
+  for (const r of rows) {
+    if (requests >= VOLCAR) break
+    const planes = analyze(r.nombre)
+    if (!planes) continue
+    let cands = []
+    try {
+      for (const pag of PAGINAS) cands = cands.concat(await candidates(planes[0].query, pag))
+    }
+    catch (e) { if (e.message === 'RATE_LIMIT') break; else continue }
+    const scored = cands
+      .filter((p) => !used.has(p.id) && !used.has(slug(p.raw)))
+      .map((p) => {
+        const m = meta(p)
+        return {
+          p,
+          ok: !RECHAZO.test(m) && SERVIDO.test(m) && planes[0].require.some((t) => m.includes(t)),
+          score: planes[0].terms.filter((k) => m.includes(k)).length + (p.width >= p.height ? 0.5 : 0),
+        }
+      })
+      .sort((a, b) => (b.ok - a.ok) || (b.score - a.score))
+      .slice(0, 4)
+    salida.push({
+      id: r.id,
+      nombre: r.nombre,
+      query: planes[0].query,
+      cands: scored.map((s) => ({
+        id: s.p.id,
+        raw: s.p.raw,
+        ok: s.ok,
+        txt: (s.p.description || s.p.alt_description || '').slice(0, 80),
+      })),
+    })
+  }
+  writeFileSync(resolve(__dirname, 'candidatos.json'), JSON.stringify(salida, null, 2))
+  console.log(`volcadas ${salida.length} recetas con candidatos | peticiones: ${requests}`)
+  process.exit(0)
+}
+
 const map = []
 const sinMatch = new Map()
 let done = 0, agotado = false
@@ -544,7 +801,7 @@ while (LOOP && agotado && !DRY) {
   await new Promise((s) => setTimeout(s, ESPERA))
   requests = 0
   agotado = false
-  rows = await pendientesDeFoto()
+  rows = (await pendientesDeFoto()).filter((r) => !sinMatch.has(r.nombre))
   if (!rows.length) break
   console.log(`\n[${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}] Nueva tanda. Pendientes: ${rows.length}`)
   await pasada(rows)
