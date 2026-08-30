@@ -2,71 +2,91 @@
   "Mercimek köftesi": {
     "autor": "Ahzaryamed",
     "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Mercimekkoftesi.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Mercimekkoftesi.jpg",
+    "recortada": true
   },
   "Barbunya pilaki": {
     "autor": "E4024",
-    "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Barbunya_pilaki.jpg"
+    "licencia": "BY-SA 4.0",
+    "pagina": "https://commons.wikimedia.org/w/index.php?curid=46504926",
+    "recortada": true
   },
   "Gnocchi alla romana": {
-    "autor": "fugzu",
-    "licencia": "CC BY 2.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Gnocchi_di_semolino_e_zucca.jpg"
+    "autor": "lazy fri13th",
+    "licencia": "BY 2.0",
+    "pagina": "https://commons.wikimedia.org/w/index.php?curid=88413907",
+    "recortada": true
   },
   "Papadzules": {
-    "autor": "Gideon from Paris, France",
-    "licencia": "CC BY 2.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Papadzules_(86823909).jpg"
+    "autor": "Nosferattus",
+    "licencia": "CC0 1.0",
+    "pagina": "https://commons.wikimedia.org/w/index.php?curid=114395763",
+    "recortada": true
   },
   "Rajas con crema y elote": {
     "autor": "Rajasthanlover",
     "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:BrunchRajas_con_crema.png"
+    "pagina": "https://commons.wikimedia.org/wiki/File:BrunchRajas_con_crema.png",
+    "recortada": true
   },
   "Rava upma con cacahuete": {
-    "autor": "Roboture",
-    "licencia": "CC BY-SA 3.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Upma_of_Corn.jpg"
+    "autor": "spurekar",
+    "licencia": "BY 2.0",
+    "pagina": "https://www.flickr.com/photos/63324741@N04/49712703693",
+    "recortada": true
   },
   "Terbiyeli köfte": {
     "autor": "E4024",
     "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Eksili_kofte.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Eksili_kofte.jpg",
+    "recortada": true
   },
   "Analı kızlı": {
     "autor": "Eqnn",
     "licencia": "CC0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Anal%C4%B1_K%C4%B1zl%C4%B1.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Anal%C4%B1_K%C4%B1zl%C4%B1.jpg",
+    "recortada": true
   },
   "Sulu köfte": {
     "autor": "E4024",
     "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Sulu_kofte_in_Ankara.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Sulu_kofte_in_Ankara.jpg",
+    "recortada": true
   },
   "Dakbokkeumtang": {
     "autor": "Derek Woodward",
     "licencia": "CC0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:13-hadirector1_hoya00571_hoya0057.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:13-hadirector1_hoya00571_hoya0057.jpg",
+    "recortada": true
   },
   "Papas arrugadas con mojo picón": {
     "autor": "Fer..",
     "licencia": "CC BY 2.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Papasarrugadas.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Papasarrugadas.jpg",
+    "recortada": true
   },
   "Gyeran jjim": {
     "autor": "stuart_spivack (a flickr user)",
-    "licencia": "CC BY-SA 2.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Korean.Banchan-Gyeran.jjim-01.jpg"
+    "licencia": "BY-SA 2.0",
+    "pagina": "https://commons.wikimedia.org/w/index.php?curid=1654184",
+    "recortada": true
   },
   "Migas extremeñas con huevo": {
     "autor": "DavidDaguerro",
     "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Caceres-Migas-DavidDaguerro.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Caceres-Migas-DavidDaguerro.jpg",
+    "recortada": true
   },
   "Orecchiette con brócoli y salchicha": {
-    "autor": "Federica.tamburini.75",
-    "licencia": "CC BY-SA 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Orecchiette_broccoli_e_salsiccia.jpg"
+    "autor": "susan@kingstreetmarketinggroup",
+    "licencia": "BY-SA 2.0",
+    "pagina": "https://www.flickr.com/photos/64141731@N00/7951246254",
+    "recortada": true
+  },
+  "Kıymalı pırasa": {
+    "autor": "Lablascovegmenu",
+    "licencia": "BY 2.0",
+    "pagina": "https://www.flickr.com/photos/35022955@N06/8204789659",
+    "recortada": true
   }
 }

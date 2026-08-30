@@ -113,7 +113,7 @@ function DetalleReceta() {
     if (!enLista) setRaciones(completa.id, comensales)
   }
   const pasosEscalan = tieneCantidadesEscalables(fetched?.pasos ?? [])
-  const credito = (creditosFotos as Record<string, { autor: string; licencia: string; pagina: string }>)[receta.nombre]
+  const credito = (creditosFotos as Record<string, { autor: string; licencia: string; pagina: string; recortada?: boolean }>)[receta.nombre]
 
   return (
     <div className="flex flex-col gap-8">
@@ -145,7 +145,7 @@ function DetalleReceta() {
               <a href={credito.pagina} target="_blank" rel="noreferrer" className="underline hover:text-neutral-600">
                 {credito.autor || 'Wikimedia Commons'}
               </a>{' '}
-              / {credito.licencia}
+              / {credito.licencia}{credito.recortada ? ' / recortada' : ''}
             </p>
           ) : null}
         </>
