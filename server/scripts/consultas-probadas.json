@@ -6,7 +6,8 @@
     "cypriot pork stew",
     "pork red wine stew",
     "pork stew coriander cyprus",
-    "afelia"
+    "afelia",
+    "braised pork chunks"
   ],
   "Agedashi dofu": [
     "agedashi tofu",
@@ -18,14 +19,16 @@
     "bulgur meatball soup",
     "turkish bulgur soup",
     "chickpea meatball soup",
-    "analı kızlı"
+    "analı kızlı",
+    "bulgur dumpling soup"
   ],
   "Barbunya pilaki": [
     "turkish bean stew",
     "borlotti beans olive oil",
     "beans carrot olive oil dish",
     "borlotti bean salad",
-    "pilaki"
+    "pilaki",
+    "cranberry beans cooked"
   ],
   "Canja de galinha": [
     "chicken rice soup"
@@ -40,7 +43,8 @@
     "georgian eggs tomato",
     "eggs walnut sauce",
     "eggs in tomato sauce pan",
-    "chirbuli"
+    "chirbuli",
+    "walnut tomato eggs"
   ],
   "Dak gomtang": [
     "korean chicken soup"
@@ -50,7 +54,8 @@
     "korean braised chicken potato",
     "spicy chicken potato stew korean",
     "korean chicken stew gochujang",
-    "dakdoritang"
+    "dakdoritang",
+    "braised chicken red sauce"
   ],
   "Dan dan mian vegetariano": [
     "dan dan noodles",
@@ -61,7 +66,8 @@
     "korean tofu stew",
     "soybean paste stew tofu",
     "korean stew earthenware pot",
-    "jjigae"
+    "jjigae",
+    "brown soybean stew"
   ],
   "Doro wat": [
     "doro wat",
@@ -92,7 +98,8 @@
     "semolina gnocchi",
     "baked semolina discs",
     "gnocchi romana",
-    "gnocchi semolino"
+    "gnocchi semolino",
+    "semolina discs cheese"
   ],
   "Goma dare soba": [
     "soba noodles sesame sauce",
@@ -103,7 +110,8 @@
     "steamed egg pot",
     "korean egg ttukbaegi",
     "steamed egg custard korean",
-    "gyeran jjim"
+    "gyeran jjim",
+    "steamed egg bowl"
   ],
   "Harcha con queso fresco": [
     "moroccan semolina flatbread"
@@ -117,7 +125,8 @@
     "leek stew",
     "leek casserole meat",
     "leeks minced meat rice",
-    "pırasa yemeği"
+    "pırasa yemeği",
+    "cooked leeks dish"
   ],
   "Kotopoulo me bamies": [
     "chicken okra stew"
@@ -142,21 +151,24 @@
     "manti yogurt",
     "small dumplings yogurt sauce",
     "manti with yogurt",
-    "kayseri mantısı"
+    "kayseri mantısı",
+    "tiny dumplings yogurt"
   ],
   "Mercimek köftesi": [
     "red lentil balls",
     "lentil kofte",
     "lentil patties lettuce",
     "bulgur lentil balls",
-    "mercimek köftesi"
+    "mercimek köftesi",
+    "red lentil bulgur"
   ],
   "Migas extremeñas con huevo": [
     "spanish migas",
     "migas",
     "fried breadcrumbs chorizo",
     "breadcrumbs pork pan",
-    "migas con chorizo"
+    "migas con chorizo",
+    "fried bread crumbs egg"
   ],
   "Miso ramen vegano": [
     "miso ramen",
@@ -179,21 +191,24 @@
     "orecchiette pasta",
     "broccoli pasta sausage",
     "pasta sausage broccoli plate",
-    "orecchiette"
+    "orecchiette",
+    "pasta broccoli cheese"
   ],
   "Papadzules": [
     "papadzules",
     "yucatan food",
     "enchiladas green sauce",
     "pumpkin seed sauce tortilla",
-    "papadzul"
+    "papadzul",
+    "rolled tortillas sauce"
   ],
   "Papas arrugadas con mojo picón": [
     "papas arrugadas",
     "wrinkled potatoes mojo",
     "salt crusted potatoes",
     "potatoes red sauce canary",
-    "canarian potatoes"
+    "canarian potatoes",
+    "small potatoes salt"
   ],
   "Pasta alla Norma": [
     "pasta alla norma",
@@ -211,7 +226,8 @@
     "poblano cream corn",
     "poblano strips cream",
     "creamy poblano tacos",
-    "rajas poblanas"
+    "rajas poblanas",
+    "pepper strips cream"
   ],
   "Rakott krumpli": [
     "hungarian potato casserole",
@@ -223,7 +239,8 @@
     "upma",
     "semolina porridge indian",
     "south indian upma breakfast",
-    "upma peanuts"
+    "upma peanuts",
+    "semolina upma bowl"
   ],
   "Revithada de Sifnos": [
     "greek baked chickpeas"
@@ -237,19 +254,22 @@
     "skyr blueberries",
     "skyr bowl",
     "skyr rye bread",
-    "skyr"
+    "skyr",
+    "icelandic yogurt"
   ],
   "Sopa a la minuta": [
     "sopa a la minuta",
     "peruvian soup",
     "sopa criolla",
-    "sopa peruana"
+    "sopa peruana",
+    "noodle soup ground beef"
   ],
   "Sulu köfte": [
     "turkish meatball soup",
     "meatball soup",
     "kofte soup tomato broth",
-    "köfte çorbası"
+    "köfte çorbası",
+    "meatballs in broth"
   ],
   "Tantuni de ternera": [
     "tantuni",
@@ -260,13 +280,15 @@
     "meatballs lemon sauce",
     "meatballs yogurt sauce",
     "meatballs lemon egg sauce",
-    "yogurtlu köfte"
+    "yogurtlu köfte",
+    "meatball soup egg lemon"
   ],
   "Tofu no kabayaki don": [
     "glazed tofu rice bowl",
     "tofu donburi",
     "tofu rice bowl nori",
-    "kabayaki don"
+    "kabayaki don",
+    "glazed tofu rice"
   ],
   "Tteokguk": [
     "korean rice cake soup",
