@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync, copyFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { neon } from '@neondatabase/serverless'
 import { tmpdir } from 'node:os'
@@ -41,7 +41,11 @@ let hechas = 0
 for (const [nombre, sel] of Object.entries(seleccion)) {
   const s = slug(nombre)
   const bruto = `${TMP}/${s}-bruto.jpg`
-  if (!(await bajar(sel.url, bruto))) { console.log(`  ! no baja ${nombre}`); continue }
+  const local = !/^https?:/i.test(sel.url)
+  if (local) {
+    if (!existsSync(sel.url)) { console.log(`  ! no está el fichero ${sel.url}`); continue }
+    copyFileSync(sel.url, bruto)
+  } else if (!(await bajar(sel.url, bruto))) { console.log(`  ! no baja ${nombre}`); continue }
   const salida = `${DESTINO}/${s}.jpg`
   const args = ['-NoProfile', '-File', 'mejorar-foto.ps1', '-In', bruto, '-Out', salida]
   if (sel.zoom) args.push('-Zoom', String(sel.zoom))
