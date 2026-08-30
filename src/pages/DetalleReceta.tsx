@@ -13,6 +13,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
 import { SABOR_BG } from '../utils/sabores'
 import useTitulo from '../hooks/useTitulo'
+import creditosFotos from '../data/creditosFotos.json'
 
 const PORCIONES_POR_DEFECTO = 2
 
@@ -112,11 +113,13 @@ function DetalleReceta() {
     if (!enLista) setRaciones(completa.id, comensales)
   }
   const pasosEscalan = tieneCantidadesEscalables(fetched?.pasos ?? [])
+  const credito = (creditosFotos as Record<string, { autor: string; licencia: string; pagina: string }>)[receta.nombre]
 
   return (
     <div className="flex flex-col gap-8">
 
       {receta.imagen ? (
+        <>
         <div className="relative h-56 rounded-2xl overflow-hidden">
           <img
             src={receta.imagen}
@@ -135,7 +138,17 @@ function DetalleReceta() {
             </p>
             <h1 className="font-display text-3xl font-bold text-white leading-tight">{receta.nombre}</h1>
           </div>
-        </div>
+          </div>
+          {credito ? (
+            <p className="-mt-6 text-right text-[10px] text-neutral-400">
+              Foto:{' '}
+              <a href={credito.pagina} target="_blank" rel="noreferrer" className="underline hover:text-neutral-600">
+                {credito.autor || 'Wikimedia Commons'}
+              </a>{' '}
+              / {credito.licencia}
+            </p>
+          ) : null}
+        </>
       ) : (
         <div className="flex flex-col gap-5">
           <div className="relative h-44 rounded-2xl overflow-hidden" style={{ backgroundColor: SABOR_BG[receta.sabor] }}>
