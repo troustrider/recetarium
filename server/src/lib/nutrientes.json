@@ -20,7 +20,7 @@
     "vinagre de vino tinto", "whisky", "amaretto", "vino blanco seco", "azafrán",
     "vino tinto", "vino dulce", "vinagre balsámico", "za'atar", "eneldo", "lima seca",
     "hinojo en semilla", "agua de azahar", "ras el hanout", "enebro en grano",
-    "anís estrellado", "cardamomo", "sumac", "achiote", "gochugaru", "berbere", "baharat", "fenogreco","mejorana", "hojas de curry", "mostaza en grano", "pimienta blanca", "epazote", "citronela", "galanga", "hojas de lima kaffir", "alga kombu", "sake"
+    "anís estrellado", "cardamomo", "sumac", "achiote", "gochugaru", "berbere", "baharat", "fenogreco","mejorana", "hojas de curry", "mostaza en grano", "pimienta blanca", "epazote", "citronela", "galanga", "hojas de lima kaffir", "alga kombu", "sake", "alcaravea", "agua de rosas"
   ],
 
   "ingredientes": {
@@ -325,6 +325,7 @@
     "polenta":                     { "p": 8.5,  "c": 73,   "gr": 3.5, "fib": 4, "az": 0.6, "sat": 0.5, "fe": 1.6, "ca": 7, "fol": 25 },
     "harina de maíz":              { "p": 7,    "c": 76,   "gr": 3.6, "fib": 7, "az": 0.6, "sat": 0.5, "fe": 2.4, "ca": 7, "fol": 25 },
     "harina de maíz precocida":    { "p": 7,    "c": 76,   "gr": 1.5, "fib": 4, "az": 0.5, "sat": 0.3, "fe": 1.5, "ca": 100, "fol": 40 },
+    "harina de maíz nixtamalizada": { "p": 7.5,  "c": 76,   "gr": 3.5, "fib": 7, "az": 0.6, "sat": 0.5, "fe": 4.5, "ca": 150, "fol": 25 },
     "arroz glutinoso":             { "p": 6.8,  "c": 80,   "gr": 0.6, "vaso": 180, "fib": 1.4, "az": 0.1, "sat": 0.2, "fe": 1.2, "ca": 10, "fol": 5 },
     "perlas de tapioca":           { "p": 0.2,  "c": 88,   "gr": 0,   "fib": 0.9, "fe": 1.6, "ca": 20 },
     "mango":                       { "p": 0.8,  "c": 15,   "gr": 0.4, "ud": 200, "fib": 1.6, "az": 14, "fe": 0.2, "vc": 36, "ca": 11, "fol": 43 },
