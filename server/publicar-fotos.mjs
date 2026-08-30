@@ -16,8 +16,8 @@ mkdirSync(TMP, { recursive: true })
 mkdirSync(DESTINO, { recursive: true })
 
 const pausa = (ms) => new Promise((r) => setTimeout(r, ms))
-const EXTRA = { ø: 'o', æ: 'ae', å: 'a', ß: 'ss', đ: 'd', ı: 'i', ł: 'l' }
-const slug = (s) => s.toLowerCase().replace(/[øæåßđıł]/g, (c) => EXTRA[c])
+const EXTRA = { ø: 'o', æ: 'ae', å: 'a', ß: 'ss', đ: 'd', ı: 'i', ł: 'l', ð: 'd', þ: 'th' }
+const slug = (s) => s.toLowerCase().replace(/[øæåßđıłðþ]/g, (c) => EXTRA[c])
   .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 

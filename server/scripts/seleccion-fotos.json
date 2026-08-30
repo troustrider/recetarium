@@ -160,5 +160,16 @@
       "pagina": "https://commons.wikimedia.org/wiki/File:Caceres-Migas-DavidDaguerro.jpg",
       "fuente": "wikimedia"
     }
+  },
+  "Skyr con rúgbrauð y arándanos": {
+    "url": "https://upload.wikimedia.org/wikipedia/commons/1/11/Icelandic_Skyr.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "credito": {
+      "fichero": "File:Icelandic Skyr.jpg",
+      "autor": "IcelandicProvisions",
+      "licencia": "CC BY-SA 4.0",
+      "pagina": "https://commons.wikimedia.org/wiki/File:Icelandic_Skyr.jpg",
+      "fuente": "wikimedia"
+    },
+    "zoom": 1.05
   }
 }
