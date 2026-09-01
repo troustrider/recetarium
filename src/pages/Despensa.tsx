@@ -268,10 +268,7 @@ function Despensa() {
           <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
             <ShoppingBasket className="w-7 h-7 text-orange-300 dark:text-orange-700" strokeWidth={1.5} />
           </div>
-          <h2 className="font-display text-lg font-bold text-gray-700 dark:text-gray-300 mb-1">Vuestra despensa está vacía</h2>
-          <p className="text-sm text-gray-400 dark:text-gray-500 max-w-xs mx-auto">
-            Escribe arriba para añadir lo que hay en casa, o importa lo comprado desde la lista.
-          </p>
+          <h2 className="font-display text-lg font-bold text-gray-700 dark:text-gray-300">Vuestra despensa está vacía</h2>
         </div>
       ) : visibles.length === 0 ? (
         <p className="text-center py-10 text-sm text-gray-400 dark:text-gray-500">

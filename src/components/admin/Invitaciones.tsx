@@ -104,8 +104,7 @@ function Invitaciones() {
         </div>
 
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Elegir un hogar existente hace que esa persona comparta despensa, plan y lista con
-          quien ya está dentro.
+          Un hogar compartido comparte despensa, plan y lista.
         </p>
 
         {error && (

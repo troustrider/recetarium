@@ -270,8 +270,7 @@ function Catalogo() {
               <line x1="9" y1="11" x2="13" y2="11" />
             </svg>
           </div>
-          <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">Organiza tus recetas y planifica la compra</h2>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mb-6 max-w-xs mx-auto">Añade tu primera receta para empezar a construir tu recetario.</p>
+          <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-6">Todavía no hay recetas</h2>
           <motion.button
             onClick={() => navigate('/recetas/nueva')}
             className="px-5 py-2.5 text-sm font-semibold bg-orange-700 dark:bg-orange-600 text-white rounded-xl hover:bg-orange-800 dark:hover:bg-orange-700 transition-colors"

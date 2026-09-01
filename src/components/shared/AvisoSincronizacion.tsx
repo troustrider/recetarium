@@ -34,7 +34,7 @@ function AvisoSincronizacion() {
                 Sin guardar en el móvil del otro
               </p>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-snug mt-0.5">
-                No se ha podido guardar {listar(fallos)}. El cambio sigue aquí, pero aún no se comparte.
+                No se ha podido guardar {listar(fallos)}. No se ha perdido nada.
               </p>
             </div>
             <button

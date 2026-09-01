@@ -220,11 +220,6 @@ function Cuerpo({ item, enLista, onEditar, onALista, onQuitar, onClose }: Props 
             </select>
           </div>
         </div>
-        {sugerida && (
-          <p className="px-1 mt-1.5 text-[11px] text-orange-600/80 dark:text-orange-400/80">
-            Con la cantidad, la lista de la compra resta lo que ya tenéis en casa.
-          </p>
-        )}
       </div>
 
       <label className="flex items-center justify-between gap-3 px-4 py-2.5 mb-3 text-sm rounded-xl border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-pointer">
@@ -302,7 +297,7 @@ function Apertura({ item, onEditar }: { item: IngredienteDespensa; onEditar: (c:
           </div>
           <p className="mt-1.5 text-[11px] text-amber-700/80 dark:text-amber-400/80">
             {dias == null
-              ? 'Abierto aguanta lo mismo: la caducidad se queda como estaba.'
+              ? 'Abierto aguanta lo mismo.'
               : congelado
                 ? `Descongelado aguanta unos ${dias} días, y la caducidad ya lo cuenta.`
                 : `Abierto aguanta unos ${dias} días, y la caducidad ya lo cuenta.`}

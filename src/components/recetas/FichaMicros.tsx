@@ -82,7 +82,7 @@ export default function FichaMicros({ receta }: { receta: RecetaListada }) {
 
       <p className="text-[10px] text-gray-400 dark:text-gray-500 px-1">
         Estimado desde los ingredientes{micros.estimadoDe === 'parcial' && ', con alguna cantidad sin convertir'}.
-        La sal no cuenta la que añadas al cocinar. Sirve para comparar recetas, no como valor clínico.
+        La sal no cuenta la que añadas al cocinar.
       </p>
     </div>
   )
