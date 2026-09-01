@@ -51,13 +51,7 @@ Dos cosas que enseña a propósito:
     "El punto crítico es el paso 4: si el tomate sigue líquido, los huevos se dispersan y quedan crudos por arriba. No pases al paso 5 sin el surco.",
     "Son 24 g de proteína por ración, por debajo de los 35 de un principal. Es lo que da el plato bien hecho. Para llegar, acompáñala de 200 g de yogur griego o de 150 g de hummus, que suman sin tocar la sartén."
   ],
-  "guarnicion": {
-    "nombre": "Pan de pita tostado",
-    "ingredientes": [
-      { "nombre": "pan de pita", "cantidad": 2, "unidad": "ud", "familia": "cereales" }
-    ],
-    "pasos": ["Tostar 2 min por lado hasta que infle."]
-  }
+  "guarniciones": ["Ensalada verde con limón", "Pan de pita tostado"]
 }
 ```
 
@@ -76,10 +70,10 @@ Dos cosas que enseña a propósito:
 | `porciones` | **siempre 2.** Es la base desde la que la app escala (`BASE_COMENSALES` en `DetalleReceta`). Ajusta las cantidades de los ingredientes a 2 raciones, no las porciones al plato |
 | `tipo` | opcional, default `principal`; uno de: `principal`, `postre`, `desayuno`, `entrante` |
 | `categoria` | opcional pero ponla siempre: minúsculas, sin acentos ("espanola", no "española") |
-| `guarnicion` | opcional. `null` u omitido = el plato no la lleva. Si va, exige `nombre` y `ingredientes` no vacío (mismo formato que `ingredientes`); `pasos` opcional. **No pongas sus macros: los calcula el servidor.** Ver abajo |
+| `guarniciones` | array de **nombres del catálogo** (`server/src/data/guarniciones.json`), máximo 3, sin repetir. La primera es la recomendada: la que el planificador enciende solo. Un nombre que no esté en el catálogo es un 400. Ver abajo |
 | `favorita`, `imagen` | opcionales; normalmente se omiten al crear |
 
-⚠️ **`PUT /recetas/:id` reemplaza el recurso entero.** Los campos que omitas se pierden: `consejos` omitido se guarda como `[]`, y `guarnicion`, `calorias`/`proteinas`/etc. omitidos se guardan como `null`. En modo revisión, envía siempre la receta completa, no un parche.
+⚠️ **`PUT /recetas/:id` reemplaza el recurso entero.** Los campos que omitas se pierden: `consejos` omitido se guarda como `[]`, `guarniciones` omitido deja la receta sin ninguna, y `calorias`/`proteinas`/etc. omitidos se guardan como `null`. En modo revisión, envía siempre la receta completa, no un parche.
 
 ## Categorías (cocinas) ya en uso
 
@@ -132,38 +126,54 @@ Recórrelo entero. Cualquier "no" bloquea la entrega.
 
 **Perfil (`criterio-chef.md`)**
 17. Si es para Karim: sin pescado y no india. La proteína llega al suelo de su hueco (20 g en principales, 15 en desayunos) y se ha subido todo lo que daba el plato. Si no alcanza el objetivo (35/25 con carne o pescado, 25/18 sin ellos), no se ha tocado ningún ratio del canon para forzarlo: el número va como sale y la palanca, declarada en `consejos`.
-18. Es una comida completa: lleva verdura propia, o va con `guarnicion` rellena. La guarnición NO se declara en `consejos` ni se cuenta en los macros del plato: tiene campo propio y el servidor le calcula su ficha aparte.
+18. Es una comida completa **de verdad**: el plato lleva verdura propia, o alguna de sus guarniciones aporta verdura. Rellenar el campo con un almidón no cuenta. Las guarniciones no se declaran en `consejos` ni entran en los macros del plato: van por nombre del catálogo y el servidor les calcula la ficha aparte.
+18b. Hay más de una opción siempre que la cocina lo permita, ninguna repite el almidón del plato y todas son de su cocina.
 19. Los `consejos` no hablan de versiones anteriores ni comparan con el resto del recetario.
 20. No duplica una receta existente (dedup por lista completa de nombres).
 
-## Guarnición
+## Guarniciones
 
-Campo opcional para el acompañamiento del plato. Existe porque la guarnición es
-opcional al cocinar: unos días la haces y otros no, y sus ingredientes solo
-tienen que entrar en la lista de la compra si la vas a hacer.
-
-Va en su propio campo y **nunca dentro de `ingredientes`**. Los macros, el hierro
-y el gluten del plato se calculan desde `ingredientes` en cada guardado: un arroz
-o una pasta metidos ahí marcarían la receta entera como con gluten aunque no
-prepares la guarnición, y eso importa (ver `nutricion-ficha.md`).
+Las guarniciones **no se escriben dentro de la receta**: viven en un catálogo
+propio (`server/src/data/guarniciones.json`, tabla `guarniciones`) y la receta
+las referencia por nombre. Antes se copiaban: había 386 objetos para 83 nombres
+y seis versiones distintas del arroz blanco, unas en vaso y otras en gramos,
+unas de 12 min y otras de 15. Ahora el arroz se arregla una vez.
 
 ```json
-"guarnicion": {
-  "nombre": "Arroz blanco",
-  "ingredientes": [
-    { "nombre": "arroz", "cantidad": 160, "unidad": "g", "familia": "cereales" }
-  ],
-  "pasos": ["Cocer 12 min en agua con sal."]
-}
+"guarniciones": ["Kachumber", "Arroz blanco", "Coliflor al horno con comino"]
 ```
 
 Reglas:
 
-- Cantidades **para 2 raciones**, igual que `ingredientes`.
-- No pongas `calorias`, `proteinas`, `hierro`, `sinGluten` ni `micros`: los
-  calcula el servidor al guardar y los devuelve dentro del propio objeto.
-- Solo cuando el plato la pide de verdad. Un curry, un guiso o una carne a la
-  plancha la piden; una pasta, un arroz salteado o un bocadillo ya son plato
-  completo y van con `guarnicion: null`.
-- Los ingredientes de la guarnición cuentan para las puertas de compra NL igual
-  que los del plato: un T3 ahí dentro necesita su sustituto en `consejos`.
+- **Máximo 3, sin repetir.** La primera es la recomendada: la que la auto-semana
+  enciende y la que cuenta en `aporteDe` cuando no se ha elegido otra.
+- **Da más de una siempre que la cocina lo permita.** Una sola opción levanta
+  aviso. El catálogo garantiza al menos cuatro compatibles por cocina.
+- **El plato tiene que acabar con verdura.** Si `ingredientes` no trae ninguna
+  (sin contar bases aromáticas ni almidones), alguna opción debe aportar
+  `verdura`. Es ERROR, y no lo salva rellenar el campo con un arroz.
+- **Nada de almidón sobre almidón.** Si el plato ya trae arroz, pasta, pan,
+  patata, bulgur o cuscús, sus opciones no ponen otro.
+- **La cocina manda.** El catálogo declara en qué cocinas es de la casa cada
+  guarnición, por familia (`asia-este`, `mediooriente`…) o por cocina suelta. Un
+  pan de pita en un plato georgiano levanta aviso: allí el pan es otro.
+- **Sin gluten:** si el plato lo es, alguna opción tiene que serlo, o el filtro
+  del catálogo enseña una receta limpia con pan encendido por defecto.
+- Las cantidades del catálogo son **para 2 raciones**, igual que las recetas.
+- Los macros, el hierro, el gluten y el `apto` de cada guarnición **los calcula
+  el servidor** al volcar el catálogo. No los escribas.
+
+### Añadir una guarnición al catálogo
+
+Se edita `server/src/data/guarniciones.json` (`nombre`, `aporta`, `cocinas`,
+`ingredientes`, `pasos`) y se pasa su propia puerta:
+
+```bash
+node scripts/chef-recetas.mjs guarniciones
+```
+
+Luego `node scripts/guarniciones.mjs catalogo` la vuelca a la base. Sus pasos
+tienen las mismas exigencias que los de una receta: duración o señal de punto en
+cada cocción, cantidades entre llaves para que escalen, y **todo lo que el paso
+use tiene que estar en la lista de ingredientes** — el aceite y el vinagre de un
+aliño incluidos, que si no ni se compran ni cuentan en los macros.

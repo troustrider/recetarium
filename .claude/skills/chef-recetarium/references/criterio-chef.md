@@ -26,7 +26,7 @@ La proteína es un **objetivo, no una puerta**. Se maximiza siempre; no se exige
 
 - **Por debajo del suelo la receta no sirve para su hueco**, y ahí no hay palanca que valga: 14 g no sostienen una cena, se escriba lo que se escriba en `consejos`.
 - **Entre el suelo y el objetivo la receta pasa si declara la palanca**: la frase de `consejos` que dice con qué se completa ("acompáñalo de 200 g de yogur griego"). Eso es lo que hace comprobable que se ha maximizado en vez de conformarse.
-- **La proteína se cuenta con la de la guarnición**, porque es lo que se come: un pescado a 24 g con su ensalada de garbanzos no es un plato de 24 g.
+- **La proteína se cuenta con la de la guarnición recomendada** —la primera del reparto, que es la que se enciende sola—, porque es lo que se come: un pescado a 24 g con su ensalada de garbanzos no es un plato de 24 g. Las otras opciones no cuentan: elegirlas es cosa del día.
 
 ### El suelo del catálogo no es el del hueco
 

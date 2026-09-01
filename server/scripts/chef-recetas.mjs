@@ -4,10 +4,19 @@ import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { neon } from '@neondatabase/serverless'
 import { norm, estimarMacros, fichaNutricional } from '../src/lib/nutricion.js'
+import {
+  CATALOGO,
+  GUARNICION_POR_NOMBRE,
+  compatibleConCocina,
+  esAlmidonDeCuerpo,
+  esVerdura,
+} from '../src/lib/guarniciones.js'
 
 export { estimarMacros, fichaNutricional }
 
 const AQUI = dirname(fileURLToPath(import.meta.url))
+
+
 
 const sql = neon(process.env.DATABASE_URL)
 
@@ -30,15 +39,18 @@ const RE_SIN_MARCAR = new RegExp(
 )
 const sinLlaves = (p) => p.replace(/\{[^}]*\}/g, ' ')
 
-const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes ten[ií]a|la anterior|del recetario|en el recetario|respecto a la versi|se iba de rango|he subido|he bajado|corregid[oa]s?\b|corrijo|la ficha (?:dec[ií]a|ten[ií]a|estaba)|ficha anterior|estaba[n]? mal/i
+const RE_META_CONSEJO = /versi[oó]n anterior|versión previa|antes llev|antes ten[ií]a|la anterior|del recetario|en el recetario|respecto a la versi|se iba de rango|he subido|he bajado|corregid[oa]s?\b|corrijo|la ficha (?:dec[ií]a|ten[ií]a|estaba)|ficha anterior|estaba[n]? mal|(?:macros|valores|proporci[oó]n|tiempo|lista) de arriba|en los macros|la categor[ií]a en la que|por d[oó]nde se guard/i
 
 const RE_PRIMERA_PERSONA =
-  /no lo vendo|lo vendo como|etiqueto|(?:no lo |lo )presento como|propongo|planteo|prefiero|recomiendo|considero|opino|he (?:a[ñn]adido|puesto|quitado|cambiado|ajustado|dejado|usado|preferido)|adici[oó]n m[ií]a|aportaci[oó]n m[ií]a|a mi juicio|me parece|personalmente/i
+  /no lo vendo|lo vendo como|etiqueto|(?:no lo |lo )presento como|propongo|planteo|prefiero|recomiendo|considero|opino|he (?:a[ñn]adido|puesto|quitado|cambiado|ajustado|dejado|usado|preferido)|adici[oó]n m[ií]a|aportaci[oó]n m[ií]a|a mi juicio|me parece|personalmente|as[ií] lo digo|lo digo porque|reivindico/i
 
 const RE_REGLA_PERSONAL = /tu m[ií]nimo|tus \d+ g|tu objetivo|tus macros/i
 
 const RE_BASE_AROMATICA = /^(ajo|cebolla|cebolla roja|cebolleta|chalota|puerro|tomate triturado|tomate frito|passata|perejil|cilantro|albahaca|menta|cebollino|limon|lima|guindilla|chile jalapeno)$/
 const RE_GUARNICION = /guarnici[oó]n|al lado|acompa[ñn]|de acompa|s[ií]rve(?:lo|la)? con|se (?:come|sirve|toma) (?:con|en)|va con|encima van|por encima van/i
+
+const guarnicionesDe = (r) => (r.guarniciones ?? []).map((n) => GUARNICION_POR_NOMBRE.get(n) ?? { nombre: n, desconocida: true })
+const recomendadaDe = (r) => guarnicionesDe(r).find((g) => !g.desconocida) ?? null
 
 const SUELO_PROTEINA = { principal: 20, desayuno: 15 }
 const OBJETIVO_PROTEINA = { principal: 35, desayuno: 25 }
@@ -53,14 +65,14 @@ const red1 = (n) => Math.round(n * 10) / 10
 
 function proteinaDeRacion(r) {
   if (typeof r.proteinas !== 'number') return null
-  const ingredientes = r.guarnicion?.ingredientes
+  const ingredientes = recomendadaDe(r)?.ingredientes
   if (!Array.isArray(ingredientes) || !ingredientes.length) return r.proteinas
   const est = estimarMacros({ ingredientes, porciones: r.porciones })
   return r.proteinas + (Number.isFinite(est.proteinas) ? est.proteinas : 0)
 }
 
 function sinProteinaAnimal(r) {
-  const ingredientes = [...(r.ingredientes ?? []), ...(r.guarnicion?.ingredientes ?? [])]
+  const ingredientes = [...(r.ingredientes ?? []), ...(recomendadaDe(r)?.ingredientes ?? [])]
   if (!ingredientes.length) return false
   const { animal } = estimarMacros({ ingredientes, porciones: r.porciones })
   return animal.cierto && !animal.fuentes.some((f) => ORIGEN_NO_VEGETARIANO.has(f.origen))
@@ -77,6 +89,127 @@ function nucleo(nombre) {
 }
 
 const pct = (declarado, estimado) => Math.abs(declarado - estimado) / estimado
+
+
+// ─── La puerta de la guarnición ──────────────────────────────────────────────
+//
+// La vieja miraba si el campo estaba relleno. Con eso, 43 principales sin una
+// sola verdura la pasaban porque llevaban colgado un "Arroz blanco". Esta mira
+// qué trae la guarnición, si pega con el plato y si hay de dónde elegir.
+
+/** Contrato: nombres del catálogo, sin repetir y como mucho tres. */
+function erroresDeGuarnicion(r) {
+  const e = []
+  const nombres = r.guarniciones ?? []
+  if (!Array.isArray(nombres)) return ['guarniciones debe ser un array de nombres del catálogo']
+
+  for (const nombre of nombres)
+    if (!GUARNICION_POR_NOMBRE.has(nombre))
+      e.push(`guarnición fuera del catálogo: "${nombre}" (añádela a server/src/data/guarniciones.json o usa una de las ${GUARNICION_POR_NOMBRE.size})`)
+  if (new Set(nombres).size !== nombres.length) e.push('guarniciones repetidas')
+  if (nombres.length > 3) e.push(`${nombres.length} guarniciones; el máximo es 3`)
+
+  // Comida completa de verdad: el plato o alguna de sus opciones tiene que
+  // poner verdura en la mesa.
+  if (r.tipo === 'principal' && Array.isArray(r.ingredientes)) {
+    const conocidas = guarnicionesDe(r).filter((g) => !g.desconocida)
+    const verduraPropia = r.ingredientes.some(esVerdura)
+    const verduraEnOpciones = conocidas.some((g) => g.aporta.includes('verdura'))
+    if (!verduraPropia && !verduraEnOpciones)
+      e.push('principal sin verdura: ni en el plato ni en ninguna de sus guarniciones. Añade una opción que aporte verdura')
+  }
+  return e
+}
+
+/** Calidad: coherencia con el plato, con la cocina y variedad de opciones. */
+function avisosDeGuarnicion(r) {
+  const w = []
+  if (r.tipo !== 'principal') {
+    if ((r.guarniciones ?? []).length) w.push(`un ${r.tipo} con guarnición: el campo es para los principales`)
+    return w
+  }
+
+  const opciones = guarnicionesDe(r).filter((g) => !g.desconocida)
+  if (!opciones.length) {
+    w.push('sin ninguna guarnición: reparte al menos una del catálogo compatible con su cocina')
+    return w
+  }
+  if (opciones.length === 1)
+    w.push(`solo una guarnición ("${opciones[0].nombre}"): busca una segunda opción compatible para poder elegir`)
+
+  const ingredientes = r.ingredientes ?? []
+  const nucleoPlato = new Set(ingredientes.map((i) => norm(i.nombre)))
+  const almidonPropio = ingredientes.filter(esAlmidonDeCuerpo).map((i) => i.nombre)
+
+  for (const g of opciones) {
+    if (almidonPropio.length && g.aporta.includes('almidon'))
+      w.push(`"${g.nombre}" pone almidón sobre un plato que ya lo trae (${almidonPropio.join(', ')})`)
+
+    const protagonista = g.ingredientes[0]?.nombre
+    if (protagonista && nucleoPlato.has(norm(protagonista)))
+      w.push(`"${g.nombre}" repite el ${protagonista} que ya lleva el plato`)
+
+    if (r.categoria && !compatibleConCocina(g, r.categoria))
+      w.push(`"${g.nombre}" no es de la cocina ${r.categoria}: el catálogo la da por buena en ${(g.cocinas ?? []).join(', ')}`)
+  }
+
+  // Sin gluten: si el plato lo es y ninguna opción lo es, el filtro del catálogo
+  // enseña una receta limpia con pan encendido por defecto.
+  const sinGlutenDe = (g) => fichaNutricional({ ingredientes: g.ingredientes, porciones: 2 }).sinGluten
+  if (r.sinGluten === true && !opciones.some((g) => sinGlutenDe(g) === true))
+    w.push('plato sin gluten cuyas guarniciones lo llevan todas: añade una sin gluten o el filtro del catálogo miente')
+
+  return w
+}
+
+/**
+ * Audita el propio catálogo. Un fallo aquí sale en decenas de recetas a la vez,
+ * así que se mira aparte y antes.
+ */
+export function validarCatalogo() {
+  const problemas = []
+  const CITABLES = ['aceite de oliva', 'aceite de sésamo', 'vinagre de arroz', 'vinagre', 'limón', 'lima',
+    'azúcar', 'salsa de soja', 'sésamo', 'yogur griego', 'mostaza', 'mantequilla', 'orégano', 'eneldo',
+    'comino', 'cúrcuma', 'ajo', 'nueces', 'aceitunas', 'menta', 'albahaca', 'perejil', 'cilantro']
+
+  for (const g of CATALOGO.guarniciones) {
+    const p = []
+    if (!g.aporta?.length) p.push('sin `aporta`')
+    if (!g.cocinas?.length) p.push('sin `cocinas`')
+    if (!g.ingredientes?.length) p.push('sin ingredientes')
+    if (!g.pasos?.length) p.push('sin pasos')
+
+    for (const i of g.ingredientes ?? []) {
+      if (!UNIDADES.includes(i.unidad)) p.push(`unidad "${i.unidad}" no canónica en ${i.nombre}`)
+      if (!FAMILIAS.includes(i.familia)) p.push(`familia "${i.familia}" no válida en ${i.nombre}`)
+      if (!(i.cantidad > 0)) p.push(`cantidad inválida en ${i.nombre}`)
+    }
+
+    const texto = norm((g.pasos ?? []).join(' '))
+    const listados = (g.ingredientes ?? []).map((i) => norm(i.nombre))
+    // El fallo que traía la BD vieja: el paso pedía aceite y vinagre, la lista no
+    // los tenía, y no entraban ni en la compra ni en los macros.
+    for (const citable of CITABLES) {
+      const c = norm(citable)
+      if (!new RegExp(`\b${c.replace(/ /g, '\s')}\b`).test(texto)) continue
+      if (!listados.some((l) => l.includes(c) || c.includes(l)))
+        p.push(`los pasos usan ${citable} y no está en la lista de ingredientes`)
+    }
+
+    for (const [n, paso] of (g.pasos ?? []).entries()) {
+      const cuerpo = paso.replace(/mientras[^,.]*[,.]/gi, ' ')
+      if (VERBOS.test(cuerpo) && !RE_TIEMPO.test(paso) && !RE_SENAL.test(paso))
+        p.push(`paso ${n + 1}: cocción sin duración ni señal de punto`)
+      const suelta = sinLlaves(paso).match(RE_SIN_MARCAR)
+      if (suelta) p.push(`paso ${n + 1}: cantidad "${suelta[0].trim()}" sin marcar entre llaves`)
+      if (/horno|hornea|asa|ásalos|ásala/i.test(paso) && /horno|°C/i.test(paso) && !RE_TEMP.test(paso))
+        p.push(`paso ${n + 1}: usa el horno sin °C`)
+    }
+
+    if (p.length) problemas.push({ nombre: g.nombre, problemas: p })
+  }
+  return problemas
+}
 
 export function validar(r, { estricto = true } = {}) {
   const e = []
@@ -155,17 +288,8 @@ export function validar(r, { estricto = true } = {}) {
       if (regla) e.push(`consejo ${n + 1}: regla personal de macros ("${regla[0]}")`)
     })
 
-  if (estricto && r.tipo === 'principal' && Array.isArray(r.ingredientes)) {
-    const verduras = r.ingredientes.filter(
-      (i) => i.familia === 'verduras' && !RE_BASE_AROMATICA.test(norm(i.nombre))
-    )
-    const tieneCampo = r.guarnicion != null && Array.isArray(r.guarnicion.ingredientes) && r.guarnicion.ingredientes.length > 0
-    const declaraEnProsa = (r.consejos ?? []).some((c) => RE_GUARNICION.test(c))
-    if (!verduras.length && !tieneCampo && !declaraEnProsa)
-      e.push('principal sin verdura propia y sin guarnición (ni campo `guarnicion` ni declarada en consejos)')
-    if (!verduras.length && !tieneCampo && declaraEnProsa)
-      w.push('guarnición solo en prosa: pásala al campo `guarnicion` para que entre en la compra')
-  }
+  e.push(...erroresDeGuarnicion(r))
+  if (estricto) w.push(...avisosDeGuarnicion(r))
 
   if (Array.isArray(r.ingredientes) && Array.isArray(r.pasos)) {
     const texto = norm(r.pasos.join(' ') + ' ' + (r.consejos || []).join(' '))
@@ -229,27 +353,29 @@ async function leerTodas() {
            r.ingredientes, r.pasos, r.consejos, r.porciones, r.tipo,
            r.precio_por_porcion::float AS "precioPorPorcion", r.calorias,
            r.proteinas::float AS proteinas, r.carbohidratos::float AS carbohidratos, r.grasas::float AS grasas,
-           r.guarnicion
+           COALESCE((
+             SELECT array_agg(g.nombre ORDER BY rg.orden)
+             FROM receta_guarniciones rg
+             JOIN guarniciones g ON g.id = rg.guarnicion_id AND g.borrada_en IS NULL
+             WHERE rg.receta_id = r.id
+           ), '{}') AS guarniciones
     FROM recetas r JOIN categories c ON r.category_id = c.id
     WHERE r.borrada_en IS NULL ORDER BY r.nombre`
 }
 
-function guarnicionConFicha(guarnicion, porciones) {
-  if (!guarnicion) return null
-  const entrada = { ingredientes: guarnicion.ingredientes, porciones }
-  const macros = estimarMacros(entrada)
-  const ficha = fichaNutricional(entrada)
-  return {
-    nombre: guarnicion.nombre,
-    ingredientes: guarnicion.ingredientes,
-    pasos: guarnicion.pasos ?? [],
-    calorias: Math.round(macros.calorias),
-    proteinas: red1(macros.proteinas),
-    carbohidratos: red1(macros.carbohidratos),
-    grasas: red1(macros.grasas),
-    hierro: ficha.hierro,
-    sinGluten: ficha.sinGluten,
-    micros: ficha.micros,
+/**
+ * La receta apunta al catálogo; no copia la guarnición. `apply` reescribe el
+ * reparto entero, así que un lote que omita `guarniciones` las quita.
+ */
+async function fijarGuarniciones(recetaId, nombres = []) {
+  await sql`DELETE FROM receta_guarniciones WHERE receta_id = ${recetaId}`
+  for (const [orden, nombre] of nombres.entries()) {
+    const [fila] = await sql`
+      SELECT id FROM guarniciones WHERE nombre = ${nombre} AND hogar_id IS NULL AND borrada_en IS NULL`
+    if (!fila) throw new Error(`guarnición fuera del catálogo: ${nombre}`)
+    await sql`
+      INSERT INTO receta_guarniciones (receta_id, guarnicion_id, orden)
+      VALUES (${recetaId}, ${fila.id}, ${orden})`
   }
 }
 
@@ -261,8 +387,6 @@ async function guardar(r) {
   const f = fichaNutricional(r)
   const mic = JSON.stringify(f.micros)
   const apt = JSON.stringify(f.apto)
-  const gua = guarnicionConFicha(r.guarnicion, r.porciones ?? 1)
-  const guaJson = gua ? JSON.stringify(gua) : null
   if (r.id) {
     const [row] = await sql`
       UPDATE recetas SET nombre = ${r.nombre}, categoria = ${r.categoria ?? null},
@@ -270,20 +394,22 @@ async function guardar(r) {
         consejos = ${con}, category_id = ${cid}, precio_por_porcion = ${r.precioPorPorcion},
         porciones = ${r.porciones}, calorias = ${r.calorias ?? null}, proteinas = ${r.proteinas ?? null},
         carbohidratos = ${r.carbohidratos ?? null}, grasas = ${r.grasas ?? null}, tipo = ${r.tipo ?? 'principal'},
-        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}, apto = ${apt}, guarnicion = ${guaJson}
+        hierro = ${f.hierro}, sin_gluten = ${f.sinGluten}, micros = ${mic}, apto = ${apt}
       WHERE id = ${r.id} RETURNING id, nombre`
     if (!row) throw new Error(`id no encontrado: ${r.id}`)
+    await fijarGuarniciones(row.id, r.guarniciones)
     return { accion: 'UPDATE', ...row }
   }
   const [row] = await sql`
     INSERT INTO recetas (nombre, categoria, tiempo_preparacion, ingredientes, pasos, consejos,
       precio_por_porcion, porciones, category_id, calorias, proteinas, carbohidratos, grasas, tipo,
-      hierro, sin_gluten, micros, apto, guarnicion)
+      hierro, sin_gluten, micros, apto)
     VALUES (${r.nombre}, ${r.categoria ?? null}, ${r.tiempoPreparacion}, ${ing}, ${pas}, ${con},
       ${r.precioPorPorcion}, ${r.porciones}, ${cid}, ${r.calorias ?? null}, ${r.proteinas ?? null},
       ${r.carbohidratos ?? null}, ${r.grasas ?? null}, ${r.tipo ?? 'principal'},
-      ${f.hierro}, ${f.sinGluten}, ${mic}, ${apt}, ${guaJson})
+      ${f.hierro}, ${f.sinGluten}, ${mic}, ${apt})
     RETURNING id, nombre`
+  await fijarGuarniciones(row.id, r.guarniciones)
   return { accion: 'INSERT', ...row }
 }
 
@@ -441,7 +567,19 @@ if (!comoCli) {
       console.log(`${res.accion}  ${res.nombre}  ${res.id}`)
     }
   }
+} else if (cmd === 'guarniciones') {
+  // El catálogo antes que las recetas: un fallo aquí sale en decenas a la vez.
+  const problemas = validarCatalogo()
+  console.log(`catálogo: ${CATALOGO.guarniciones.length} guarniciones`)
+  for (const { nombre, problemas: ps } of problemas) {
+    console.log(`
+X ${nombre}`)
+    ps.forEach((x) => console.log(`   ${x}`))
+  }
+  if (problemas.length) { console.log(`
+${problemas.length} guarnición(es) con problemas.`); process.exit(1) }
+  console.log('sin problemas')
 } else {
-  console.log('uso: chef-recetas.mjs audit | check <json> | check-doc | apply <json> | marcar <json> | remarcar')
+  console.log('uso: chef-recetas.mjs audit | guarniciones | check <json> | check-doc | apply <json> | marcar <json> | remarcar')
   process.exit(1)
 }

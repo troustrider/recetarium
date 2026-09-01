@@ -2,8 +2,7 @@ import { motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import type { InformeSemana } from '../../context/PlanificadorContext'
 import type { Preferencias } from '../../types/preferencias'
-import type { RecetaListada } from '../../types/receta'
-import { resumenSemana } from '../../utils/semana'
+import { resumenSemana, type SeleccionSemana } from '../../utils/semana'
 
 const NOMBRE: Record<string, string> = {
   fibra: 'la fibra',
@@ -25,13 +24,13 @@ const NOMBRE_TECHO: Record<string, string> = {
 const listar = (partes: string[]) =>
   partes.length <= 1 ? partes.join('') : `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`
 
-export default function ResumenSemana({ recetas, preferencias, informe, onCerrar }: {
-  recetas: RecetaListada[]
+export default function ResumenSemana({ seleccion, preferencias, informe, onCerrar }: {
+  seleccion: SeleccionSemana[]
   preferencias: Preferencias
   informe: InformeSemana
   onCerrar: () => void
 }) {
-  const { coberturas, excesos } = resumenSemana(recetas, preferencias)
+  const { coberturas, excesos } = resumenSemana(seleccion, preferencias)
 
   const llegan = coberturas.filter((c) => c.ratio >= 0.9).map((c) => NOMBRE[c.clave])
   const cortos = coberturas
@@ -59,13 +58,13 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
     informe.conservados > 0 &&
       `${informe.conservados} ${informe.conservados === 1 ? 'plato ya hecho se queda' : 'platos ya hechos se quedan'} donde estaban.`,
     informe.tiempoEnsanchado &&
-      'El catálogo no daba para toda la semana con ese tiempo: el límite de minutos se ha ampliado.',
+      'Alguna receta pasa del tiempo que pediste.',
     informe.cenaEnsanchada &&
-      'No hay cenas ligeras para todos los días: alguna es un plato de los grandes.',
+      'Alguna cena es de las contundentes.',
     informe.repetidos > 0 &&
-      `${informe.repetidos} ${informe.repetidos === 1 ? 'día repite' : 'días repiten'} plato: no quedaban candidatas distintas.`,
+      `${informe.repetidos} ${informe.repetidos === 1 ? 'día repite' : 'días repiten'} plato.`,
     informe.huecosVacios > 0 &&
-      `${informe.huecosVacios} ${informe.huecosVacios === 1 ? 'hueco se queda' : 'huecos se quedan'} sin llenar: con estos límites el catálogo no da más.`,
+      `${informe.huecosVacios} ${informe.huecosVacios === 1 ? 'hueco se queda' : 'huecos se quedan'} sin llenar.`,
   ].filter(Boolean) as string[]
 
   return (
@@ -88,7 +87,7 @@ export default function ResumenSemana({ recetas, preferencias, informe, onCerrar
           {hechos.length > 0 ? listar(hechos) : 'Sin cambios'}
         </p>
 
-        {recetas.length > 0 && (
+        {seleccion.length > 0 && (
           <p className="text-sm text-gray-700 dark:text-gray-200 mt-1.5">
             {llegan.length > 0 && <>Llegan {listar(llegan)}. </>}
             {cortos.length > 0 && (

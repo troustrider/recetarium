@@ -62,6 +62,8 @@ function DetalleReceta() {
   const navigate = useNavigate()
   const [comensales, setComensales] = useState(PORCIONES_POR_DEFECTO)
   const [cocinaOpen, setCocinaOpen] = useState(false)
+  // Cuál de las opciones se está mirando. Empieza en la recomendada.
+  const [guarnicionAbierta, setGuarnicionAbierta] = useState(0)
 
   const cached = useMemo(() => recetas.find((r) => r.id === id) ?? null, [recetas, id])
   const receta = fetched ?? cached
@@ -315,48 +317,76 @@ function DetalleReceta() {
         </div>
       </section>
 
-      {full?.guarnicion && (
-        <section className="bg-lime-50/60 dark:bg-lime-900/10 border border-lime-100 dark:border-lime-900/30 rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <Salad className="w-4 h-4 text-lime-600 dark:text-lime-400" strokeWidth={2.2} />
-            <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100">
-              {full.guarnicion.nombre}
-            </h2>
-          </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-            Guarnición opcional. No está contada en los valores de arriba.
-          </p>
-
-          <ul className="flex flex-col mb-4">
-            {full.guarnicion.ingredientes.map((ing, i) => (
-              <IngredienteItem key={i} ingrediente={ing} multiplicador={multiplicador} />
-            ))}
-          </ul>
-
-          {fetched?.guarnicion && fetched.guarnicion.pasos.length > 0 && (
-            <ol className="flex flex-col gap-2 mb-4">
-              {escalarPasos(fetched.guarnicion.pasos, multiplicador).map((paso, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm">
-                  <span className="shrink-0 w-5 h-5 flex items-center justify-center bg-lime-600 text-white rounded-full text-[10px] font-bold">
-                    {i + 1}
-                  </span>
-                  <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{paso}</span>
-                </li>
-              ))}
-            </ol>
-          )}
-
-          {full.guarnicion.calorias != null && (
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Añade <strong className="text-gray-900 dark:text-gray-100">{full.guarnicion.calorias} kcal</strong> por ración
-              {full.guarnicion.proteinas != null && <> y {full.guarnicion.proteinas} g de proteína</>}
-              {full.guarnicion.sinGluten === false && (
-                <span className="text-amber-600 dark:text-amber-400"> · lleva gluten</span>
-              )}
+      {!!full?.guarniciones?.length && (() => {
+        const opciones = full.guarniciones!
+        const elegida = opciones[Math.min(guarnicionAbierta, opciones.length - 1)]
+        const conPasos = fetched?.guarniciones?.find((g) => g.id === elegida.id)
+        return (
+          <section className="bg-lime-50/60 dark:bg-lime-900/10 border border-lime-100 dark:border-lime-900/30 rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-1">
+              <Salad className="w-4 h-4 text-lime-600 dark:text-lime-400" strokeWidth={2.2} />
+              <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100">
+                {opciones.length > 1 ? 'Con qué acompañarla' : elegida.nombre}
+              </h2>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+              {opciones.length > 1
+                ? `${opciones.length} opciones para acompañar.`
+                : 'Guarnición opcional.'}
             </p>
-          )}
-        </section>
-      )}
+
+            {opciones.length > 1 && (
+              <div className="flex flex-wrap gap-1.5 mb-4" role="tablist">
+                {opciones.map((g, i) => (
+                  <button
+                    key={g.id}
+                    role="tab"
+                    aria-selected={g.id === elegida.id}
+                    onClick={() => setGuarnicionAbierta(i)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                      g.id === elegida.id
+                        ? 'bg-lime-600 text-white'
+                        : 'bg-white/70 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300 hover:bg-lime-100 dark:hover:bg-lime-900/30'
+                    }`}
+                  >
+                    {g.nombre}
+                    {i === 0 && <span className="ml-1.5 opacity-60">· la de casa</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <ul className="flex flex-col mb-4">
+              {elegida.ingredientes.map((ing, i) => (
+                <IngredienteItem key={i} ingrediente={ing} multiplicador={multiplicador} />
+              ))}
+            </ul>
+
+            {conPasos && conPasos.pasos.length > 0 && (
+              <ol className="flex flex-col gap-2 mb-4">
+                {escalarPasos(conPasos.pasos, multiplicador).map((paso, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm">
+                    <span className="shrink-0 w-5 h-5 flex items-center justify-center bg-lime-600 text-white rounded-full text-[10px] font-bold">
+                      {i + 1}
+                    </span>
+                    <span className="text-gray-700 dark:text-gray-300 leading-relaxed">{paso}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            {elegida.calorias != null && (
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Añade <strong className="text-gray-900 dark:text-gray-100">{elegida.calorias} kcal</strong> por ración
+                {elegida.proteinas != null && <> y {elegida.proteinas} g de proteína</>}
+                {elegida.sinGluten === false && (
+                  <span className="text-amber-600 dark:text-amber-400"> · lleva gluten</span>
+                )}
+              </p>
+            )}
+          </section>
+        )
+      })()}
 
       <section>
         <h2 className="font-display text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Pasos</h2>

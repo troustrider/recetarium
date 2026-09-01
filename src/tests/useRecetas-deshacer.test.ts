@@ -1,4 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
+import type { RecetaFormData } from '../api/client'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import useRecetas from '../hooks/useRecetas'
 import type { Receta } from '../types/receta'
@@ -31,9 +32,9 @@ vi.mock('../api/client', () => ({
   toggleFavorita: vi.fn(),
 }))
 
-function sinMeta(r: Receta) {
-  const { id: _id, favorita: _fav, ...resto } = r
-  return resto
+function sinMeta(r: Receta): RecetaFormData {
+  const { id: _id, favorita: _fav, guarniciones, ...resto } = r
+  return { ...resto, guarniciones: (guarniciones ?? []).map((g) => g.nombre) }
 }
 
 describe('useRecetas — deshacer edición', () => {

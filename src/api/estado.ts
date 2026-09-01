@@ -8,6 +8,9 @@ export interface EntradaPlanDTO {
   recetaId: string
   raciones: number
   cocinada?: boolean
+  /** Guarnición encendida en ese hueco. */
+  guarnicionId?: string
+  /** Planes anteriores al catálogo: sí o no, sin decir cuál. Se lee como "la recomendada". */
   conGuarnicion?: boolean
   /** Desayuno, comida o cena. Falta en los planes anteriores a los tres huecos. */
   momento?: Momento

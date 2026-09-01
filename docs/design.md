@@ -140,7 +140,7 @@ Documentación interactiva en `/api/docs` (Swagger UI).
   "ingredientes": [{ "nombre": "…", "cantidad": 200, "unidad": "g", "familia": "…" }],
   "pasos": ["string"],
   "consejos": ["string"],
-  "guarnicion": { "nombre": "…", "ingredientes": [], "pasos": [], "…ficha nutricional": null },
+  "guarniciones": [{ "id": "…", "nombre": "…", "aporta": ["verdura"], "ingredientes": [], "pasos": [], "…ficha nutricional": null }],
   "calorias": 520, "proteinas": 41, "carbohidratos": 55, "grasas": 12,
   "hierro": 3.2, "sinGluten": true, "micros": {}
 }

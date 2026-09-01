@@ -12,7 +12,25 @@ Las puertas de calidad no viven solo en prosa. Están implementadas en un script
 >
 > Endurecer el estándar sin repasar lo ya guardado deja un recetario de dos velocidades. Eso no vale.
 
-### Cómo se cerró el último endurecimiento
+### El endurecimiento de las guarniciones (09-2026)
+
+La puerta vieja miraba si el campo `guarnicion` estaba relleno. Con eso, 43
+principales sin una sola verdura la pasaban porque llevaban colgado un "Arroz
+blanco", y 34 platos marcados sin gluten ofrecían pan de pita encendido por
+defecto. El campo además era una copia por receta: 386 objetos para 83 nombres,
+con seis versiones del arroz blanco y 151 recetas cuyos pasos de guarnición
+pedían aceite o vinagre que no estaban en su lista de ingredientes, así que ni
+se compraban ni contaban.
+
+La salida fue sacar la guarnición a catálogo (`guarniciones` +
+`receta_guarniciones`), repartir de 1 a 3 opciones por principal según lo que le
+falte al plato y qué admite su cocina, y cambiar la puerta: ya no mira si el
+campo está relleno, mira **qué aporta**. Este endurecimiento sí entró
+directamente en ERROR porque el reparto se auditó antes de escribirlo y dejaba
+la base en cero errores; la regla de "primero aviso, luego ERROR" sigue valiendo
+para los criterios que no se pueden saldar de una pasada.
+
+### Cómo se cerró el endurecimiento anterior
 
 Los criterios de **comida completa**, **metacomentario en `consejos`** y **macros contra ingredientes** entraron primero como aviso, se saneó la BD entera, y solo entonces subieron a ERROR. Ese es el orden correcto y la referencia para el próximo: un criterio nuevo no se pone en ERROR el mismo día que se escribe, porque bloquearía el `apply` de cualquier lote que toque una receta antigua. Se pone en aviso, se salda la deuda, y se sube.
 
@@ -35,9 +53,10 @@ node scripts/chef-recetas.mjs apply ../ruta/lote.json
 Se ejecuta desde `server/` (necesita `DATABASE_URL` de `server/.env` y el driver de Neon del propio proyecto).
 
 - `audit` — recorre las recetas de la BD y lista ERROR y aviso por receta.
+- `guarniciones` — audita el **catálogo** de guarniciones antes que las recetas. Un fallo ahí sale en decenas de recetas a la vez, así que se mira primero.
 - `check` — valida un fichero JSON (array de recetas) sin tocar nada. Es el paso obligatorio antes de enseñar un lote a Karim.
 - `check-doc` — valida los ejemplos JSON de las referencias de la skill. El ejemplo de `contrato-receta.md` es el trozo del prompt que más pesa al escribir una receta: si él se salta una puerta, la enseña saltada. Llegó a fallar cinco. **Ejecútalo siempre que toques ese ejemplo.**
-- `apply` — valida y escribe. `UPDATE` si el objeto trae `id`, `INSERT` si no. **No toca `favorita` ni `imagen`**, al contrario que el `PUT` de la API, que borra lo que se omite. Sí escribe `guarnicion`, con su ficha nutricional calculada igual que en el servidor, y por tanto **un `UPDATE` que omita la guarnición la borra**: en modo revisión se manda la receta entera, guarnición incluida. Si cualquier receta del lote falla, no escribe ninguna.
+- `apply` — valida y escribe. `UPDATE` si el objeto trae `id`, `INSERT` si no. **No toca `favorita` ni `imagen`**, al contrario que el `PUT` de la API, que borra lo que se omite. Sí reescribe el reparto de `guarniciones` entero, y por tanto **un `UPDATE` que las omita las quita todas**: en modo revisión se manda la receta entera. Si cualquier receta del lote falla, no escribe ninguna.
 - `marcar <json>` — reescribe un lote al formato escalable. Ver la trampa al final.
 - `remarcar [--dry]` — marca las cantidades directamente en la BD, solo sobre recetas ya normalizadas a 2 raciones. Con `--dry` enseña los pasos resultantes sin escribir; úsalo siempre antes, porque un patrón nuevo mal puesto toca cientos de pasos de golpe.
 
@@ -53,11 +72,13 @@ Se ejecuta desde `server/` (necesita `DATABASE_URL` de `server/.env` y el driver
 
 **Macros contra ingredientes** (`nutrientes.json`): estima los cuatro macros desde la lista de ingredientes y los contrasta con los declarados. ERROR si la proteína o las kcal se desvían más de un 20%; aviso en carbohidratos (30%) y grasas (35%). Detalle abajo.
 
-**Perfil**: aviso si un `principal` no lleva verdura propia ni guarnición, si algún consejo es metacomentario de autoría, y si el precio se sale del rango 0,80-4,50 €/ración.
+**Perfil**: aviso si algún consejo es metacomentario de autoría y si el precio se sale del rango 0,80-4,50 €/ración.
+
+**Guarnición** (`erroresDeGuarnicion` / `avisosDeGuarnicion`): la puerta propia. ERROR si un nombre no está en el catálogo, si se repiten, si pasan de tres, o si un `principal` acaba **sin una sola verdura** —ni en el plato ni en ninguna de sus opciones—. Aviso si el plato se queda con una sola opción, si una opción pone almidón sobre un plato que ya lo trae, si repite la protagonista que el plato ya lleva, si no es de la cocina del plato, o si el plato es sin gluten y ninguna de sus opciones lo es. Detalle abajo.
 
 **Proteína** (`criterio-chef.md`): la de la ración se cuenta sumando el plato y su guarnición. Por debajo del suelo (20 g en `principal`, 15 en `desayuno`) avisa siempre. Entre el suelo y el objetivo avisa solo si los `consejos` no declaran la palanca —verbo de acompañar más una fuente con nombre—. El objetivo es 35/25 con carne o pescado y 25/18 sin ellos, y para decidir cuál toca se abstiene igual que los demás gates: un ingrediente sin ficha deja el plato en "no se puede afirmar que sea vegetal" y le pide el objetivo alto. **Nunca es ERROR**: una receta vegana honrada no puede bloquear el `apply` de un lote.
 
-La guarnición cuenta de dos formas, y no son equivalentes. El campo `guarnicion` es la canónica: está estructurado, entra en la lista de la compra y lleva su propia ficha. La frase en `consejos` sigue valiendo para no suspender a las que aún no se han migrado, pero levanta un aviso aparte ("guarnición solo en prosa"), porque una guarnición que solo existe en un texto no se puede comprar ni descontar de la despensa.
+La proteína de la guarnición se cuenta sobre la **recomendada** (la primera del reparto), que es la que la auto-semana enciende. Contar la más proteica de las tres inflaría el número de un plato que casi nunca se come así.
 
 ## La tabla `nutrientes.json`
 
@@ -85,7 +106,7 @@ Y por tanto sigue siendo responsabilidad del chef en cada receta:
 - **Fidelidad al canon**: que el plato exista, que sus no negociables estén presentes y que las desviaciones estén declaradas. Es juicio, no regex.
 - **Disponibilidad real en Dirk y Lidl.**
 - **Que el paso se entienda.** "Saltea 3 min hasta que pase algo" pasa todos los gates y no sirve de nada.
-- **Si la guarnición declarada es la correcta.** El script ve que hay una línea que la menciona, o que el campo está relleno, no si lo que propone tiene sentido con el plato. La heurística de prosa además confunde con una guarnición cualquier frase que hable de cómo se come el plato: "la cebolla encurtida no es guarnición" o "se acompaña de salsa tonkatsu" la disparan igual.
+- **Si la guarnición elegida es la buena de entre las compatibles.** El script comprueba que sea del catálogo, que pegue con la cocina, que no repita almidón ni protagonista y que la comida acabe con verdura. No sabe si una ensalada çoban le va mejor a este kebab que un pilav: eso sigue siendo criterio.
 
 Cuando añadas un criterio de los automatizables, impleméntalo. Cuando añadas uno de estos, escríbelo en la lista de arriba para que quede claro que el script verde no significa receta correcta.
 

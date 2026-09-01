@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
+import type { RecetaFormData } from '../api/client'
 import { useNavigate } from 'react-router-dom'
 import { useRecetasContext } from '../context'
 import RecetaForm from '../components/recetas/RecetaForm'
-import type { Receta } from '../types/receta'
 import useTitulo from '../hooks/useTitulo'
 
-type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
 function NuevaReceta() {
   useTitulo('Nueva receta')

@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
+import type { RecetaFormData } from '../api/client'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useRecetasContext } from '../context'
 import useReceta from '../hooks/useReceta'
 import RecetaForm from '../components/recetas/RecetaForm'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import ErrorMessage from '../components/shared/ErrorMessage'
-import type { Receta } from '../types/receta'
 import useTitulo from '../hooks/useTitulo'
 
-type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
 function EditarReceta() {
   const { id } = useParams<{ id: string }>()
@@ -25,7 +24,9 @@ function EditarReceta() {
   if (loading) return <LoadingSpinner />
   if (error || !receta) return <ErrorMessage message={error ?? 'Receta no encontrada'} />
 
-  const { id: _id, favorita: _fav, ...inicial } = receta
+  // El formulario habla de guarniciones por nombre, que es lo que come la API.
+  const { id: _id, favorita: _fav, guarniciones, ...resto } = receta
+  const inicial: RecetaFormData = { ...resto, guarniciones: (guarniciones ?? []).map((g) => g.nombre) }
 
   async function handleSubmit(data: RecetaFormData) {
     const ok = await actualizar(receta!.id, data, inicial)

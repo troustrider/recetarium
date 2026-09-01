@@ -1,12 +1,31 @@
 import type { Ingrediente, RecetaListada } from '../types/receta'
 import { ALIAS_NOMBRES } from './alias'
 
-export function ingredientesDe(
-  receta: Pick<RecetaListada, 'ingredientes' | 'guarnicion'>,
-  conGuarnicion?: boolean
-): Ingrediente[] {
-  if (!conGuarnicion || !receta.guarnicion) return receta.ingredientes
-  return [...receta.ingredientes, ...receta.guarnicion.ingredientes]
+type ConGuarniciones = Pick<RecetaListada, 'ingredientes' | 'guarniciones'>
+
+/** Las opciones de la receta, o ninguna si viene de una respuesta anterior al catálogo. */
+export function guarnicionesDe<G>(receta: { guarniciones?: G[] }): G[] {
+  return receta.guarniciones ?? []
+}
+
+/** La guarnición que está encendida en el plan, o null si no hay ninguna. */
+export function guarnicionElegida<G extends { id: string }>(
+  receta: { guarniciones?: G[] },
+  guarnicionId?: string
+): G | null {
+  if (!guarnicionId) return null
+  return guarnicionesDe(receta).find((g) => g.id === guarnicionId) ?? null
+}
+
+/** La recomendada: la primera del reparto. Es la que enciende la auto-semana. */
+export function guarnicionRecomendada<G>(receta: { guarniciones?: G[] }): G | null {
+  return guarnicionesDe(receta)[0] ?? null
+}
+
+export function ingredientesDe(receta: ConGuarniciones, guarnicionId?: string): Ingrediente[] {
+  const guarnicion = guarnicionElegida(receta, guarnicionId)
+  if (!guarnicion) return receta.ingredientes
+  return [...receta.ingredientes, ...guarnicion.ingredientes]
 }
 
 export function capitalize(s: string): string {

@@ -2,11 +2,11 @@ import { useState, useMemo, useCallback } from 'react'
 import type { Receta, RecetaListada, Ingrediente } from '../types/receta'
 import { getExtras, saveExtras } from '../api/estado'
 import { useEstadoCompartido } from './useEstadoCompartido'
-import { claveIngrediente, claveNombre, canonNombre, canonUnidad, cantidadDeCompra, ingredientesDe } from '../utils/ingredientes'
+import { claveIngrediente, claveNombre, canonNombre, canonUnidad, cantidadDeCompra, guarnicionElegida, ingredientesDe } from '../utils/ingredientes'
 import { juntarMedidas, type Medida } from '../utils/medidas'
 import { repartirDespensa } from '../utils/despensa'
 import { seDesglosa, repartirPorReceta, type ParteReceta } from '../utils/desglose'
-import { costeCompra as calcularCosteCompra, type CosteCompra } from '../utils/precios'
+import { costeCompra as calcularCosteCompra, precioPorRacionDe, type CosteCompra } from '../utils/precios'
 import { cuentaDeLaCompra, type Cuenta } from '../utils/desperdicio'
 import { useDespensa } from '../context/DespensaContext'
 
@@ -26,7 +26,7 @@ export interface IngredienteAgrupado extends Ingrediente {
 export interface EntradaLista {
   receta: RecetaListada
   raciones: number
-  conGuarnicion?: boolean
+  guarnicionId?: string
 }
 
 export interface InstantaneaLista {
@@ -69,9 +69,9 @@ function useListaCompra() {
     )
   }, [])
 
-  const setGuarnicion = useCallback((id: string, conGuarnicion: boolean) => {
+  const setGuarnicion = useCallback((id: string, guarnicionId?: string) => {
     setSeleccionadas((prev) =>
-      prev.map((e) => (e.receta.id === id ? { ...e, conGuarnicion } : e))
+      prev.map((e) => (e.receta.id === id ? { ...e, guarnicionId } : e))
     )
   }, [])
 
@@ -121,20 +121,24 @@ function useListaCompra() {
     setDescartados(anterior.descartados)
   }, [setExtras])
 
+  // La guarnición entra en la compra, así que entra en el coste. Sumaba solo el
+  // plato y la semana salía sistemáticamente más barata de lo que costaba.
   const coste = useMemo(
     () =>
-      seleccionadas.reduce(
-        (acc, { receta, raciones }) => acc + (receta.precioPorPorcion ?? 0) * raciones,
-        0
-      ),
+      seleccionadas.reduce((acc, { receta, raciones, guarnicionId }) => {
+        const guarnicion = guarnicionElegida(receta, guarnicionId)
+        const porRacion =
+          (receta.precioPorPorcion ?? 0) + (guarnicion ? precioPorRacionDe(guarnicion, racionesBase(receta)) : 0)
+        return acc + porRacion * raciones
+      }, 0),
     [seleccionadas]
   )
 
   const { listaCompra, enDespensa } = useMemo(() => {
     const mapa = new Map<string, IngredienteAgrupado & { medidas: Medida[] }>()
 
-    for (const { receta, raciones, conGuarnicion } of seleccionadas) {
-      for (const ing of ingredientesDe(receta, conGuarnicion)) {
+    for (const { receta, raciones, guarnicionId } of seleccionadas) {
+      for (const ing of ingredientesDe(receta, guarnicionId)) {
         const nombre = canonNombre(ing.nombre)
         const clave = claveNombre(nombre)
         const unidad = canonUnidad(nombre, ing.unidad)

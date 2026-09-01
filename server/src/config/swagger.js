@@ -24,6 +24,29 @@ const options = {
             familia: { type: 'string', example: 'lácteos' },
           },
         },
+        Guarnicion: {
+          type: 'object',
+          description: 'Ficha del catálogo de guarniciones. La receta la referencia por nombre; su ficha nutricional la calcula el servidor.',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            nombre: { type: 'string', example: 'Arroz blanco' },
+            aporta: {
+              type: 'array',
+              items: { type: 'string', enum: ['verdura', 'almidon', 'proteina'] },
+              description: 'Qué pone en la mesa. De aquí sale la puerta de comida completa.',
+            },
+            cocinas: {
+              type: 'array', items: { type: 'string' },
+              example: ['asia-este', 'latina'],
+              description: 'Familias de cocina y cocinas sueltas donde es de la casa.',
+            },
+            ingredientes: { type: 'array', items: { $ref: '#/components/schemas/Ingrediente' } },
+            pasos: { type: 'array', items: { type: 'string' } },
+            calorias: { type: 'integer', readOnly: true, example: 311 },
+            proteinas: { type: 'number', readOnly: true, example: 6.3 },
+            sinGluten: { type: 'boolean', nullable: true, readOnly: true },
+          },
+        },
         Receta: {
           type: 'object',
           properties: {
@@ -36,6 +59,12 @@ const options = {
             imagen: { type: 'string', format: 'uri', example: 'https://images.unsplash.com/...' },
             ingredientes: { type: 'array', items: { $ref: '#/components/schemas/Ingrediente' } },
             pasos: { type: 'array', items: { type: 'string' }, example: ['Batir los huevos'] },
+            guarniciones: {
+              type: 'array',
+              maxItems: 3,
+              description: 'Al leer, las fichas completas en orden (la primera es la recomendada). Al escribir, un array de nombres del catálogo; uno desconocido devuelve 400.',
+              items: { $ref: '#/components/schemas/Guarnicion' },
+            },
             precioPorPorcion: { type: 'number', example: 2.5 },
             porciones: { type: 'integer', example: 2 },
             calorias: { type: 'integer', example: 520 },

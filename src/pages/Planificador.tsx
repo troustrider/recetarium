@@ -69,8 +69,10 @@ function Planificador() {
     return [...cuenta.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([c]) => c)
   }, [recetas])
 
-  const recetasDelPlan = useMemo(
-    () => dias.flatMap((d) => plan[d].map((e) => e.receta)),
+  // Con la guarnición que lleva encendida cada hueco: la nutrición de la semana
+  // tiene que contar lo que se va a comer, no lo que podría comerse.
+  const seleccionDelPlan = useMemo(
+    () => dias.flatMap((d) => plan[d].map((e) => ({ receta: e.receta, guarnicionId: e.guarnicionId ?? null }))),
     [dias, plan]
   )
 
@@ -145,7 +147,6 @@ function Planificador() {
             onClick={() => setPanelAbierto(true)}
             className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             whileTap={{ scale: 0.95 }}
-            title="Qué buscamos esta semana, cuántos desayunos y qué no entra"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             Cómo comemos
@@ -162,7 +163,6 @@ function Planificador() {
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
-            title="Rellena los huecos libres —cenas, y los desayunos y comidas que hayas pedido— repartiendo verdura, macros y micronutrientes, con su guarnición puesta. Prefiere los platos que gastan lo que hay en casa, empezando por lo abierto y lo que caduca. Lo que ya has marcado como hecho se queda y cuenta para el reparto"
           >
             <Dices className="w-3.5 h-3.5" />
             Auto-semana
@@ -187,7 +187,7 @@ function Planificador() {
         {informe && (
           <ResumenSemana
             key="resumen"
-            recetas={recetasDelPlan}
+            seleccion={seleccionDelPlan}
             preferencias={preferencias}
             informe={informe}
             onCerrar={() => setInforme(null)}
@@ -207,7 +207,7 @@ function Planificador() {
               Compradas · por planificar
             </p>
             <p className="text-[11px] text-gray-400 mb-3">
-              Arrástralas a un día o toca para elegirlo.
+              Tócalas para darles día, o arrástralas.
             </p>
             <div className="flex flex-wrap gap-2">
               {pendientes.map((pendiente) => (

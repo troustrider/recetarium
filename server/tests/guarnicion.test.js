@@ -23,69 +23,97 @@ async function crear(extra = {}) {
   return receta
 }
 
-const GUARNICION = {
-  nombre: 'Pasta al ajillo',
-  ingredientes: [{ nombre: 'pasta', cantidad: 200, unidad: 'g', familia: 'cereales' }],
-  pasos: ['Cocer 8 min'],
-}
+describe('catálogo de guarniciones', () => {
+  it('lo sirve entero, con ficha y etiquetas', async () => {
+    const res = await http.get('/guarniciones')
+    expect(res.status).toBe(200)
+    const catalogo = await res.json()
+    expect(catalogo.length).toBeGreaterThan(50)
 
-describe('guarnición', () => {
-  it('las recetas sin guarnición la devuelven en null', async () => {
+    const arroz = catalogo.find((g) => g.nombre === 'Arroz blanco')
+    expect(arroz.aporta).toContain('almidon')
+    expect(arroz.cocinas).toContain('asia-este')
+    expect(arroz.calorias).toBeGreaterThan(0)
+    expect(arroz.micros).toBeTruthy()
+  })
+
+  it('cada guarnición aparece una sola vez', async () => {
+    const catalogo = await (await http.get('/guarniciones')).json()
+    const nombres = catalogo.map((g) => g.nombre)
+    expect(new Set(nombres).size).toBe(nombres.length)
+  })
+})
+
+describe('guarniciones de una receta', () => {
+  it('sin guarniciones devuelve una lista vacía, no null', async () => {
     const receta = await crear({ nombre: 'Sin guarnicion' })
-    expect(receta.guarnicion).toBeNull()
+    expect(receta.guarniciones).toEqual([])
   })
 
-  it('se guarda con su nombre, ingredientes y pasos', async () => {
-    const receta = await crear({ nombre: 'Con guarnicion', guarnicion: GUARNICION })
-    expect(receta.guarnicion.nombre).toBe('Pasta al ajillo')
-    expect(receta.guarnicion.ingredientes).toHaveLength(1)
-    expect(receta.guarnicion.pasos).toEqual(['Cocer 8 min'])
+  it('se referencian por nombre y vuelven con su ficha', async () => {
+    const receta = await crear({
+      nombre: 'Con guarniciones',
+      guarniciones: ['Brócoli al vapor', 'Arroz blanco'],
+    })
+    expect(receta.guarniciones.map((g) => g.nombre)).toEqual(['Brócoli al vapor', 'Arroz blanco'])
+    expect(receta.guarniciones[0].calorias).toBeGreaterThan(0)
+    expect(receta.guarniciones[0].pasos.length).toBeGreaterThan(0)
   })
 
-  it('el servidor le calcula su propia ficha', async () => {
-    const receta = await crear({ nombre: 'Ficha de guarnicion', guarnicion: GUARNICION })
-    expect(receta.guarnicion.calorias).toBeGreaterThan(0)
-    expect(receta.guarnicion.proteinas).toBeGreaterThan(0)
-    expect(receta.guarnicion.micros).toBeTruthy()
+  it('respeta el orden: la primera es la recomendada', async () => {
+    const receta = await crear({
+      nombre: 'Orden de guarniciones',
+      guarniciones: ['Arroz blanco', 'Brócoli al vapor'],
+    })
+    expect(receta.guarniciones[0].nombre).toBe('Arroz blanco')
   })
 
   it('el gluten de la guarnición NO contamina el del plato', async () => {
     const sinElla = await crear({ nombre: 'Arroz limpio' })
-    const conElla = await crear({ nombre: 'Arroz con pasta', guarnicion: GUARNICION })
+    const conElla = await crear({ nombre: 'Arroz con pan', guarniciones: ['Pan tostado'] })
 
     expect(conElla.sinGluten).toBe(sinElla.sinGluten)
-    expect(conElla.guarnicion.sinGluten).toBe(false)
+    expect(conElla.guarniciones[0].sinGluten).toBe(false)
   })
 
-  it('las calorías del plato no incluyen las de la guarnición', async () => {
+  it('la ficha del plato no incluye la de la guarnición', async () => {
     const sinElla = await crear({ nombre: 'Base sola', porciones: 2 })
-    const conElla = await crear({ nombre: 'Base con guarnicion', porciones: 2, guarnicion: GUARNICION })
+    const conElla = await crear({ nombre: 'Base con guarnicion', porciones: 2, guarniciones: ['Brócoli al vapor'] })
     expect(conElla.hierro).toBe(sinElla.hierro)
     expect(conElla.micros.fibra).toBe(sinElla.micros.fibra)
   })
 
-  it('se puede quitar en una edición', async () => {
-    const receta = await crear({ nombre: 'Guarnicion quitable', guarnicion: GUARNICION })
+  it('se pueden quitar en una edición', async () => {
+    const receta = await crear({ nombre: 'Guarnicion quitable', guarniciones: ['Brócoli al vapor'] })
     const res = await http.put(`/recetas/${receta.id}`, recetaValida({ nombre: 'Guarnicion quitable' }))
     expect(res.status).toBe(200)
-    expect((await res.json()).guarnicion).toBeNull()
+    expect((await res.json()).guarniciones).toEqual([])
   })
 
-  it('rechaza una guarnición sin ingredientes', async () => {
+  it('rechaza un nombre que no está en el catálogo', async () => {
     const res = await http.post('/recetas', recetaValida({
-      nombre: 'Guarnicion vacia',
-      guarnicion: { nombre: 'Nada', ingredientes: [] },
+      nombre: 'Guarnicion inventada',
+      guarniciones: ['Puré de unicornio'],
     }))
     expect(res.status).toBe(400)
-    const { errores } = await res.json()
-    expect(JSON.stringify(errores)).toMatch(/guarnicion\.ingredientes/)
+    expect((await res.json()).error).toMatch(/Puré de unicornio/)
   })
 
-  it('rechaza una guarnición sin nombre', async () => {
+  it('rechaza guarniciones repetidas', async () => {
     const res = await http.post('/recetas', recetaValida({
-      nombre: 'Guarnicion anonima',
-      guarnicion: { ingredientes: GUARNICION.ingredientes },
+      nombre: 'Guarnicion repetida',
+      guarniciones: ['Arroz blanco', 'Arroz blanco'],
     }))
     expect(res.status).toBe(400)
+    expect(JSON.stringify(await res.json())).toMatch(/repetidas/)
+  })
+
+  it('rechaza más de tres', async () => {
+    const res = await http.post('/recetas', recetaValida({
+      nombre: 'Guarnicion excesiva',
+      guarniciones: ['Arroz blanco', 'Brócoli al vapor', 'Ensalada verde', 'Pan tostado'],
+    }))
+    expect(res.status).toBe(400)
+    expect(JSON.stringify(await res.json())).toMatch(/máximo 3/)
   })
 })

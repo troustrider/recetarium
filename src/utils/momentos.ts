@@ -31,10 +31,13 @@ export function siguienteMomento(momento: Momento): Momento {
 
 export const TOPE_CENA = { calorias: 950, grasas: 35 } as const
 
-type ConMacros = Pick<RecetaListada, 'calorias' | 'grasas' | 'guarnicion'>
+type ConMacros = Pick<RecetaListada, 'calorias' | 'grasas' | 'guarniciones'>
 
+// Cuenta la recomendada, que es la que la auto-semana enciende. Mirar la más
+// pesada de las tres dejaría fuera de la cena platos que se cenan de sobra.
 export function cabeDeNoche(receta: ConMacros): boolean {
-  const calorias = (receta.calorias ?? 0) + (receta.guarnicion?.calorias ?? 0)
-  const grasas = (receta.grasas ?? 0) + (receta.guarnicion?.grasas ?? 0)
+  const guarnicion = receta.guarniciones?.[0]
+  const calorias = (receta.calorias ?? 0) + (guarnicion?.calorias ?? 0)
+  const grasas = (receta.grasas ?? 0) + (guarnicion?.grasas ?? 0)
   return calorias <= TOPE_CENA.calorias && grasas <= TOPE_CENA.grasas
 }

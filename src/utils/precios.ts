@@ -126,3 +126,16 @@ export function costeCompra(items: ItemPrecio[]): CosteCompra {
   }
   return { total: redondearCentimos(total), sinPrecio: [...sinPrecio] }
 }
+
+/**
+ * Lo que cuesta la guarnición por ración. El catálogo la guarda para 2, igual
+ * que las recetas. Un ingrediente sin precio en la tabla aporta 0: preferimos
+ * quedarnos cortos a inventar un euro.
+ */
+export function precioPorRacionDe(
+  guarnicion: { ingredientes: ItemPrecio[] },
+  raciones = 2
+): number {
+  const total = guarnicion.ingredientes.reduce((acc, ing) => acc + (precioDe(ing) ?? 0), 0)
+  return redondearCentimos(total / raciones)
+}

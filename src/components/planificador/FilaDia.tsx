@@ -12,7 +12,7 @@ interface FilaDiaProps {
   onQuitar: (id: string) => void
   onRaciones: (id: string, n: number) => void
   onCocinar: (entrada: EntradaPlan) => void
-  onGuarnicion: (id: string, conGuarnicion: boolean) => void
+  onGuarnicion: (id: string, guarnicionId?: string) => void
   onMomento: (id: string, momento: Momento) => void
   isDragOver: boolean
 }

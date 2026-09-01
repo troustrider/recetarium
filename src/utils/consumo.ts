@@ -7,7 +7,7 @@ import type { RecetaListada } from '../types/receta'
 interface EntradaCocinada {
   receta: RecetaListada
   raciones: number
-  conGuarnicion?: boolean
+  guarnicionId?: string
 }
 
 interface ItemDespensa {
@@ -35,9 +35,9 @@ export function consumoAlCocinar(
   const restante = stockInicial(despensa)
   const tocados = new Map<number, { usadoPor: string[]; agotado: boolean }>()
 
-  for (const { receta, raciones, conGuarnicion } of entradas) {
+  for (const { receta, raciones, guarnicionId } of entradas) {
     const factor = raciones / racionesBase(receta)
-    for (const ing of ingredientesDe(receta, conGuarnicion)) {
+    for (const ing of ingredientesDe(receta, guarnicionId)) {
       const unidad = canonUnidad(ing.nombre, ing.unidad)
       if (!unidadMedible(unidad)) continue
 

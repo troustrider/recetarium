@@ -49,7 +49,13 @@ Devuelve todas las recetas. Acepta filtros opcionales por query params.
     ],
     "pasos": ["Cocer la pasta.", "Mezclar con el huevo fuera del fuego."],
     "consejos": ["Fuera del fuego, o el huevo cuaja."],
-    "guarnicion": null,
+    "guarniciones": [
+      {
+        "id": "8f1c…", "nombre": "Ensalada verde", "aporta": ["verdura"],
+        "ingredientes": [{ "nombre": "lechuga", "cantidad": 150, "unidad": "g", "familia": "verduras" }],
+        "calorias": 45, "proteinas": 1.2, "sinGluten": true, "micros": { "fibra": 2.1 }
+      }
+    ],
     "calorias": 620, "proteinas": 31, "carbohidratos": 72, "grasas": 21,
     "hierro": 3.4, "sinGluten": false, "micros": { "fibra": 4.1, "sal": 1.2 }
   }
@@ -144,8 +150,16 @@ La validación se aplica en los endpoints POST y PUT. Los campos obligatorios so
 - `ingredientes` — array con al menos un elemento; cada ingrediente necesita `nombre`, `cantidad` (número > 0), `unidad` y `familia`
 - `pasos` — array con al menos un string no vacío
 
-`categoria` es opcional. `guarnicion` también, pero si viene tiene que venir entera: sin
-ingredientes no hay nada que comprar ni que sumar a la ficha.
+`categoria` es opcional. `guarniciones` también, y va como **array de nombres del
+catálogo** (máximo 3, sin repetir): la receta las referencia, no las copia. Un nombre que
+no esté en `GET /guarniciones` devuelve 400. La primera es la recomendada, la que el
+planificador enciende solo.
+
+### `GET /guarniciones`
+
+El catálogo que puede ofrecer el hogar: las comunes más las suyas. Cada ficha trae
+`nombre`, `aporta` (`verdura`, `almidon`, `proteina`), `cocinas`, `ingredientes`, `pasos`
+y su ficha nutricional, calculada por el servidor igual que la de una receta.
 
 ---
 

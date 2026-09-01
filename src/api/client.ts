@@ -1,7 +1,18 @@
-import type { Receta, RecetaListada } from '../types/receta'
+import type { Guarnicion, Receta, RecetaListada } from '../types/receta'
 import { apiFetch, apiJson, jsonBody } from './http'
 
-type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
+/** La ficha del catálogo, tal cual la sirve `GET /guarniciones`. */
+export type GuarnicionCatalogo = Guarnicion & { cocinas: string[]; privada: boolean }
+
+/**
+ * Al guardar, las guarniciones van por nombre: la receta las referencia, no las
+ * copia. El servidor rechaza un nombre que no esté en el catálogo.
+ */
+export type RecetaFormData = Omit<Receta, 'id' | 'favorita' | 'guarniciones'> & {
+  guarniciones: string[]
+}
+
+export const getGuarniciones = () => apiJson<GuarnicionCatalogo[]>('/guarniciones')
 type Filtros = { categoria?: string; sabor?: string }
 
 export async function getRecetas(filtros?: Filtros): Promise<RecetaListada[]> {
