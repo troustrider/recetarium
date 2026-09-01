@@ -54,11 +54,6 @@ export default function SelectorReceta({ dia, recetas, faltanPorReceta, onSelecc
               )
             })}
           </div>
-          {momento === null && (
-            <p className="text-[11px] text-gray-400 dark:text-gray-500 mb-2">
-              Sin elegir, cada receta cae en su hueco: los desayunos al desayuno y el resto a la cena.
-            </p>
-          )}
           <input
             type="text"
             placeholder="Buscar receta..."

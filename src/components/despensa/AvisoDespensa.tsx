@@ -90,7 +90,7 @@ function AvisoDespensa() {
                 Se {candidatos.length === 1 ? 'está acabando 1 ingrediente' : `están acabando ${candidatos.length} ingredientes`}
               </h2>
               <p className="text-sm text-gray-400 dark:text-gray-500 mb-4">
-                ¿Los apunto en la lista de la compra?
+                ¿Van a la lista de la compra?
               </p>
               <ul className="flex flex-col gap-1.5 max-h-48 overflow-y-auto">
                 {candidatos.map((c) => (

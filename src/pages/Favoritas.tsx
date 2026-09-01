@@ -54,8 +54,7 @@ function Favoritas() {
               </svg>
             </div>
           </div>
-          <h2 className="font-display text-lg font-bold text-gray-700 dark:text-gray-200 mb-1">Tu colección está vacía</h2>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">Marca recetas como favoritas para guardarlas aquí.</p>
+          <h2 className="font-display text-lg font-bold text-gray-700 dark:text-gray-200 mb-6">Tu colección está vacía</h2>
           <motion.button
             onClick={() => navigate('/')}
             className="px-5 py-2.5 text-sm font-bold bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors"

@@ -165,9 +165,6 @@ function Landing() {
             </div>
           )}
 
-          <p className="mt-6 text-xs text-gray-400 dark:text-gray-500 text-balance">
-            El acceso es por invitación. Si tu correo no tiene acceso todavía, pídeselo a Karim.
-          </p>
         </div>
       </div>
     </div>

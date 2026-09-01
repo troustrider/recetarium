@@ -50,24 +50,6 @@ function App() {
   return (
     <MotionConfig reducedMotion="user">
       <Layout>
-        {/* Las dos pantallas comparten casilla de rejilla, que es la manera de
-            superponerlas sin sacar ninguna de la caja. `popLayout` hacía eso
-            mismo poniendo en absoluto a la que se va, y con ello el alto del
-            documento pasaba de golpe al de la que llega: si el scroll no cabía
-            en el nuevo alto el navegador lo recortaba, y ese recorte es el
-            fotograma descolocado que se veía al entrar y al salir. En rejilla
-            el contenedor mide lo que la más alta de las dos y no encoge hasta
-            que la anterior se desmonta, ya con el scroll en su sitio.
-
-            `relative` sostiene la capa del arrastre, `items-start` impide que
-            la más corta se estire hasta la otra, y el recorte lateral impide
-            que la que entra desde la derecha asome como scroll horizontal.
-
-            La columna va declarada y no implícita: una pista `auto` mide al
-            menos el mínimo del contenido, así que la fila de familias de la
-            despensa —que ya se desplaza sola— estiraba la casilla a 1560px en
-            una pantalla de 375 y el recorte se comía la página por la derecha.
-            `minmax(0, 1fr)` la deja del ancho que hay. */}
         <div ref={contenedor} className="relative grid grid-cols-1 items-start [overflow-x:clip]">
           {arrastrando && previa && (
             <motion.div

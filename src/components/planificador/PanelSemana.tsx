@@ -109,9 +109,6 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-500 dark:text-orange-400">
               Cómo comemos
             </p>
-            <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
-              Manda en lo que propone Auto-semana. Se guarda para los dos.
-            </p>
           </div>
           <button
             onClick={onCerrar}
@@ -122,7 +119,7 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </button>
         </div>
 
-        <Seccion titulo="Qué buscamos esta semana" nota="Empuja lo que elijas; no descarta ningún plato.">
+        <Seccion titulo="Qué buscamos esta semana">
           <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <Chip key={p.id} activo={preset?.id === p.id} onClick={() => elegirPreset(p)} titulo={p.nota}>
@@ -137,10 +134,7 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </p>
         </Seccion>
 
-        <Seccion
-          titulo="Huecos del día"
-          nota="Cuántos días de la semana lleva cada comida. Se reparten por la semana en vez de amontonarse."
-        >
+        <Seccion titulo="Huecos del día">
           <div className="flex flex-col gap-2.5">
             <Dias
               titulo="Desayunos"
@@ -163,7 +157,7 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </div>
         </Seccion>
 
-        <Seccion titulo="Cocinas favoritas" nota={`Hasta ${MAX_COCINAS}. Salen más, pero no son un filtro.`}>
+        <Seccion titulo="Cocinas favoritas" nota={`Hasta ${MAX_COCINAS}.`}>
           <div className="flex flex-wrap gap-2">
             {cocinas.map((cocina) => (
               <Chip
@@ -197,7 +191,7 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </div>
         </Seccion>
 
-        <Seccion titulo="Qué no entra" nota="Esto sí descarta platos, y no se relaja nunca.">
+        <Seccion titulo="Qué no entra">
           <div className="flex flex-wrap gap-2">
             {DIETAS.map((d) => (
               <Chip key={String(d.valor)} activo={limites.dieta === d.valor} onClick={() => setLimites({ dieta: d.valor })}>
@@ -208,13 +202,6 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
               Sin gluten
             </Chip>
           </div>
-
-          {limites.dieta && (
-            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
-              Una semana sin carne ni pescado empuja la proteína sola: entre dos platos que valgan,
-              sale el que más trae.
-            </p>
-          )}
 
           <div className="mt-3">
             <input
@@ -245,8 +232,7 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
 
         <div className="px-4 py-3">
           <p className="text-[11px] text-gray-400 dark:text-gray-500">
-            Esto ordena recetas, no receta nada. Si tienes una condición que
-            cuidar, lo que diga tu médico va por delante.
+            Si tienes una condición que cuidar, lo que diga tu médico va por delante.
           </p>
         </div>
     </Capa>

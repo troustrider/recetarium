@@ -90,12 +90,12 @@ function InstallPrompt() {
               )}
               {modo === 'ios-safari' && (
                 <p className="text-xs text-gray-500 dark:text-gray-400 leading-snug mt-0.5">
-                  Toca <Share className="inline w-3 h-3 -mt-0.5" /> Compartir y luego <span className="font-semibold text-gray-600 dark:text-gray-300">Añadir a pantalla de inicio</span>. Así los cronómetros avisan aunque salgas de la app.
+                  Toca <Share className="inline w-3 h-3 -mt-0.5" /> Compartir y luego <span className="font-semibold text-gray-600 dark:text-gray-300">Añadir a pantalla de inicio</span>.
                 </p>
               )}
               {modo === 'ios-otro' && (
                 <p className="text-xs text-gray-500 dark:text-gray-400 leading-snug mt-0.5">
-                  En iPhone, los avisos en segundo plano solo van si la instalas desde <span className="font-semibold text-gray-600 dark:text-gray-300">Safari</span>: ábrela ahí, toca <Share className="inline w-3 h-3 -mt-0.5" /> Compartir → <span className="font-semibold text-gray-600 dark:text-gray-300">Añadir a pantalla de inicio</span>.
+                  Ábrela en <span className="font-semibold text-gray-600 dark:text-gray-300">Safari</span> y toca <Share className="inline w-3 h-3 -mt-0.5" /> Compartir → <span className="font-semibold text-gray-600 dark:text-gray-300">Añadir a pantalla de inicio</span>.
                 </p>
               )}
             </div>
