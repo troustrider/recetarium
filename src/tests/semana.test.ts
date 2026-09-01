@@ -30,9 +30,12 @@ function receta(over: Omit<Partial<Receta>, 'micros'> & { micros?: Partial<Micro
   }
 }
 
+let g = 0
 function guarnicion(nombre: string, micros: Partial<Micros> = {}) {
   return {
+    id: `g${++g}`,
     nombre,
+    aporta: ['verdura' as const],
     ingredientes: [{ nombre, cantidad: 200, unidad: 'g', familia: 'verduras' }],
     pasos: ['Cocer'],
     micros: { ...MICROS_CERO, ...micros },
@@ -41,16 +44,16 @@ function guarnicion(nombre: string, micros: Partial<Micros> = {}) {
 
 describe('aporteDe', () => {
   it('suma el plato y su guarnición', () => {
-    const r = receta({ micros: { fibra: 3 }, hierro: 2, guarnicion: guarnicion('brócoli', { fibra: 4 }) })
-    r.guarnicion!.hierro = 1
+    const r = receta({ micros: { fibra: 3 }, hierro: 2, guarniciones: [guarnicion('brócoli', { fibra: 4 })] })
+    r.guarniciones![0].hierro = 1
     const a = aporteDe(r)
     expect(a.fibra).toBe(7)
     expect(a.hierro).toBe(3)
   })
 
   it('suma también los macros del plato y de la guarnición', () => {
-    const r = receta({ proteinas: 38, carbohidratos: 20, grasas: 12, guarnicion: guarnicion('brócoli') })
-    Object.assign(r.guarnicion!, { proteinas: 4, carbohidratos: 8, grasas: 1 })
+    const r = receta({ proteinas: 38, carbohidratos: 20, grasas: 12, guarniciones: [guarnicion('brócoli')] })
+    Object.assign(r.guarniciones![0], { proteinas: 4, carbohidratos: 8, grasas: 1 })
     const a = aporteDe(r)
     expect(a.proteinas).toBe(42)
     expect(a.carbohidratos).toBe(28)
@@ -95,11 +98,11 @@ describe('semanaEquilibrada', () => {
     const verduras = ['brócoli', 'espinacas', 'tomate', 'zanahoria', 'judías verdes', 'pepino', 'lechuga']
     const recetas = verduras.flatMap((v, i) =>
       Array.from({ length: 3 }, () =>
-        receta({ categoria: `cocina${i}`, guarnicion: guarnicion(v, { fibra: 4 }) })
+        receta({ categoria: `cocina${i}`, guarniciones: [guarnicion(v, { fibra: 4 })] })
       )
     )
     const semana = semanaEquilibrada(recetas, 7, 3)
-    const distintas = new Set(semana.map((r) => r.guarnicion!.ingredientes[0].nombre))
+    const distintas = new Set(semana.map((r) => r.guarniciones![0].ingredientes[0].nombre))
     expect(distintas.size).toBeGreaterThanOrEqual(2)
     expect(distintas.size).toBeLessThanOrEqual(4)
   })
@@ -124,10 +127,10 @@ describe('semanaEquilibrada', () => {
   it('no repite la verdura ni la cocina de lo que ya está puesto', () => {
     // Las dos verduras se compran por peso, así que ninguna deja envase a
     // medias: aquí solo se mira la repetición, que es lo que desempata.
-    const puesta = receta({ categoria: 'italiana', guarnicion: guarnicion('brócoli', { fibra: 4 }) })
+    const puesta = receta({ categoria: 'italiana', guarniciones: [guarnicion('brócoli', { fibra: 4 })] })
     const pool = [
-      receta({ categoria: 'italiana', guarnicion: guarnicion('brócoli', { fibra: 4 }) }),
-      receta({ categoria: 'japonesa', guarnicion: guarnicion('tomate', { fibra: 4 }) }),
+      receta({ categoria: 'italiana', guarniciones: [guarnicion('brócoli', { fibra: 4 })] }),
+      receta({ categoria: 'japonesa', guarniciones: [guarnicion('tomate', { fibra: 4 })] }),
     ]
     const semana = semanaEquilibrada(pool, 1, 4, [puesta])
     expect(semana[0].categoria).toBe('japonesa')
@@ -312,8 +315,8 @@ describe('la verdura del propio plato cuenta', () => {
   it('y su verdura ya cuenta como puesta para el resto de la semana', () => {
     const puesta = conVerduraDentro('calabacín', { categoria: 'z' })
     const pool = [
-      receta({ categoria: 'a', guarnicion: guarnicion('calabacín', { fibra: 4 }) }),
-      receta({ categoria: 'b', guarnicion: guarnicion('brócoli', { fibra: 4 }) }),
+      receta({ categoria: 'a', guarniciones: [guarnicion('calabacín', { fibra: 4 })] }),
+      receta({ categoria: 'b', guarniciones: [guarnicion('brócoli', { fibra: 4 })] }),
     ]
     expect(semanaEquilibrada(pool, 1, 8, [puesta], conPrioridad('fibra'))[0].categoria).toBe('b')
   })

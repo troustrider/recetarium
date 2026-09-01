@@ -45,8 +45,13 @@ export interface Apto {
   animal: FuenteAnimal[]
 }
 
-interface Guarnicion {
+export type AporteGuarnicion = 'verdura' | 'almidon' | 'proteina'
+
+export interface Guarnicion {
+  id: string
   nombre: string
+  /** Qué pone en la mesa. La puerta de comida completa mira esto, no si existe. */
+  aporta: AporteGuarnicion[]
   ingredientes: Ingrediente[]
   pasos: string[]
   calorias?: number
@@ -59,8 +64,8 @@ interface Guarnicion {
   apto?: Apto | null
 }
 
-export type RecetaListada = Omit<Receta, 'pasos' | 'consejos' | 'guarnicion'> & {
-  guarnicion?: Omit<Guarnicion, 'pasos'> | null
+export type RecetaListada = Omit<Receta, 'pasos' | 'consejos' | 'guarniciones'> & {
+  guarniciones?: Omit<Guarnicion, 'pasos'>[]
 }
 
 export interface Receta {
@@ -85,5 +90,10 @@ export interface Receta {
   micros?: Micros
   apto?: Apto | null
   tipo?: Tipo
-  guarnicion?: Guarnicion | null
+  /**
+   * Opciones de acompañamiento; la primera es la recomendada. Opcional porque
+   * una respuesta cacheada de antes del catálogo no la trae: léela con
+   * `guarnicionesDe`, que devuelve lista vacía en ese caso.
+   */
+  guarniciones?: Guarnicion[]
 }

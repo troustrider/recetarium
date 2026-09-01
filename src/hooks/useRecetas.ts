@@ -6,10 +6,8 @@ import {
   updateReceta,
   deleteReceta,
   restoreReceta,
-  toggleFavorita,
-} from '../api/client'
+  toggleFavorita, type RecetaFormData } from '../api/client'
 
-type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
 interface State {
   recetas: RecetaListada[]

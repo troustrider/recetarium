@@ -1,0 +1,964 @@
+{
+  "_doc": "Catálogo canónico de guarniciones. Una ficha por guarnición, no una copia por receta: el arroz blanco se arregla aquí una vez y cambia en las 66 recetas que lo ofrecen. `cocinas` acepta familias (las de `familias`) y cocinas sueltas; una receta puede ofrecer la guarnición si su `categoria` está en la lista o pertenece a una familia que lo esté. `aporta` dice qué pone en la mesa, y de ahí sale la puerta de comida completa: un plato sin verdura propia necesita al menos una opción que aporte verdura. Las cantidades son para 2 raciones, como en las recetas.",
+
+  "familias": {
+    "asia-este": ["japonesa", "coreana", "china", "okinawense", "taiwanesa"],
+    "asia-sudeste": ["tailandesa", "vietnamita", "indonesia", "malasia", "filipina", "birmana", "camboyana", "singapurense"],
+    "asia-sur": ["india", "pakistani", "srilankesa", "nepali", "bangladesi", "afgana"],
+    "asia-central": ["kazaja", "uzbeka", "azerbaiyana"],
+    "mediooriente": ["mediooriente", "libanesa", "palestina", "siria", "iraqui", "saudi", "irani", "turca", "armenia", "chipriota"],
+    "mediterranea": ["espanola", "italiana", "griega", "portuguesa", "mediterranea", "francesa", "balcanica", "bulgara", "chipriota"],
+    "norteafrica": ["marroqui", "tunecina", "argelina", "egipcia"],
+    "africa-sub": ["africana", "senegalesa", "etiope", "ghanesa", "nigeriana", "keniana"],
+    "latina": ["mexicana", "latina", "cubana", "peruana", "brasilena", "argentina", "chilena", "colombiana", "venezolana", "guatemalteca", "puertorriquena", "uruguaya", "boliviana", "paraguaya", "salvadorena", "jamaicana"],
+    "europa-norte": ["holandesa", "belga", "alemana", "britanica", "danesa", "sueca", "noruega", "finlandesa"],
+    "europa-este": ["polaca", "rusa", "hungara", "checa", "lituana", "ucraniana", "rumana"],
+    "americana": ["americana"],
+    "global": ["fusion", "rapida", "internacional", "legumbres"]
+  },
+
+  "guarniciones": [
+    {
+      "nombre": "Arroz blanco",
+      "aporta": ["almidon"],
+      "cocinas": ["asia-este", "asia-sudeste", "asia-sur", "asia-central", "latina", "africa-sub", "global"],
+      "ingredientes": [{ "nombre": "arroz", "cantidad": 1, "unidad": "vaso", "familia": "cereales" }],
+      "pasos": [
+        "Lava {1 vaso} de arroz en un colador bajo el grifo 1 min, hasta que el agua salga clara, para quitarle el almidón suelto.",
+        "Cuécelo con vez y media de agua medida con el mismo vaso y una pizca de sal, tapado y a fuego mínimo, 12 min. Apaga y reposa 5 min sin destapar: el grano queda suelto y seco por fuera."
+      ]
+    },
+    {
+      "nombre": "Pilav de arroz",
+      "aporta": ["almidon"],
+      "cocinas": ["turca", "asia-central"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 1, "unidad": "vaso", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Rehoga {1 vaso} de arroz en {15 g} de mantequilla a fuego medio 2 min, removiendo, hasta que el grano se vuelva nacarado.",
+        "Añade vez y media de agua caliente medida con el mismo vaso y sal, tapa y cuece 12 min a fuego bajo. Reposa 5 min tapado y ahueca con un tenedor."
+      ]
+    },
+    {
+      "nombre": "Bulgur pilavı",
+      "aporta": ["almidon"],
+      "cocinas": ["turca", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "bulgur", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Rehoga {150 g} de bulgur en {15 g} de mantequilla 2 min a fuego medio, hasta que huela a tostado.",
+        "Añade el doble de su volumen en agua caliente con sal, tapa y cuece 12 min a fuego bajo, hasta que se beba el agua. Reposa 5 min y ahueca con un tenedor."
+      ]
+    },
+    {
+      "nombre": "Riz bi shaghriye",
+      "aporta": ["almidon"],
+      "cocinas": ["libanesa", "palestina", "siria", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 1, "unidad": "vaso", "familia": "cereales" },
+        { "nombre": "fideos", "cantidad": 40, "unidad": "g", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Parte {40 g} de fideos en trozos de 2 cm y dóralos en {10 g} de mantequilla a fuego medio 3 min, removiendo, hasta que tomen color avellana.",
+        "Añade {1 vaso} de arroz lavado, vez y media de agua medida con el mismo vaso y sal. Tapa, cuece 12 min a fuego bajo y reposa 10 min sin destapar."
+      ]
+    },
+    {
+      "nombre": "Cuscús al vapor",
+      "aporta": ["almidon"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "cuscús", "cantidad": 160, "unidad": "g", "familia": "cereales" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cubre {160 g} de cuscús con el mismo volumen de agua hirviendo con sal y {1 cucharada} de aceite de oliva.",
+        "Tapa 5 min, hasta que se beba toda el agua, y separa el grano con un tenedor."
+      ]
+    },
+    {
+      "nombre": "Pan de pita tostado",
+      "aporta": ["almidon"],
+      "cocinas": ["mediooriente", "norteafrica", "griega"],
+      "ingredientes": [{ "nombre": "pan de pita", "cantidad": 2, "unidad": "ud", "familia": "cereales" }],
+      "pasos": [
+        "Tuesta {2 panes de pita} 2 min por cara en una sartén seca a fuego medio, hasta que inflen y tomen manchas doradas.",
+        "Córtalos en triángulos y sírvelos calientes, que fríos se acartonan."
+      ]
+    },
+    {
+      "nombre": "Pan tostado",
+      "aporta": ["almidon"],
+      "cocinas": ["mediterranea", "europa-este", "mediooriente", "georgiana"],
+      "ingredientes": [{ "nombre": "pan", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" }],
+      "pasos": [
+        "Tuesta {4 rebanadas} de pan 2 min por cara en una sartén seca a fuego medio, hasta que estén crujientes por fuera y sigan tiernas por dentro."
+      ]
+    },
+    {
+      "nombre": "Pan tostado con tomate",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Tuesta {4 rebanadas} de pan 3 min por cara en la sartén seca, hasta que estén doradas.",
+        "Frota cada rebanada con {1 tomate} partido por la mitad, riégalas con {1 cucharada} de aceite de oliva y sálalas."
+      ]
+    },
+    {
+      "nombre": "Pan con aceitunas",
+      "aporta": ["almidon"],
+      "cocinas": ["griega", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" },
+        { "nombre": "aceitunas", "cantidad": 60, "unidad": "g", "familia": "conservas" }
+      ],
+      "pasos": [
+        "Tuesta {4 rebanadas} de pan 2 min por cara en una sartén seca.",
+        "Escurre {60 g} de aceitunas y sírvelas al lado del pan, en un cuenco aparte."
+      ]
+    },
+    {
+      "nombre": "Pan de centeno",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-este", "europa-norte"],
+      "ingredientes": [{ "nombre": "pan de centeno", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" }],
+      "pasos": [
+        "Sirve {4 rebanadas} de pan de centeno al lado, sin tostar, para mojar. Si lo prefieres crujiente, tuéstalas 2 min por cara."
+      ]
+    },
+    {
+      "nombre": "Baguette",
+      "aporta": ["almidon"],
+      "cocinas": ["vietnamita", "francesa"],
+      "ingredientes": [{ "nombre": "baguette", "cantidad": 1, "unidad": "ud", "familia": "cereales" }],
+      "pasos": [
+        "Calienta {1 baguette} 5 min en el horno a 200°C, hasta que la corteza cruja al apretarla, y córtala en trozos para mojar."
+      ]
+    },
+    {
+      "nombre": "Patata cocida",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-norte", "europa-este"],
+      "ingredientes": [{ "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" }],
+      "pasos": [
+        "Pela {500 g} de patata y córtala en trozos de 4 cm iguales, para que cuezan a la vez.",
+        "Cuécela en agua con sal 20 min desde el hervor, hasta que el cuchillo entre sin resistencia, y escúrrela."
+      ]
+    },
+    {
+      "nombre": "Patatas cocidas con perejil",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-norte", "francesa"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "puñado", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Pela {500 g} de patata, córtala en trozos de 4 cm y cuécela en agua con sal 20 min desde el hervor, hasta que ceda al cuchillo.",
+        "Escúrrela y saltéala 1 min con {15 g} de mantequilla y {1 puñado} de perejil picado, hasta que quede brillante. Prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Patatas al horno con orégano",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {500 g} de patata en gajos de 2 cm y alíñalos con {1 cucharada} de aceite de oliva, el zumo de {½ limón}, {1 cucharadita} de orégano y sal.",
+        "Hornea a 200°C con calor arriba y abajo 35-40 min, dándoles la vuelta a la mitad, hasta que los bordes estén tostados y el centro ceda al pinchar."
+      ]
+    },
+    {
+      "nombre": "Puré de patata",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-norte", "francesa", "griega"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "leche", "cantidad": 100, "unidad": "ml", "familia": "lácteos" },
+        { "nombre": "mantequilla", "cantidad": 20, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Pela {500 g} de patata, trocéala y cuécela 20 min en agua con sal, hasta que el cuchillo entre sin fuerza. Escúrrela.",
+        "Aplástala con {100 ml} de leche caliente y {20 g} de mantequilla hasta que quede liso, y prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Patatas asadas",
+      "aporta": ["almidon"],
+      "cocinas": ["mediterranea", "latina", "asia-central", "europa-norte", "americana"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {500 g} de patata en gajos de 2 cm y úntalos con {1 cucharada} de aceite de oliva y sal.",
+        "Ásalos a 200°C 30-35 min, dándoles la vuelta a la mitad, hasta que estén dorados por fuera y blandos por dentro."
+      ]
+    },
+
+    {
+      "nombre": "Ensalada verde",
+      "aporta": ["verdura"],
+      "cocinas": ["global", "mediterranea", "americana", "europa-norte", "europa-este", "latina"],
+      "ingredientes": [
+        { "nombre": "lechuga", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lava {150 g} de lechuga, escúrrela bien y córtala en tiras anchas; parte {1 tomate} en gajos.",
+        "Aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y sal justo antes de servir, para que la hoja no se ablande."
+      ]
+    },
+    {
+      "nombre": "Ensalada verde con limón",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "lechuga", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {150 g} de lechuga en tiras y {1 tomate} en gajos.",
+        "Aliña con {1 cucharada} de aceite de oliva, el zumo de {½ limón} y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Ensalada verde con mostaza",
+      "aporta": ["verdura"],
+      "cocinas": ["francesa", "europa-norte"],
+      "ingredientes": [
+        { "nombre": "lechuga", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "mostaza", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Bate {1 cucharadita} de mostaza con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y una pizca de sal, hasta que la salsa espese y deje de separarse.",
+        "Aliña {150 g} de lechuga justo antes de servir y prueba."
+      ]
+    },
+    {
+      "nombre": "Ensalada de lechuga y cebolla",
+      "aporta": ["verdura"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "lechuga", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {150 g} de lechuga en tiras y {½ cebolla} en pluma muy fina.",
+        "Aliña con {1 cucharada} de vinagre, {1 cucharada} de aceite de oliva y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Çoban salatası",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "puñado", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 tomates} y {1 pepino} en dados de 1 cm, {½ cebolla roja} en dados finos y pica {1 puñado} de perejil.",
+        "Aliña con el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal justo antes de servir, para que el tomate no suelte agua."
+      ]
+    },
+    {
+      "nombre": "Ensalada de tomate y cebolla",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "latina", "asia-central", "africa-sub", "georgiana"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 tomates} en gajos y {½ cebolla roja} en aros muy finos.",
+        "Aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y sal, y deja 5 min para que el tomate suelte su jugo."
+      ]
+    },
+    {
+      "nombre": "Ensalada de tomate y pimiento",
+      "aporta": ["verdura"],
+      "cocinas": ["balcanica", "bulgara"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} en gajos, {1 pimiento verde} en tiras y {½ cebolla roja} en aros finos.",
+        "Aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Ensalada griega sin queso",
+      "aporta": ["verdura"],
+      "cocinas": ["griega", "chipriota"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceitunas negras", "cantidad": 50, "unidad": "g", "familia": "conservas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {2 tomates} en gajos y {1 pepino} en medias lunas, y añade {½ cebolla roja} en aros finos y {50 g} de aceitunas negras.",
+        "Aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de orégano y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Ensalada de tomate, pepino y perejil",
+      "aporta": ["verdura"],
+      "cocinas": ["libanesa", "palestina", "siria", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "puñado", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 tomates} y {1 pepino} en dados de 1 cm y pica {1 puñado} de perejil.",
+        "Aliña con el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Ensalada georgiana de tomate y pepino",
+      "aporta": ["verdura"],
+      "cocinas": ["georgiana", "armenia"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "nueces", "cantidad": 40, "unidad": "g", "familia": "frutos secos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 tomates}, {1 pepino} y {½ cebolla roja} en dados de 2 cm.",
+        "Machaca {40 g} de nueces en el mortero 2 min hasta hacer una pasta gruesa, mézclalas con la verdura, {1 cucharada} de aceite de oliva y sal, y prueba."
+      ]
+    },
+    {
+      "nombre": "Ensalada de pepino al eneldo",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-este"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "puñado", "familia": "especias" },
+        { "nombre": "yogur griego", "cantidad": 60, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 pepino} en rodajas muy finas, sálalas y déjalas 10 min para que suelten agua. Escúrrelas apretando.",
+        "Alíñalas con {60 g} de yogur griego, {1 cucharadita} de vinagre y {1 puñado} de eneldo picado, y prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Remolacha aliñada",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-este", "europa-norte"],
+      "ingredientes": [
+        { "nombre": "remolacha", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {300 g} de remolacha entera y sin pelar 40 min desde el hervor, hasta que el cuchillo entre sin fuerza. Pélala en caliente, que la piel sale sola.",
+        "Córtala en dados de 1 cm y alíñala con {½ cebolla roja} en aros finos, {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y sal."
+      ]
+    },
+    {
+      "nombre": "Ensalada de lechuga y rábano",
+      "aporta": ["verdura"],
+      "cocinas": ["mexicana", "latina"],
+      "ingredientes": [
+        { "nombre": "lechuga romana", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "rábano", "cantidad": 100, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {½ lechuga romana} en tiras finas y {100 g} de rábano en rodajas.",
+        "Aliña con el zumo de {½ limón}, {1 cucharada} de aceite de oliva, {1 cucharadita} de orégano y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Kachumber",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-sur"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "lima", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "puñado", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {2 tomates}, {1 pepino} y {½ cebolla roja} en dados de 5 mm y pica {1 puñado} de cilantro.",
+        "Aliña con el zumo de {½ lima}, {½ cucharadita} de comino y sal justo antes de servir, y prueba."
+      ]
+    },
+    {
+      "nombre": "Aguacate y tomate cherry",
+      "aporta": ["verdura"],
+      "cocinas": ["global", "latina", "americana"],
+      "ingredientes": [
+        { "nombre": "aguacate", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "tomate cherry", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "lima", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Parte {200 g} de tomate cherry por la mitad y {1 aguacate} en gajos.",
+        "Aliña con {1 cucharada} de aceite de oliva, el zumo de {½ lima} y sal al servir; el ácido frena que el aguacate se oscurezca."
+      ]
+    },
+    {
+      "nombre": "Aguacate en gajos",
+      "aporta": ["verdura"],
+      "cocinas": ["latina", "global"],
+      "ingredientes": [
+        { "nombre": "aguacate", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "lima", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Corta {1 aguacate} en gajos justo antes de servir y alíñalo con el zumo de {½ lima} y sal."
+      ]
+    },
+    {
+      "nombre": "Aguacate y lechuga aliñados",
+      "aporta": ["verdura"],
+      "cocinas": ["latina"],
+      "ingredientes": [
+        { "nombre": "aguacate", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "lechuga", "cantidad": 100, "unidad": "g", "familia": "verduras" },
+        { "nombre": "lima", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {100 g} de lechuga en juliana ancha y {1 aguacate} en gajos.",
+        "Aliña con el zumo de {½ lima}, {1 cucharada} de aceite de oliva y sal al servir."
+      ]
+    },
+    {
+      "nombre": "Repollo con lima y cilantro",
+      "aporta": ["verdura"],
+      "cocinas": ["latina"],
+      "ingredientes": [
+        { "nombre": "repollo", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "lima", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "puñado", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Corta {200 g} de repollo en juliana muy fina y ralla {1 zanahoria}.",
+        "Alíñalos con el zumo de {1 lima}, {1 puñado} de cilantro picado y sal 10 min antes de servir, para que el repollo pierda dureza sin quedar blando."
+      ]
+    },
+    {
+      "nombre": "Brócoli al vapor",
+      "aporta": ["verdura"],
+      "cocinas": ["global", "asia-este", "mediterranea", "americana", "europa-norte"],
+      "ingredientes": [{ "nombre": "brócoli", "cantidad": 300, "unidad": "g", "familia": "verduras" }],
+      "pasos": [
+        "Corta {300 g} de brócoli en ramilletes del mismo tamaño, para que se hagan a la vez.",
+        "Cuécelos al vapor 4-5 min, hasta que cedan al pinchar pero sigan verde vivo, y sálalos al sacarlos."
+      ]
+    },
+    {
+      "nombre": "Brócoli salteado con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-este", "global"],
+      "ingredientes": [
+        { "nombre": "brócoli", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Escalda {300 g} de brócoli en ramilletes 2 min en agua hirviendo con sal y escúrrelo bien.",
+        "Saltéalo a fuego fuerte en {1 cucharada} de aceite de oliva con {2 dientes} de ajo laminados 2 min, hasta que los bordes se doren. Prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Pak choi salteado",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-este", "asia-sudeste"],
+      "ingredientes": [
+        { "nombre": "pak choi", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Parte {300 g} de pak choi a lo largo y lávalo bien entre las pencas, donde se esconde la tierra.",
+        "Saltéalo en {1 cucharada} de aceite de oliva con {1 diente} de ajo laminado 3 min, hasta que el tallo ceda pero siga crujiente. Prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Judías verdes hervidas",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "europa-norte"],
+      "ingredientes": [
+        { "nombre": "judías verdes", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Quita las puntas a {300 g} de judías verdes.",
+        "Hiérvelas 6 min en agua con sal, hasta que cedan al morder pero sigan verdes, escúrrelas y alíñalas con {1 cucharada} de aceite de oliva y sal."
+      ]
+    },
+    {
+      "nombre": "Espinacas salteadas",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "global"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lamina {1 diente} de ajo y dóralo 30 s en {1 cucharada} de aceite de oliva a fuego medio, sin que se queme.",
+        "Añade {250 g} de espinacas y saltea 2 min, hasta que rompan y suelten el agua. Escurre el exceso y prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Espinacas al limón (horta)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Hierve {250 g} de espinacas 3 min en agua con sal y escúrrelas apretando con el revés de una cuchara.",
+        "Alíñalas en caliente con {1 cucharada} de aceite de oliva, el zumo de {½ limón} y sal, y prueba."
+      ]
+    },
+    {
+      "nombre": "Espinacas al sésamo (sigeumchi namul)",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-este"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Escalda {250 g} de espinacas 1 min en agua hirviendo, pásalas por agua fría y escúrrelas apretando con las manos.",
+        "Tuesta {1 cucharada} de sésamo 2 min en sartén seca, machácalo y mézclalo con las espinacas, {1 cucharadita} de salsa de soja y {1 cucharadita} de aceite de sésamo. Prueba."
+      ]
+    },
+    {
+      "nombre": "Namul de zanahoria y espinaca",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "espinacas", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Corta {2 zanahorias} en juliana fina y saltéalas 3 min, hasta que cedan pero no se deshagan.",
+        "Escalda {150 g} de espinacas 1 min y escúrrelas apretando.",
+        "Aliña cada verdura por separado con {1 diente} de ajo rallado, {1 cucharada} de sésamo tostado y {1 cucharadita} de aceite de sésamo, y prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Kimchi",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [{ "nombre": "kimchi", "cantidad": 150, "unidad": "g", "familia": "verduras" }],
+      "pasos": [
+        "Saca {150 g} de kimchi del bote con una cuchara limpia y córtalo en trozos de bocado.",
+        "Sírvelo frío en un cuenco aparte; no necesita nada más."
+      ]
+    },
+    {
+      "nombre": "Hojas de lechuga para envolver (ssam)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana", "vietnamita", "tailandesa"],
+      "ingredientes": [{ "nombre": "lechuga", "cantidad": 150, "unidad": "g", "familia": "verduras" }],
+      "pasos": [
+        "Separa las hojas enteras de {150 g} de lechuga sin romperlas por la base.",
+        "Lávalas y sécalas bien 2 min con papel de cocina, para que no aguen el relleno al envolver."
+      ]
+    },
+    {
+      "nombre": "Pepino en vinagre (sunomono)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa", "okinawense"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 pepino} en rodajas muy finas, sálalas y déjalas 5 min. Escúrrelas apretando.",
+        "Macéralas 15 min con {2 cucharadas} de vinagre de arroz y {1 cucharadita} de azúcar, hasta que queden translúcidas. Prueba."
+      ]
+    },
+    {
+      "nombre": "Pepino machacado con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "taiwanesa"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Machaca {1 pepino} con el lado plano del cuchillo hasta que se abra, córtalo en trozos irregulares de 3 cm, sálalo y déjalo 10 min. Escurre el agua que suelte.",
+        "Alíñalo con {2 dientes} de ajo machacados, {1 cucharada} de vinagre de arroz, {1 cucharadita} de salsa de soja y {1 cucharadita} de aceite de sésamo, y prueba."
+      ]
+    },
+    {
+      "nombre": "Acar de pepino y zanahoria",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-sudeste"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 pepino} y {1 zanahoria} en bastones de 4 cm.",
+        "Macéralos 20 min con {2 cucharadas} de vinagre, {1 cucharadita} de azúcar y sal, y escúrrelos antes de servir."
+      ]
+    },
+    {
+      "nombre": "Lalapan de pepino y col",
+      "aporta": ["verdura"],
+      "cocinas": ["indonesia", "malasia"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "col blanca", "cantidad": 200, "unidad": "g", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Corta {1 pepino} en rodajas gruesas y {200 g} de col blanca en tiras anchas.",
+        "Sírvelos crudos al lado, sin aliñar: su función es refrescar la boca entre bocados picantes."
+      ]
+    },
+    {
+      "nombre": "Ensalada de pepino y cebolla roja",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-sudeste"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "lima", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Corta {1 pepino} en medias lunas y {½ cebolla roja} en pluma muy fina.",
+        "Aliña con el zumo de {½ lima} y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Coliflor al horno con comino",
+      "aporta": ["verdura"],
+      "cocinas": ["mediooriente", "norteafrica", "asia-sur"],
+      "ingredientes": [
+        { "nombre": "coliflor", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de coliflor en ramilletes y alíñalos con {1 cucharada} de aceite de oliva, {1 cucharadita} de comino y sal.",
+        "Ásalos a 220°C 25 min, hasta que los bordes se tuesten y el tallo ceda al pinchar."
+      ]
+    },
+    {
+      "nombre": "Pimientos asados",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "balcanica", "georgiana"],
+      "ingredientes": [
+        { "nombre": "pimiento rojo", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Asa {2 pimientos rojos} enteros a 220°C 25 min, dándoles la vuelta a la mitad, hasta que la piel se ampolle y ennegrezca a trozos.",
+        "Tápalos 10 min para que suden, pélalos, córtalos en tiras y alíñalos con {1 cucharada} de aceite de oliva y sal."
+      ]
+    },
+    {
+      "nombre": "Calabacín a la plancha",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "latina"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 calabacines} en rodajas de 1 cm.",
+        "Hazlas a la plancha con {1 cucharada} de aceite de oliva 3 min por lado, hasta que queden marcadas y blandas por dentro, y sálalas al sacarlas."
+      ]
+    },
+    {
+      "nombre": "Berenjena asada",
+      "aporta": ["verdura"],
+      "cocinas": ["mediooriente", "norteafrica", "georgiana"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "puñado", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Parte {1 berenjena} a lo largo y marca la carne en rombos sin llegar a la piel.",
+        "Ásala a 200°C 30 min, hasta que se hunda al apretar, y alíñala con {1 cucharada} de aceite de oliva, el zumo de {½ limón} y {1 puñado} de perejil picado."
+      ]
+    },
+    {
+      "nombre": "Calabaza asada",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica", "europa-norte", "mediterranea", "africa-sub"],
+      "ingredientes": [
+        { "nombre": "calabaza", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de calabaza en gajos de 2 cm y úntalos con {1 cucharada} de aceite de oliva y sal.",
+        "Ásalos a 200°C 30 min, hasta que el borde caramelice y el centro esté blando."
+      ]
+    },
+    {
+      "nombre": "Tomate con albahaca",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "albahaca", "cantidad": 1, "unidad": "puñado", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} en rodajas gruesas, sálalos y déjalos 5 min para que suelten jugo.",
+        "Alíñalos con {1 cucharada} de aceite de oliva y {1 puñado} de albahaca rota con las manos justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Espárragos al vapor",
+      "aporta": ["verdura"],
+      "cocinas": ["francesa", "italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "espárragos", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta la base leñosa de {250 g} de espárragos: se parte sola por donde deja de estar tierna.",
+        "Cuécelos al vapor 5 min, hasta que el tallo ceda pero la punta siga firme, y alíñalos con {1 cucharada} de aceite de oliva y sal."
+      ]
+    },
+    {
+      "nombre": "Guisantes con puerro",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte"],
+      "ingredientes": [
+        { "nombre": "guisantes", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "puerro", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Corta {1 puerro} en aros y póchalo en {15 g} de mantequilla 5 min a fuego medio, hasta que esté translúcido.",
+        "Añade {300 g} de guisantes y {100 ml} de agua, tapa y cuece 6 min, hasta que estén tiernos. Prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Tikil gomen",
+      "aporta": ["verdura"],
+      "cocinas": ["etiope", "africa-sub"],
+      "ingredientes": [
+        { "nombre": "repollo", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cúrcuma", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {300 g} de repollo en tiras, {2 zanahorias} en medias lunas y {½ cebolla} en pluma.",
+        "Póchalo todo en {1 cucharada} de aceite de oliva con {½ cucharadita} de cúrcuma y sal, tapado y a fuego bajo, 20 min, hasta que el repollo esté blando pero no deshecho. Prueba."
+      ]
+    },
+    {
+      "nombre": "Zanahoria rallada al limón",
+      "aporta": ["verdura"],
+      "cocinas": ["francesa", "europa-norte"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 4, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "puñado", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Ralla {4 zanahorias} en juliana gruesa y pica {1 puñado} de perejil.",
+        "Aliña con el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal, y deja 10 min para que la zanahoria pierda dureza."
+      ]
+    },
+
+    {
+      "nombre": "Kachumbari",
+      "aporta": ["verdura"],
+      "cocinas": ["africa-sub"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "puñado", "familia": "verduras" },
+        { "nombre": "lima", "cantidad": 1, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Corta {½ cebolla roja} en pluma muy fina y déjala 10 min en agua fría, para quitarle el ardor; escúrrela bien.",
+        "Mézclala con {3 tomates} en dados de 1 cm y {1 puñado} de cilantro picado, aliña con el zumo de {1 lima} y sal, y prueba."
+      ]
+    },
+    {
+      "nombre": "Achichuk",
+      "aporta": ["verdura"],
+      "cocinas": ["asia-central"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "guindilla", "cantidad": 1, "unidad": "ud", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} en rodajas finas y {1 cebolla} en pluma muy fina; deja la cebolla 10 min en agua fría y escúrrela.",
+        "Extiéndelo todo en un plato llano, reparte {1 guindilla} en aros por encima y sálalo justo antes de servir, que se come al momento."
+      ]
+    },
+    {
+      "nombre": "Yogur con ajo",
+      "aporta": ["proteina"],
+      "cocinas": ["mediooriente", "griega"],
+      "ingredientes": [
+        { "nombre": "yogur griego", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Machaca {1 diente} de ajo con una pizca de sal en el mortero hasta hacer pasta.",
+        "Mézclalo con {200 g} de yogur griego y deja reposar 10 min en la nevera antes de servir, para que el ajo pierda el filo crudo. Prueba."
+      ]
+    },
+    {
+      "nombre": "Yogur griego al lado",
+      "aporta": ["proteina"],
+      "cocinas": ["global", "mediooriente", "asia-sur", "europa-este", "norteafrica"],
+      "ingredientes": [{ "nombre": "yogur griego", "cantidad": 250, "unidad": "g", "familia": "lácteos" }],
+      "pasos": [
+        "Sirve {250 g} de yogur griego frío en un cuenco aparte, con una pizca de sal y una vuelta de pimienta."
+      ]
+    },
+    {
+      "nombre": "Quark al lado",
+      "aporta": ["proteina"],
+      "cocinas": ["europa-norte", "global"],
+      "ingredientes": [{ "nombre": "quark", "cantidad": 250, "unidad": "g", "familia": "lácteos" }],
+      "pasos": [
+        "Sirve {250 g} de quark frío en un cuenco aparte, con pimienta negra recién molida."
+      ]
+    },
+    {
+      "nombre": "Feta con aceite y orégano",
+      "aporta": ["proteina"],
+      "cocinas": ["griega", "chipriota"],
+      "ingredientes": [
+        { "nombre": "queso feta", "cantidad": 100, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {100 g} de feta en dos tacos y ponlos en un plato.",
+        "Riégalos con {1 cucharada} de aceite de oliva y espolvorea {1 cucharadita} de orégano justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Edamame con sal",
+      "aporta": ["proteina"],
+      "cocinas": ["japonesa", "asia-este"],
+      "ingredientes": [{ "nombre": "edamame", "cantidad": 200, "unidad": "g", "familia": "legumbres" }],
+      "pasos": [
+        "Hierve {200 g} de edamame 4 min en agua con sal, hasta que la vaina ceda al apretarla.",
+        "Escúrrelo y sálalo por fuera de la vaina; se come exprimiendo la vaina con los dientes."
+      ]
+    },
+    {
+      "nombre": "Huevo frito",
+      "aporta": ["proteina"],
+      "cocinas": ["asia-sudeste", "asia-este", "global"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Calienta {1 cucharada} de aceite de oliva en una sartén pequeña a fuego fuerte, hasta que humee ligeramente.",
+        "Fríe {2 huevos} 2 min, echándoles aceite por encima con la cuchara, hasta que el borde quede crujiente y la yema siga líquida."
+      ]
+    },
+    {
+      "nombre": "Gyeran-jjim",
+      "aporta": ["proteina"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 3, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Bate {3 huevos} con medio vaso de agua y una pizca de sal, cuélalos y viértelos en un cuenco resistente al fuego.",
+        "Cuécelos al vapor tapados 12 min a fuego medio, hasta que cuajen como un flan tembloroso, y espolvorea {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Ensalada de alubias blancas y albahaca",
+      "aporta": ["proteina", "verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "alubias blancas de bote", "cantidad": 240, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "albahaca", "cantidad": 1, "unidad": "puñado", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Escurre y enjuaga {240 g} de alubias blancas de bote, hasta que el agua salga sin espuma.",
+        "Mézclalas con {1 tomate} en dados, {½ cebolla roja} en láminas finas y {1 puñado} de albahaca, aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y sal, y prueba."
+      ]
+    }
+  ]
+}

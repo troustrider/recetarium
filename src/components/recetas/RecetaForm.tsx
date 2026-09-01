@@ -1,12 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Reorder } from 'framer-motion'
-import type { Receta, Sabor, Tipo, Ingrediente } from '../../types/receta'
+import type { Ingrediente, Sabor, Tipo } from '../../types/receta'
+import { getGuarniciones, type GuarnicionCatalogo, type RecetaFormData } from '../../api/client'
 import IngredienteItem from './IngredienteItem'
 
 const SABORES: Sabor[] = ['salado', 'dulce', 'amargo', 'umami', 'acido']
 const TIPOS: Tipo[] = ['principal', 'entrante', 'desayuno', 'postre']
-
-type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
 interface Props {
   inicial?: RecetaFormData
@@ -24,6 +23,7 @@ const FORM_VACIO: RecetaFormData = {
   ingredientes: [],
   pasos: [],
   consejos: [],
+  guarniciones: [],
 }
 
 interface Errores {
@@ -32,7 +32,7 @@ interface Errores {
   pasos?: string
   nuevoIngrediente?: string
   nuevoPaso?: string
-  guarnicion?: string
+  guarniciones?: string
 }
 
 interface PasoItem {
@@ -60,26 +60,12 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
   })
   const [nuevoPaso, setNuevoPaso] = useState('')
   const [nuevoConsejo, setNuevoConsejo] = useState('')
-  const [guarnIng, setGuarnIng] = useState<Ingrediente>({ nombre: '', cantidad: 0, unidad: '', familia: '' })
-  const [nuevoPasoGuarn, setNuevoPasoGuarn] = useState('')
   const [errores, setErrores] = useState<Errores>({})
+  const [catalogo, setCatalogo] = useState<GuarnicionCatalogo[]>([])
 
-  function addGuarnIngrediente() {
-    const { nombre, cantidad, unidad, familia } = guarnIng
-    if (!form.guarnicion || !nombre.trim() || !unidad.trim() || !familia.trim() || cantidad <= 0) {
-      setErrores((prev) => ({ ...prev, guarnicion: 'Rellena todos los campos del ingrediente (cantidad > 0)' }))
-      return
-    }
-    handleChange('guarnicion', { ...form.guarnicion, ingredientes: [...form.guarnicion.ingredientes, guarnIng] })
-    setGuarnIng({ nombre: '', cantidad: 0, unidad: '', familia: '' })
-    setErrores((prev) => ({ ...prev, guarnicion: undefined }))
-  }
-
-  function addGuarnPaso() {
-    if (!form.guarnicion || !nuevoPasoGuarn.trim()) return
-    handleChange('guarnicion', { ...form.guarnicion, pasos: [...form.guarnicion.pasos, nuevoPasoGuarn.trim()] })
-    setNuevoPasoGuarn('')
-  }
+  useEffect(() => {
+    getGuarniciones().then(setCatalogo).catch(() => setCatalogo([]))
+  }, [])
 
   const [pasos, setPasos] = useState<PasoItem[]>(
     inicial.pasos.map((t, i) => ({ id: `paso-${i}-${t.slice(0, 8)}`, texto: t }))
@@ -141,10 +127,8 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
     if (!form.nombre.trim()) nuevosErrores.nombre = 'El nombre es obligatorio'
     if (form.ingredientes.length === 0) nuevosErrores.ingredientes = 'Añade al menos un ingrediente'
     if (pasos.length === 0) nuevosErrores.pasos = 'Añade al menos un paso'
-    if (form.guarnicion) {
-      if (!form.guarnicion.nombre.trim()) nuevosErrores.guarnicion = 'Ponle nombre a la guarnición'
-      else if (form.guarnicion.ingredientes.length === 0) nuevosErrores.guarnicion = 'Añade al menos un ingrediente a la guarnición'
-    }
+    if (form.guarniciones.length > 3) nuevosErrores.guarniciones = 'Como mucho tres guarniciones'
+
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores)
       return
@@ -409,112 +393,50 @@ function RecetaForm({ inicial = FORM_VACIO, categorias = [], onSubmit, onCancel 
       </div>
 
       <div>
-        <label className="flex items-center gap-2 mb-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={form.guarnicion != null}
-            onChange={(e) =>
-              handleChange('guarnicion', e.target.checked ? { nombre: '', ingredientes: [], pasos: [] } : null)
-            }
-            className="w-4 h-4 accent-lime-600"
-          />
-          <span className={LABEL_CLASS + ' mb-0'}>
-            Lleva guarnición <span className="text-gray-400 dark:text-gray-500 font-normal">(opcional)</span>
-          </span>
-        </label>
+        <span className={LABEL_CLASS}>
+          Guarniciones <span className="text-gray-400 dark:text-gray-500 font-normal">(hasta 3; la primera es la recomendada)</span>
+        </span>
+        {errores.guarniciones && <p className="text-xs text-red-500 mb-2">{errores.guarniciones}</p>}
 
-        {form.guarnicion && (
-          <div className="flex flex-col gap-3 bg-lime-50/60 dark:bg-lime-900/10 border border-lime-100 dark:border-lime-900/30 rounded-xl p-3">
-            <input
-              type="text"
-              placeholder="Nombre de la guarnición (arroz blanco, ensalada...)"
-              value={form.guarnicion.nombre}
-              onChange={(e) => handleChange('guarnicion', { ...form.guarnicion!, nombre: e.target.value })}
-              className={INPUT_CLASS}
-            />
-            {errores.guarnicion && <p className="text-xs text-red-500">{errores.guarnicion}</p>}
-
-            {form.guarnicion.ingredientes.length > 0 && (
-              <ul className="flex flex-col gap-1">
-                {form.guarnicion.ingredientes.map((ing, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-3 py-2">
-                    <span className="flex-1 text-gray-800 dark:text-gray-200">
-                      {ing.nombre} · {ing.cantidad} {ing.unidad}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleChange('guarnicion', {
-                        ...form.guarnicion!,
-                        ingredientes: form.guarnicion!.ingredientes.filter((_, j) => j !== i),
-                      })}
-                      className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none"
-                      aria-label="Eliminar ingrediente de la guarnición"
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <input type="text" placeholder="Ingrediente" value={guarnIng.nombre}
-                onChange={(e) => setGuarnIng({ ...guarnIng, nombre: e.target.value })} className={INPUT_CLASS} />
-              <input type="number" placeholder="Cantidad" value={guarnIng.cantidad || ''}
-                onChange={(e) => setGuarnIng({ ...guarnIng, cantidad: Number(e.target.value) })} className={INPUT_CLASS} />
-              <input type="text" placeholder="Unidad" value={guarnIng.unidad}
-                onChange={(e) => setGuarnIng({ ...guarnIng, unidad: e.target.value })} className={INPUT_CLASS} />
-              <input type="text" placeholder="Familia" value={guarnIng.familia}
-                onChange={(e) => setGuarnIng({ ...guarnIng, familia: e.target.value })} className={INPUT_CLASS} />
-            </div>
-            <button
-              type="button"
-              onClick={addGuarnIngrediente}
-              className="self-start px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-            >
-              + Añadir ingrediente
-            </button>
-
-            {form.guarnicion.pasos.length > 0 && (
-              <ol className="flex flex-col gap-1">
-                {form.guarnicion.pasos.map((paso, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg px-3 py-2">
-                    <span className="shrink-0 w-5 h-5 flex items-center justify-center bg-lime-600 text-white rounded-full text-[10px] font-medium">{i + 1}</span>
-                    <span className="flex-1 text-gray-800 dark:text-gray-200">{paso}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleChange('guarnicion', {
-                        ...form.guarnicion!,
-                        pasos: form.guarnicion!.pasos.filter((_, j) => j !== i),
-                      })}
-                      className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none"
-                      aria-label="Eliminar paso de la guarnición"
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ol>
-            )}
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Paso de la guarnición..."
-                value={nuevoPasoGuarn}
-                onChange={(e) => setNuevoPasoGuarn(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addGuarnPaso())}
-                className={`flex-1 ${INPUT_CLASS}`}
-              />
-              <button
-                type="button"
-                onClick={addGuarnPaso}
-                className="px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                + Añadir
-              </button>
-            </div>
-          </div>
+        {form.guarniciones.length > 0 && (
+          <ol className="flex flex-col gap-1 mb-2">
+            {form.guarniciones.map((nombre, i) => (
+              <li key={nombre} className="flex items-center gap-2 text-sm bg-lime-50/60 dark:bg-lime-900/10 border border-lime-100 dark:border-lime-900/30 rounded-lg px-3 py-2">
+                <span className="shrink-0 w-5 h-5 flex items-center justify-center bg-lime-600 text-white rounded-full text-[10px] font-bold">{i + 1}</span>
+                <span className="flex-1 text-gray-800 dark:text-gray-200">{nombre}</span>
+                <button
+                  type="button"
+                  onClick={() => handleChange('guarniciones', form.guarniciones.filter((n) => n !== nombre))}
+                  className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none"
+                  aria-label={`Quitar ${nombre}`}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ol>
         )}
+
+        <select
+          value=""
+          disabled={form.guarniciones.length >= 3}
+          onChange={(e) => {
+            if (!e.target.value) return
+            handleChange('guarniciones', [...form.guarniciones, e.target.value])
+          }}
+          className={INPUT_CLASS}
+        >
+          <option value="">
+            {form.guarniciones.length >= 3 ? 'Ya van tres' : 'Añadir del catálogo...'}
+          </option>
+          {catalogo
+            .filter((g) => !form.guarniciones.includes(g.nombre))
+            .map((g) => (
+              <option key={g.id} value={g.nombre}>
+                {g.nombre} · {g.aporta.join(', ')}
+              </option>
+            ))}
+        </select>
       </div>
 
       <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-800">

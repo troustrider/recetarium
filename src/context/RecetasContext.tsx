@@ -1,8 +1,8 @@
 import { createContext, useContext, type ReactNode } from 'react'
+import type { RecetaFormData } from '../api/client'
 import useRecetas, { type UltimaEdicion } from '../hooks/useRecetas'
 import type { Receta, RecetaListada } from '../types/receta'
 
-type RecetaFormData = Omit<Receta, 'id' | 'favorita'>
 
 interface RecetasContextValue {
   recetas: RecetaListada[]

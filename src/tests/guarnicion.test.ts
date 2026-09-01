@@ -1,7 +1,23 @@
 import { describe, it, expect } from 'vitest'
-import { ingredientesDe } from '../utils/ingredientes'
+import { guarnicionElegida, guarnicionRecomendada, guarnicionesDe, ingredientesDe } from '../utils/ingredientes'
 import { consumoAlCocinar } from '../utils/consumo'
-import type { Receta } from '../types/receta'
+import type { Guarnicion, Receta } from '../types/receta'
+
+const ARROZ: Guarnicion = {
+  id: 'g-arroz',
+  nombre: 'Arroz blanco',
+  aporta: ['almidon'],
+  ingredientes: [{ nombre: 'arroz', cantidad: 160, unidad: 'g', familia: 'cereales' }],
+  pasos: ['Cocer 12 min'],
+}
+
+const BROCOLI: Guarnicion = {
+  id: 'g-brocoli',
+  nombre: 'Brócoli al vapor',
+  aporta: ['verdura'],
+  ingredientes: [{ nombre: 'brócoli', cantidad: 300, unidad: 'g', familia: 'verduras' }],
+  pasos: ['Al vapor 4 min'],
+}
 
 const RECETA: Receta = {
   id: 'r1',
@@ -13,31 +29,56 @@ const RECETA: Receta = {
   porciones: 2,
   ingredientes: [{ nombre: 'pollo', cantidad: 400, unidad: 'g', familia: 'carnes' }],
   pasos: ['Cocinar'],
-  guarnicion: {
-    nombre: 'Arroz blanco',
-    ingredientes: [{ nombre: 'arroz', cantidad: 160, unidad: 'g', familia: 'cereales' }],
-    pasos: ['Cocer 12 min'],
-  },
+  guarniciones: [ARROZ, BROCOLI],
 }
 
-const SIN_GUARNICION: Receta = { ...RECETA, guarnicion: null }
+const SIN_GUARNICION: Receta = { ...RECETA, guarniciones: [] }
+
+describe('guarnicionesDe', () => {
+  it('una receta anterior al catálogo devuelve lista vacía, no revienta', () => {
+    expect(guarnicionesDe({} as Receta)).toEqual([])
+  })
+})
+
+describe('guarnicionElegida', () => {
+  it('sin id no hay guarnición', () => {
+    expect(guarnicionElegida(RECETA)).toBeNull()
+  })
+
+  it('devuelve la del id pedido, no la primera', () => {
+    expect(guarnicionElegida(RECETA, 'g-brocoli')?.nombre).toBe('Brócoli al vapor')
+  })
+
+  it('un id que ya no está en la receta no cuela como la recomendada', () => {
+    expect(guarnicionElegida(RECETA, 'g-borrada')).toBeNull()
+  })
+
+  it('la recomendada es la primera del reparto', () => {
+    expect(guarnicionRecomendada(RECETA)?.id).toBe('g-arroz')
+    expect(guarnicionRecomendada(SIN_GUARNICION)).toBeNull()
+  })
+})
 
 describe('ingredientesDe', () => {
-  it('sin pedirla, devuelve solo los del plato', () => {
+  it('sin elegir ninguna, devuelve solo los del plato', () => {
     expect(ingredientesDe(RECETA).map((i) => i.nombre)).toEqual(['pollo'])
-    expect(ingredientesDe(RECETA, false).map((i) => i.nombre)).toEqual(['pollo'])
   })
 
-  it('pidiéndola, añade los suyos detrás', () => {
-    expect(ingredientesDe(RECETA, true).map((i) => i.nombre)).toEqual(['pollo', 'arroz'])
+  it('con una elegida, añade los suyos detrás', () => {
+    expect(ingredientesDe(RECETA, 'g-arroz').map((i) => i.nombre)).toEqual(['pollo', 'arroz'])
   })
 
-  it('pedirla en una receta que no la tiene no rompe nada', () => {
-    expect(ingredientesDe(SIN_GUARNICION, true).map((i) => i.nombre)).toEqual(['pollo'])
+  it('cada opción trae los suyos, no los de la recomendada', () => {
+    expect(ingredientesDe(RECETA, 'g-brocoli').map((i) => i.nombre)).toEqual(['pollo', 'brócoli'])
+  })
+
+  it('un id desconocido deja el plato como está', () => {
+    expect(ingredientesDe(RECETA, 'g-borrada').map((i) => i.nombre)).toEqual(['pollo'])
+    expect(ingredientesDe(SIN_GUARNICION, 'g-arroz').map((i) => i.nombre)).toEqual(['pollo'])
   })
 
   it('no muta el array de la receta', () => {
-    ingredientesDe(RECETA, true)
+    ingredientesDe(RECETA, 'g-arroz')
     expect(RECETA.ingredientes).toHaveLength(1)
   })
 })
@@ -53,10 +94,15 @@ describe('consumo de despensa', () => {
     expect(consumos.map((c) => c.nombre)).toEqual(['pollo'])
   })
 
-  it('con guarnición descuenta también el arroz', () => {
-    const consumos = consumoAlCocinar([{ receta: RECETA, raciones: 2, conGuarnicion: true }], despensa)
+  it('con el arroz elegido lo descuenta', () => {
+    const consumos = consumoAlCocinar([{ receta: RECETA, raciones: 2, guarnicionId: 'g-arroz' }], despensa)
     const arroz = consumos.find((c) => c.nombre === 'arroz')
     expect(arroz).toBeTruthy()
     expect(arroz!.cantidad).toBe(340)
+  })
+
+  it('con el brócoli elegido el arroz se queda entero', () => {
+    const consumos = consumoAlCocinar([{ receta: RECETA, raciones: 2, guarnicionId: 'g-brocoli' }], despensa)
+    expect(consumos.map((c) => c.nombre)).toEqual(['pollo'])
   })
 })

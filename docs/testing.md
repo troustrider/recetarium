@@ -58,7 +58,7 @@ purga al terminar cada fichero lo que hayan creado los helpers.
 | `recetas-crud.test.js` | Alta, edición y contrato de la respuesta |
 | `recetas-borrado.test.js` | El borrado lógico devuelve la receta con su mismo id |
 | `estado.test.js` | Plan, despensa, extras y pendientes por hogar |
-| `guarnicion.test.js` | La guarnición no contamina la ficha del plato, sobre todo el gluten |
+| `guarnicion.test.js` | El catálogo de guarniciones, el reparto por nombre y que su gluten no contamina el del plato |
 | `nutricion.test.js` | Macros, micros y gluten calculados desde los ingredientes |
 | `validacion-recetas.test.js` | Validación de entrada |
 | `precios-contraste.test.js` | La tabla de precios contra los precios curados de las recetas |

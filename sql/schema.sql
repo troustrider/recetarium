@@ -22,7 +22,6 @@
     hierro              NUMERIC(5,1),
     sin_gluten          BOOLEAN,
     micros              JSONB,
-    guarnicion          JSONB,
     tipo                VARCHAR(30) NOT NULL DEFAULT 'principal',
     borrada_en          TIMESTAMPTZ,
     hogar_id            UUID REFERENCES hogares(id) ON DELETE CASCADE,
@@ -32,6 +31,42 @@
   );
 
   CREATE INDEX idx_recetas_vivas ON recetas (id) WHERE borrada_en IS NULL;
+
+  -- Las guarniciones viven en catálogo: una ficha por guarnición, no una copia
+  -- por receta. Ver sql/2026-09-guarniciones-catalogo.sql.
+  CREATE TABLE guarniciones (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre         VARCHAR(150) NOT NULL,
+    ingredientes   JSONB NOT NULL DEFAULT '[]'::jsonb,
+    pasos          JSONB NOT NULL DEFAULT '[]'::jsonb,
+    cocinas        TEXT[] NOT NULL DEFAULT '{}',
+    aporta         TEXT[] NOT NULL DEFAULT '{}',
+    calorias       INTEGER,
+    proteinas      NUMERIC(5,1),
+    carbohidratos  NUMERIC(5,1),
+    grasas         NUMERIC(5,1),
+    hierro         NUMERIC(5,1),
+    sin_gluten     BOOLEAN,
+    micros         JSONB,
+    apto           JSONB,
+    hogar_id       UUID REFERENCES hogares(id) ON DELETE CASCADE,
+    borrada_en     TIMESTAMPTZ
+  );
+
+  CREATE UNIQUE INDEX idx_guarniciones_nombre_comun
+    ON guarniciones (nombre) WHERE hogar_id IS NULL AND borrada_en IS NULL;
+  CREATE UNIQUE INDEX idx_guarniciones_nombre_hogar
+    ON guarniciones (hogar_id, nombre) WHERE hogar_id IS NOT NULL AND borrada_en IS NULL;
+
+  CREATE TABLE receta_guarniciones (
+    receta_id     UUID NOT NULL REFERENCES recetas(id) ON DELETE CASCADE,
+    guarnicion_id UUID NOT NULL REFERENCES guarniciones(id) ON DELETE RESTRICT,
+    orden         SMALLINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (receta_id, guarnicion_id)
+  );
+
+  CREATE INDEX idx_receta_guarniciones_receta
+    ON receta_guarniciones (receta_id, orden);
 
   CREATE TABLE hogares (
     id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),

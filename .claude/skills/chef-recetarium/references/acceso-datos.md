@@ -129,9 +129,9 @@ En PowerShell, `curl.exe`, no el alias.
 ```sql
 INSERT INTO recetas (nombre, categoria, tiempo_preparacion, ingredientes, pasos, consejos,
                      precio_por_porcion, porciones, calorias, proteinas, carbohidratos, grasas,
-                     tipo, guarnicion, hogar_id, category_id)
+                     tipo, hogar_id, category_id)
 SELECT 'Shakshuka', 'mediooriente', 25, '[...]'::jsonb, '[...]'::jsonb, '[...]'::jsonb,
-       2.2, 2, 420, 31, 18, 26, 'principal', NULL, NULL, id
+       2.2, 2, 420, 31, 18, 26, 'principal', NULL, id
 FROM categories WHERE name = 'salado'
 RETURNING id, nombre;
 ```

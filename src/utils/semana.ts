@@ -3,6 +3,7 @@ import type { Preferencias, Prioridad } from '../types/preferencias'
 import { aprovechaDe, indiceDespensa, type IndiceDespensa, type ItemAprovechable } from './aprovechamiento'
 import { despensaCubre } from './despensa'
 import { anadirALaCesta, cestaVacia, fraccionQueSeTira, type Cesta } from './desperdicio'
+import { guarnicionElegida, guarnicionRecomendada } from './ingredientes'
 
 const DIAS_SEMANA = 7
 
@@ -129,8 +130,18 @@ const VACIO: Aporte = {
   saturadas: 0, sal: 0, azucares: 0, calorias: 0,
 }
 
-export function aporteDe(receta: RecetaListada): Aporte {
-  const partes = [receta, receta.guarnicion]
+/**
+ * `guarnicionId` sin pasar cuenta la recomendada, que es la que el planificador
+ * enciende solo; `null` cuenta el plato pelado. Antes sumaba siempre la
+ * guarnición, encendida o no, y la nutrición de la semana no cuadraba con la
+ * lista de la compra.
+ */
+export function aporteDe(receta: RecetaListada, guarnicionId?: string | null): Aporte {
+  const guarnicion =
+    guarnicionId === null ? null
+    : guarnicionId === undefined ? guarnicionRecomendada(receta)
+    : guarnicionElegida(receta, guarnicionId)
+  const partes = [receta, guarnicion]
   const total = { ...VACIO }
   for (const parte of partes) {
     if (!parte) continue
@@ -151,10 +162,16 @@ export function aporteDe(receta: RecetaListada): Aporte {
   return total
 }
 
-function verduraDe(receta: RecetaListada): string | null {
-  const enGuarnicion = receta.guarnicion?.ingredientes.find((i) => i.familia === FAMILIA_VERDURA)
-  const enPlato = receta.ingredientes?.find((i) => i.familia === FAMILIA_VERDURA)
-  return (enGuarnicion ?? enPlato)?.nombre.toLowerCase() ?? null
+const laVerdura = (ingredientes?: { nombre: string; familia: string }[]) =>
+  ingredientes?.find((i) => i.familia === FAMILIA_VERDURA)
+
+function verduraDe(receta: RecetaListada, guarnicionId?: string | null): string | null {
+  const guarnicion =
+    guarnicionId === null ? null
+    : guarnicionId === undefined ? guarnicionRecomendada(receta)
+    : guarnicionElegida(receta, guarnicionId)
+  const encontrada = laVerdura(guarnicion?.ingredientes) ?? laVerdura(receta.ingredientes)
+  return encontrada?.nombre.toLowerCase() ?? null
 }
 
 function prng(semilla: number): () => number {
@@ -253,16 +270,17 @@ function acumular(
   receta: RecetaListada,
   usados: number[] = [],
   dia?: string,
-  enCasa?: (nombre: string) => boolean
+  enCasa?: (nombre: string) => boolean,
+  guarnicionId?: string | null
 ) {
   for (const i of usados) acc.aprovechados.add(i)
-  if (dia) acc.proteinaPorDia.set(dia, (acc.proteinaPorDia.get(dia) ?? 0) + aporteDe(receta).proteinas)
+  const a = aporteDe(receta, guarnicionId)
+  if (dia) acc.proteinaPorDia.set(dia, (acc.proteinaPorDia.get(dia) ?? 0) + a.proteinas)
   anadirALaCesta(acc.compra, receta, enCasa)
-  const a = aporteDe(receta)
   for (const clave of CLAVES) acc.nutrientes[clave] += a[clave]
   for (const macro of MACROS) acc.macros[macro] += a[macro]
   if (receta.categoria) acc.cocinas.set(receta.categoria, (acc.cocinas.get(receta.categoria) ?? 0) + 1)
-  const verdura = verduraDe(receta)
+  const verdura = verduraDe(receta, guarnicionId)
   if (verdura) acc.verduras.add(verdura)
   acc.sabores.set(receta.sabor, (acc.sabores.get(receta.sabor) ?? 0) + 1)
 }
@@ -544,10 +562,16 @@ interface ResumenSemana {
   platos: number
 }
 
-export function resumenSemana(recetas: RecetaListada[], preferencias?: Preferencias): ResumenSemana {
-  const ajustes = ajustesDe(preferencias, recetas.length || 1)
+/** Lo que hay en un hueco del plan: el plato y la guarnición que lleva encendida. */
+export interface SeleccionSemana {
+  receta: RecetaListada
+  guarnicionId?: string | null
+}
+
+export function resumenSemana(seleccion: SeleccionSemana[], preferencias?: Preferencias): ResumenSemana {
+  const ajustes = ajustesDe(preferencias, seleccion.length || 1)
   const acc = acumuladoVacio()
-  for (const receta of recetas) acumular(acc, receta)
+  for (const { receta, guarnicionId } of seleccion) acumular(acc, receta, [], undefined, undefined, guarnicionId)
 
   const coberturas = CLAVES.map((clave) => ({
     clave,
@@ -557,16 +581,16 @@ export function resumenSemana(recetas: RecetaListada[], preferencias?: Preferenc
   }))
 
   const excesos: Exceso[] = []
-  if (recetas.length > 0) {
+  if (seleccion.length > 0) {
     for (const clave of Object.keys(ajustes.techos) as Techo[]) {
       const techo = ajustes.techos[clave]
       if (!Number.isFinite(techo)) continue
-      const media = recetas.reduce((t, r) => t + aporteDe(r)[clave], 0) / recetas.length
+      const media = seleccion.reduce((t, s) => t + aporteDe(s.receta, s.guarnicionId)[clave], 0) / seleccion.length
       if (media > techo) excesos.push({ clave, media, techo })
     }
   }
 
-  return { coberturas, excesos, platos: recetas.length }
+  return { coberturas, excesos, platos: seleccion.length }
 }
 
 export function semanaEquilibrada(

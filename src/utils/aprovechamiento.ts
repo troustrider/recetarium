@@ -54,7 +54,9 @@ export function indiceDespensa(despensa: ItemAprovechable[]): IndiceDespensa {
 }
 
 export function aprovechaDe(receta: RecetaListada, indice: IndiceDespensa): number[] {
-  const ingredientes = ingredientesDe(receta, true).filter(
+  // Con la recomendada puesta: es la que la auto-semana enciende y por tanto la
+  // que de verdad va a gastar despensa.
+  const ingredientes = ingredientesDe(receta, receta.guarniciones?.[0]?.id).filter(
     (ing) => canonUnidad(ing.nombre, ing.unidad) !== 'al gusto'
   )
   if (ingredientes.length === 0) return []

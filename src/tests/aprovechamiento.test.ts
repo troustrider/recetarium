@@ -96,11 +96,13 @@ describe('aprovechaDe — qué gasta cada receta', () => {
 
   it('cuenta también la guarnición, que la auto-semana pone', () => {
     const r = receta(['pollo'], {
-      guarnicion: {
+      guarniciones: [{
+        id: 'g1',
         nombre: 'Espinacas a la crema',
+        aporta: ['verdura'],
         ingredientes: [{ nombre: 'nata', cantidad: 100, unidad: 'ml', familia: 'lácteos' }],
         micros: MICROS_CERO,
-      },
+      }],
     })
     expect(aprovechaDe(r, indice)).toEqual([0])
   })

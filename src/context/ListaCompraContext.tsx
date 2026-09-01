@@ -13,7 +13,7 @@ interface ListaCompraContextValue {
   cuenta: Cuenta
   toggleReceta: (receta: RecetaListada) => void
   setRaciones: (id: string, raciones: number) => void
-  setGuarnicion: (id: string, conGuarnicion: boolean) => void
+  setGuarnicion: (id: string, guarnicionId?: string) => void
   estaSeleccionada: (id: string) => boolean
   vaciar: () => void
   cargarAleatorias: (recetas: RecetaListada[], n: number, raciones: number) => void

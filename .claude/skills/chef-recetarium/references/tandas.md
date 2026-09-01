@@ -73,7 +73,7 @@ Escupe ERROR y aviso receta a receta con su `categoria/tipo`, así que se filtra
 
 | Bloque | Puerta numérica | Consulta |
 |---|---|---|
-| `principal` | Suelo de 20 g de proteína, y comida completa (verdura propia o `guarnicion` rellena) | `proteinas < 20`, y `guarnicion IS NULL` sobre platos que la piden |
+| `principal` | Suelo de 20 g de proteína, y comida completa de verdad: verdura en el plato o en alguna de sus guarniciones | `proteinas < 20`, y `audit`, que ya trae la puerta de guarnición |
 | `desayuno` | Suelo de 15 g de proteína | `proteinas < 15` |
 | `postre` / `entrante` | **Ninguna.** No inventes una | Sólo `audit` |
 
@@ -133,7 +133,7 @@ Y la condición propia del bloque, que hay que poner en el diseño y no descubri
 
 | Bloque | Condición que se diseña, no se improvisa |
 |---|---|
-| `principal` | Cada plato con su verdura o su `guarnicion` desde la tabla de diseño. Y **cuota de tiempo**: si toda la tanda son guisos de 90 min, el recetario gana platos que no se cocinan entre semana |
+| `principal` | Cada plato con su verdura o sus guarniciones del catálogo desde la tabla de diseño. Y **cuota de tiempo**: si toda la tanda son guisos de 90 min, el recetario gana platos que no se cocinan entre semana |
 | `desayuno` | El reparto dulce/salado, además del eje de esfuerzo. Un bloque todo salado no se desayuna |
 | `postre` | Mezcla de nevera y horno, y al menos uno improvisable con despensa |
 | `entrante` | Mezcla de frío y caliente, y decidir si son picoteo o plato que se sienta a la mesa |

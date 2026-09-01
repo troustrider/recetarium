@@ -179,11 +179,13 @@ export const cestaVacia = (): Cesta => new Map()
 
 interface ConIngredientes {
   ingredientes: Ingrediente[]
-  guarnicion?: { ingredientes: Ingrediente[] } | null
+  guarniciones?: { ingredientes: Ingrediente[] }[]
 }
 
+// La recomendada, que es la que la auto-semana enciende y por tanto la que de
+// verdad abre un envase.
 const lineasDe = (plato: ConIngredientes): Ingrediente[] =>
-  [...plato.ingredientes, ...(plato.guarnicion?.ingredientes ?? [])]
+  [...plato.ingredientes, ...(plato.guarniciones?.[0]?.ingredientes ?? [])]
 
 /** Lo que se tira de una línea de la cesta: lo que sobra del envase, si se pierde. */
 function tiradoDe(pedido: Pedido): number {

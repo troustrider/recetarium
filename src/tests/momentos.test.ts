@@ -15,7 +15,7 @@ describe('cabeDeNoche', () => {
   it('cuenta la guarnición, que es lo que se come', () => {
     const conArroz = plato({
       calorias: 800,
-      guarnicion: { nombre: 'arroz', ingredientes: [], calorias: 300, grasas: 2 } as RecetaListada['guarnicion'],
+      guarniciones: [{ id: 'g1', nombre: 'arroz', aporta: ['almidon'], ingredientes: [], calorias: 300, grasas: 2 }],
     })
     expect(cabeDeNoche(conArroz)).toBe(false)
   })

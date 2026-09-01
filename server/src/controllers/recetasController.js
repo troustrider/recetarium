@@ -31,25 +31,15 @@ function validar(data) {
     else if (data.consejos.some((c) => typeof c !== 'string' || !c.trim()))
       errores.push('cada consejo debe ser un texto no vacío')
   }
-  if (data.guarnicion != null) {
-    const g = data.guarnicion
-    if (typeof g !== 'object' || Array.isArray(g)) {
-      errores.push('guarnicion debe ser un objeto')
-    } else {
-      if (!g.nombre?.trim()) errores.push('guarnicion.nombre es obligatorio')
-      if (!Array.isArray(g.ingredientes) || g.ingredientes.length === 0) {
-        errores.push('guarnicion.ingredientes debe ser un array con al menos un elemento')
-      } else {
-        g.ingredientes.forEach((ing, i) => {
-          if (!ing.nombre?.trim()) errores.push(`guarnicion.ingredientes[${i}].nombre es obligatorio`)
-          if (typeof ing.cantidad !== 'number' || ing.cantidad <= 0) errores.push(`guarnicion.ingredientes[${i}].cantidad debe ser mayor que 0`)
-          if (!ing.unidad?.trim()) errores.push(`guarnicion.ingredientes[${i}].unidad es obligatorio`)
-          if (!ing.familia?.trim()) errores.push(`guarnicion.ingredientes[${i}].familia es obligatorio`)
-        })
-      }
-      if (g.pasos != null && (!Array.isArray(g.pasos) || g.pasos.some((p) => typeof p !== 'string' || !p.trim())))
-        errores.push('guarnicion.pasos debe ser un array de textos no vacíos')
-    }
+  if (data.guarniciones != null) {
+    if (!Array.isArray(data.guarniciones))
+      errores.push('guarniciones debe ser un array de nombres del catálogo')
+    else if (data.guarniciones.some((n) => typeof n !== 'string' || !n.trim()))
+      errores.push('cada guarnición debe ser el nombre de una del catálogo')
+    else if (new Set(data.guarniciones).size !== data.guarniciones.length)
+      errores.push('guarniciones repetidas en la lista')
+    else if (data.guarniciones.length > 3)
+      errores.push('máximo 3 guarniciones por receta')
   }
   ;['calorias', 'proteinas', 'carbohidratos', 'grasas'].forEach((k) => {
     if (data[k] != null && (typeof data[k] !== 'number' || data[k] < 0))

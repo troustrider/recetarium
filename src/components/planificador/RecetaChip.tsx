@@ -12,7 +12,7 @@ interface ChipProps {
   onQuitar: () => void
   onRaciones: (n: number) => void
   onCocinar: () => void
-  onGuarnicion: (conGuarnicion: boolean) => void
+  onGuarnicion: (guarnicionId?: string) => void
   onMomento: (momento: Momento) => void
   overlay?: boolean
 }
@@ -25,6 +25,13 @@ export default function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, o
   const hecha = entrada.cocinada === true
   const momento = momentoDe(entrada)
   const estilo = MOMENTO_ESTILO[momento]
+
+  // En un chip de móvil no cabe un desplegable: el botón rota entre las
+  // opciones y vuelve a "sin guarnición" al dar la vuelta.
+  const guarniciones = entrada.receta.guarniciones ?? []
+  const indice = guarniciones.findIndex((g) => g.id === entrada.guarnicionId)
+  const puesta = indice >= 0 ? guarniciones[indice] : null
+  const siguienteGuarnicion = () => guarniciones[indice + 1]?.id
 
   return (
     <div
@@ -67,7 +74,6 @@ export default function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, o
         onClick={onCocinar}
         aria-pressed={hecha}
         aria-label={hecha ? 'Marcar como no cocinada' : 'Marcar como cocinada'}
-        title={hecha ? 'Deshacer: vuelve a contar para la compra' : 'Ya la he cocinado: vacía sus ingredientes de la despensa'}
         className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
           hecha
             ? 'bg-orange-500 border-orange-500 text-white hover:bg-orange-400'
@@ -77,23 +83,26 @@ export default function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, o
         <ChefHat className="w-3.5 h-3.5" />
       </button>
 
-      {entrada.receta.guarnicion && (
+      {guarniciones.length > 0 && (
         <button
-          onClick={() => onGuarnicion(!entrada.conGuarnicion)}
-          aria-pressed={!!entrada.conGuarnicion}
-          aria-label={entrada.conGuarnicion ? 'Quitar la guarnición' : 'Añadir la guarnición'}
+          onClick={() => onGuarnicion(siguienteGuarnicion())}
+          aria-pressed={puesta != null}
+          aria-label={puesta ? `Guarnición: ${puesta.nombre}. Pulsa para cambiarla` : 'Añadir guarnición'}
           title={
-            entrada.conGuarnicion
-              ? `Sin ${entrada.receta.guarnicion.nombre}: deja de contar para la compra`
-              : `Con ${entrada.receta.guarnicion.nombre}: entra en la compra`
+            puesta
+              ? `${puesta.nombre}: entra en la compra. Pulsa para ${guarniciones.length > 1 ? 'cambiarla' : 'quitarla'}`
+              : `Añadir ${guarniciones[0].nombre}`
           }
-          className={`shrink-0 w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
-            entrada.conGuarnicion
+          className={`shrink-0 h-6 min-w-6 px-1 rounded-full border flex items-center justify-center gap-0.5 transition-colors ${
+            puesta
               ? 'bg-lime-500 border-lime-500 text-white hover:bg-lime-400'
               : 'border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 hover:border-lime-400 hover:text-lime-500'
           }`}
         >
           <Salad className="w-3.5 h-3.5" />
+          {puesta && guarniciones.length > 1 && (
+            <span className="text-[9px] font-bold leading-none">{indice + 1}</span>
+          )}
         </button>
       )}
 

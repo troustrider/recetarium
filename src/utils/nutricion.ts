@@ -1,4 +1,5 @@
 import type { Apto, RecetaListada } from '../types/receta'
+import { guarnicionesDe } from './ingredientes'
 
 const HIERRO_ALTO = 4.5
 const HIERRO_MEDIO = 2.5
@@ -42,21 +43,40 @@ export function fuentesGluten(receta: RecetaListada) {
 
 export type Dieta = 'vegetariana' | 'vegana'
 
+const valorApto = (apto: Apto | null | undefined, dieta: Dieta) => apto?.[dieta] ?? null
+
+/**
+ * Con varias guarniciones la pregunta cambia: no es si todas valen, es si el
+ * plato vale y queda al menos una opción que también valga. Exigir que valgan
+ * todas escondería un curry vegano solo porque una de sus tres opciones lleva
+ * yogur.
+ */
 export function aptaPara(receta: RecetaListada, dieta: Dieta): boolean | null {
   // Una receta guardada antes de que existiera el flag tampoco se afirma: sin
   // ficha calculada no hay nada que garantizar.
-  const partes: (Apto | null | undefined)[] = [receta.apto]
-  if (receta.guarnicion) partes.push(receta.guarnicion.apto)
+  const plato = valorApto(receta.apto, dieta)
+  if (plato === false) return false
+  const opciones = guarnicionesDe(receta)
+  if (!opciones.length) return plato === true ? true : null
 
-  let cierto = true
-  for (const apto of partes) {
-    const valor = apto?.[dieta] ?? null
-    if (valor === false) return false
-    if (valor === null) cierto = false
-  }
-  return cierto ? true : null
+  const valores = opciones.map((g) => valorApto(g.apto, dieta))
+  if (valores.every((v) => v === false)) return false
+  if (plato === true && valores.some((v) => v === true)) return true
+  return null
+}
+
+/** La primera guarnición que cumple la dieta; la recomendada si no se pide ninguna. */
+export function guarnicionPara(receta: RecetaListada, dieta?: Dieta, sinGluten = false) {
+  return (
+    guarnicionesDe(receta).find(
+      (g) =>
+        (!dieta || valorApto(g.apto, dieta) === true) &&
+        (!sinGluten || g.sinGluten === true)
+    ) ?? null
+  )
 }
 
 export function fuentesAnimales(receta: RecetaListada) {
-  return [...(receta.apto?.animal ?? []), ...(receta.guarnicion?.apto?.animal ?? [])]
+  const guarnicion = guarnicionesDe(receta)[0]
+  return [...(receta.apto?.animal ?? []), ...(guarnicion?.apto?.animal ?? [])]
 }
