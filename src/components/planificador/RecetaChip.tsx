@@ -88,11 +88,7 @@ export default function RecetaChip({ entrada, onQuitar, onRaciones, onCocinar, o
           onClick={() => onGuarnicion(siguienteGuarnicion())}
           aria-pressed={puesta != null}
           aria-label={puesta ? `Guarnición: ${puesta.nombre}. Pulsa para cambiarla` : 'Añadir guarnición'}
-          title={
-            puesta
-              ? `${puesta.nombre}: entra en la compra. Pulsa para ${guarniciones.length > 1 ? 'cambiarla' : 'quitarla'}`
-              : `Añadir ${guarniciones[0].nombre}`
-          }
+          title={puesta ? puesta.nombre : `Añadir ${guarniciones[0].nombre}`}
           className={`shrink-0 h-6 min-w-6 px-1 rounded-full border flex items-center justify-center gap-0.5 transition-colors ${
             puesta
               ? 'bg-lime-500 border-lime-500 text-white hover:bg-lime-400'
