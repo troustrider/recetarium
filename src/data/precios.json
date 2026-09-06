@@ -4,7 +4,7 @@
       "Dirk van den Broek",
       "Lidl"
     ],
-    "actualizado": "2026-08",
+    "actualizado": "2026-09",
     "nota": "Fuente unica de precios de ingrediente. La app la importa y la skill chef-recetarium la corrige. 'fuente' dice de donde sale el numero: 'estimado' es una referencia sin contrastar, un nombre de cadena es un precio visto en tienda. 'formato' guarda el envase real para poder repetir la comprobacion, y el que empieza por 'tipico' es el tamano corriente del envase en el super, no uno visto en tienda: sirve para la cuenta de lo que se tira y hay que confirmarlo cuando se pase por alli. 'suelto' marca lo que se compra por peso o por pieza y no deja envase a medias."
   },
   "precios": [
@@ -3017,6 +3017,30 @@
       "fuente": "estimado",
       "revisado": "2026-08",
       "formato": "típico: bolsa 50 g"
+    },
+    {
+      "nombre": "semillas de lino",
+      "euros": 4,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-09",
+      "formato": "bolsa 400 g"
+    },
+    {
+      "nombre": "hinojo en semilla",
+      "euros": 25,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-09",
+      "formato": "tarro 40 g"
+    },
+    {
+      "nombre": "anís verde",
+      "euros": 30,
+      "unidad": "kg",
+      "fuente": "estimado",
+      "revisado": "2026-09",
+      "formato": "tarro 35 g"
     }
   ]
 }
