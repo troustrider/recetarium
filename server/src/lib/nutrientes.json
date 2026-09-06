@@ -20,7 +20,7 @@
     "vinagre de vino tinto", "whisky", "amaretto", "vino blanco seco", "azafrán",
     "vino tinto", "vino dulce", "vinagre balsámico", "za'atar", "eneldo", "lima seca",
     "hinojo en semilla", "agua de azahar", "ras el hanout", "enebro en grano",
-    "anís estrellado", "cardamomo", "sumac", "achiote", "gochugaru", "berbere", "baharat", "fenogreco","mejorana", "hojas de curry", "mostaza en grano", "pimienta blanca", "epazote", "citronela", "galanga", "hojas de lima kaffir", "alga kombu", "sake", "alcaravea", "agua de rosas"
+    "anís estrellado", "cardamomo", "sumac", "achiote", "gochugaru", "berbere", "baharat", "fenogreco","mejorana", "hojas de curry", "mostaza en grano", "pimienta blanca", "epazote", "citronela", "galanga", "hojas de lima kaffir", "alga kombu", "sake", "alcaravea", "agua de rosas", "anís verde"
   ],
 
   "ingredientes": {
@@ -266,6 +266,7 @@
     "sésamo":                      { "p": 18,   "c": 12,   "gr": 50,  "fib": 12, "az": 0.3, "sat": 7, "fe": 14.6, "ca": 975, "fol": 97 },
     "semillas de calabaza":        { "p": 25,   "c": 11,   "gr": 46,  "fib": 6, "az": 1.4, "sat": 8.7, "fe": 8.8, "ca": 46, "fol": 58 },
     "semillas de chía":            { "p": 17,   "c": 8,    "gr": 31,  "fib": 34, "sat": 3.3, "fe": 7.7, "vc": 1.6, "ca": 631, "fol": 49 },
+    "semillas de lino":            { "p": 18.3, "c": 28.9, "gr": 42.2, "fib": 27.3, "az": 1.6, "sat": 3.7, "fe": 5.7, "ca": 255, "fol": 87 },
 
     "aceite de oliva":             { "p": 0,    "c": 0,    "gr": 100, "cucharada": 14, "cucharadita": 5, "sat": 14 },
     "aceite de girasol":           { "p": 0,    "c": 0,    "gr": 100, "cucharada": 14, "sat": 11 },
