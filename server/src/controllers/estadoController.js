@@ -14,6 +14,7 @@ function validarPlan(plan) {
     if (typeof e.recetaId !== 'string' || !e.recetaId.trim()) return `plan[${i}].recetaId es obligatorio`
     if (typeof e.raciones !== 'number' || e.raciones < 1) return `plan[${i}].raciones debe ser >= 1`
     if (e.cocinada != null && typeof e.cocinada !== 'boolean') return `plan[${i}].cocinada debe ser booleano`
+    if (e.auto != null && typeof e.auto !== 'boolean') return `plan[${i}].auto debe ser booleano`
     if (e.momento != null && !MOMENTOS.includes(e.momento)) return `plan[${i}].momento debe ser uno de: ${MOMENTOS.join(', ')}`
   }
   return null

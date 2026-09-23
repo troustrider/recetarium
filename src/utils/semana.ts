@@ -95,6 +95,9 @@ const RONDAS_DE_CAMBIO = 1
 const PENALIZACION_DESCARTADO = 5
 const PENALIZACION_YA_PROPUESTO = 0.6
 
+/** Por encima del tope de la despensa: lo comprado ya está en casa y es lo primero que se pierde. */
+const PREMIO_COMPRADA = 10
+
 type Peso = keyof typeof PESOS_BASE
 
 // Qué mueve cada prioridad. Es una tabla y no código a propósito: añadir una
@@ -378,6 +381,30 @@ export interface Hueco {
   dia?: string
 }
 
+/**
+ * Cuántos huecos pueden llevar cada uno un plato distinto a la vez. Contar
+ * recetas distintas no basta: siete candidatas para siete huecos no llenan la
+ * semana si cinco de esos huecos solo admiten las mismas tres.
+ */
+export function huecosConPlatoPropio(huecos: Hueco[]): number {
+  const dueño = new Map<string, number>()
+  const colocar = (i: number, vistas: Set<string>): boolean => {
+    for (const receta of huecos[i].candidatos) {
+      if (vistas.has(receta.id)) continue
+      vistas.add(receta.id)
+      const otro = dueño.get(receta.id)
+      if (otro === undefined || colocar(otro, vistas)) {
+        dueño.set(receta.id, i)
+        return true
+      }
+    }
+    return false
+  }
+  let n = 0
+  for (let i = 0; i < huecos.length; i++) if (colocar(i, new Set())) n++
+  return n
+}
+
 interface Reparto {
   porHueco: Map<string, RecetaListada>
   /** Huecos que han tenido que repetir un plato porque no quedaban candidatas. */
@@ -390,22 +417,27 @@ interface OpcionesReparto {
   preferencias?: Preferencias
   /** Platos que ya están puestos y no se tocan: los cocinados. */
   yaEnLaSemana?: RecetaListada[]
+  /** Puestos a mano y sin cocinar: se quedan y, a diferencia de lo cocinado, van a gastar despensa. */
+  fijados?: RecetaListada[]
   /** Lo que hay en casa, para preferir los platos que lo gastan. */
   despensa?: ItemAprovechable[]
   /** Recetas que se quitaron del plan a mano: no se vetan, pesan en contra. */
   descartados?: Iterable<string>
   /** Lo que colocó la pasada anterior, para que volver a pulsar cambie la semana. */
   yaPropuestos?: Iterable<string>
+  /** Recetas compradas y sin día: entran antes que nada si caben en algún hueco. */
+  preferidos?: Iterable<string>
   proteinaPorDia?: Map<string, number>
   semilla?: number
 }
 
 export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}): Reparto {
-  const { preferencias, yaEnLaSemana = [], despensa = [], semilla = Date.now() } = opciones
+  const { preferencias, yaEnLaSemana = [], fijados = [], despensa = [], semilla = Date.now() } = opciones
   const descartados = new Set(opciones.descartados ?? [])
   const yaPropuestos = new Set(opciones.yaPropuestos ?? [])
+  const preferidos = new Set(opciones.preferidos ?? [])
   const aleatorio = prng(semilla)
-  const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length)
+  const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length + fijados.length)
 
   const indice = indiceDespensa(despensa)
   // Lo que ya está en casa no se compra: no deja sobra que evitar, y de gastarlo
@@ -424,13 +456,18 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
 
   // Lo cocinado no reserva despensa: si su bote sigue en la lista es que quedó,
   // y quedarse sin gastar es justo lo que hay que arreglar esta semana.
-  const acc = acumuladoVacio()
-  for (const receta of yaEnLaSemana) acumular(acc, receta, [], undefined, enCasa)
-  for (const [dia, gramos] of opciones.proteinaPorDia ?? []) acc.proteinaPorDia.set(dia, gramos)
+  const base = (): Acumulado => {
+    const a = acumuladoVacio()
+    for (const receta of yaEnLaSemana) acumular(a, receta, [], undefined, enCasa)
+    for (const receta of fijados) acumular(a, receta, usadosDe(receta), undefined, enCasa)
+    for (const [dia, gramos] of opciones.proteinaPorDia ?? []) a.proteinaPorDia.set(dia, gramos)
+    return a
+  }
+  const acc = base()
 
   // Lo ya cocinado no se vuelve a proponer ni cuando toca repetir: acabas de
   // comértelo. Si hay que repetir, se repite de lo elegido en esta pasada.
-  const intocables = new Set(yaEnLaSemana.map((r) => r.id))
+  const intocables = new Set([...yaEnLaSemana, ...fijados].map((r) => r.id))
   const usadas = new Set(intocables)
   const porHueco = new Map<string, RecetaListada>()
   const repetidos = new Set<string>()
@@ -447,7 +484,8 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   // Dentro del escalón deciden la nutrición, los presets y la variedad.
   const notaDe = (receta: RecetaListada, contra: Acumulado, dia?: string) => {
     const prioridad =
-      prioridadDeLaCompra(receta, contra, indice, usadosDe(receta), enCasa) -
+      prioridadDeLaCompra(receta, contra, indice, usadosDe(receta), enCasa) +
+      (preferidos.has(receta.id) ? PREMIO_COMPRADA : 0) -
       (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
       (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0)
     const a = aporteDe(receta)
@@ -492,9 +530,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   // mejor lo que la semana ya va a comprar.
   const dias = new Map(huecos.map((h) => [h.id, h.dia]))
   const sinElHueco = (salta: string): Acumulado => {
-    const otro = acumuladoVacio()
-    for (const receta of yaEnLaSemana) acumular(otro, receta, [], undefined, enCasa)
-    for (const [dia, gramos] of opciones.proteinaPorDia ?? []) otro.proteinaPorDia.set(dia, gramos)
+    const otro = base()
     for (const [id, receta] of porHueco) {
       if (id !== salta) acumular(otro, receta, usadosDe(receta), dias.get(id), enCasa)
     }
@@ -531,8 +567,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     if (cambios === 0) break
   }
 
-  const finales = acumuladoVacio()
-  for (const receta of yaEnLaSemana) acumular(finales, receta, [], undefined, enCasa)
+  const finales = base()
   for (const [id, receta] of porHueco) acumular(finales, receta, usadosDe(receta), dias.get(id), enCasa)
 
   return {

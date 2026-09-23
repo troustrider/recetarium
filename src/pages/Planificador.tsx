@@ -154,9 +154,11 @@ function Planificador() {
           <motion.button
             onClick={() => {
               const anterior = plan
+              const pendientesAntes = pendientes
               setInforme(autollenar(recetas, 2, despensa))
               registrar('Semana equilibrada', () => {
                 restaurarPlan(anterior)
+                restaurarPendientes(pendientesAntes)
                 setInforme(null)
               })
             }}

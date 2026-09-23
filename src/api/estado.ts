@@ -8,6 +8,8 @@ export interface EntradaPlanDTO {
   recetaId: string
   raciones: number
   cocinada?: boolean
+  /** Lo puso la auto-semana y nadie lo ha fijado: volver a pulsar lo sustituye. */
+  auto?: boolean
   /** Guarnición encendida en ese hueco. */
   guarnicionId?: string
   /** Planes anteriores al catálogo: sí o no, sin decir cuál. Se lee como "la recomendada". */
