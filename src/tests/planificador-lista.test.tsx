@@ -204,11 +204,12 @@ describe('raciones y límites del plan', () => {
     await waitFor(() => expect(result.current.lista.seleccionadas.length).toBeGreaterThan(0))
   })
 
-  it('autollenar respeta lo ya cocinado y sustituye lo demás', async () => {
+  it('autollenar respeta lo cocinado y lo puesto a mano', async () => {
     const { result } = await montarHidratado()
     act(() => result.current.plan.añadir('Miércoles', SOPA, 1))
     act(() => result.current.plan.añadir('Lunes', POLLO, 1))
     const hecha = result.current.plan.plan['Miércoles'][0].id
+    const aMano = result.current.plan.plan.Lunes[0].id
     act(() => result.current.plan.marcarCocinada('Miércoles', hecha, true))
 
     act(() => result.current.plan.autollenar(CATALOGO, 2))
@@ -217,9 +218,58 @@ describe('raciones y límites del plan', () => {
     expect(result.current.plan.plan['Miércoles'][0]).toMatchObject({
       id: hecha, raciones: 1, cocinada: true,
     })
-    // El lunes no estaba hecho: se sustituye por el reparto nuevo, con sus raciones.
     expect(result.current.plan.plan.Lunes).toHaveLength(1)
-    expect(result.current.plan.plan.Lunes[0].raciones).toBe(2)
+    expect(result.current.plan.plan.Lunes[0]).toMatchObject({ id: aMano, raciones: 1 })
+    expect(result.current.plan.plan.Lunes[0].auto).toBeUndefined()
+    // Lo puesto a mano no se vuelve a proponer en otro día.
+    const resto = result.current.plan.dias
+      .filter((d) => d !== 'Lunes')
+      .flatMap((d) => result.current.plan.plan[d])
+    expect(resto.some((e) => e.receta.id === POLLO.id)).toBe(false)
+  })
+
+  it('volver a pulsar solo rehace lo que puso la pasada anterior', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.añadir('Jueves', SOPA, 3))
+    const aMano = result.current.plan.plan.Jueves[0].id
+
+    act(() => result.current.plan.autollenar(CATALOGO, 2))
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas).toHaveLength(7)
+    expect(puestas.filter((e) => e.auto)).toHaveLength(6)
+
+    act(() => result.current.plan.autollenar(CATALOGO, 2))
+    expect(result.current.plan.plan.Jueves).toHaveLength(1)
+    expect(result.current.plan.plan.Jueves[0]).toMatchObject({ id: aMano, raciones: 3 })
+    expect(result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])).toHaveLength(7)
+  })
+
+  it('mover un plato de la auto-semana lo fija', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.autollenar(CATALOGO, 2))
+    const movida = result.current.plan.plan.Lunes[0]
+    act(() => result.current.plan.mover('Lunes', 'Martes', movida.id))
+    expect(result.current.plan.plan.Martes.find((e) => e.id === movida.id)?.auto).toBeUndefined()
+
+    act(() => result.current.plan.autollenar(CATALOGO, 2))
+    expect(result.current.plan.plan.Martes.some((e) => e.id === movida.id)).toBe(true)
+  })
+
+  it('la marca de la auto-semana se guarda y vuelve del backend', async () => {
+    api.getPlan.mockResolvedValue([
+      { dia: 'Lunes', recetaId: 'r1', raciones: 2, auto: true },
+      { dia: 'Martes', recetaId: 'r2', raciones: 2 },
+    ])
+    const { result } = await montarHidratado()
+    await waitFor(() => expect(result.current.plan.plan.Lunes).toHaveLength(1))
+    expect(result.current.plan.plan.Lunes[0].auto).toBe(true)
+    expect(result.current.plan.plan.Martes[0].auto).toBeUndefined()
+
+    act(() => result.current.plan.añadir('Miércoles', SOPA, 1))
+    await waitFor(() => expect(api.savePlan).toHaveBeenCalled(), { timeout: 3000 })
+    const guardado = api.savePlan.mock.calls.at(-1)![0]
+    expect(guardado.find((e: { dia: string }) => e.dia === 'Lunes')).toMatchObject({ auto: true })
+    expect(guardado.find((e: { dia: string }) => e.dia === 'Martes').auto).toBeUndefined()
   })
 
   it('autollenar no vuelve a proponer la receta que ya está hecha', async () => {
@@ -749,5 +799,71 @@ describe('la semana recuerda lo que quitaste', () => {
 
     const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
     expect(puestas.some((e) => e.receta.id === quitada.receta.id)).toBe(false)
+  })
+})
+
+describe('tiempo y compradas en la auto-semana', () => {
+  const lento = (id: string) => ({ ...receta(id, `Guiso ${id}`, [{ nombre: `carne ${id}`, cantidad: 200, unidad: 'g', familia: 'carnes' }]), tiempoPreparacion: 60 })
+  const rapido = (id: string, tipo?: 'desayuno') => ({ ...receta(id, `Rápido ${id}`, [{ nombre: `cosa ${id}`, cantidad: 1, unidad: 'ud', familia: 'verduras' }]), tiempoPreparacion: 15, ...(tipo ? { tipo } : {}) })
+
+  it('el desayuno de entre semana respeta el tope de tiempo', async () => {
+    const catalogo = [
+      ...CATALOGO,
+      ...['a', 'b', 'c', 'd', 'e'].map((id) => rapido(`dr-${id}`, 'desayuno')),
+      { ...lento('dl-1'), tipo: 'desayuno' as const },
+      { ...lento('dl-2'), tipo: 'desayuno' as const },
+    ]
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setHuecos('desayunos', 7))
+    act(() => result.current.prefs.setLimites({ tiempoMax: 20 }))
+    act(() => { result.current.plan.autollenar(catalogo, 2) })
+
+    for (const dia of ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as const) {
+      const desayuno = result.current.plan.plan[dia].find((e) => e.receta.tipo === 'desayuno')
+      expect(desayuno?.receta.tiempoPreparacion, dia).toBeLessThanOrEqual(20)
+    }
+  })
+
+  it('quita el tope solo en los días que hace falta', async () => {
+    // Cinco días de entre semana y solo tres platos rápidos: faltan dos, no cinco.
+    const catalogo = [rapido('p1'), rapido('p2'), rapido('p3'), lento('l1'), lento('l2'), lento('l3'), lento('l4')]
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setHuecos('desayunos', 0))
+    act(() => result.current.prefs.setLimites({ tiempoMax: 20 }))
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    const entreSemana = (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'] as const)
+      .flatMap((d) => result.current.plan.plan[d])
+    expect(entreSemana.filter((e) => e.receta.tiempoPreparacion > 20).length).toBeLessThanOrEqual(2)
+    const todas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(new Set(todas.map((e) => e.receta.id)).size).toBe(7)
+    expect(informe.repetidos).toBe(0)
+  })
+
+  it('no avisa de tiempo ensanchado si todo cabe en el tope', async () => {
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ tiempoMax: 30 }))
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(CATALOGO, 2) })
+    expect(informe.tiempoEnsanchado).toBe(false)
+  })
+
+  it('mete primero lo comprado, con sus raciones, y lo deja fijado', async () => {
+    const catalogo = [...CATALOGO, rapido('p1'), rapido('p2'), rapido('p3'), rapido('p4'), rapido('p5')]
+    const { result } = await montarHidratado()
+    act(() => result.current.pendientes.marcarPendientes([{ receta: SOPA, raciones: 3 }]))
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(catalogo, 2) })
+
+    const sopa = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d]).find((e) => e.receta.id === SOPA.id)
+    expect(sopa).toMatchObject({ raciones: 3 })
+    expect(sopa?.auto).toBeUndefined()
+    expect(informe.compradas).toBe(1)
+    await waitFor(() => expect(result.current.pendientes.pendientes).toHaveLength(0))
+
+    act(() => { result.current.plan.autollenar(catalogo, 2) })
+    const tras = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(tras.filter((e) => e.receta.id === SOPA.id)).toHaveLength(1)
   })
 })

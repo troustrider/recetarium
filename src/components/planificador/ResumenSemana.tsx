@@ -56,7 +56,9 @@ export default function ResumenSemana({ seleccion, preferencias, informe, onCerr
     informe.aprovechados.length > 0 &&
       `La semana gasta de la despensa ${listar(aprovechados)}${deMas > 0 ? ` y ${deMas} cosa${deMas === 1 ? '' : 's'} más` : ''}.`,
     informe.conservados > 0 &&
-      `${informe.conservados} ${informe.conservados === 1 ? 'plato ya hecho se queda' : 'platos ya hechos se quedan'} donde estaban.`,
+      `${informe.conservados} ${informe.conservados === 1 ? 'plato ya puesto se queda' : 'platos ya puestos se quedan'} donde estaban.`,
+    informe.compradas > 0 &&
+      `${informe.compradas} ${informe.compradas === 1 ? 'plato comprado entra' : 'platos comprados entran'} en la semana.`,
     informe.tiempoEnsanchado &&
       'Alguna receta pasa del tiempo que pediste.',
     informe.cenaEnsanchada &&

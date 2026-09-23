@@ -23,7 +23,7 @@ export const PRESETS: Preset[] = [
   {
     id: 'ligera',
     nombre: 'Ligera',
-    nota: 'Platos por debajo de 600 kcal y menos grasa saturada.',
+    nota: 'Prefiere platos de menos de 600 kcal y con poca grasa saturada.',
     prioridades: ['ligera', 'menosSaturadas'],
   },
   {
