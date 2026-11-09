@@ -21,6 +21,11 @@ function formatMultiplicador(m: number) {
   return String(+m.toFixed(2)).replace('.', ',')
 }
 
+function formatNumero(n: number | null | undefined) {
+  if (n == null || Number.isNaN(Number(n))) return '—'
+  return String(Math.round(Number(n) * 10) / 10).replace('.', ',')
+}
+
 function BotonFavorita({ favorita, onClick, className }: {
   favorita: boolean
   onClick: () => void
@@ -376,13 +381,56 @@ function DetalleReceta() {
             )}
 
             {elegida.calorias != null && (
-              <p className="text-xs text-gray-600 dark:text-gray-400">
-                Añade <strong className="text-gray-900 dark:text-gray-100">{elegida.calorias} kcal</strong> por ración
-                {elegida.proteinas != null && <> y {elegida.proteinas} g de proteína</>}
-                {elegida.sinGluten === false && (
-                  <span className="text-amber-600 dark:text-amber-400"> · lleva gluten</span>
+              <div className="flex flex-col gap-2" aria-label={`Valores nutricionales de ${elegida.nombre}`}>
+                <div className="grid grid-cols-4 gap-2">
+                  {([
+                    ['Kcal', elegida.calorias, ''],
+                    ['Prot', elegida.proteinas, 'g'],
+                    ['Carb', elegida.carbohidratos, 'g'],
+                    ['Grasa', elegida.grasas, 'g'],
+                  ] as const).map(([label, valor, unidad]) => (
+                    <div key={label} className="bg-white/80 dark:bg-gray-900/60 rounded-xl border border-lime-100 dark:border-lime-900/30 px-2 py-2.5 text-center">
+                      <p className="font-display text-base font-bold text-gray-900 dark:text-gray-100 tabular-nums leading-none">
+                        {valor != null ? formatNumero(valor) : '—'}{unidad}
+                      </p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mt-1">
+                        {label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                {elegida.micros && (
+                  <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] text-gray-500 dark:text-gray-400 tabular-nums">
+                    <span>Fibra {formatNumero(elegida.micros.fibra)}g</span>
+                    <span>Azúcares {formatNumero(elegida.micros.azucares)}g</span>
+                    <span>Saturadas {formatNumero(elegida.micros.saturadas)}g</span>
+                    <span>Sal {formatNumero(elegida.micros.sal)}g</span>
+                  </div>
                 )}
-              </p>
+                <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">
+                  guarnición, por porción
+                  {elegida.sinGluten === false && (
+                    <span className="text-amber-600 dark:text-amber-400"> · lleva gluten</span>
+                  )}
+                </p>
+                {receta.calorias != null && (
+                  <p className="text-xs text-gray-600 dark:text-gray-400 text-center tabular-nums">
+                    Con el plato:{' '}
+                    <strong className="text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                      {Math.round(receta.calorias + elegida.calorias)} kcal
+                    </strong>
+                    {receta.proteinas != null && elegida.proteinas != null && (
+                      <> · <span className="whitespace-nowrap">{Math.round(receta.proteinas + elegida.proteinas)} g prot</span></>
+                    )}
+                    {receta.carbohidratos != null && elegida.carbohidratos != null && (
+                      <> · <span className="whitespace-nowrap">{Math.round(receta.carbohidratos + elegida.carbohidratos)} g carb</span></>
+                    )}
+                    {receta.grasas != null && elegida.grasas != null && (
+                      <> · <span className="whitespace-nowrap">{Math.round(receta.grasas + elegida.grasas)} g grasa</span></>
+                    )}
+                  </p>
+                )}
+              </div>
             )}
           </section>
         )
