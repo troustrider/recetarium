@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { PREFERENCIAS_POR_DEFECTO, type Preferencias } from '../types/preferencias'
 import { PRESETS } from '../utils/presets'
@@ -32,7 +32,19 @@ describe('presets que dan preferencia', () => {
   })
 
   it('el panel dice que manda lo que hay en casa y lo que se compra', () => {
-    render(<PanelSemana cocinas={[]} onCerrar={vi.fn()} />)
+    render(<PanelSemana cocinas={[]} onCerrar={vi.fn()} onRehacer={vi.fn()} />)
     expect(screen.getByText(/primero se aprovecha lo que hay en casa y lo que se compra/i)).toBeInTheDocument()
+  })
+})
+
+describe('rehacer la semana desde el panel', () => {
+  it('cierra el panel y lanza la auto-semana', () => {
+    const onCerrar = vi.fn()
+    const onRehacer = vi.fn()
+    render(<PanelSemana cocinas={[]} onCerrar={onCerrar} onRehacer={onRehacer} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Rehacer la semana con esto' }))
+    expect(onCerrar).toHaveBeenCalledTimes(1)
+    expect(onRehacer).toHaveBeenCalledTimes(1)
   })
 })

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { Dices, X } from 'lucide-react'
 import { usePreferencias } from '../../context'
 import { MAX_COCINAS, MAX_RACIONES, MIN_RACIONES, type Dieta } from '../../types/preferencias'
 import { NOMBRE_PRIORIDAD, PRESETS, presetDe, type Preset } from '../../utils/presets'
@@ -84,9 +84,11 @@ function Seccion({ titulo, nota, children }: { titulo: string; nota?: string; ch
 interface Props {
   cocinas: string[]
   onCerrar: () => void
+  /** La misma acción que el botón Auto-semana, con su deshacer. */
+  onRehacer: () => void
 }
 
-export default function PanelSemana({ cocinas, onCerrar }: Props) {
+export default function PanelSemana({ cocinas, onCerrar, onRehacer }: Props) {
   const { preferencias, aplicar, alternarCocina, setHuecos, setRacionesPorPlato, setLimites } = usePreferencias()
   const { prioridades, cocinasFavoritas, desayunos, comidas, cenas, racionesPorPlato, limites } = preferencias
   const [vetado, setVetado] = useState('')
@@ -246,7 +248,17 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </div>
         </Seccion>
 
-        <div className="px-4 py-3">
+        <div className="px-4 py-3 flex flex-col gap-3">
+          {/* Sin esto, cambiar un filtro no se notaba hasta volver a pulsar
+              Auto-semana fuera, y parecía que no hacía nada. */}
+          <button
+            type="button"
+            onClick={() => { onCerrar(); onRehacer() }}
+            className="w-full flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+          >
+            <Dices className="w-3.5 h-3.5" />
+            Rehacer la semana con esto
+          </button>
           <p className="text-[11px] text-gray-400 dark:text-gray-500">
             Si tienes una condición que cuidar, lo que diga tu médico va por delante.
           </p>

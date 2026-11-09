@@ -76,6 +76,17 @@ function Planificador() {
     [dias, plan]
   )
 
+  function rehacerSemana() {
+    const anterior = plan
+    const pendientesAntes = pendientes
+    setInforme(autollenar(recetas, preferencias.racionesPorPlato, despensa))
+    registrar('Semana equilibrada', () => {
+      restaurarPlan(anterior)
+      restaurarPendientes(pendientesAntes)
+      setInforme(null)
+    })
+  }
+
   function alCocinar(dia: Dia, entrada: EntradaPlan) {
     if (entrada.cocinada) marcarCocinada(dia, entrada.id, false)
     else setCocinando({ dia, entrada })
@@ -152,16 +163,7 @@ function Planificador() {
             Cómo comemos
           </motion.button>
           <motion.button
-            onClick={() => {
-              const anterior = plan
-              const pendientesAntes = pendientes
-              setInforme(autollenar(recetas, preferencias.racionesPorPlato, despensa))
-              registrar('Semana equilibrada', () => {
-                restaurarPlan(anterior)
-                restaurarPendientes(pendientesAntes)
-                setInforme(null)
-              })
-            }}
+            onClick={rehacerSemana}
             disabled={recetas.length === 0}
             className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-40"
             whileTap={{ scale: 0.95 }}
@@ -298,7 +300,11 @@ function Planificador() {
           />
         )}
         {panelAbierto && (
-          <PanelSemana cocinas={cocinas} onCerrar={() => setPanelAbierto(false)} />
+          <PanelSemana
+            cocinas={cocinas}
+            onCerrar={() => setPanelAbierto(false)}
+            onRehacer={() => { if (recetas.length > 0) rehacerSemana() }}
+          />
         )}
         {pendienteActiva && (
           <SelectorDia
