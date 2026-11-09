@@ -80,7 +80,7 @@ function Planificador() {
     const anterior = plan
     const pendientesAntes = pendientes
     setInforme(autollenar(recetas, preferencias.racionesPorPlato, despensa))
-    registrar('Semana equilibrada', () => {
+    registrar('Auto-semana', () => {
       restaurarPlan(anterior)
       restaurarPendientes(pendientesAntes)
       setInforme(null)
