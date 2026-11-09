@@ -255,6 +255,30 @@ describe('raciones y límites del plan', () => {
     expect(result.current.plan.plan.Martes.some((e) => e.id === movida.id)).toBe(true)
   })
 
+  it('cambiar raciones o guarnición de un plato de la auto-semana lo fija', async () => {
+    const conGuarniciones = {
+      ...receta('r7', 'Pollo asado', [{ nombre: 'pollo', cantidad: 200, unidad: 'g', familia: 'carnes' }]),
+      guarniciones: [
+        { id: 'patata', nombre: 'Patata', aporta: [], ingredientes: [{ nombre: 'patata', cantidad: 1, unidad: 'ud', familia: 'verduras' }], pasos: [] },
+        { id: 'arroz', nombre: 'Arroz', aporta: [], ingredientes: [{ nombre: 'arroz', cantidad: 80, unidad: 'g', familia: 'cereales' }], pasos: [] },
+      ],
+    }
+    const catalogo = [...CATALOGO, conGuarniciones]
+    const { result } = await montarHidratado()
+    act(() => result.current.plan.autollenar(catalogo, 2))
+
+    const conRaciones = result.current.plan.plan.Lunes[0]
+    const conGuarnicion = result.current.plan.plan.Martes[0]
+    act(() => result.current.plan.setRaciones('Lunes', conRaciones.id, 3))
+    act(() => result.current.plan.setGuarnicionPlan('Martes', conGuarnicion.id, undefined))
+
+    act(() => result.current.plan.autollenar(catalogo, 2))
+    expect(result.current.plan.plan.Lunes.find((e) => e.id === conRaciones.id)).toMatchObject({ raciones: 3 })
+    const martes = result.current.plan.plan.Martes.find((e) => e.id === conGuarnicion.id)
+    expect(martes).toBeDefined()
+    expect(martes?.guarnicionId).toBeUndefined()
+  })
+
   it('la marca de la auto-semana se guarda y vuelve del backend', async () => {
     api.getPlan.mockResolvedValue([
       { dia: 'Lunes', recetaId: 'r1', raciones: 2, auto: true },

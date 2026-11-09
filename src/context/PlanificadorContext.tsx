@@ -261,13 +261,15 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   }, [cambiarPlan, plan])
 
   // El techo nunca puede quedar por debajo de las porciones de la receta: si no,
-  // una receta de 6 bajaba sola a 4 al primer toque del stepper.
+  // una receta de 6 bajaba sola a 4 al primer toque del stepper. Tocar un plato
+  // de la auto-semana lo fija, como moverlo: si no, la siguiente pasada se
+  // llevaba el cambio por delante.
   const setRaciones = useCallback((dia: Dia, entradaId: string, raciones: number) => {
     cambiarPlan((prev) => ({
       ...prev,
       [dia]: prev[dia].map((e) =>
         e.id === entradaId
-          ? { ...e, raciones: Math.max(1, Math.min(Math.max(4, racionesBase(e.receta)), raciones)) }
+          ? { ...e, raciones: Math.max(1, Math.min(Math.max(4, racionesBase(e.receta)), raciones)), auto: undefined }
           : e
       ),
     }))
@@ -285,7 +287,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
   const setGuarnicionPlan = useCallback((dia: Dia, entradaId: string, guarnicionId?: string) => {
     cambiarPlan((prev) => ({
       ...prev,
-      [dia]: prev[dia].map((e) => (e.id === entradaId ? { ...e, guarnicionId } : e)),
+      [dia]: prev[dia].map((e) => (e.id === entradaId ? { ...e, guarnicionId, auto: undefined } : e)),
     }))
   }, [cambiarPlan])
 
