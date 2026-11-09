@@ -4,6 +4,7 @@ import { usePreferencias } from '../../context'
 import { MAX_COCINAS, MAX_RACIONES, MIN_RACIONES, type Dieta } from '../../types/preferencias'
 import { NOMBRE_PRIORIDAD, PRESETS, presetDe, type Preset } from '../../utils/presets'
 import Capa from '../shared/Capa'
+import { normalizar } from '../../utils/ingredientes'
 
 const TIEMPOS: { valor: number | null; label: string }[] = [
   { valor: null, label: 'Sin tope' },
@@ -97,9 +98,12 @@ export default function PanelSemana({ cocinas, onCerrar, onRehacer }: Props) {
 
   const elegirPreset = (p: Preset) => aplicar({ ...preferencias, prioridades: p.prioridades })
 
+  // Solo con Enter o el botón: al salir del campo se colaban vetados a medio
+  // escribir que, además, se quedan guardados hasta que alguien los quita.
   const añadirVetado = () => {
     const limpio = vetado.trim()
-    if (!limpio || limites.vetados.includes(limpio)) return setVetado('')
+    const repetido = limites.vetados.some((v) => normalizar(v) === normalizar(limpio))
+    if (!limpio || repetido) return setVetado('')
     setLimites({ vetados: [...limites.vetados, limpio] })
     setVetado('')
   }
@@ -222,15 +226,24 @@ export default function PanelSemana({ cocinas, onCerrar, onRehacer }: Props) {
           </div>
 
           <div className="mt-3">
-            <input
-              type="text"
-              value={vetado}
-              onChange={(e) => setVetado(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); añadirVetado() } }}
-              onBlur={añadirVetado}
-              placeholder="Ingrediente que esta semana no..."
-              className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 dark:text-gray-100"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={vetado}
+                onChange={(e) => setVetado(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); añadirVetado() } }}
+                placeholder="Ingrediente que no entra…"
+                className="min-w-0 flex-1 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 dark:text-gray-100"
+              />
+              <button
+                type="button"
+                onClick={añadirVetado}
+                disabled={!vetado.trim()}
+                className="shrink-0 px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-40"
+              >
+                Añadir
+              </button>
+            </div>
             {limites.vetados.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {limites.vetados.map((v) => (

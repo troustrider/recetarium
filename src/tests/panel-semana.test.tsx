@@ -55,3 +55,33 @@ describe('el tiempo cuenta también para los desayunos', () => {
     expect(screen.getAllByText('Cuenta también para los desayunos.')).toHaveLength(2)
   })
 })
+
+describe('vetados', () => {
+  const campo = () => screen.getByPlaceholderText('Ingrediente que no entra…')
+
+  it('salir del campo no añade lo escrito a medias', () => {
+    render(<PanelSemana cocinas={[]} onCerrar={vi.fn()} onRehacer={vi.fn()} />)
+    fireEvent.change(campo(), { target: { value: 'pan' } })
+    fireEvent.blur(campo())
+    expect(prefs.setLimites).not.toHaveBeenCalled()
+  })
+
+  it('se añade con Enter o con el botón', () => {
+    render(<PanelSemana cocinas={[]} onCerrar={vi.fn()} onRehacer={vi.fn()} />)
+    fireEvent.change(campo(), { target: { value: 'pan' } })
+    fireEvent.keyDown(campo(), { key: 'Enter' })
+    expect(prefs.setLimites).toHaveBeenLastCalledWith({ vetados: ['pan'] })
+
+    fireEvent.change(campo(), { target: { value: 'pollo' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Añadir' }))
+    expect(prefs.setLimites).toHaveBeenLastCalledWith({ vetados: ['pollo'] })
+  })
+
+  it('no repite un vetado que solo cambia en tildes o mayúsculas', () => {
+    prefs.actual = { ...PREFERENCIAS_POR_DEFECTO, limites: { ...PREFERENCIAS_POR_DEFECTO.limites, vetados: ['salmón'] } }
+    render(<PanelSemana cocinas={[]} onCerrar={vi.fn()} onRehacer={vi.fn()} />)
+    fireEvent.change(campo(), { target: { value: 'Salmon' } })
+    fireEvent.keyDown(campo(), { key: 'Enter' })
+    expect(prefs.setLimites).not.toHaveBeenCalled()
+  })
+})
