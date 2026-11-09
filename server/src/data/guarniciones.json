@@ -3443,6 +3443,734 @@
         "Pela a tiras {1 berenjena} y córtala en dados. Ralla {2 tomates} y desecha la piel.",
         "Ponlo todo en una sartén con {2 cucharadas} de aceite de oliva, {2 dientes} de ajo picados, {½ cucharadita} de comino, {½ cucharadita} de pimentón dulce y sal. Tapa y cuece 15 min a fuego medio; luego destapa y aplasta con un tenedor 5 min más, hasta que quede como una compota espesa. Termina con {1 cucharada} de cilantro picado."
       ]
+    },
+    {
+      "nombre": "Acelgas arcoíris con pasas y piñones",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea", "italiana"],
+      "ingredientes": [
+        { "nombre": "acelgas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "pasas", "cantidad": 20, "unidad": "g", "familia": "frutas" },
+        { "nombre": "piñones", "cantidad": 15, "unidad": "g", "familia": "frutos secos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Separa las pencas de colores de las hojas de {300 g} de acelga arcoíris; corta las pencas en trozos de 1 cm y las hojas en tiras anchas. Tuesta {15 g} de piñones en sartén seca 2 min, sin dejar de mirarlos, y sácalos.",
+        "En la misma sartén, con {1 cucharada} de aceite de oliva, saltea las pencas con {1 diente} de ajo laminado 4 min. Añade las hojas, {20 g} de pasas y sal, y remueve 2 min hasta que las hojas se arruguen. Termina con los piñones."
+      ]
+    },
+    {
+      "nombre": "Achicoria salteada con ajo (cicoria ripassata)",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana"],
+      "ingredientes": [
+        { "nombre": "escarola", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de escarola o achicoria en tiras anchas, lávala y escáldala 2 min en agua hirviendo con sal. Escúrrela y apriétala con las manos para quitarle el agua.",
+        "Dora {2 dientes} de ajo laminados en {1 cucharada} de aceite de oliva a fuego medio 1 min y saltea la verdura 3 min, hasta que brille. Prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Alcachofas a la romana",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana"],
+      "ingredientes": [
+        { "nombre": "corazones de alcachofa congelados", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "menta", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Pon {300 g} de corazones de alcachofa congelados en un cazo con {1 cucharada} de aceite de oliva, {1 diente} de ajo picado, {1 cucharada} de menta y {1 cucharada} de perejil picados, sal y un dedo de agua.",
+        "Tapa y cuece 12 min a fuego suave, hasta que estén tiernas al pincharlas. Destapa, deja que se evapore el líquido y termina con el zumo de {½ limón}."
+      ]
+    },
+    {
+      "nombre": "Arroz con laurel",
+      "aporta": ["almidon"],
+      "cocinas": ["espanola", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 160, "unidad": "g", "familia": "cereales" },
+        { "nombre": "laurel", "cantidad": 1, "unidad": "hoja", "familia": "especias" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Calienta {1 cucharadita} de aceite de oliva en un cazo, dora {1 diente} de ajo aplastado 1 min y añade {160 g} de arroz, removiendo 1 min hasta que brille.",
+        "Echa el doble de volumen de agua, {1 hoja} de laurel y sal; cuece tapado a fuego mínimo 12 min y deja reposar 5 min sin destapar. Retira el ajo y el laurel."
+      ]
+    },
+    {
+      "nombre": "Bulgur con perejil y granada",
+      "aporta": ["almidon"],
+      "cocinas": ["libanesa", "turca", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "bulgur", "cantidad": 120, "unidad": "g", "familia": "cereales" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "granada", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cubre {120 g} de bulgur con {240 ml} de agua hirviendo y una pizca de sal, tapa y deja 15 min hasta que absorba todo el líquido. Suéltalo con un tenedor.",
+        "Mézclalo con {2 cucharadas} de perejil picado, los granos de {½ granada} y {1 cucharada} de aceite de oliva."
+      ]
+    },
+    {
+      "nombre": "Calabacín trifolato",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 calabacines} en medias lunas de 5 mm y lamina {1 diente} de ajo.",
+        "Saltea el calabacín con el ajo en una sartén amplia con {1 cucharada} de aceite de oliva a fuego medio-alto 8 min, removiendo poco, hasta que se dore por los bordes. Sala al final y termina con {1 cucharada} de perejil picado."
+      ]
+    },
+    {
+      "nombre": "Calabacín y guisantes con menta",
+      "aporta": ["verdura"],
+      "cocinas": ["mediterranea"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "guisantes congelados", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "menta", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 calabacín} en medias lunas y saltéalo en {1 cucharada} de aceite de oliva a fuego fuerte 4 min, hasta que se dore.",
+        "Añade {150 g} de guisantes congelados y {2 cucharadas} de agua, tapa y cuece 3 min. Termina con {1 cucharada} de menta picada y sal."
+      ]
+    },
+    {
+      "nombre": "Canónigos con uvas y semillas de calabaza",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte", "francesa"],
+      "ingredientes": [
+        { "nombre": "canónigos", "cantidad": 80, "unidad": "g", "familia": "verduras" },
+        { "nombre": "uvas", "cantidad": 100, "unidad": "g", "familia": "frutas" },
+        { "nombre": "semillas de calabaza", "cantidad": 15, "unidad": "g", "familia": "frutos secos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre balsámico", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lava {80 g} de canónigos y sécalos bien. Parte por la mitad {100 g} de uvas.",
+        "Tuesta {15 g} de semillas de calabaza en sartén seca 2 min, hasta que empiecen a saltar, y aliña todo con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre balsámico y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Col de Milán con mantequilla y alcaravea",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte", "europa-este"],
+      "ingredientes": [
+        { "nombre": "col de Milán", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "alcaravea", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Quita el tronco a {400 g} de col de Milán y córtala en tiras de 1 cm. Escáldala 3 min en agua hirviendo con sal y escúrrela bien.",
+        "Saltéala 3 min en una sartén con {15 g} de mantequilla y {½ cucharadita} de semillas de alcaravea a fuego medio, hasta que brille, y ajusta de sal y pimienta."
+      ]
+    },
+    {
+      "nombre": "Coles de Bruselas tostadas al limón",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte", "americana"],
+      "ingredientes": [
+        { "nombre": "coles de Bruselas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Precalienta el horno a 210°C. Corta por la mitad {300 g} de coles de Bruselas y úntalas con {1 cucharada} de aceite de oliva y sal.",
+        "Ásalas 20 min con el corte hacia abajo, sin moverlas, hasta que esa cara esté muy tostada y crujiente; riégalas con el zumo de {½ limón} al sacarlas."
+      ]
+    },
+    {
+      "nombre": "Encurtido rápido de remolacha chioggia y cebolla roja",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte"],
+      "ingredientes": [
+        { "nombre": "remolacha", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de sidra", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "mostaza en grano", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pela {1 remolacha chioggia cruda} y córtala en láminas de 1-2 mm con mandolina o pelador; corta {½ cebolla roja} en aros finos. Si no hay chioggia, sirve una remolacha amarilla o roja cruda.",
+        "Calienta {3 cucharadas} de vinagre de sidra con {3 cucharadas} de agua, {1 cucharadita} de azúcar, {½ cucharadita} de semillas de mostaza y una pizca de sal hasta que se disuelva. Viértelo sobre la remolacha y la cebolla y deja 15 min, removiendo un par de veces."
+      ]
+    },
+    {
+      "nombre": "Ensalada de achicoria roja con naranja y avellanas",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "achicoria roja", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "naranja", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "avellanas", "cantidad": 20, "unidad": "g", "familia": "frutos secos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre balsámico", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {150 g} de achicoria roja en tiras de 1 cm y sumérgela 5 min en agua muy fría: se vuelve crujiente y amarga menos. Escúrrela bien.",
+        "Pela {1 naranja} a lo vivo y córtala en gajos encima de la ensalada para aprovechar el jugo. Tuesta {20 g} de avellanas en sartén sin aceite 3 min, hasta que huelan, pártelas y aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre balsámico y sal."
+      ]
+    },
+    {
+      "nombre": "Ensalada de lombarda al eneldo",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-este", "europa-norte"],
+      "ingredientes": [
+        { "nombre": "col lombarda", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "vinagre de sidra", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {200 g} de col lombarda en tiras muy finas, sálala y estrújala con las manos 1 min, hasta que se ablande y suelte su jugo.",
+        "Aliña con {1 cucharada} de vinagre de sidra, {1 cucharadita} de azúcar, {1 cucharada} de aceite de girasol y {1 cucharada} de eneldo picado. Mejora si reposa 15 min."
+      ]
+    },
+    {
+      "nombre": "Ensalada de pepino, rábano y menta",
+      "aporta": ["verdura"],
+      "cocinas": ["libanesa", "mediooriente", "turca"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "rábano", "cantidad": 90, "unidad": "g", "familia": "verduras" },
+        { "nombre": "menta", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Corta {1 pepino} a lo largo, quítale las pepitas con una cucharilla y córtalo en medias lunas; lamina {6 rábanos}.",
+        "Mézclalos con {1 cucharada} de menta picada, {1 cucharada} de aceite de oliva, el zumo de {½ limón} y sal, y deja 5 min antes de servir."
+      ]
+    },
+    {
+      "nombre": "Ensalada de postelein con manzana y vinagreta de sidra",
+      "aporta": ["verdura"],
+      "cocinas": ["americana", "europa-norte"],
+      "ingredientes": [
+        { "nombre": "verdolaga", "cantidad": 100, "unidad": "g", "familia": "verduras" },
+        { "nombre": "manzana", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de sidra", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "mostaza", "cantidad": 0.5, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Lava {100 g} de verdolaga de invierno y escúrrela bien en un paño. Corta {1 manzana} con piel en bastones finos.",
+        "Bate {1 cucharada} de aceite de oliva con {1 cucharadita} de vinagre de sidra, {½ cucharadita} de mostaza y sal, y aliña justo antes de servir: la hoja es muy tierna y se ablanda en minutos."
+      ]
+    },
+    {
+      "nombre": "Escarola con aceitunas",
+      "aporta": ["verdura"],
+      "cocinas": ["espanola", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "escarola", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceitunas negras", "cantidad": 30, "unidad": "g", "familia": "conservas" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lava {200 g} de escarola, córtala en trozos y escúrrela muy bien. Frota el fondo de la ensaladera con {1 diente} de ajo partido.",
+        "Añade la escarola y {30 g} de aceitunas negras y aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre de vino tinto y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Galuska rápida (ñoquis de cuchara)",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-este"],
+      "ingredientes": [
+        { "nombre": "harina", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "huevos", "cantidad": 1, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Bate {150 g} de harina de trigo con {1 huevo}, {80 ml} de agua y sal hasta tener una masa espesa y pegajosa que caiga lenta de la cuchara.",
+        "Con una cucharilla mojada, echa pedacitos de masa del tamaño de una avellana en agua hirviendo con sal. Cuando floten, a los 2-3 min, sácalos con la espumadera y mézclalos con {10 g} de mantequilla."
+      ]
+    },
+    {
+      "nombre": "Judías planas salteadas con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "judías verdes", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Quita las puntas a {300 g} de judías planas y córtalas en trozos de 4 cm. Cuécelas 7 min en agua con sal, hasta que estén tiernas, y escúrrelas.",
+        "Dora {2 dientes} de ajo laminados en {1 cucharada} de aceite de oliva 1 min y saltea las judías 2 min. Prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Judías verdes al limón y ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "judías verdes", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Cuece {300 g} de judías verdes sin las puntas en agua hirviendo con sal 6 min, hasta que estén tiernas pero aún crujan un poco, y escúrrelas.",
+        "Saltéalas 2 min con {1 cucharada} de aceite de oliva y {1 diente} de ajo laminado, y riégalas con el zumo de {½ limón} al servir."
+      ]
+    },
+    {
+      "nombre": "Laban bi toum (yogur con ajo y menta)",
+      "aporta": ["proteina"],
+      "cocinas": ["palestina", "libanesa", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "yogur griego", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "menta seca", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Machaca {1 diente} de ajo con una pizca de sal hasta hacer una pasta.",
+        "Mézclalo con {200 g} de yogur griego y {1 cucharadita} de menta seca frotada entre los dedos. Déjalo 10 min en la nevera para que el ajo se reparta."
+      ]
+    },
+    {
+      "nombre": "Orzo al limón con hierbas",
+      "aporta": ["almidon"],
+      "cocinas": ["mediterranea", "griega", "italiana"],
+      "ingredientes": [
+        { "nombre": "orzo", "cantidad": 140, "unidad": "g", "familia": "cereales" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Cuece {140 g} de orzo en agua con sal el tiempo que marque el paquete, normalmente 9 min, y escúrrelo dejando un par de cucharadas del agua de cocción.",
+        "Mézclalo en caliente con {15 g} de mantequilla, la ralladura y el zumo de {½ limón} y {1 cucharada} de eneldo picado (o las hojitas del hinojo si lo acompaña), y prueba de sal."
+      ]
+    },
+    {
+      "nombre": "Pan de centeno tostado con mantequilla de mostaza",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-norte", "francesa"],
+      "ingredientes": [
+        { "nombre": "pan de centeno", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 20, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "mostaza", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Mezcla {20 g} de mantequilla blanda con {1 cucharadita} de mostaza a la antigua.",
+        "Tuesta {4 rebanadas} de pan de centeno 2-3 min, hasta que estén crujientes, y úntalas en caliente para que la mantequilla se funda."
+      ]
+    },
+    {
+      "nombre": "Pan de maíz rápido en sartén",
+      "aporta": ["almidon"],
+      "cocinas": ["americana"],
+      "ingredientes": [
+        { "nombre": "harina de maíz", "cantidad": 100, "unidad": "g", "familia": "cereales" },
+        { "nombre": "harina", "cantidad": 50, "unidad": "g", "familia": "cereales" },
+        { "nombre": "levadura química", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "huevos", "cantidad": 1, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "leche", "cantidad": 120, "unidad": "ml", "familia": "lácteos" },
+        { "nombre": "mantequilla", "cantidad": 20, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Mezcla {100 g} de harina de maíz, {50 g} de harina de trigo, {1 cucharadita} de levadura química, {1 cucharadita} de azúcar y sal. Bate aparte {1 huevo} con {120 ml} de leche y únelo todo sin batir de más: unos grumos están bien.",
+        "Derrite {20 g} de mantequilla en una sartén pequeña a fuego medio-bajo, vierte la masa, tapa y cuece 10 min. Dale la vuelta con ayuda de un plato y cuece 4 min más, hasta que al pinchar el palillo salga seco."
+      ]
+    },
+    {
+      "nombre": "Pan tostado al aceite",
+      "aporta": ["almidon"],
+      "cocinas": ["norteafrica", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {150 g} de barra de pan en rebanadas al bies de 1,5 cm.",
+        "Túestalas en la plancha o en la tostadora, ríegalas con {1 cucharada} de aceite de oliva y una pizca de sal, y sirve caliente para mojar."
+      ]
+    },
+    {
+      "nombre": "Pan tostado al ajo para mojar",
+      "aporta": ["almidon"],
+      "cocinas": ["italiana"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 160, "unidad": "g", "familia": "cereales" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {160 g} de chapata en rebanadas de 1,5 cm y tuéstalas en una sartén o en el horno hasta que estén doradas.",
+        "Frótalas en caliente con {1 diente} de ajo partido por la mitad y riégalas con {1 cucharada} de aceite de oliva."
+      ]
+    },
+    {
+      "nombre": "Patata il-forn (patatas al horno con hinojo)",
+      "aporta": ["almidon"],
+      "cocinas": ["mediterranea"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "hinojo", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "hinojo en semilla", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Precalienta el horno a 200°C. Corta {500 g} de patatas en rodajas de 5 mm y {1 hinojo} en láminas, y mézclalos en una fuente con {2 cucharadas} de aceite de oliva, {1 cucharadita} de semillas de hinojo, sal y pimienta.",
+        "Añade agua hasta un tercio de la altura y hornea 50 min, hasta que el agua se evapore, las patatas estén tiernas y la capa de arriba dorada."
+      ]
+    },
+    {
+      "nombre": "Patatas a lo pobre con pimiento verde",
+      "aporta": ["almidon"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de patatas en rodajas finas de 3 mm, {1 pimiento verde} en tiras y lamina {1 diente} de ajo.",
+        "Ponlo todo en una sartén con {2 cucharadas} de aceite de oliva y sal, tapa y cocina 15 min a fuego medio-bajo, removiendo de vez en cuando. Destapa los últimos 5 min y sube el fuego para que se doren."
+      ]
+    },
+    {
+      "nombre": "Patatas al ajo y perejil",
+      "aporta": ["almidon"],
+      "cocinas": ["espanola", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de vino blanco", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pela {500 g} de patata, córtala en trozos de 3 cm y cuécela en agua con sal 15 min, hasta que el cuchillo entre sin resistencia. Escúrrela.",
+        "Aliña en caliente con {1 diente} de ajo muy picado, {2 cucharadas} de perejil, {2 cucharadas} de aceite de oliva, {1 cucharadita} de vinagre de vino blanco y sal: en caliente absorben mejor el aliño."
+      ]
+    },
+    {
+      "nombre": "Patatas al romero en sartén",
+      "aporta": ["almidon"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "romero", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {500 g} de patata en dados de 2 cm y cúecelos 5 min en el microondas en un bol tapado con un chorro de agua, hasta que empiecen a ablandarse. Escúrrelos y sécalos.",
+        "Dóralos en una sartén con {1 cucharada} de aceite de oliva, {2 dientes} de ajo aplastados y {1 cucharadita} de romero a fuego medio-alto 10 min, removiendo cada 2-3 min, hasta que estén crujientes. Sala al final."
+      ]
+    },
+    {
+      "nombre": "Patatas en dados doradas al horno",
+      "aporta": ["almidon"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "pimentón", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Precalienta el horno a 220°C. Corta {500 g} de patatas en dados de 2 cm, sécalos con un paño y úntalos con {1 cucharada} de aceite de oliva, {½ cucharadita} de pimentón dulce y sal.",
+        "Ásalos 25 min en la bandeja en una sola capa, dándoles la vuelta a mitad de tiempo, hasta que estén dorados y crujientes."
+      ]
+    },
+    {
+      "nombre": "Patatas en gajos con pimentón",
+      "aporta": ["almidon"],
+      "cocinas": ["espanola", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "pimentón", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Precalienta el horno a 210°C. Corta {500 g} de patata con piel en gajos de 2 cm y sécalos con un paño.",
+        "Úntalos con {1 cucharada} de aceite de oliva, {1 cucharadita} de pimentón dulce y sal, y ásalos 30 min en una sola capa, dándoles la vuelta a mitad, hasta que estén dorados por fuera y blandos por dentro."
+      ]
+    },
+    {
+      "nombre": "Patatas nuevas aplastadas con cebollino",
+      "aporta": ["almidon"],
+      "cocinas": ["europa-norte", "americana"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "cebollino", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Cuece {400 g} de patatas nuevas con piel en agua con sal 15 min, hasta que el cuchillo entre sin resistencia, y escúrrelas.",
+        "Aplástalas una a una con el fondo de un vaso hasta que se abran, y mézclalas con {15 g} de mantequilla, {1 cucharada} de cebollino picado y sal en escamas."
+      ]
+    },
+    {
+      "nombre": "Picatostes de masa madre al ajo",
+      "aporta": ["almidon"],
+      "cocinas": ["francesa", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 120, "unidad": "g", "familia": "cereales" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {120 g} de pan de masa madre del día anterior en dados de 2 cm.",
+        "Dóralos en una sartén con {1 cucharada} de aceite de oliva y {1 diente} de ajo aplastado a fuego medio 5 min, removiendo, hasta que crujan. Retira el ajo, sala y espolvorea {1 cucharada} de perejil picado."
+      ]
+    },
+    {
+      "nombre": "Pimientos verdes fritos con sal gorda",
+      "aporta": ["verdura"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "pimiento verde", "cantidad": 4, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "sal", "cantidad": 1, "unidad": "pizca", "familia": "especias" }
+      ],
+      "pasos": [
+        "Lava y seca bien {4 pimientos verdes italianos} y pínchalos un par de veces con un cuchillo para que no revienten.",
+        "Fríelos enteros en una sartén con {2 cucharadas} de aceite de oliva a fuego medio, tapados, 8 min, girándolos de vez en cuando, hasta que la piel se arrugue y tenga manchas doradas. Escúrrelos y echáles sal gorda."
+      ]
+    },
+    {
+      "nombre": "Piriñaca",
+      "aporta": ["verdura"],
+      "cocinas": ["espanola", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de Jerez", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pica en dados pequeños, de medio centímetro, {2 tomates}, {½ pimiento verde} y {½ cebolla}.",
+        "Aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre de Jerez y sal, y deja 10 min en la nevera para que el tomate suelte su jugo."
+      ]
+    },
+    {
+      "nombre": "Polenta blanda al parmesano",
+      "aporta": ["almidon"],
+      "cocinas": ["italiana"],
+      "ingredientes": [
+        { "nombre": "polenta", "cantidad": 100, "unidad": "g", "familia": "cereales" },
+        { "nombre": "leche", "cantidad": 200, "unidad": "ml", "familia": "lácteos" },
+        { "nombre": "parmesano rallado", "cantidad": 20, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Lleva a hervor {200 ml} de leche con {300 ml} de agua y sal. Echa {100 g} de polenta instantánea en lluvia sin dejar de batir con varillas y cuece 5 min a fuego bajo, removiendo, hasta que se despegue de las paredes.",
+        "Apaga y mezcla con {20 g} de parmesano rallado y {10 g} de mantequilla; tiene que quedar suelta como un puré. Si espesa mientras espera, aflójala con un chorro de agua caliente."
+      ]
+    },
+    {
+      "nombre": "Raíz de perejil asada con miel y tomillo",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte", "francesa"],
+      "ingredientes": [
+        { "nombre": "raíz de perejil", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "tomillo", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "miel", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Precalienta el horno a 200°C. Pela {300 g} de raíz de perejil y córtala a lo largo en bastones del grosor de un dedo; úntala con {1 cucharada} de aceite de oliva, {½ cucharadita} de tomillo y sal.",
+        "Ásala 25 min dándole la vuelta a mitad de tiempo, y en los últimos 5 min riégala con {1 cucharadita} de miel para que glasee sin quemarse."
+      ]
+    },
+    {
+      "nombre": "Rábano negro rallado con crème fraîche y cebollino",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte", "europa-este"],
+      "ingredientes": [
+        { "nombre": "rábano negro", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "crème fraîche", "cantidad": 50, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cebollino", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pela {1 rábano negro} y rállalo grueso. Sálalo y déjalo 10 min en un colador para que suelte agua y pierda el picor más agresivo; luego estrújalo con las manos.",
+        "Mézclalo con {50 g} de crème fraîche, el zumo de {½ limón} y {1 cucharada} de cebollino picado."
+      ]
+    },
+    {
+      "nombre": "Rúcula con hinojo y limón",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "rúcula", "cantidad": 60, "unidad": "g", "familia": "verduras" },
+        { "nombre": "hinojo", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lamina {½ hinojo} lo más fino que puedas, con mandolina o con un cuchillo bien afilado, y mézclalo con {60 g} de rúcula.",
+        "Aliña con el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal justo antes de servir, para que la rúcula no se arrugue."
+      ]
+    },
+    {
+      "nombre": "Rúcula con parmesano",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana"],
+      "ingredientes": [
+        { "nombre": "rúcula", "cantidad": 60, "unidad": "g", "familia": "verduras" },
+        { "nombre": "parmesano rallado", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Lava y seca bien {60 g} de rúcula.",
+        "Aliña con {1 cucharada} de aceite de oliva, el zumo de {½ limón} y sal, y cubre con {15 g} de parmesano en lascas hechas con el pelador."
+      ]
+    },
+    {
+      "nombre": "Salata baladi",
+      "aporta": ["verdura"],
+      "cocinas": ["libanesa", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "menta", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta en dados de 1 cm {2 tomates} y {1 pepino}, y {½ cebolla roja} en pluma fina. Pica {1 cucharada} de menta.",
+        "Aliña con el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Salata de tomate y menta",
+      "aporta": ["verdura"],
+      "cocinas": ["palestina", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "menta", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} en dados pequeños y {2 cebolletas} en rodajas finas.",
+        "Mézclalos con {2 cucharadas} de menta picada, el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Salata tounsia",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "pepino", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "manzana", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "menta seca", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta en dados pequeños, de medio centímetro, {1 pepino}, {2 tomates}, {1 manzana} y {½ cebolla roja}.",
+        "Aliña con {1 cucharadita} de menta seca, el zumo de {½ limón}, {1 cucharada} de aceite de oliva y sal."
+      ]
+    },
+    {
+      "nombre": "Tarator (salsa de tahini y perejil)",
+      "aporta": ["proteina"],
+      "cocinas": ["libanesa", "mediooriente", "turca"],
+      "ingredientes": [
+        { "nombre": "tahini", "cantidad": 3, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Bate {3 cucharadas} de tahini con el zumo de {1 limón} y {1 diente} de ajo rallado: primero se cortará y espesará, es normal.",
+        "Ve añadiendo agua fría a cucharadas sin dejar de batir hasta que quede una salsa lisa y fluida como yogur líquido. Sala y mezcla con {2 cucharadas} de perejil picado."
+      ]
+    },
+    {
+      "nombre": "Tomate aliñado con orégano y ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["espanola"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "orégano", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de Jerez", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} maduros en gajos y ponlos en una fuente. Pica muy fino {1 diente} de ajo.",
+        "Aliña con el ajo, {½ cucharadita} de orégano, {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre de Jerez y sal en escamas. Deja 10 min para que suelten jugo."
+      ]
+    },
+    {
+      "nombre": "Tomates asados con orégano",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 4, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Precalienta el horno a 200°C. Parte {4 tomates} por la mitad y colócalos con el corte hacia arriba en una fuente.",
+        "Reparte por encima {1 diente} de ajo picado, {1 cucharadita} de orégano, sal y {1 cucharada} de aceite de oliva, y ásalos 20 min, hasta que estén blandos y arrugados por los bordes."
+      ]
+    },
+    {
+      "nombre": "Tomates cherry asados con orégano",
+      "aporta": ["verdura"],
+      "cocinas": ["italiana", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "tomate cherry", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "orégano", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pon {300 g} de tomates cherry enteros en una fuente pequeña con {1 diente} de ajo aplastado, {1 cucharada} de aceite de oliva, {½ cucharadita} de orégano y sal.",
+        "Ásalos 12 min a la vez que la pizza, en la rejilla de abajo, hasta que la piel se arrugue y empiecen a soltar jugo."
+      ]
+    },
+    {
+      "nombre": "Zanahorias moradas glaseadas con comino y miel",
+      "aporta": ["verdura"],
+      "cocinas": ["europa-norte", "norteafrica"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "miel", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pela {300 g} de zanahorias moradas y córtalas al bies en rodajas de 1 cm. Ponlas en una sartén con {10 g} de mantequilla, agua hasta media altura y sal, y cuece 8 min destapado a fuego medio hasta que el agua se evapore.",
+        "Añade {1 cucharadita} de miel y {½ cucharadita} de comino y saltea 2 min hasta que brillen. Ojo, tiñen: no las mezcles con verduras claras hasta el plato."
+      ]
     }
   ]
 }
