@@ -119,7 +119,13 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
           </button>
         </div>
 
-        <Seccion titulo="Qué buscamos esta semana">
+        {/* En la nota de la semana mandan la despensa y la compra, en escalones;
+            el preset solo decide dentro de cada escalón. Decirlo evita que un
+            "Ligera" con un plato de 900 kcal parezca un fallo. */}
+        <Seccion
+          titulo="Qué buscamos esta semana"
+          nota="Primero se aprovecha lo que hay en casa y lo que se compra; dentro de eso, se sigue esta preferencia."
+        >
           <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <Chip key={p.id} activo={preset?.id === p.id} onClick={() => elegirPreset(p)} titulo={p.nota}>
