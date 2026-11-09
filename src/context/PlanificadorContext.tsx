@@ -501,6 +501,8 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
 
   // Deshacer un quitado devuelve el plato al plan, así que deja de estar
   // descartado: lo que vuelve a estar puesto no puede pesar en su contra.
+  // `yaPropuestosRef` no se toca a propósito: quien deshace una auto-semana la
+  // está rechazando, y volver a pulsar tiene que darle otra, no la misma.
   const restaurarPlan = useCallback((anterior: Plan) => {
     for (const dia of DIAS) {
       for (const e of anterior[dia]) descartadosRef.current.delete(e.receta.id)
