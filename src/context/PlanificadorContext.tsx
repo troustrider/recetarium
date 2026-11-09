@@ -424,6 +424,13 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       if (puesta > 0) proteinaPorDia.set(dia, puesta)
     }
 
+    // Una sola elección por plato, la misma para puntuar y para encender.
+    const elegidas = new Map<string, string | null>()
+    const guarnicionDe = (receta: RecetaListada) => {
+      if (!elegidas.has(receta.id)) elegidas.set(receta.id, guarnicionAuto(receta, limites)?.id ?? null)
+      return elegidas.get(receta.id)!
+    }
+
     const { porHueco, repetidos, aprovechados } = repartirSemana(huecos, {
       preferencias: prefs,
       yaEnLaSemana: hechas,
@@ -433,6 +440,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
       descartados: descartadosRef.current,
       yaPropuestos: yaPropuestosRef.current,
       proteinaPorDia,
+      guarnicionDe,
     })
 
     // Solo se recuerda la última pasada: así alterna entre dos semanas buenas en
@@ -456,7 +464,7 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
         raciones: comprada?.raciones ?? raciones,
         momento,
         ...(comprada ? {} : { auto: true }),
-        ...(guarnicionAuto(receta, limites) ? { guarnicionId: guarnicionAuto(receta, limites)!.id } : {}),
+        ...(guarnicionDe(receta) ? { guarnicionId: guarnicionDe(receta)! } : {}),
       }]
     }
 

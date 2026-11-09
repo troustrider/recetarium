@@ -495,3 +495,23 @@ describe('lo que recuerda entre pasadas', () => {
     expect([...aprovechados].sort()).toEqual(['cilantro', 'espinacas'])
   })
 })
+
+describe('la guarnición que puntúa es la que se enciende', () => {
+  it('con sin gluten puesto, la pita recomendada no cuenta en la nutrición del plato', () => {
+    // Los mismos ingredientes que la ensalada, para que la cesta no desempate:
+    // aquí solo se mira la nutrición.
+    const pita = { ...guarnicion('lechuga', { saturadas: 40 }), nombre: 'Pan de pita', calorias: 2500, sinGluten: false }
+    const ensalada = { ...guarnicion('lechuga'), sinGluten: true }
+    const conPita = receta({ proteinas: 40, micros: { fibra: 12 }, guarniciones: [pita, ensalada] })
+    const otro = receta({ guarniciones: [{ ...guarnicion('lechuga'), sinGluten: true }] })
+    const huecos = [{ id: 'h', candidatos: [conPita, otro] }]
+    const preferencias = conPrioridad('ligera', 'menosSaturadas')
+    const sinGluten = (r: Receta) => r.guarniciones?.find((x) => x.sinGluten === true)?.id ?? null
+
+    // Contando la pita, sus 2500 kcal hunden al plato.
+    expect(repartirSemana(huecos, { preferencias, semilla: 1 }).porHueco.get('h')?.id).toBe(otro.id)
+    // Con la que de verdad se va a encender, gana por proteína y fibra.
+    expect(repartirSemana(huecos, { preferencias, semilla: 1, guarnicionDe: sinGluten }).porHueco.get('h')?.id)
+      .toBe(conPita.id)
+  })
+})

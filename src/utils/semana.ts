@@ -428,6 +428,11 @@ interface OpcionesReparto {
   /** Recetas compradas y sin día: entran antes que nada si caben en algún hueco. */
   preferidos?: Iterable<string>
   proteinaPorDia?: Map<string, number>
+  /**
+   * La guarnición que se va a encender de verdad en cada plato, o `null` si va
+   * pelado. Sin ella se puntúa con la recomendada.
+   */
+  guarnicionDe?: (receta: RecetaListada) => string | null
   semilla?: number
 }
 
@@ -439,6 +444,23 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   const aleatorio = prng(semilla)
   const ajustes = ajustesDe(preferencias, huecos.length + yaEnLaSemana.length + fijados.length)
 
+  // Lo que de verdad llega a la mesa: el plato con la guarnición que se va a
+  // encender, o pelado. Puntuar la recomendada cuando luego se enciende otra, o
+  // ninguna, era premiar una pita que nunca se compra. Con esta vista, nutrición,
+  // verdura, despensa y cesta miran todas lo mismo.
+  const { guarnicionDe } = opciones
+  const cacheServido = new Map<string, RecetaListada>()
+  const servido = (receta: RecetaListada): RecetaListada => {
+    if (!guarnicionDe) return receta
+    let plato = cacheServido.get(receta.id)
+    if (!plato) {
+      const elegida = guarnicionElegida(receta, guarnicionDe(receta) ?? undefined)
+      plato = { ...receta, guarniciones: elegida ? [elegida] : [] }
+      cacheServido.set(receta.id, plato)
+    }
+    return plato
+  }
+
   const indice = indiceDespensa(despensa)
   // Lo que ya está en casa no se compra: no deja sobra que evitar, y de gastarlo
   // se ocupa el aprovechamiento. Contarlo aquí lo premiaría dos veces.
@@ -448,7 +470,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     if (indice.items.length === 0) return []
     let usados = cacheUsados.get(receta.id)
     if (!usados) {
-      usados = aprovechaDe(receta, indice)
+      usados = aprovechaDe(servido(receta), indice)
       cacheUsados.set(receta.id, usados)
     }
     return usados
@@ -483,16 +505,17 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   // platos que van igual de bien, nunca para tapar una despensa que vaciar.
   // Dentro del escalón deciden la nutrición, los presets y la variedad.
   const notaDe = (receta: RecetaListada, contra: Acumulado, dia?: string) => {
+    const plato = servido(receta)
     const prioridad =
-      prioridadDeLaCompra(receta, contra, indice, usadosDe(receta), enCasa) +
+      prioridadDeLaCompra(plato, contra, indice, usadosDe(receta), enCasa) +
       (preferidos.has(receta.id) ? PREMIO_COMPRADA : 0) -
       (descartados.has(receta.id) ? PENALIZACION_DESCARTADO : 0) -
       (yaPropuestos.has(receta.id) ? PENALIZACION_YA_PROPUESTO : 0)
-    const a = aporteDe(receta)
+    const a = aporteDe(plato)
     return (
       MANDA * Math.round(prioridad / PASO) +
       ganancia(a, contra, ajustes, dia) -
-      penalizacion(receta, a, contra, ajustes) +
+      penalizacion(plato, a, contra, ajustes) +
       aleatorio() * 0.25
     )
   }
@@ -519,7 +542,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
     if (libres.length === 0) repetidos.add(hueco.id)
 
     const { mejor } = mejorDe(entre, acc, hueco.dia)
-    acumular(acc, mejor, usadosDe(mejor), hueco.dia, enCasa)
+    acumular(acc, servido(mejor), usadosDe(mejor), hueco.dia, enCasa)
     usadas.add(mejor.id)
     porHueco.set(hueco.id, mejor)
   }
@@ -532,7 +555,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   const sinElHueco = (salta: string): Acumulado => {
     const otro = base()
     for (const [id, receta] of porHueco) {
-      if (id !== salta) acumular(otro, receta, usadosDe(receta), dias.get(id), enCasa)
+      if (id !== salta) acumular(otro, servido(receta), usadosDe(receta), dias.get(id), enCasa)
     }
     return otro
   }
@@ -557,7 +580,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
       // Y nunca a costa de la verdura: sin esta línea el cambio se lleva por
       // delante cuatro puntos de platos sin verdura, que es lo que la nota solo
       // desempata dentro del escalón y aquí se estaría saltando.
-      if (verduraDe(actual) && !verduraDe(mejor)) continue
+      if (verduraDe(servido(actual)) && !verduraDe(servido(mejor))) continue
 
       porHueco.set(hueco.id, mejor)
       usadas.delete(actual.id)
@@ -568,7 +591,7 @@ export function repartirSemana(huecos: Hueco[], opciones: OpcionesReparto = {}):
   }
 
   const finales = base()
-  for (const [id, receta] of porHueco) acumular(finales, receta, usadosDe(receta), dias.get(id), enCasa)
+  for (const [id, receta] of porHueco) acumular(finales, servido(receta), usadosDe(receta), dias.get(id), enCasa)
 
   return {
     porHueco,
