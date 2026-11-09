@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { semanaEquilibrada, aporteDe, ajustesDe, repartirSemana } from '../utils/semana'
 import { LIMITES_VACIOS, PREFERENCIAS_POR_DEFECTO, type Preferencias, type Prioridad } from '../types/preferencias'
 import { sumarDias } from '../utils/caducidadEstimada'
-import type { Micros, Receta } from '../types/receta'
+import type { Micros, Receta, RecetaListada } from '../types/receta'
 
 const con = (over: Partial<Preferencias>): Preferencias => ({ ...PREFERENCIAS_POR_DEFECTO, ...over })
 const conPrioridad = (...prioridades: Prioridad[]) => con({ prioridades })
@@ -506,7 +506,7 @@ describe('la guarnición que puntúa es la que se enciende', () => {
     const otro = receta({ guarniciones: [{ ...guarnicion('lechuga'), sinGluten: true }] })
     const huecos = [{ id: 'h', candidatos: [conPita, otro] }]
     const preferencias = conPrioridad('ligera', 'menosSaturadas')
-    const sinGluten = (r: Receta) => r.guarniciones?.find((x) => x.sinGluten === true)?.id ?? null
+    const sinGluten = (r: RecetaListada) => r.guarniciones?.find((x) => x.sinGluten === true)?.id ?? null
 
     // Contando la pita, sus 2500 kcal hunden al plato.
     expect(repartirSemana(huecos, { preferencias, semilla: 1 }).porHueco.get('h')?.id).toBe(otro.id)
