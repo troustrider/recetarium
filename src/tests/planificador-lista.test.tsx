@@ -782,6 +782,23 @@ describe('límites duros de la auto-semana', () => {
     expect(puestas.some((e) => e.receta.id === 'r1' || e.receta.id === 'r2')).toBe(false)
     expect(puestas.every((e) => e.receta.id === 'r3')).toBe(true)
   })
+
+  it('el vetado tampoco entra por la guarnición que se enciende', async () => {
+    const conPita = {
+      ...receta('r6', 'Kebab de garbanzos', [{ nombre: 'garbanzos', cantidad: 200, unidad: 'g', familia: 'legumbres' }]),
+      guarniciones: [
+        { id: 'pita', nombre: 'Pan de pita', aporta: [], ingredientes: [{ nombre: 'pan de pita', cantidad: 1, unidad: 'ud', familia: 'panaderia' }], pasos: [] },
+        { id: 'ensalada', nombre: 'Ensalada', aporta: [], ingredientes: [{ nombre: 'lechuga', cantidad: 1, unidad: 'ud', familia: 'verduras' }], pasos: [] },
+      ],
+    }
+    const { result } = await montarHidratado()
+    act(() => result.current.prefs.setLimites({ vetados: ['pan'] }))
+    act(() => { result.current.plan.autollenar([conPita], 2) })
+
+    const puestas = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d])
+    expect(puestas.length).toBeGreaterThan(0)
+    expect(puestas.every((e) => e.guarnicionId === 'ensalada')).toBe(true)
+  })
 })
 
 describe('la semana recuerda lo que quitaste', () => {

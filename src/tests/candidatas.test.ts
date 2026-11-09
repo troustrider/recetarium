@@ -60,3 +60,30 @@ describe('vetados por palabra completa', () => {
     expect(pasa('pollo', '')).toBe(true)
   })
 })
+
+describe('la guarnición cumple todos los filtros a la vez', () => {
+  const guarnicion = (id: string, nombre: string, sinGluten: boolean) => ({
+    id, nombre, aporta: [], sinGluten,
+    ingredientes: [{ nombre, cantidad: 1, unidad: 'ud', familia: 'otros' }],
+  })
+
+  it('no vale una guarnición sin gluten y otra sin el vetado: tiene que ser la misma', () => {
+    const receta = {
+      ...plato('arroz'),
+      sinGluten: true,
+      guarniciones: [guarnicion('g1', 'pollo', true), guarnicion('g2', 'pan', false)],
+    }
+    const limites = { ...LIMITES_VACIOS, sinGluten: true, vetados: ['pollo'] }
+    expect(cumpleLimites(receta, limites, null)).toBe(false)
+  })
+
+  it('con una que cumple todo, el plato pasa', () => {
+    const receta = {
+      ...plato('arroz'),
+      sinGluten: true,
+      guarniciones: [guarnicion('g1', 'pollo', true), guarnicion('g2', 'pan', false), guarnicion('g3', 'ensalada', true)],
+    }
+    const limites = { ...LIMITES_VACIOS, sinGluten: true, vetados: ['pollo'] }
+    expect(cumpleLimites(receta, limites, null)).toBe(true)
+  })
+})

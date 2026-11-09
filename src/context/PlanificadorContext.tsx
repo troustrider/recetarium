@@ -7,7 +7,7 @@ import { getPlan, savePlan, type EntradaPlanDTO } from '../api/estado'
 import { useEstadoCompartido } from '../hooks/useEstadoCompartido'
 import { racionesBase } from '../hooks/useListaCompra'
 import { aporteDe, huecosConPlatoPropio, repartirSemana, type Hueco } from '../utils/semana'
-import { candidatas } from '../utils/candidatas'
+import { candidatas, guarnicionPermitida } from '../utils/candidatas'
 import { guarnicionesDe } from '../utils/ingredientes'
 import {
   ORDEN_MOMENTO,
@@ -20,7 +20,6 @@ import {
 import type { ItemAprovechable } from '../utils/aprovechamiento'
 import { usePreferencias } from './PreferenciasContext'
 import type { LimitesSemana, Preferencias } from '../types/preferencias'
-import { guarnicionPara } from '../utils/nutricion'
 
 const DIAS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const
 export type Dia = typeof DIAS[number]
@@ -84,10 +83,11 @@ function guarnicionRecordada(receta: RecetaListada, guarnicionId?: string, conGu
 /**
  * La que enciende la auto-semana: la recomendada, salvo que los límites de la
  * semana la descarten. Con el filtro sin gluten puesto, encender el pan de pita
- * de un plato limpio era meter gluten en la compra sin decirlo.
+ * de un plato limpio era meter gluten en la compra sin decirlo; con "pan"
+ * vetado, lo mismo.
  */
 function guarnicionAuto(receta: RecetaListada, limites: LimitesSemana) {
-  return guarnicionPara(receta, limites.dieta ?? undefined, limites.sinGluten)
+  return guarnicionPermitida(receta, limites)
 }
 
 /** El día se lee como se vive: el desayuno antes que la comida y que la cena. */

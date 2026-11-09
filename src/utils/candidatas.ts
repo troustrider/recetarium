@@ -1,7 +1,25 @@
 import type { RecetaListada } from '../types/receta'
 import type { LimitesSemana } from '../types/preferencias'
-import { aptaPara } from './nutricion'
 import { canonNombre, guarnicionesDe, normalizar } from './ingredientes'
+
+type GuarnicionListada = NonNullable<RecetaListada['guarniciones']>[number]
+
+const nombresDe = (ingredientes?: { nombre: string }[]) => (ingredientes ?? []).map((i) => i.nombre)
+
+function guarnicionCumple(guarnicion: GuarnicionListada, limites: LimitesSemana): boolean {
+  if (limites.dieta && guarnicion.apto?.[limites.dieta] !== true) return false
+  if (limites.sinGluten && guarnicion.sinGluten !== true) return false
+  return !choca(nombresDe(guarnicion.ingredientes), limites.vetados)
+}
+
+/**
+ * La primera guarnición que cumple dieta, sin gluten y vetados a la vez, o
+ * `null` si ninguna: entonces el plato va pelado. Es la que enciende la
+ * auto-semana y la que puntúa el reparto, para que lo puntuado sea lo servido.
+ */
+export function guarnicionPermitida(receta: RecetaListada, limites: LimitesSemana): GuarnicionListada | null {
+  return guarnicionesDe(receta).find((g) => guarnicionCumple(g, limites)) ?? null
+}
 
 export function cumpleLimites(
   receta: RecetaListada,
@@ -9,26 +27,15 @@ export function cumpleLimites(
   tiempoMax: number | null
 ): boolean {
   if (tiempoMax != null && receta.tiempoPreparacion > tiempoMax) return false
-  // Sin gluten es del plato y de lo que se come con él: una receta limpia con
-  // pan de pita de única guarnición no vale como sin gluten.
   if (limites.sinGluten && receta.sinGluten !== true) return false
+  // Una receta guardada antes de que existiera la ficha apto tampoco se afirma.
+  if (limites.dieta && receta.apto?.[limites.dieta] !== true) return false
+  if (choca(nombresDe(receta.ingredientes), limites.vetados)) return false
+  // Un plato con guarniciones se come con una de ellas, así que tiene que quedar
+  // una que valga para todo junto. Una sin gluten con el vetado dentro y otra
+  // limpia pero con gluten dejaban pasar un plato que no se puede servir.
   const opciones = guarnicionesDe(receta)
-  if (limites.sinGluten && opciones.length && !opciones.some((g) => g.sinGluten === true))
-    return false
-  if (limites.dieta && aptaPara(receta, limites.dieta) !== true) return false
-  if (limites.vetados.length > 0 && llevaAlguno(receta, limites.vetados)) return false
-  return true
-}
-
-function llevaAlguno(receta: RecetaListada, vetados: string[]): boolean {
-  // Un veto se cumple si queda alguna forma de comer el plato sin el vetado:
-  // basta con que el plato esté limpio y una de sus guarniciones también.
-  const enPlato = (receta.ingredientes ?? []).map((i) => i.nombre)
-  const conGuarnicion = guarnicionesDe(receta)
-  const opciones = conGuarnicion.length
-    ? conGuarnicion.map((g) => g.ingredientes.map((i) => i.nombre))
-    : [[]]
-  return opciones.every((extra) => choca([...enPlato, ...extra], vetados))
+  return opciones.length === 0 || opciones.some((g) => guarnicionCumple(g, limites))
 }
 
 const palabrasDe = (nombre: string) =>
@@ -61,7 +68,7 @@ function casaVetado(ingrediente: string, vetado: string): boolean {
   return false
 }
 
-export function choca(ingredientes: string[], vetados: string[]): boolean {
+function choca(ingredientes: string[], vetados: string[]): boolean {
   return vetados.some((vetado) => ingredientes.some((nombre) => casaVetado(nombre, vetado)))
 }
 

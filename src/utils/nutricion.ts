@@ -65,17 +65,6 @@ export function aptaPara(receta: RecetaListada, dieta: Dieta): boolean | null {
   return null
 }
 
-/** La primera guarnición que cumple la dieta; la recomendada si no se pide ninguna. */
-export function guarnicionPara(receta: RecetaListada, dieta?: Dieta, sinGluten = false) {
-  return (
-    guarnicionesDe(receta).find(
-      (g) =>
-        (!dieta || valorApto(g.apto, dieta) === true) &&
-        (!sinGluten || g.sinGluten === true)
-    ) ?? null
-  )
-}
-
 export function fuentesAnimales(receta: RecetaListada) {
   const guarnicion = guarnicionesDe(receta)[0]
   return [...(receta.apto?.animal ?? []), ...(guarnicion?.apto?.animal ?? [])]
