@@ -189,7 +189,7 @@ export default function PanelSemana({ cocinas, onCerrar, onRehacer }: Props) {
           </div>
         </Seccion>
 
-        <Seccion titulo="Tiempo entre semana">
+        <Seccion titulo="Tiempo entre semana" nota="Cuenta también para los desayunos.">
           <div className="flex flex-wrap gap-2">
             {TIEMPOS.map((t) => (
               <Chip key={String(t.valor)} activo={limites.tiempoMax === t.valor} onClick={() => setLimites({ tiempoMax: t.valor })}>
@@ -199,7 +199,7 @@ export default function PanelSemana({ cocinas, onCerrar, onRehacer }: Props) {
           </div>
         </Seccion>
 
-        <Seccion titulo="Tiempo el fin de semana">
+        <Seccion titulo="Tiempo el fin de semana" nota="Cuenta también para los desayunos.">
           <div className="flex flex-wrap gap-2">
             {TIEMPOS.map((t) => (
               <Chip key={String(t.valor)} activo={limites.tiempoMaxFinde === t.valor} onClick={() => setLimites({ tiempoMaxFinde: t.valor })}>

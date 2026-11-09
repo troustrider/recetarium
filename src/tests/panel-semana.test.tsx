@@ -48,3 +48,10 @@ describe('rehacer la semana desde el panel', () => {
     expect(onRehacer).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('el tiempo cuenta también para los desayunos', () => {
+  it('las dos secciones de tiempo lo dicen', () => {
+    render(<PanelSemana cocinas={[]} onCerrar={vi.fn()} onRehacer={vi.fn()} />)
+    expect(screen.getAllByText('Cuenta también para los desayunos.')).toHaveLength(2)
+  })
+})
