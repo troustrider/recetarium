@@ -959,6 +959,2490 @@
         "Escurre y enjuaga {240 g} de alubias blancas de bote, hasta que el agua salga sin espuma.",
         "Mézclalas con {1 tomate} en dados, {½ cebolla roja} en láminas finas y {1 puñado} de albahaca, aliña con {1 cucharada} de aceite de oliva, {1 cucharadita} de vinagre y sal, y prueba."
       ]
+    },
+    {
+      "nombre": "Apio frío con sésamo (liang ban qin cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "apio", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {250 g} de apio en diagonal y {1 zanahoria} en tiras finas. Escáldalos 1 min y pásalos a agua fría.",
+        "Escurre bien y aliña con {1 cucharada} de vinagre de arroz, {1 cucharadita} de soja, {1 cucharadita} de aceite de sésamo y {1 cucharadita} de sésamo tostado."
+      ]
+    },
+    {
+      "nombre": "Arroz con aceite de cebolleta y jengibre",
+      "aporta": ["almidon"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Cuece {150 g} de arroz con {220 ml} de agua y sal, tapado, 15 min a fuego mínimo.",
+        "Calienta {1 cucharada} de aceite y viértelo sobre {3 cebolletas} y {1 cucharadita} de jengibre muy picados con {1 cucharadita} de soja. Mézclalo con el arroz recién hecho."
+      ]
+    },
+    {
+      "nombre": "Arroz con edamame",
+      "aporta": ["almidon", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "edamame", "cantidad": 120, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {150 g} de arroz con {220 ml} de agua y sal, tapado, 15 min a fuego mínimo.",
+        "En los últimos 4 min echa por encima {120 g} de edamame sin descongelar y vuelve a tapar. Mezcla con {1 cebolleta} picada y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Arroz con maíz dulce",
+      "aporta": ["almidon"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "maíz dulce", "cantidad": 140, "unidad": "g", "familia": "conservas" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {150 g} de arroz con {220 ml} de agua, sal y {1 cucharadita} de aceite, tapado, 15 min a fuego mínimo.",
+        "Añade {140 g} de maíz escurrido por encima, tapa y reposa 5 min. Mezcla con {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Arroz con pak choi (cai fan)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "pak choi", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pica {250 g} de pak choi y saltéalo con {1 diente} de ajo en {1 cucharada} de aceite 2 min.",
+        "Añade {150 g} de arroz lavado, {220 ml} de agua y sal, tapa y cuece 15 min a fuego mínimo. Reposa 5 min y mezcla."
+      ]
+    },
+    {
+      "nombre": "Arroz con setas shiitake",
+      "aporta": ["almidon"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "shiitake frescos", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Saltea {150 g} de shiitake laminados con {1 cucharadita} de jengibre en {1 cucharadita} de aceite 3 min y añade {1 cucharada} de soja.",
+        "Agrega {150 g} de arroz lavado y {220 ml} de agua, tapa y cuece 15 min a fuego mínimo. Reposa 5 min y sirve con {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Arroz salteado con huevo (dan chao fan)",
+      "aporta": ["almidon", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Cuece {150 g} de arroz tapado a fuego mínimo 12 min y extiéndelo en una bandeja para que se enfríe y se seque (mejor si es del día anterior).",
+        "Revuelve {2 huevos} en {1 cucharada} de aceite muy caliente, añade el arroz y saltea 3 min a fuego fuerte. Termina con {2 cebolletas} picadas y {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Bakoula de espinacas con ajo y aceitunas",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "cilantro", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "pimentón", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceitunas", "cantidad": 25, "unidad": "g", "familia": "conservas" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Escalda {400 g} de espinacas 1 min, escúrrelas apretando bien y pícalas.",
+        "Sofríe {2 dientes} de ajo en {2 cucharadas} de aceite, añade las espinacas, {2 cucharadas} de perejil y {2 de cilantro}, {½ cucharadita} de comino y {½ de pimentón} y cocina 5 min removiendo. Termina con {25 g} de aceitunas y el zumo de {½ limón}."
+      ]
+    },
+    {
+      "nombre": "Berenjena al vapor con ajo y soja",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1.5, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 berenjenas} en bastones y cuécelas al vapor o en el microondas, tapadas, 8-10 min hasta que estén tiernas.",
+        "Mezcla {2 dientes} de ajo picado, {1 cebolleta} picada, {1½ cucharadas} de soja, {1 cucharada} de vinagre y {1 cucharadita} de aceite de sésamo y viértelo por encima."
+      ]
+    },
+    {
+      "nombre": "Bimi al vapor con aceite de ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "bimi", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Cuece {250 g} de bimi al vapor o en el microondas tapado 3-4 min, que quede crujiente.",
+        "Calienta {1 cucharada} de aceite con {2 dientes} de ajo laminado hasta que el ajo dore, viértelo sobre el bimi y añade {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Borani de espinacas (con yogur y ajo)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["turca", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "yogur griego", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Rehoga {½ cebolla} picada en {1 cucharada} de aceite 3 min, añade {300 g} de espinacas y cocina hasta que se evapore el agua. Deja templar.",
+        "Mézclalas con {150 g} de yogur, {1 diente} de ajo rallado y sal."
+      ]
+    },
+    {
+      "nombre": "Bouyiourdi (feta al horno con tomate y pimiento)",
+      "aporta": ["proteina"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "queso feta", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pon {200 g} de feta en una fuente pequeña y cúbrelo con {1 tomate} y {1 pimiento} en rodajas finas.",
+        "Añade {1 cucharadita} de orégano y {1 cucharada} de aceite, tapa con papel de aluminio y hornea a 200 °C 20 min. Sírvelo burbujeante para mojar."
+      ]
+    },
+    {
+      "nombre": "Brotes de soja aliñados con sésamo (liang ban dou ya)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "brotes de soja", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Escalda {300 g} de brotes de soja y {1 zanahoria} en tiras 1 min y pásalos a agua fría.",
+        "Escurre bien y aliña con {1 cucharada} de vinagre, {1 cucharadita} de soja, {1 cucharadita} de aceite de sésamo y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Brotes de soja salteados con cebollino",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "brotes de soja", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebollino", "cantidad": 20, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Saltea {1 diente} de ajo picado en {1 cucharada} de aceite muy caliente 20 s.",
+        "Añade {300 g} de brotes de soja y saltea 1-2 min a fuego fuerte, que sigan crujientes. Sala y añade {20 g} de cebollino en trozos de 3 cm al final."
+      ]
+    },
+    {
+      "nombre": "Calabacín salteado con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Corta {2 calabacines} en medias lunas de medio centímetro.",
+        "Saltéalos en {1 cucharada} de aceite muy caliente 3 min, añade {2 dientes} de ajo picado 30 s y termina con {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Calabacín salteado con comino y limón",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 calabacines} en bastones y saltéalos en {1½ cucharadas} de aceite 5 min hasta que doren.",
+        "Añade {1 diente} de ajo picado y {½ cucharadita} de comino 30 s, sala y termina con el zumo de {½ limón} y {1 cucharada} de cilantro."
+      ]
+    },
+    {
+      "nombre": "Champiñones salteados con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "champiñones", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Lamina {300 g} de champiñones y saltéalos en {1 cucharada} de aceite muy caliente 4 min sin remover demasiado, para que doren.",
+        "Añade {2 dientes} de ajo picado 30 s, {1 cucharada} de soja y {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Choriatiki (ensalada griega con feta)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pepino", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceitunas negras", "cantidad": 30, "unidad": "g", "familia": "conservas" },
+        { "nombre": "queso feta", "cantidad": 100, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 tomates} en gajos, {½ pepino} en medias lunas, {1 pimiento} en aros y {½ cebolla roja} en pluma.",
+        "Añade {30 g} de aceitunas, pon encima {100 g} de feta en un bloque y termina con {1 cucharadita} de orégano, sal y {2 cucharadas} de aceite."
+      ]
+    },
+    {
+      "nombre": "Col china salteada con vinagre (cu liu bai cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "col china", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "maicena", "cantidad": 1, "unidad": "cucharadita", "familia": "cereales" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de col china en trozos en diagonal, separando pencas y hojas. Mezcla {1½ cucharadas} de vinagre, {1 cucharadita} de soja, {1 cucharadita} de azúcar y {1 cucharadita} de maicena con {2 cucharadas} de agua.",
+        "Saltea {2 dientes} de ajo en {1 cucharada} de aceite, añade las pencas 2 min y luego las hojas 1 min. Vierte la salsa y remueve hasta que brille."
+      ]
+    },
+    {
+      "nombre": "Col salteada a mano (shou si bao cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "col puntiaguda", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Arranca {400 g} de col en trozos con las manos, lávala y escúrrela muy bien.",
+        "Saltea {2 dientes} de ajo laminado en {1 cucharada} de aceite muy caliente 20 s, añade la col y saltea 3-4 min a fuego fuerte. Termina con {1 cucharada} de soja y {1 cucharada} de vinagre de arroz echados por el borde de la sartén."
+      ]
+    },
+    {
+      "nombre": "Coliflor salteada seca, sin picante (gan guo hua cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "coliflor", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 3, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Corta {400 g} de coliflor en ramilletes pequeños y finos y escáldalos 1 min. Escurre y seca bien.",
+        "Saltéala en {1½ cucharadas} de aceite a fuego fuerte 6-7 min hasta que se tueste por los bordes. Añade {3 dientes} de ajo laminado 1 min, {1 cucharada} de soja y {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Cuscús al limón y cilantro",
+      "aporta": ["almidon"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "cuscús", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cilantro", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cubre {150 g} de cuscús con {200 ml} de agua hirviendo con sal y {1 cucharada} de aceite, tapa y deja 5 min.",
+        "Suéltalo con un tenedor y mezcla con la ralladura y el zumo de {1 limón} y {2 cucharadas} de cilantro picado."
+      ]
+    },
+    {
+      "nombre": "Dakos (tostada con tomate rallado y feta)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "queso feta", "cantidad": 80, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Tuesta {4 rebanadas} de pan hasta que estén bien secas y rocíalas con un poco de agua y la mitad del aceite.",
+        "Cúbrelas con {2 tomates} rallados y salados, {80 g} de feta desmenuzado, {1 cucharadita} de orégano y el resto de las {2 cucharadas} de aceite."
+      ]
+    },
+    {
+      "nombre": "Domatesli pilav (arroz con tomate)",
+      "aporta": ["almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate concentrado", "cantidad": 1, "unidad": "cucharadita", "familia": "conservas" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Rehoga {2 tomates} rallados y {1 cucharadita} de tomate concentrado en {15 g} de mantequilla 3 min. Añade {150 g} de arroz lavado y remueve 1 min.",
+        "Cubre con {250 ml} de agua caliente y sal, tapa y cuece 15 min a fuego mínimo. Reposa 10 min."
+      ]
+    },
+    {
+      "nombre": "Edamame salteado con ajo",
+      "aporta": ["proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "edamame", "cantidad": 200, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {200 g} de edamame 3 min en agua con sal y escúrrelo.",
+        "Saltéalo con {2 dientes} de ajo picado y {1 cucharadita} de aceite de sésamo 2 min y termina con {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Ensalada de col china con vinagre de arroz (liang ban bai cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "col china", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {300 g} de col china en tiras finas y {1 zanahoria} en juliana. Sala ligeramente y deja 10 min; escurre el agua que suelten.",
+        "Aliña con {2 cucharadas} de vinagre de arroz, {1 cucharadita} de azúcar, {1 cucharadita} de aceite de sésamo y {1 cucharada} de cilantro picado."
+      ]
+    },
+    {
+      "nombre": "Ensalada de lechuga con sésamo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "lechuga romana", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {1 lechuga} en trozos y {1 cebolleta} en rodajas finas.",
+        "Mezcla {1 cucharada} de vinagre, {1 cucharadita} de soja y {1 cucharadita} de aceite de sésamo, aliña justo antes de servir y espolvorea {1 cucharadita} de sésamo tostado."
+      ]
+    },
+    {
+      "nombre": "Ensalada de naranja, cebolla roja y aceitunas",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "naranja", "cantidad": 2, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceitunas negras", "cantidad": 30, "unidad": "g", "familia": "conservas" },
+        { "nombre": "comino", "cantidad": 1, "unidad": "pizca", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pela {2 naranjas} a lo vivo y córtalas en rodajas. Corta {½ cebolla roja} en pluma muy fina.",
+        "Coloca la naranja, la cebolla y {30 g} de aceitunas en un plato y aliña con {1 cucharada} de aceite, sal y {1 pizca} de comino."
+      ]
+    },
+    {
+      "nombre": "Ensalada fría de zanahoria y cilantro",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cilantro", "cantidad": 3, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 zanahorias} en juliana fina.",
+        "Aliña con {1 diente} de ajo picado, {1 cucharada} de vinagre, {1 cucharadita} de soja, {1 cucharadita} de aceite de sésamo y {3 cucharadas} de cilantro picado. Deja 10 min antes de servir."
+      ]
+    },
+    {
+      "nombre": "Espinacas con salsa de sésamo (ma jiang bo cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "tahini", "cantidad": 1, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Escalda {300 g} de espinacas 30 s, enfríalas en agua fría y escúrrelas apretando bien con las manos.",
+        "Mezcla {1 cucharada} de tahini con {1 cucharadita} de soja, {1 cucharadita} de vinagre y un poco de agua. Vierte sobre las espinacas y espolvorea {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Espinacas salteadas con ajo (suan rong bo cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 3, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Dora {3 dientes} de ajo picado en {1 cucharada} de aceite 30 s.",
+        "Añade {400 g} de espinacas a puñados a fuego fuerte y saltea 1-2 min hasta que se ablanden. Sala y escurre el exceso de agua antes de servir."
+      ]
+    },
+    {
+      "nombre": "Espárragos verdes salteados con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "espárragos", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Quita la parte dura de {250 g} de espárragos y córtalos en trozos en diagonal.",
+        "Saltéalos en {1 cucharada} de aceite 3 min a fuego fuerte, añade {2 dientes} de ajo picado 30 s y {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Ezme suave (tomate y pimiento picados)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento rojo", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "melaza de granada", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "zumaque", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pica a cuchillo muy fino, casi como una pasta, {2 tomates} sin semillas, {1 pimiento}, {½ cebolla} y {2 cucharadas} de perejil.",
+        "Escurre el líquido y aliña con {1 cucharada} de melaza de granada, {1 cucharadita} de zumaque, {1 cucharada} de aceite y sal."
+      ]
+    },
+    {
+      "nombre": "Fideos con aceite de cebolleta (cong you ban mian)",
+      "aporta": ["almidon"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "fideos de trigo", "cantidad": 160, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolleta", "cantidad": 4, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 2, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" }
+      ],
+      "pasos": [
+        "Fríe la parte verde de {4 cebolletas} en trozos largos en {2 cucharadas} de aceite a fuego suave 8 min, hasta que esté oscura y crujiente. Añade {2 cucharadas} de soja y {1 cucharadita} de azúcar y deja burbujear 30 s.",
+        "Cuece {160 g} de fideos según el paquete (4-5 min), escúrrelos y mézclalos con el aceite de cebolleta."
+      ]
+    },
+    {
+      "nombre": "Fideos fríos con sésamo (ma jiang mian)",
+      "aporta": ["almidon"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "fideos de trigo", "cantidad": 160, "unidad": "g", "familia": "cereales" },
+        { "nombre": "tahini", "cantidad": 2, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Cuece {160 g} de fideos según el paquete (4-5 min), enfríalos bajo el grifo y escúrrelos bien.",
+        "Mezcla {2 cucharadas} de tahini con {1 cucharada} de soja, {1 cucharadita} de vinagre, {1 cucharadita} de azúcar y 2-{3 cucharadas} de agua hasta que quede una salsa fluida. Mézclala con los fideos y {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Fırın patates (patatas al horno con pimentón y comino)",
+      "aporta": ["almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 600, "unidad": "g", "familia": "verduras" },
+        { "nombre": "pimentón", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {600 g} de patata en gajos y mézclalos con {2 cucharadas} de aceite, {1 cucharadita} de pimentón, {½ cucharadita} de comino y sal.",
+        "Hornea a 220 °C 35 min, dándoles la vuelta a mitad, hasta que estén doradas."
+      ]
+    },
+    {
+      "nombre": "Gavurdağı salatası (tomate, nuez y granada)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "nueces", "cantidad": 30, "unidad": "g", "familia": "frutos secos" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "melaza de granada", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pica muy menudo {2 tomates}, {½ cebolla roja}, {1 pimiento} y {2 cucharadas} de perejil.",
+        "Mezcla con {30 g} de nueces troceadas, {1 cucharada} de melaza de granada, {1 cucharada} de aceite y sal."
+      ]
+    },
+    {
+      "nombre": "Harcha (pan de sémola a la sartén)",
+      "aporta": ["almidon"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "sémola de trigo", "cantidad": 200, "unidad": "g", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 30, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "leche", "cantidad": 120, "unidad": "ml", "familia": "lácteos" },
+        { "nombre": "levadura química", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" }
+      ],
+      "pasos": [
+        "Mezcla {200 g} de sémola con {1 cucharadita} de levadura, {1 cucharadita} de azúcar y una pizca de sal. Añade {30 g} de mantequilla derretida y frota con los dedos; incorpora {120 ml} de leche hasta tener una masa blanda y deja 10 min.",
+        "Forma 4 discos de 1 cm, pásalos por sémola y cuécelos en sartén a fuego medio-bajo, sin aceite, 5 min por lado hasta que estén dorados."
+      ]
+    },
+    {
+      "nombre": "Havuç tarator (zanahoria con yogur y ajo)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "yogur griego", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Ralla {3 zanahorias} y saltéalas en {1 cucharada} de aceite 5 min hasta que se ablanden. Deja que se templen.",
+        "Mézclalas con {150 g} de yogur, {1 diente} de ajo rallado y sal."
+      ]
+    },
+    {
+      "nombre": "Haydari (yogur espeso con feta y menta)",
+      "aporta": ["proteina"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "yogur griego", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "queso feta", "cantidad": 60, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "menta seca", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Aplasta {60 g} de feta con un tenedor y mézclalo con {200 g} de yogur hasta que quede cremoso.",
+        "Añade {1 diente} de ajo rallado, {1 cucharadita} de menta seca y {1 cucharada} de eneldo. Sirve frío con {1 cucharadita} de aceite por encima."
+      ]
+    },
+    {
+      "nombre": "Huevo al vapor (zheng shui dan)",
+      "aporta": ["proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 3, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Bate {3 huevos} con {250 ml} de agua tibia y una pizca de sal, cuela la mezcla a un cuenco y tápalo.",
+        "Cuécelo al vapor 10-12 min a fuego suave hasta que cuaje como un flan. Termina con {1 cucharadita} de soja, {1 cucharadita} de aceite de sésamo y {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Huevo marinado en té (cha ye dan)",
+      "aporta": ["proteina"],
+      "cocinas": ["china", "taiwanesa"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "té negro", "cantidad": 2, "unidad": "ud", "familia": "otros" },
+        { "nombre": "salsa de soja", "cantidad": 3, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "anís estrellado", "cantidad": 1, "unidad": "ud", "familia": "especias" },
+        { "nombre": "canela en rama", "cantidad": 1, "unidad": "ud", "familia": "especias" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" }
+      ],
+      "pasos": [
+        "Cuece {4 huevos} 8 min, pásalos a agua fría y golpea las cáscaras por todas partes sin pelarlos.",
+        "Cuécelos 15 min a fuego suave en {500 ml} de agua con {2 bolsitas} de té, {3 cucharadas} de soja, {1 anís estrellado}, {1 rama} de canela y {1 cucharadita} de azúcar. Déjalos en el líquido hasta servir; cuanto más tiempo, más sabor."
+      ]
+    },
+    {
+      "nombre": "Huevos revueltos con cebolleta (cong hua chao dan)",
+      "aporta": ["proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 3, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Bate {3 huevos} con una pizca de sal y {2 cebolletas} picadas.",
+        "Vierte en {1 cucharada} de aceite muy caliente, deja que se hinche 10 s y remueve en trozos grandes. Retira cuando aún estén jugosos."
+      ]
+    },
+    {
+      "nombre": "Judías verdes salteadas con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "judías verdes", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 3, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Escalda {300 g} de judías verdes 3 min en agua con sal y escúrrelas bien.",
+        "Saltéalas en {1 cucharada} de aceite muy caliente 3 min hasta que se arruguen un poco, añade {3 dientes} de ajo picado 30 s y termina con {1 cucharada} de soja."
+      ]
+    },
+    {
+      "nombre": "Kolokithakia vrasta (calabacín con limón y eneldo)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 calabacines} en trozos grandes y hiérvelos en agua con sal 5-6 min, que queden tiernos pero enteros.",
+        "Escurre y aliña templados con el zumo de {½ limón}, {2 cucharadas} de aceite y {1 cucharada} de eneldo."
+      ]
+    },
+    {
+      "nombre": "Kounoupidi vrasto (coliflor con limón y aceite)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "coliflor", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Cuece {500 g} de coliflor en ramilletes en agua con sal 6-7 min, que quede tierna pero firme.",
+        "Escurre y aliña templada con el zumo de {½ limón}, {2 cucharadas} de aceite, sal y {1 cucharada} de perejil."
+      ]
+    },
+    {
+      "nombre": "Kritharaki (orzo con mantequilla y queso)",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "orzo", "cantidad": 160, "unidad": "g", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "queso curado", "cantidad": 30, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Cuece {160 g} de orzo en agua con sal según el paquete (9-10 min) y escúrrelo.",
+        "Mézclalo con {15 g} de mantequilla y {30 g} de queso rallado y pimienta."
+      ]
+    },
+    {
+      "nombre": "Közlenmiş biber (pimientos asados con ajo y vinagre)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "pimiento rojo", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de oliva", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Asa {2 pimientos rojos} y {2 verdes} a 220 °C 30 min. Tápalos 10 min, pélalos y córtalos en tiras.",
+        "Aliña con {1 diente} de ajo picado, {1 cucharada} de vinagre, {1½ cucharadas} de aceite y sal."
+      ]
+    },
+    {
+      "nombre": "Kısır (ensalada de bulgur)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "bulgur fino", "cantidad": 120, "unidad": "g", "familia": "cereales" },
+        { "nombre": "tomate concentrado", "cantidad": 1, "unidad": "cucharada", "familia": "conservas" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 3, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "melaza de granada", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cubre {120 g} de bulgur fino con {150 ml} de agua hirviendo, tapa 15 min y mézclalo con {1 cucharada} de tomate concentrado mientras aún está caliente.",
+        "Añade {1 tomate} en dados, {3 cebolletas} y {3 cucharadas} de perejil picados, {1 cucharada} de melaza de granada, el zumo de {½ limón}, {2 cucharadas} de aceite y sal."
+      ]
+    },
+    {
+      "nombre": "Lahana salatası (col en juliana al limón)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "col blanca", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {300 g} de col en juliana muy fina, sálala y frótala con las manos 1 min hasta que se ablande. Ralla {1 zanahoria}.",
+        "Aliña con el zumo de {1 limón}, {1½ cucharadas} de aceite y {1 cucharada} de eneldo."
+      ]
+    },
+    {
+      "nombre": "Lahanosalata (col y zanahoria al limón)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "col blanca", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {300 g} de col en juliana muy fina y ralla {1 zanahoria}. Sala y masajea 1 min.",
+        "Aliña con el zumo de {1 limón}, {2 cucharadas} de aceite de oliva y {1 cucharada} de perejil picado."
+      ]
+    },
+    {
+      "nombre": "Lavaş a la plancha",
+      "aporta": ["almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "tortillas de trigo", "cantidad": 2, "unidad": "ud", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "pimentón", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Derrite {10 g} de mantequilla con {½ cucharadita} de pimentón.",
+        "Calienta {2 tortillas} en sartén seca 30 s por lado, píntalas con la mantequilla y córtalas en cuartos."
+      ]
+    },
+    {
+      "nombre": "Lechuga salteada con ajo (suan rong sheng cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "lechuga romana", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 3, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Separa las hojas de {2 lechugas}, lávalas y sécalas bien.",
+        "Dora {3 dientes} de ajo picado en {1 cucharada} de aceite, añade la lechuga y saltea 1 min a fuego fuerte, solo hasta que se ablande. Termina con {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Maroulosalata (lechuga, eneldo y cebolleta)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "lechuga romana", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 lechuga} en tiras finas y {3 cebolletas} en rodajas.",
+        "Mezcla con {2 cucharadas} de eneldo picado y aliña con el zumo de {½ limón}, {2 cucharadas} de aceite de oliva y sal."
+      ]
+    },
+    {
+      "nombre": "Maydanoz salatası (perejil, cebolla y limón)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "perejil", "cantidad": 60, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "zumaque", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 cebolla roja} en pluma fina y frótala con sal y {1 cucharadita} de zumaque.",
+        "Mézclala con {60 g} de perejil picado grueso, el zumo de {½ limón} y {1 cucharada} de aceite."
+      ]
+    },
+    {
+      "nombre": "Melitzanosalata (crema de berenjena asada)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pincha {2 berenjenas} y ásalas a 220 °C 40 min hasta que estén muy blandas. Saca la pulpa y escúrrela en un colador 5 min.",
+        "Pícala con un cuchillo y mezcla con {1 diente} de ajo rallado, el zumo de {½ limón}, {2 cucharadas} de aceite, sal y {1 cucharada} de perejil."
+      ]
+    },
+    {
+      "nombre": "Mercimek çorbası (crema de lentejas rojas)",
+      "aporta": ["proteina", "almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "lentejas rojas", "cantidad": 150, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "cebolla", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate concentrado", "cantidad": 1, "unidad": "cucharada", "familia": "conservas" },
+        { "nombre": "comino", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Rehoga {1 cebolla} y {1 zanahoria} picadas en {15 g} de mantequilla 5 min. Añade {1 cucharada} de tomate concentrado, {1 cucharadita} de comino y {150 g} de lentejas lavadas.",
+        "Cubre con {800 ml} de agua y sal y cuece 20 min. Tritura y sirve con un chorro del zumo de {½ limón}."
+      ]
+    },
+    {
+      "nombre": "Mevsim salatası (lechuga, zanahoria y lombarda)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "lechuga", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "col lombarda", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {½ lechuga} en tiras finas, ralla {1 zanahoria} y corta {150 g} de lombarda en juliana muy fina.",
+        "Aliña justo antes de servir con el zumo de {½ limón}, {2 cucharadas} de aceite y sal."
+      ]
+    },
+    {
+      "nombre": "Ntomatosalata (tomate, cebolla y orégano)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} en gajos y {½ cebolla roja} en pluma fina.",
+        "Aliña con sal, {1 cucharadita} de orégano, {1 cucharadita} de vinagre y {2 cucharadas} de aceite de oliva."
+      ]
+    },
+    {
+      "nombre": "Pak choi con shiitake (xiang gu you cai)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "pak choi", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "shiitake frescos", "cantidad": 120, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "maicena", "cantidad": 1, "unidad": "cucharadita", "familia": "cereales" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Escalda {300 g} de pak choi partido por la mitad 1 min y colócalo en el plato.",
+        "Saltea {120 g} de shiitake laminados con {2 dientes} de ajo en {1 cucharada} de aceite 3 min. Añade {1 cucharada} de soja y {1 cucharadita} de maicena disuelta en {50 ml} de agua, deja que espese y viértelo sobre el pak choi."
+      ]
+    },
+    {
+      "nombre": "Pan tostado con zahter",
+      "aporta": ["almidon"],
+      "cocinas": ["turca", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "pan", "cantidad": 4, "unidad": "rebanada", "familia": "cereales" },
+        { "nombre": "za'atar", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Mezcla {1 cucharada} de za'atar con {2 cucharadas} de aceite de oliva.",
+        "Unta {4 rebanadas} de pan y tuéstalas en sartén o al grill 2-3 min hasta que estén doradas."
+      ]
+    },
+    {
+      "nombre": "Pancar salatası (remolacha con yogur)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "remolacha", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "yogur griego", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Ralla {300 g} de remolacha cocida.",
+        "Mézclala con {150 g} de yogur, {1 diente} de ajo rallado y sal, y termina con {1 cucharadita} de aceite."
+      ]
+    },
+    {
+      "nombre": "Pantzarosalata (remolacha con yogur y ajo)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "remolacha", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "yogur griego", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "nueces", "cantidad": 20, "unidad": "g", "familia": "frutos secos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de remolacha en dados y alíñala con {1 cucharadita} de vinagre, {1 cucharada} de aceite y sal.",
+        "Mezcla {150 g} de yogur con {1 diente} de ajo rallado, únelo a la remolacha y termina con {20 g} de nueces picadas."
+      ]
+    },
+    {
+      "nombre": "Patata en tiras salteada al vinagre (tu dou si, sin picante)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["china"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de patata en juliana muy fina y lávala en agua fría hasta que salga clara. Escurre y seca bien.",
+        "Saltea {2 dientes} de ajo y {1 pimiento} en tiras en {1 cucharada} de aceite 1 min, añade la patata y saltea 3-4 min a fuego fuerte; debe quedar crujiente. Sala y añade {1½ cucharadas} de vinagre al final."
+      ]
+    },
+    {
+      "nombre": "Patates lemonates (patatas al limón al horno)",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 600, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {600 g} de patata en gajos y colócalos en una fuente con {2 dientes} de ajo picado, {1 cucharadita} de orégano, sal, el zumo de {1 limón}, {3 cucharadas} de aceite y {150 ml} de agua.",
+        "Hornea a 200 °C unos 50 min, dándoles la vuelta a mitad, hasta que el líquido se absorba y estén doradas."
+      ]
+    },
+    {
+      "nombre": "Patates salatası (patata con cebolleta y eneldo)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {500 g} de patata con piel 20 min, pélala y córtala en dados.",
+        "Alíñala templada con el zumo de {½ limón}, {2 cucharadas} de aceite, sal, {3 cebolletas} picadas, {2 cucharadas} de eneldo y {1 cucharada} de perejil."
+      ]
+    },
+    {
+      "nombre": "Patates tiganites (patatas fritas con orégano)",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 4, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {500 g} de patata en bastones de 1 cm, déjalos 10 min en agua fría y sécalos muy bien con un paño.",
+        "Fríelos en dos tandas en una sartén amplia con {4 cucharadas} de aceite de oliva a fuego medio-alto, 10-12 min, girándolos, hasta que estén dorados y crujientes. Escúrrelos sobre papel y sazona con sal y {1 cucharadita} de orégano."
+      ]
+    },
+    {
+      "nombre": "Patatosalata (patata con alcaparras y cebolla)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "alcaparras", "cantidad": 1, "unidad": "cucharada", "familia": "conservas" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {500 g} de patata con piel 20 min, pélala y córtala en trozos aún templada.",
+        "Alíñala con {1 cucharada} de vinagre, {2 cucharadas} de aceite, sal, {½ cebolla roja} en pluma fina, {1 cucharada} de alcaparras y {2 cucharadas} de perejil."
+      ]
+    },
+    {
+      "nombre": "Patlıcan salatası (berenjena asada aliñada)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Asa {2 berenjenas} enteras a 220 °C 40 min, pélalas y pica la pulpa a cuchillo.",
+        "Mézclala con {1 tomate} y {1 pimiento} en dados pequeños, {1 diente} de ajo, {2 cucharadas} de perejil, el zumo de {½ limón}, {2 cucharadas} de aceite y sal."
+      ]
+    },
+    {
+      "nombre": "Pilafi al limón",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Rehoga {½ cebolla} picada en {15 g} de mantequilla 3 min, añade {150 g} de arroz y la ralladura de {1 limón} y remueve 1 min.",
+        "Cubre con {300 ml} de agua caliente, sal y el zumo del limón, tapa y cuece 15 min a fuego mínimo. Reposa 5 min."
+      ]
+    },
+    {
+      "nombre": "Pilafi me domata (arroz con tomate)",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "tomate triturado", "cantidad": 200, "unidad": "g", "familia": "conservas" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Rehoga {½ cebolla} picada en {1 cucharada} de aceite 3 min, añade {200 g} de tomate y cuece 3 min.",
+        "Incorpora {150 g} de arroz, {250 ml} de agua caliente y sal, tapa y cuece 15 min a fuego mínimo. Reposa 5 min."
+      ]
+    },
+    {
+      "nombre": "Pimientos verdes salteados con ajo (hu pi qing jiao, suaves)",
+      "aporta": ["verdura"],
+      "cocinas": ["china"],
+      "ingredientes": [
+        { "nombre": "pimiento verde", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" }
+      ],
+      "pasos": [
+        "Aplasta ligeramente {3 pimientos} enteros y sin semillas, y márcalos en la sartén con {1 cucharada} de aceite, presionando, hasta que la piel se ampolle (5 min).",
+        "Añade {2 dientes} de ajo picado y una mezcla de {1 cucharada} de soja, {1 cucharada} de vinagre y {1 cucharadita} de azúcar. Deja reducir 1 min."
+      ]
+    },
+    {
+      "nombre": "Piperies psites (pimientos asados con ajo y vinagre)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "pimiento rojo", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Asa {3 pimientos} enteros a 220 °C 35 min, dándoles la vuelta una vez. Tápalos 10 min, pélalos y córtalos en tiras.",
+        "Aliña con {2 dientes} de ajo laminado, {1 cucharada} de vinagre, {2 cucharadas} de aceite, sal y {1 cucharada} de perejil."
+      ]
+    },
+    {
+      "nombre": "Pita a la plancha con orégano",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "pan de pita", "cantidad": 2, "unidad": "ud", "familia": "cereales" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pinta {2 panes de pita} con {1 cucharada} de aceite y espolvorea {1 cucharadita} de orégano y sal.",
+        "Márcalos en una sartén caliente 1 min por lado y córtalos en triángulos."
+      ]
+    },
+    {
+      "nombre": "Piyaz (alubias con cebolla y zumaque)",
+      "aporta": ["proteina", "verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "alubias blancas de bote", "cantidad": 400, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "cebolla roja", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 3, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "zumaque", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 cebolla roja} en pluma fina, frótala con sal y {1 cucharadita} de zumaque y deja 5 min.",
+        "Mezcla con {400 g} de alubias escurridas, {1 tomate} en dados, {3 cucharadas} de perejil, el zumo de {½ limón} y {2 cucharadas} de aceite."
+      ]
+    },
+    {
+      "nombre": "Pollo escalfado con aceite de jengibre y cebolleta (bai qie ji)",
+      "aporta": ["proteina"],
+      "cocinas": ["china"],
+      "ingredientes": [
+        { "nombre": "contramuslos de pollo", "cantidad": 300, "unidad": "g", "familia": "carnes" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cubre {300 g} de contramuslos con agua, añade unas rodajas de jengibre y sal y cuece a fuego muy suave 15 min sin que llegue a hervir fuerte. Reposa 5 min y córtalo en tiras.",
+        "Pica muy fino {1 cucharada} de jengibre y {3 cebolletas}, ponlos en un cuenco con sal y vierte por encima {2 cucharadas} de aceite humeante. Sirve el pollo con esta salsa."
+      ]
+    },
+    {
+      "nombre": "Pourgouri pilafi (bulgur con fideos)",
+      "aporta": ["almidon"],
+      "cocinas": ["chipriota", "griega"],
+      "ingredientes": [
+        { "nombre": "bulgur", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "fideos", "cantidad": 30, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate concentrado", "cantidad": 1, "unidad": "cucharadita", "familia": "conservas" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Dora {30 g} de fideos partidos en {15 g} de mantequilla, añade {½ cebolla} picada y rehoga 3 min. Incorpora {1 cucharadita} de tomate concentrado y {150 g} de bulgur y remueve 1 min.",
+        "Cubre con {330 ml} de agua caliente y sal, tapa y cuece 12 min a fuego mínimo. Apaga, pon un paño bajo la tapa y reposa 10 min."
+      ]
+    },
+    {
+      "nombre": "Puré de patata con aceite de oliva y limón",
+      "aporta": ["almidon"],
+      "cocinas": ["griega", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 600, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Cuece {600 g} de patata pelada en trozos en agua con sal 18-20 min.",
+        "Escurre, aplasta y mezcla con {3 cucharadas} de aceite de oliva, la ralladura y el zumo de {½ limón} y un poco del agua de cocción hasta que quede cremoso."
+      ]
+    },
+    {
+      "nombre": "Rabanitos machacados con vinagre (pai luo bo)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "rábano", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Aplasta {250 g} de rabanitos con la hoja del cuchillo hasta que se abran, sálalos y déjalos 10 min. Escurre el líquido.",
+        "Alíñalos con {1 diente} de ajo picado, {2 cucharadas} de vinagre de arroz, {1 cucharadita} de azúcar y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Revithosalata (garbanzos con limón y perejil)",
+      "aporta": ["proteina", "verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "garbanzos cocidos de bote", "cantidad": 400, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "perejil", "cantidad": 3, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 1, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Enjuaga y escurre {400 g} de garbanzos.",
+        "Mézclalos con {½ cebolla roja} picada fina, {3 cucharadas} de perejil, el zumo de {1 limón}, {2 cucharadas} de aceite y sal. Deja 10 min antes de servir."
+      ]
+    },
+    {
+      "nombre": "Roka salatası (rúcula con limón)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "rúcula", "cantidad": 100, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla roja", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "zumaque", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Mezcla {100 g} de rúcula con {½ cebolla roja} en pluma muy fina.",
+        "Aliña con el zumo de {½ limón}, {1½ cucharadas} de aceite, sal y {1 cucharadita} de zumaque."
+      ]
+    },
+    {
+      "nombre": "Rábano blanco aliñado en tiras (liang ban luo bo si)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "daikon", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {300 g} de rábano en tiras finas, sálalo y déjalo 10 min. Escurre y aprieta para quitar el agua.",
+        "Aliña con {1 cucharada} de vinagre, {1 cucharadita} de azúcar, {1 cucharadita} de aceite de sésamo y {1 cucharada} de cilantro picado."
+      ]
+    },
+    {
+      "nombre": "Saganaki (queso frito con limón)",
+      "aporta": ["proteina"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "halloumi", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "harina", "cantidad": 1, "unidad": "cucharada", "familia": "cereales" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" }
+      ],
+      "pasos": [
+        "Corta {200 g} de queso en lonchas de 1 cm, mójalas en agua y pásalas por {1 cucharada} de harina.",
+        "Fríelas en {1 cucharada} de aceite muy caliente 1-2 min por lado hasta que doren. Sirve en el momento con el zumo de {½ limón}."
+      ]
+    },
+    {
+      "nombre": "Semizotu salatası (verdolaga con yogur)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "verdolaga", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "yogur griego", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lava y escurre bien {150 g} de verdolaga y pícala grosera.",
+        "Mézclala con {150 g} de yogur, {1 diente} de ajo rallado y sal. Termina con {1 cucharadita} de aceite."
+      ]
+    },
+    {
+      "nombre": "Shlada (tomate, pimiento y cebolla)",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pica en dados pequeños {3 tomates}, {1 pimiento} y {½ cebolla}.",
+        "Aliña con {½ cucharadita} de comino, sal, {1½ cucharadas} de aceite y {1 cucharada} de cilantro picado."
+      ]
+    },
+    {
+      "nombre": "Shlada de remolacha con comino",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "remolacha", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de remolacha cocida en dados.",
+        "Alíñala con el zumo de {½ limón}, {½ cucharadita} de comino, {1 cucharada} de aceite, sal y {2 cucharadas} de perejil."
+      ]
+    },
+    {
+      "nombre": "Sopa de calabacín y huevo",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "caldo de verduras", "cantidad": 600, "unidad": "ml", "familia": "conservas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {1 calabacín} en láminas finas en {600 ml} de caldo con {1 cucharadita} de jengibre 4 min.",
+        "Vierte {2 huevos} batidos en hilo removiendo despacio, apaga y termina con {1 cebolleta} picada y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Sopa de champiñones y tofu",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "champiñones", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "tofu firme", "cantidad": 200, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "caldo de verduras", "cantidad": 600, "unidad": "ml", "familia": "conservas" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lleva a ebullición {600 ml} de caldo con {1 cucharada} de soja.",
+        "Añade {200 g} de champiñones laminados y {200 g} de tofu en dados y cuece 6 min. Termina con {1 cebolleta} picada y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Sopa de col china y tofu (bai cai doufu tang)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "col china", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "tofu firme", "cantidad": 200, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "caldo de verduras", "cantidad": 600, "unidad": "ml", "familia": "conservas" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Lleva a ebullición {600 ml} de caldo con {1 cucharadita} de jengibre rallado.",
+        "Añade {250 g} de col china en tiras y {200 g} de tofu en dados y cuece 6 min. Ajusta con {1 cucharadita} de soja y sal."
+      ]
+    },
+    {
+      "nombre": "Sopa de espinacas y tofu",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "tofu firme", "cantidad": 200, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "espinacas", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "caldo de verduras", "cantidad": 600, "unidad": "ml", "familia": "conservas" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lleva a ebullición {600 ml} de caldo con {1 cucharadita} de jengibre rallado y {1 cucharada} de soja. Añade {200 g} de tofu en dados y cuece 3 min.",
+        "Agrega {150 g} de espinacas, apaga en cuanto se ablanden y termina con {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Sopa de maíz y huevo (yu mi geng)",
+      "aporta": ["almidon", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "maíz dulce", "cantidad": 280, "unidad": "g", "familia": "conservas" },
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "maicena", "cantidad": 1, "unidad": "cucharada", "familia": "cereales" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Hierve {280 g} de maíz escurrido en {600 ml} de agua con sal 5 min y espesa con {1 cucharada} de maicena disuelta en agua fría.",
+        "Vierte {2 huevos} batidos en hilo removiendo despacio, apaga y termina con {1 cebolleta} picada y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Sopa de rábano blanco (luo bo tang)",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "daikon", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "caldo de verduras", "cantidad": 600, "unidad": "ml", "familia": "conservas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pela {300 g} de rábano y córtalo en medias lunas finas.",
+        "Cuécelo 12 min en {600 ml} de caldo con {1 cucharadita} de jengibre rallado. Sala y termina con {1 cebolleta} picada y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Sopa de tomate y huevo (fan qie dan hua tang)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "maicena", "cantidad": 1, "unidad": "cucharadita", "familia": "cereales" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Saltea {2 tomates} en gajos 2 min, cubre con {600 ml} de agua y {1 cucharadita} de soja y cuece 5 min. Espesa con {1 cucharadita} de maicena disuelta en agua fría.",
+        "Con el caldo hirviendo suave, vierte {2 huevos} batidos en hilo removiendo despacio. Apaga y termina con {1 cebolleta} picada y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Spanakorizo (arroz con espinacas y eneldo)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "espinacas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Rehoga {3 cebolletas} picadas en {2 cucharadas} de aceite 3 min, añade {300 g} de espinacas hasta que se reduzcan y luego {150 g} de arroz.",
+        "Cubre con {350 ml} de agua caliente y sal, tapa y cuece 15 min a fuego suave. Termina con {2 cucharadas} de eneldo y el zumo de {½ limón}."
+      ]
+    },
+    {
+      "nombre": "Taktouka (pimiento y tomate guisados)",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "pimiento rojo", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "pimentón", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Asa {2 pimientos rojos} y {1 verde} a 220 °C 30 min, pélalos y córtalos en tiras.",
+        "Sofríe {2 dientes} de ajo en {2 cucharadas} de aceite, añade {3 tomates} rallados, {1 cucharadita} de pimentón, {½ cucharadita} de comino y sal, y cuece 10 min. Incorpora los pimientos 5 min más y termina con {1 cucharada} de cilantro."
+      ]
+    },
+    {
+      "nombre": "Tirabeques salteados con ajo",
+      "aporta": ["verdura"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "tirabeques", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Quita los hilos a {250 g} de tirabeques.",
+        "Saltea {2 dientes} de ajo en {1 cucharada} de aceite 20 s, añade los tirabeques y saltea 2-3 min a fuego fuerte. Termina con {1 cucharadita} de soja."
+      ]
+    },
+    {
+      "nombre": "Tirokafteri (crema suave de feta y pimiento asado)",
+      "aporta": ["proteina"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "queso feta", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "pimientos rojos asados de bote", "cantidad": 100, "unidad": "g", "familia": "conservas" },
+        { "nombre": "yogur griego", "cantidad": 50, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Tritura {150 g} de feta con {100 g} de pimiento asado escurrido, {50 g} de yogur y {1 cucharada} de aceite hasta que quede una crema con algo de textura.",
+        "Enfría 10 min antes de servir. Si te gusta un punto picante, añade una pizca de pimentón picante."
+      ]
+    },
+    {
+      "nombre": "Tofu frío con cebolleta (xiao cong ban doufu)",
+      "aporta": ["proteina"],
+      "cocinas": ["china", "asia-este"],
+      "ingredientes": [
+        { "nombre": "tofu sedoso", "cantidad": 300, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Escurre {300 g} de tofu sedoso con cuidado y córtalo en dados grandes en el plato.",
+        "Cúbrelo con {2 cebolletas} muy picadas, {1 cucharada} de soja y {1 cucharadita} de aceite de sésamo. Sírvelo frío."
+      ]
+    },
+    {
+      "nombre": "Tomate con azúcar (liang ban xi hong shi)",
+      "aporta": ["verdura"],
+      "cocinas": ["china"],
+      "ingredientes": [
+        { "nombre": "tomate", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharada", "familia": "otros" }
+      ],
+      "pasos": [
+        "Corta {3 tomates} maduros en gajos y colócalos en un plato.",
+        "Espolvorea {1 cucharada} de azúcar y deja reposar 10 min en la nevera para que suelten su jugo."
+      ]
+    },
+    {
+      "nombre": "Tortitas de cebolleta (cong you bing)",
+      "aporta": ["almidon"],
+      "cocinas": ["china", "taiwanesa"],
+      "ingredientes": [
+        { "nombre": "harina", "cantidad": 200, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolleta", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Mezcla {200 g} de harina con {120 ml} de agua caliente y una pizca de sal, amasa 3 min y deja reposar tapada 10 min.",
+        "Divide en 2, estira cada parte fina, pinta con aceite, reparte {3 cebolletas} picadas, enrolla como un cordón y luego en espiral. Aplana y fríe en sartén con el resto de las {2 cucharadas} de aceite 3 min por lado."
+      ]
+    },
+    {
+      "nombre": "Turşu rápido de col y zanahoria",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "col blanca", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pimiento verde", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 100, "unidad": "ml", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "otros" }
+      ],
+      "pasos": [
+        "Corta {200 g} de col en tiras, {1 zanahoria} en rodajas finas y {1 pimiento} en aros, y ponlos en un tarro con {2 dientes} de ajo.",
+        "Calienta {100 ml} de vinagre con {100 ml} de agua, {1 cucharadita} de sal y {1 cucharadita} de azúcar y viértelo encima. Deja al menos 30 min (mejor de un día para otro en la nevera)."
+      ]
+    },
+    {
+      "nombre": "Tzatziki",
+      "aporta": ["proteina"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "yogur griego", "cantidad": 250, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "pepino", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "vinagre de vino tinto", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Ralla {½ pepino}, sálalo y escúrrelo apretando con las manos.",
+        "Mézclalo con {250 g} de yogur, {1 diente} de ajo rallado, {1 cucharada} de eneldo, {1 cucharadita} de vinagre y {1 cucharada} de aceite."
+      ]
+    },
+    {
+      "nombre": "Yogur con menta seca (al estilo chipriota)",
+      "aporta": ["proteina"],
+      "cocinas": ["chipriota", "griega"],
+      "ingredientes": [
+        { "nombre": "yogur griego", "cantidad": 250, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "menta seca", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Mezcla {250 g} de yogur con {1 cucharadita} de menta seca frotada entre los dedos, unas gotas del zumo de {½ limón} y sal.",
+        "Sírvelo frío con un hilo de {1 cucharadita} de aceite por encima."
+      ]
+    },
+    {
+      "nombre": "Yoğurtlu kabak (calabacín con yogur y ajo)",
+      "aporta": ["verdura", "proteina"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "yogur griego", "cantidad": 150, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Ralla {2 calabacines} gruesos, saltéalos en {1 cucharada} de aceite 5 min hasta que se evapore el agua y deja que se templen.",
+        "Mézclalos con {150 g} de yogur, {1 diente} de ajo rallado, {1 cucharada} de eneldo y sal."
+      ]
+    },
+    {
+      "nombre": "Zeytinyağlı taze fasulye (judías verdes con tomate y aceite)",
+      "aporta": ["verdura"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "judías verdes", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "pizca", "familia": "otros" }
+      ],
+      "pasos": [
+        "Rehoga {1 cebolla} en pluma en {3 cucharadas} de aceite 5 min, añade {400 g} de judías en trozos y {2 tomates} rallados, sal y {1 pizca} de azúcar.",
+        "Añade {100 ml} de agua, tapa y cuece 30 min a fuego suave. Sírvelas templadas o frías."
+      ]
+    },
+    {
+      "nombre": "Şehriyeli pilav (arroz con fideos)",
+      "aporta": ["almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "fideos", "cantidad": 30, "unidad": "g", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 20, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Lava {150 g} de arroz y déjalo en remojo 10 min. Dora {30 g} de fideos en {20 g} de mantequilla 2 min hasta que cojan color.",
+        "Añade el arroz escurrido, remueve 1 min, cubre con {300 ml} de agua caliente y sal, tapa y cuece 15 min a fuego mínimo. Reposa 10 min con un paño bajo la tapa."
+      ]
+    },
+    {
+      "nombre": "Misoshiru (sopa de miso con tofu y wakame)",
+      "aporta": ["proteina"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "alga kombu", "cantidad": 5, "unidad": "g", "familia": "conservas" },
+        { "nombre": "tofu sedoso", "cantidad": 150, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "alga wakame seca", "cantidad": 3, "unidad": "g", "familia": "conservas" },
+        { "nombre": "pasta de miso", "cantidad": 2, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Deja {5 g} de kombu en {600 ml} de agua fría 10 min y caliéntalo a fuego medio; retira el alga justo cuando empiece a hervir. Añade {3 g} de wakame y {150 g} de tofu sedoso en dados y calienta 2 min a fuego suave.",
+        "Apaga el fuego, disuelve {2 cucharadas} de pasta de miso en un cazo del caldo y devuélvelo a la olla sin que vuelva a hervir, para que el miso no pierda aroma. Sirve con {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Sopa de miso con setas y cebolleta",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "alga kombu", "cantidad": 5, "unidad": "g", "familia": "conservas" },
+        { "nombre": "setas variadas", "cantidad": 150, "unidad": "g", "familia": "verduras" },
+        { "nombre": "pasta de miso", "cantidad": 2, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Deja {5 g} de kombu en {600 ml} de agua fría 10 min y caliéntalo a fuego medio; retira el alga cuando empiece a hervir. Añade {150 g} de setas en láminas y cuece 4 min a fuego suave.",
+        "Apaga, disuelve {2 cucharadas} de pasta de miso en un cazo del caldo, devuélvelo a la olla sin que hierva y termina con {2 cebolletas} en rodajas finas."
+      ]
+    },
+    {
+      "nombre": "Kakitamajiru (sopa clara de huevo)",
+      "aporta": ["proteina"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "alga kombu", "cantidad": 5, "unidad": "g", "familia": "conservas" },
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "maicena", "cantidad": 1, "unidad": "cucharadita", "familia": "cereales" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Deja {5 g} de kombu en {600 ml} de agua fría 10 min, calienta a fuego medio y retíralo cuando empiece a hervir. Añade {1 cucharadita} de salsa de soja, sal y {1 cucharadita} de maicena disuelta en un poco de agua fría, y cuece 1 min hasta que el caldo coja cuerpo.",
+        "Con el caldo hirviendo suave, vierte {2 huevos} batidos en hilo removiendo despacio en círculo; en 30 s cuajan en hebras. Apaga y sirve con {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Kyabetsu no sengiri (col en juliana con aliño de sésamo)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "col blanca", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {250 g} de col en hebras lo más finas que puedas, déjalas 5 min en agua muy fría para que se ricen y escúrrelas bien.",
+        "Tuesta {1 cucharada} de sésamo en sartén sin aceite 2 min, hasta que huela. Mézclalo con {1 cucharada} de vinagre de arroz, {1 cucharadita} de salsa de soja, {1 cucharadita} de aceite de sésamo y {1 cucharadita} de azúcar, y aliña la col justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Hōrensō no goma-ae (espinacas con sésamo)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "espinacas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sésamo", "cantidad": 2, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Tuesta {2 cucharadas} de sésamo en sartén sin aceite 2 min y machácalo en un mortero hasta que quede medio molido. Mézclalo con {1 cucharada} de salsa de soja y {1 cucharadita} de azúcar.",
+        "Escalda {300 g} de espinacas 30 s en agua hirviendo, pásalas a agua fría y escúrrelas apretando con las manos. Córtalas en trozos de 4 cm y mézclalas con el aliño."
+      ]
+    },
+    {
+      "nombre": "Ohitashi de pak choi (en caldo de soja)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "pak choi", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "alga kombu", "cantidad": 3, "unidad": "g", "familia": "conservas" },
+        { "nombre": "salsa de soja", "cantidad": 1.5, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "mirin", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Calienta {150 ml} de agua con {3 g} de kombu a fuego medio y retíralo cuando empiece a hervir. Fuera del fuego añade {1½ cucharadas} de salsa de soja y {1 cucharada} de mirin y deja enfriar.",
+        "Escalda {300 g} de pak choi 1 min, pásalo a agua fría, escúrrelo y córtalo en trozos de 4 cm. Déjalo 10 min en el caldo frío y sírvelo con un poco de caldo y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Ingen no goma-ae (judías verdes con sésamo)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "judías verdes", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sésamo", "cantidad": 2, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {250 g} de judías verdes en agua con sal 4 min, hasta que estén tiernas pero crujan, y pásalas a agua fría. Escúrrelas y córtalas en trozos de 4 cm.",
+        "Tuesta {2 cucharadas} de sésamo en sartén sin aceite 2 min, machácalo y mézclalo con {1 cucharada} de salsa de soja y {1 cucharadita} de azúcar. Aliña las judías."
+      ]
+    },
+    {
+      "nombre": "Kinpira de zanahoria",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "mirin", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {3 zanahorias} en bastoncitos finos como cerillas.",
+        "Saltéalas en {1 cucharada} de aceite de sésamo a fuego medio-alto 3 min, añade {1 cucharada} de salsa de soja, {1 cucharada} de mirin y {1 cucharadita} de azúcar y saltea 2 min más, hasta que el líquido se evapore y brillen. Termina con {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Namasu (daikon y zanahoria en vinagre)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "daikon", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "sal", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {250 g} de daikon y {1 zanahoria} en juliana fina, mézclalos con {½ cucharadita} de sal y déjalos 10 min. Escúrrelos apretando con las manos.",
+        "Disuelve {1 cucharada} de azúcar en {3 cucharadas} de vinagre de arroz, mézclalo con las verduras y deja reposar 15 min en la nevera antes de servir."
+      ]
+    },
+    {
+      "nombre": "Asazuke de col china (encurtido rápido)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "col china", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sal", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "alga kombu", "cantidad": 3, "unidad": "g", "familia": "conservas" }
+      ],
+      "pasos": [
+        "Corta {300 g} de col china en trozos de 3 cm y mételos en una bolsa con cierre con {1 cucharadita} de sal, {1 cucharadita} de jengibre en tiras finas y {3 g} de kombu cortado con tijera.",
+        "Masajea la bolsa 1 min, saca el aire y déjala en la nevera con un peso encima al menos 30 min. Escurre el líquido apretando antes de servir."
+      ]
+    },
+    {
+      "nombre": "Ensalada de wakame (wakame no sunomono)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "alga wakame seca", "cantidad": 10, "unidad": "g", "familia": "conservas" },
+        { "nombre": "daikon", "cantidad": 100, "unidad": "g", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Hidrata {10 g} de wakame en agua fría 5 min, hasta que se abra, y escúrrela apretando. Corta {100 g} de daikon en juliana fina.",
+        "Mezcla {2 cucharadas} de vinagre de arroz, {1 cucharadita} de azúcar y {1 cucharadita} de salsa de soja, aliña la wakame y el daikon y termina con {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Tamagoyaki",
+      "aporta": ["proteina"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "mirin", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Bate {4 huevos} con {1 cucharada} de mirin, {1 cucharadita} de salsa de soja y {1 cucharadita} de azúcar, sin hacer espuma.",
+        "Unta una sartén pequeña con {1 cucharadita} de aceite a fuego medio-bajo y vierte una capa fina de huevo. Cuando cuaje por abajo pero siga húmeda arriba (30 s), enróllala hacia un lado, vierte otra capa por debajo del rollo y repite hasta acabar, unos 6 min en total. Reposa 2 min y corta en rodajas."
+      ]
+    },
+    {
+      "nombre": "Ajitsuke tamago (huevo marinado)",
+      "aporta": ["proteina"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "salsa de soja", "cantidad": 3, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "mirin", "cantidad": 3, "unidad": "cucharada", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Cuece {4 huevos} sacados de la nevera en agua hirviendo 6 min y medio y pásalos a agua con hielo 5 min para cortar la cocción. Pélalos con cuidado: la yema queda líquida.",
+        "Mételos en una bolsa con {3 cucharadas} de salsa de soja, {3 cucharadas} de mirin y {3 cucharadas} de agua, saca el aire y déjalos en la nevera al menos 30 min (mejor de un día para otro)."
+      ]
+    },
+    {
+      "nombre": "Hiyayakko (tofu frío con jengibre y cebolleta)",
+      "aporta": ["proteina"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "tofu sedoso", "cantidad": 300, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Escurre {300 g} de tofu sedoso con cuidado, sécalo con papel y córtalo en dos bloques.",
+        "Ponlo frío en el plato y cúbrelo con {1 cucharadita} de jengibre rallado, {1 cebolleta} muy picada, {1 cucharada} de salsa de soja y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Arroz con furikake casero (sésamo y nori)",
+      "aporta": ["almidon"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "sésamo", "cantidad": 2, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "alga nori", "cantidad": 1, "unidad": "hoja", "familia": "conservas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "pizca", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Lava {150 g} de arroz hasta que el agua salga clara y cuécelo con {220 ml} de agua, tapado y a fuego mínimo, 12 min. Apaga y reposa 10 min sin destapar.",
+        "Tuesta {2 cucharadas} de sésamo en sartén sin aceite 2 min, desmenuza encima {1 hoja} de nori y mezcla con media cucharadita de sal y {1 pizca} de azúcar. Espolvoréalo sobre el arroz al servir."
+      ]
+    },
+    {
+      "nombre": "Takikomi gohan (arroz con setas y zanahoria)",
+      "aporta": ["almidon", "verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "setas variadas", "cantidad": 120, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "mirin", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "alga kombu", "cantidad": 3, "unidad": "g", "familia": "conservas" }
+      ],
+      "pasos": [
+        "Lava {150 g} de arroz hasta que el agua salga clara y déjalo escurrir 15 min. Corta {120 g} de setas en láminas y {1 zanahoria} en bastoncitos finos.",
+        "Pon el arroz en una olla con {200 ml} de agua, {1 cucharada} de salsa de soja, {1 cucharada} de mirin y {3 g} de kombu, y coloca las verduras encima sin mezclar. Tapa, lleva a hervor y cuece 13 min a fuego mínimo. Reposa 10 min, retira el kombu y mezcla."
+      ]
+    },
+    {
+      "nombre": "Kabocha no nimono (calabaza guisada en soja y mirin)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "calabaza", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1.5, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "mirin", "cantidad": 1.5, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de calabaza en trozos de 4 cm, dejando la piel si es potimarrón, y colócalos en una sola capa en una cazuela con la piel hacia abajo.",
+        "Añade {200 ml} de agua, {1½ cucharadas} de salsa de soja, {1½ cucharadas} de mirin y {1 cucharadita} de azúcar, tapa y cuece a fuego suave 15 min, hasta que un cuchillo entre sin resistencia. Deja reposar 5 min en el caldo."
+      ]
+    },
+    {
+      "nombre": "Zanahoria glaseada con mantequilla (ninjin gurasse)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {3 zanahorias} en rodajas gruesas o bastones de 5 cm y ponlas en un cazo con {150 ml} de agua, {15 g} de mantequilla, {1 cucharadita} de azúcar y una pizca de sal.",
+        "Cuece destapado a fuego medio 10-12 min, removiendo de vez en cuando, hasta que el agua se evapore y la zanahoria quede tierna y brillante."
+      ]
+    },
+    {
+      "nombre": "Champiñones a la mantequilla y soja (batā shōyu)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "champiñones", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" }
+      ],
+      "pasos": [
+        "Corta {300 g} de champiñones en cuartos y dóralos en una sartén caliente sin remover 3 min, luego saltéalos 2 min más.",
+        "Añade {15 g} de mantequilla y {1 diente} de ajo picado 30 s, apaga y riega con {1 cucharada} de salsa de soja. Termina con {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Moyashi namuru (brotes de soja aliñados)",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "brotes de soja", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Escalda {300 g} de brotes de soja 1 min en agua hirviendo con sal y escúrrelos bien en un colador hasta que se templen.",
+        "Mézclalos con {1 cucharada} de aceite de sésamo, {1 diente} de ajo rallado, {1 cucharadita} de salsa de soja y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Ensalada de lechuga, tomate y maíz con aliño de sésamo",
+      "aporta": ["verdura"],
+      "cocinas": ["japonesa"],
+      "ingredientes": [
+        { "nombre": "lechuga", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "maíz dulce", "cantidad": 140, "unidad": "g", "familia": "conservas" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "frutos secos" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {½ lechuga} en trozos, {2 tomates} en gajos y escurre {140 g} de maíz.",
+        "Tuesta {1 cucharada} de sésamo en sartén sin aceite 2 min, machácalo y mézclalo con {1 cucharada} de vinagre de arroz, {1 cucharada} de aceite de girasol, {1 cucharadita} de aceite de sésamo, {1 cucharadita} de azúcar y sal. Aliña justo antes de servir."
+      ]
+    },
+    {
+      "nombre": "Baechu geotjeori (kimchi fresco sin pescado)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "col china", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "sal", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "gochugaru", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "jengibre", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "vinagre de arroz", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de col china en trozos de 4 cm, mézclala con {1 cucharada} de sal y déjala 20 min, hasta que las pencas se doblen sin romperse. Enjuágala dos veces y escúrrela apretando.",
+        "Mezcla {1 cucharada} de gochugaru (o pimentón dulce, si no lo encuentras), {2 dientes} de ajo y {1 cucharadita} de jengibre rallados, {1 cucharada} de salsa de soja, {1 cucharada} de vinagre de arroz y {1 cucharadita} de azúcar. Masajea la col con la pasta y termina con {2 cebolletas} en trozos y {1 cucharadita} de sésamo. Se come al momento."
+      ]
+    },
+    {
+      "nombre": "Kongnamul muchim (brotes de soja aliñados)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "brotes de soja", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "gochugaru", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Cuece {300 g} de brotes de soja en {100 ml} de agua con sal, tapados, 3 min, y escúrrelos hasta que se templen.",
+        "Mézclalos con {1 cebolleta} picada, {1 diente} de ajo rallado, {1 cucharada} de aceite de sésamo, {1 cucharadita} de gochugaru y {1 cucharadita} de sésamo. Prueba y ajusta de sal."
+      ]
+    },
+    {
+      "nombre": "Musaengchae (ensalada de rábano blanco, suave)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "daikon", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "gochugaru", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "vinagre de arroz", "cantidad": 1.5, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {300 g} de daikon en juliana fina y mézclalo con {1 cucharadita} de gochugaru hasta que coja color.",
+        "Añade {1½ cucharadas} de vinagre de arroz, {1 cucharadita} de azúcar, {1 diente} de ajo rallado, {1 cebolleta} picada, sal y {1 cucharadita} de sésamo. Deja 10 min en la nevera antes de servir."
+      ]
+    },
+    {
+      "nombre": "Gyeranguk (sopa de huevo y cebolleta)",
+      "aporta": ["proteina"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "alga kombu", "cantidad": 5, "unidad": "g", "familia": "conservas" },
+        { "nombre": "huevos", "cantidad": 2, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "cebolleta", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Cuece {5 g} de kombu en {600 ml} de agua 5 min a fuego suave y retíralo. Añade {1 diente} de ajo picado, {1 cucharadita} de salsa de soja y sal y deja hervir 1 min.",
+        "Vierte {2 huevos} batidos en hilo removiendo despacio; en 30 s cuajan. Apaga y termina con {2 cebolletas} en rodajas y {1 cucharadita} de aceite de sésamo."
+      ]
+    },
+    {
+      "nombre": "Gaji namul (berenjena al vapor aliñada)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "gochugaru", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {2 berenjenas} en bastones de dedo y cuécelas al vapor o en el microondas, tapadas, 7-8 min, hasta que estén blandas pero no deshechas. Deja que se templen y desmenúzalas a lo largo con los dedos.",
+        "Mézclalas con {1 cucharada} de salsa de soja, {1 diente} de ajo rallado, {1 cebolleta} picada, {1 cucharadita} de gochugaru, {1 cucharadita} de aceite de sésamo y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Kongnamulguk (sopa de brotes de soja)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "brotes de soja", "cantidad": 200, "unidad": "g", "familia": "verduras" },
+        { "nombre": "alga kombu", "cantidad": 5, "unidad": "g", "familia": "conservas" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharadita", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Cuece {5 g} de kombu en {700 ml} de agua 5 min a fuego suave y retíralo.",
+        "Añade {200 g} de brotes de soja y {2 dientes} de ajo picado, tapa y cuece 6 min sin destapar, para que los brotes no cojan sabor a crudo. Ajusta con {1 cucharadita} de salsa de soja y sal y termina con {1 cebolleta} picada."
+      ]
+    },
+    {
+      "nombre": "Boribap (arroz con cebada)",
+      "aporta": ["almidon"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "cebada perlada", "cantidad": 50, "unidad": "g", "familia": "cereales" },
+        { "nombre": "arroz", "cantidad": 120, "unidad": "g", "familia": "cereales" }
+      ],
+      "pasos": [
+        "Cuece {50 g} de cebada perlada en {400 ml} de agua 15 min y escúrrela.",
+        "Lava {120 g} de arroz, mézclalo con la cebada y cuécelo con {230 ml} de agua y sal, tapado y a fuego mínimo, 12 min. Apaga y reposa 10 min sin destapar."
+      ]
+    },
+    {
+      "nombre": "Hobak bokkeum (calabacín salteado)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {2 calabacines} en medias lunas finas, sálalos y déjalos 10 min; sécalos con papel.",
+        "Saltea {½ cebolla} en pluma en {1 cucharada} de aceite 2 min, añade el calabacín y {1 diente} de ajo picado y saltea 3 min, hasta que esté tierno pero entero. Termina con {1 cucharadita} de aceite de sésamo y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Gyeran mari (tortilla enrollada coreana)",
+      "aporta": ["proteina"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "huevos", "cantidad": 4, "unidad": "ud", "familia": "huevos" },
+        { "nombre": "zanahoria", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Bate {4 huevos} con una pizca de sal, {½ zanahoria} picada muy fina y {1 cebolleta} picada.",
+        "Unta una sartén con {1 cucharadita} de aceite a fuego medio-bajo, vierte la mitad del huevo y, cuando cuaje por abajo (1 min), enróllalo hacia un lado. Vierte el resto por el hueco libre, deja que cuaje 1 min y sigue enrollando. Reposa 2 min y corta en rodajas."
+      ]
+    },
+    {
+      "nombre": "Beoseot bokkeum (setas salteadas)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "setas variadas", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "salsa de soja", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "aceite de sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Saltea {½ cebolla} en pluma en {1 cucharada} de aceite 2 min, añade {300 g} de setas en tiras y saltea 4 min a fuego fuerte, hasta que suelten el agua y se doren.",
+        "Añade {1 diente} de ajo picado y {1 cucharada} de salsa de soja y saltea 1 min. Termina con {1 cucharadita} de aceite de sésamo y {1 cucharadita} de sésamo."
+      ]
+    },
+    {
+      "nombre": "Danmuji casero (daikon encurtido)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "daikon", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 100, "unidad": "ml", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "cúrcuma", "cantidad": 1, "unidad": "pizca", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {300 g} de daikon en medias lunas finas y mételo en un tarro.",
+        "Calienta {100 ml} de vinagre de arroz con {100 ml} de agua, {3 cucharadas} de azúcar, una cucharadita de sal y {1 pizca} de cúrcuma hasta que se disuelvan (1 min). Viértelo sobre el daikon y déjalo en la nevera al menos 1 h."
+      ]
+    },
+    {
+      "nombre": "Chikin-mu (rábano en dados encurtido)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "daikon", "cantidad": 300, "unidad": "g", "familia": "verduras" },
+        { "nombre": "vinagre de arroz", "cantidad": 80, "unidad": "ml", "familia": "condimentos" },
+        { "nombre": "azúcar", "cantidad": 3, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {300 g} de daikon en dados de 1,5 cm y mételo en un tarro.",
+        "Disuelve {3 cucharadas} de azúcar y una cucharadita de sal en {80 ml} de vinagre de arroz y {120 ml} de agua, viértelo sobre el daikon y déjalo en la nevera al menos 1 h. Se sirve frío, bien escurrido."
+      ]
+    },
+    {
+      "nombre": "Yangbaechu salad (ensalada de col con mayonesa y kétchup)",
+      "aporta": ["verdura"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "col blanca", "cantidad": 250, "unidad": "g", "familia": "verduras" },
+        { "nombre": "zanahoria", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "mayonesa", "cantidad": 1.5, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "kétchup", "cantidad": 1, "unidad": "cucharada", "familia": "salsas" }
+      ],
+      "pasos": [
+        "Corta {250 g} de col en hebras muy finas y ralla {½ zanahoria}. Déjalas 5 min en agua fría y escúrrelas muy bien.",
+        "Mezcla {1½ cucharadas} de mayonesa con {1 cucharada} de kétchup y sírvelo por encima de la col, sin mezclar, para que cada uno se aliñe al comer."
+      ]
+    },
+    {
+      "nombre": "Dubu buchim (tofu dorado con salsa de soja)",
+      "aporta": ["proteina"],
+      "cocinas": ["coreana"],
+      "ingredientes": [
+        { "nombre": "tofu firme", "cantidad": 300, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "aceite de girasol", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "salsa de soja", "cantidad": 1.5, "unidad": "cucharada", "familia": "salsas" },
+        { "nombre": "cebolleta", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "gochugaru", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "azúcar", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" },
+        { "nombre": "sésamo", "cantidad": 1, "unidad": "cucharadita", "familia": "frutos secos" }
+      ],
+      "pasos": [
+        "Corta {300 g} de tofu en lonchas de 1 cm, sécalas con papel y sálalas. Dóralas en {1 cucharada} de aceite a fuego medio 3 min por lado, hasta que tengan costra dorada.",
+        "Mezcla {1½ cucharadas} de salsa de soja con {1 cebolleta} picada, {1 diente} de ajo rallado, {1 cucharadita} de gochugaru, {1 cucharadita} de azúcar, {1 cucharadita} de sésamo y {1 cucharada} de agua, y repártela sobre el tofu caliente."
+      ]
+    },
+    {
+      "nombre": "Bulgur con tomate",
+      "aporta": ["almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "bulgur", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate concentrado", "cantidad": 1, "unidad": "cucharada", "familia": "conservas" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Pica {½ cebolla} muy fina y rehógala 3 min en un cazo con {15 g} de mantequilla. Añade {1 cucharada} de tomate concentrado y {150 g} de bulgur y remueve 1 min.",
+        "Echa {300 ml} de agua caliente y sal, tapa y cuece 12 min a fuego mínimo, hasta que absorba el agua. Apaga y deja reposar 5 min tapado con un paño bajo la tapa; suéltalo con un tenedor."
+      ]
+    },
+    {
+      "nombre": "Bulgur pilavı con tomate",
+      "aporta": ["almidon"],
+      "cocinas": ["turca"],
+      "ingredientes": [
+        { "nombre": "bulgur", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate concentrado", "cantidad": 1, "unidad": "cucharada", "familia": "conservas" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" }
+      ],
+      "pasos": [
+        "Rehoga {½ cebolla} picada con {10 g} de mantequilla 3 min, añade {1 cucharada} de tomate concentrado y {150 g} de bulgur grueso y remueve 1 min.",
+        "Cubre con {300 ml} de agua caliente y sal, tapa y cuece 12 min a fuego mínimo. Apaga, pon un paño entre la olla y la tapa y deja reposar 10 min antes de soltarlo con un tenedor."
+      ]
+    },
+    {
+      "nombre": "Cacık",
+      "aporta": ["proteina"],
+      "cocinas": ["turca", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "yogur griego", "cantidad": 200, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "pepino", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "menta seca", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Ralla {½ pepino} grueso, sálalo y estrújalo con las manos para quitarle el agua.",
+        "Mézclalo con {200 g} de yogur griego, {1 diente} de ajo rallado, {1 cucharadita} de menta seca y sal, y sirve con un hilo de {1 cucharadita} de aceite de oliva por encima."
+      ]
+    },
+    {
+      "nombre": "Cebolla con zumaque y perejil",
+      "aporta": ["verdura"],
+      "cocinas": ["turca", "mediooriente"],
+      "ingredientes": [
+        { "nombre": "cebolla roja", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "zumaque", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "perejil", "cantidad": 3, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharadita", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {1 cebolla roja} en pluma muy fina, sálala y frótala con los dedos 1 min para que pierda el picor. Enjuágala y escúrrela bien.",
+        "Mézclala con {1 cucharadita} de zumaque, {3 cucharadas} de perejil picado y {1 cucharadita} de aceite de oliva."
+      ]
+    },
+    {
+      "nombre": "Cuscús con calabacín y pasas",
+      "aporta": ["almidon"],
+      "cocinas": ["norteafrica", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "cuscús", "cantidad": 140, "unidad": "g", "familia": "cereales" },
+        { "nombre": "calabacín", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "pasas", "cantidad": 30, "unidad": "g", "familia": "frutas" },
+        { "nombre": "mantequilla", "cantidad": 10, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "canela", "cantidad": 1, "unidad": "pizca", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pon {140 g} de cuscús en un bol con {30 g} de pasas, una pizca de sal y {1 pizca} de canela, cubre con {160 ml} de agua hirviendo, tapa con un plato y deja 5 min.",
+        "Mientras, corta {1 calabacín} en dados pequeños y saltea 4 min en una sartén con {10 g} de mantequilla, hasta que se dore. Suelta el cuscús con un tenedor y mezcla con el calabacín."
+      ]
+    },
+    {
+      "nombre": "Cuscús con garbanzos y hierbas",
+      "aporta": ["almidon"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "cuscús", "cantidad": 120, "unidad": "g", "familia": "cereales" },
+        { "nombre": "garbanzos cocidos de bote", "cantidad": 200, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "perejil", "cantidad": 2, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "menta", "cantidad": 1, "unidad": "cucharada", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Pon {120 g} de cuscús en un bol con sal y {1 cucharada} de aceite de oliva, cúbrelo con {150 ml} de agua hirviendo, tapa y deja 5 min.",
+        "Suéltalo con un tenedor y mézclalo con {200 g} de garbanzos cocidos escurridos y calentados 1 min en el microondas, {2 cucharadas} de perejil y {1 cucharada} de menta picados."
+      ]
+    },
+    {
+      "nombre": "Ensalada de garbanzos al comino con tomate y apio",
+      "aporta": ["proteina", "verdura"],
+      "cocinas": ["norteafrica", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "garbanzos cocidos de bote", "cantidad": 240, "unidad": "g", "familia": "legumbres" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "apio", "cantidad": 2, "unidad": "tira", "familia": "verduras" },
+        { "nombre": "cebolla", "cantidad": 0.5, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "comino", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "sal", "cantidad": 1, "unidad": "pizca", "familia": "especias" }
+      ],
+      "pasos": [
+        "Escurre y enjuaga {240 g} de garbanzos cocidos de bote. Corta {2 tomates} en dados pequeños, {2 tiras} de apio en láminas finas quitándoles los hilos y {½ cebolla} muy picada; deja la cebolla 5 min en agua fría para quitarle el picor y escúrrela.",
+        "Tuesta {1 cucharadita} de comino en una sartén seca 30 s, hasta que huela, y májalo. Mézclalo todo con el zumo de {½ limón}, {2 cucharadas} de aceite de oliva y sal, y deja reposar 10 min para que los garbanzos tomen el aliño."
+      ]
+    },
+    {
+      "nombre": "Ensalada marroquí de zanahoria con comino",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "zanahoria", "cantidad": 3, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 1, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "perejil", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pela {3 zanahorias}, córtalas en rodajas de medio centímetro y cuécelas en agua con sal 8 min, hasta que estén tiernas pero firmes. Escúrrelas.",
+        "Aliña en templado con {1 diente} de ajo rallado, {½ cucharadita} de comino, el zumo de {½ limón}, {1 cucharada} de aceite de oliva, sal y {1 cucharada} de perejil picado. Se sirve templada o fría."
+      ]
+    },
+    {
+      "nombre": "Horta (acelgas con limón y aceite)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "acelgas", "cantidad": 400, "unidad": "g", "familia": "verduras" },
+        { "nombre": "limón", "cantidad": 0.5, "unidad": "ud", "familia": "frutas" },
+        { "nombre": "aceite de oliva", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {400 g} de acelgas en trozos grandes, separando las pencas de las hojas, y cuécelas en agua hirviendo con sal: las pencas 4 min y las hojas 2 min más.",
+        "Escúrrelas bien y sírvelas templadas, aliñadas con {1 cucharada} de aceite de oliva, el zumo de {½ limón} y sal en escamas."
+      ]
+    },
+    {
+      "nombre": "Kolokithakia tiganita (calabacín frito)",
+      "aporta": ["verdura"],
+      "cocinas": ["griega", "mediterranea"],
+      "ingredientes": [
+        { "nombre": "calabacín", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "harina", "cantidad": 40, "unidad": "g", "familia": "cereales" },
+        { "nombre": "aceite de oliva", "cantidad": 4, "unidad": "cucharada", "familia": "condimentos" }
+      ],
+      "pasos": [
+        "Corta {2 calabacines} en rodajas de 5 mm, sécalas con papel y pásalas por {40 g} de harina de trigo, sacudiendo el exceso.",
+        "Fríelas en una sartén con {4 cucharadas} de aceite de oliva a fuego medio-alto, en tandas sin amontonarlas, 2 min por lado hasta que estén doradas. Escúrrelas sobre papel y sálalas al momento."
+      ]
+    },
+    {
+      "nombre": "Mderbel (berenjena agridulce marroquí)",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 4, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "pimentón", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "vinagre blanco", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "miel", "cantidad": 1, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "sal", "cantidad": 1, "unidad": "pizca", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {1 berenjena} en rodajas de 1 cm, sálalas y déjalas 10 min sobre papel de cocina; luego sécalas bien. Fríelas en una sartén con {4 cucharadas} de aceite de oliva a fuego medio-alto, 3 min por lado, hasta que estén doradas y blandas.",
+        "Aplástalas por encima en la misma sartén, a fuego medio, con {2 dientes} de ajo picados, {½ cucharadita} de comino y {½ cucharadita} de pimentón, 1 min. Añade {1 cucharada} de vinagre blanco, {1 cucharada} de miel y {3 cucharadas} de agua y cuece 5 min removiendo, hasta que quede una compota espesa y brillante que se pegue a la cuchara. Se sirve templada."
+      ]
+    },
+    {
+      "nombre": "Patatas fritas con orégano y feta",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "patata", "cantidad": 500, "unidad": "g", "familia": "verduras" },
+        { "nombre": "aceite de oliva", "cantidad": 4, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "queso feta", "cantidad": 50, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "orégano", "cantidad": 1, "unidad": "cucharadita", "familia": "especias" }
+      ],
+      "pasos": [
+        "Corta {500 g} de patata en bastones de 1 cm y sécalos muy bien con un paño.",
+        "Fríelos en dos tandas en una sartén con {4 cucharadas} de aceite de oliva a fuego medio-alto, 10-12 min, girándolos, hasta que estén dorados. Escúrrelos, sálalos y espolvorea {1 cucharadita} de orégano y {50 g} de feta desmenuzado por encima."
+      ]
+    },
+    {
+      "nombre": "Pilafi de arroz con eneldo",
+      "aporta": ["almidon"],
+      "cocinas": ["griega"],
+      "ingredientes": [
+        { "nombre": "arroz", "cantidad": 150, "unidad": "g", "familia": "cereales" },
+        { "nombre": "mantequilla", "cantidad": 15, "unidad": "g", "familia": "lácteos" },
+        { "nombre": "eneldo", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Derrite {15 g} de mantequilla en un cazo y rehoga {150 g} de arroz 1 min, removiendo, hasta que se vuelva nacarado.",
+        "Añade {300 ml} de agua caliente y sal, tapa y cuece 15 min a fuego mínimo. Apaga, deja reposar 5 min tapado y suelta el arroz con un tenedor mezclando {1 cucharada} de eneldo picado."
+      ]
+    },
+    {
+      "nombre": "Zaalouk (berenjena con tomate)",
+      "aporta": ["verdura"],
+      "cocinas": ["norteafrica"],
+      "ingredientes": [
+        { "nombre": "berenjena", "cantidad": 1, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "tomate", "cantidad": 2, "unidad": "ud", "familia": "verduras" },
+        { "nombre": "ajo", "cantidad": 2, "unidad": "diente", "familia": "verduras" },
+        { "nombre": "comino", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "pimentón", "cantidad": 0.5, "unidad": "cucharadita", "familia": "especias" },
+        { "nombre": "aceite de oliva", "cantidad": 2, "unidad": "cucharada", "familia": "condimentos" },
+        { "nombre": "cilantro", "cantidad": 1, "unidad": "cucharada", "familia": "especias" }
+      ],
+      "pasos": [
+        "Pela a tiras {1 berenjena} y córtala en dados. Ralla {2 tomates} y desecha la piel.",
+        "Ponlo todo en una sartén con {2 cucharadas} de aceite de oliva, {2 dientes} de ajo picados, {½ cucharadita} de comino, {½ cucharadita} de pimentón dulce y sal. Tapa y cuece 15 min a fuego medio; luego destapa y aplasta con un tenedor 5 min más, hasta que quede como una compota espesa. Termina con {1 cucharada} de cilantro picado."
+      ]
     }
   ]
 }

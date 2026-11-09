@@ -9,7 +9,7 @@
   },
 
   "ignorar": [
-    "sal", "agua", "pimienta negra", "pimienta de Sichuan", "pimienta de sichuan",
+    "sal", "agua", "zumaque", "té negro", "pimienta negra", "pimienta de Sichuan", "pimienta de sichuan",
     "pimienta de jamaica", "nuez moscada", "cayena", "azafrán", "laurel", "clavo",
     "canela", "canela en rama", "vainilla", "orégano", "tomillo", "romero", "salvia",
     "menta seca", "copos de chile", "cúrcuma", "jengibre", "jengibre fresco",
@@ -207,6 +207,13 @@
     "berenjena":                   { "p": 1,    "c": 3,    "gr": 0.2, "ud": 250, "fib": 3, "az": 3.5, "fe": 0.3, "vc": 2, "ca": 9, "fol": 22 },
     "calabaza":                    { "p": 1,    "c": 5,    "gr": 0.1, "fib": 1.5, "az": 2.8, "fe": 0.8, "vc": 9, "ca": 21, "fol": 16 },
     "brócoli":                     { "p": 3,    "c": 4,    "gr": 0.4, "fib": 2.6, "az": 1.7, "fe": 0.7, "vc": 89, "ca": 47, "fol": 63 },
+    "bimi":                        { "p": 3, "c": 5, "gr": 0.4, "fib": 3, "az": 1.5, "fe": 0.8, "vc": 90, "ca": 50, "fol": 60 },
+    "col lombarda":                { "p": 1.4, "c": 7.4, "gr": 0.2, "fib": 2.1, "az": 3.8, "fe": 0.8, "vc": 57, "ca": 45, "fol": 18 },
+    "col puntiaguda":              { "p": 1.3, "c": 4, "gr": 0.2, "fib": 2.5, "az": 3, "fe": 0.5, "vc": 40, "ca": 45, "fol": 45 },
+    "rúcula":                      { "p": 2.6, "c": 3.7, "gr": 0.7, "fib": 1.6, "az": 2, "fe": 1.5, "vc": 15, "ca": 160, "fol": 97 },
+    "tirabeques":                  { "p": 2.8, "c": 7.5, "gr": 0.2, "fib": 2.6, "az": 4, "fe": 2.1, "vc": 60, "ca": 43, "fol": 42 },
+    "verdolaga":                   { "p": 2, "c": 3.4, "gr": 0.4, "fib": 1, "az": 0.5, "fe": 2, "vc": 21, "ca": 65, "fol": 12 },
+    "tomate concentrado":          { "p": 4.3, "c": 19, "gr": 0.5, "fib": 4, "az": 12, "sal": 0.2, "fe": 3, "vc": 22, "ca": 36, "fol": 12 },
     "brócoli congelado":           { "p": 3,    "c": 4,    "gr": 0.4, "fib": 3, "az": 1.5, "fe": 0.7, "vc": 60, "ca": 45, "fol": 55 },
     "acelgas":                     { "p": 1.8,  "c": 3.7,  "gr": 0.2, "fib": 1.6, "az": 1.1, "fe": 1.8, "vc": 30, "ca": 51, "fol": 14 },
     "molokhia congelada":          { "p": 4.7,  "c": 5.5,  "gr": 0.2, "fib": 3, "az": 0.5, "fe": 2.7, "vc": 35, "ca": 180, "fol": 90 },
