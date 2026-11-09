@@ -404,7 +404,6 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     const cenasLigeras =
       llenan(soloCenas(construirPrincipales(NINGUNO, true))) ||
       llenan(soloCenas(construirPrincipales(TODOS, true)))
-    const cenaEnsanchada = !cenasLigeras
 
     const huecosPrincipales = ensanchar((sinTope) => construirPrincipales(sinTope, cenasLigeras))
     const huecosDesayuno = ensanchar((sinTope) => construir(diasConDesayuno, 'desayuno', desayunos, sinTope))
@@ -474,6 +473,13 @@ export function PlanificadorProvider({ children }: { children: ReactNode }) {
     cambiarPlan(nuevo)
 
     const llenos = (grupo: Hueco[]) => grupo.filter((h) => porHueco.has(h.id)).length
+    // Se mira lo que ha quedado puesto, con la guarnición encendida: que la cena
+    // se abriera a todo el catálogo no quiere decir que haya entrado nada pesado.
+    const cenaEnsanchada = [...porHueco].some(([id, receta]) => {
+      if (!id.endsWith(':cena')) return false
+      const elegida = guarnicionesDe(receta).find((g) => g.id === guarnicionDe(receta))
+      return !cabeDeNoche({ ...receta, guarniciones: elegida ? [elegida] : [] })
+    })
     const tiempoEnsanchado = [...porHueco].some(([id, receta]) => {
       const tope = topeDe(id.split(':')[0] as Dia)
       return tope != null && receta.tiempoPreparacion > tope

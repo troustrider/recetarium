@@ -825,6 +825,26 @@ describe('límites duros de la auto-semana', () => {
   })
 })
 
+describe('aviso de cena ensanchada', () => {
+  it('no avisa si todas las cenas puestas caben de noche, aunque haya tenido que repetir', async () => {
+    const { result } = await montarHidratado()
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar(CATALOGO, 2) })
+    expect(informe.cenas).toBe(7)
+    expect(informe.cenaEnsanchada).toBe(false)
+  })
+
+  it('avisa cuando una cena puesta se pasa del tope de la noche', async () => {
+    const contundente = { ...receta('r8', 'Cocido', [{ nombre: 'garbanzos', cantidad: 300, unidad: 'g', familia: 'legumbres' }]), calorias: 1400 }
+    const { result } = await montarHidratado()
+    let informe!: ReturnType<typeof result.current.plan.autollenar>
+    act(() => { informe = result.current.plan.autollenar([...CATALOGO, contundente], 2) })
+    const puesta = result.current.plan.dias.flatMap((d) => result.current.plan.plan[d]).some((e) => e.receta.id === 'r8')
+    expect(puesta).toBe(true)
+    expect(informe.cenaEnsanchada).toBe(true)
+  })
+})
+
 describe('la semana recuerda lo que quitaste', () => {
   const AMPLIO = Array.from({ length: 14 }, (_, i) =>
     receta(`a${i}`, `Plato ${i}`, [{ nombre: `verdura ${i}`, cantidad: 100, unidad: 'g', familia: 'verduras' }])
