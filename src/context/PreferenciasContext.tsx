@@ -4,6 +4,8 @@ import {
   LIMITES_VACIOS,
   MAX_COCINAS,
   MAX_PRIORIDADES,
+  MAX_RACIONES,
+  MIN_RACIONES,
   PREFERENCIAS_POR_DEFECTO,
   type LimitesSemana,
   type Preferencias,
@@ -17,6 +19,7 @@ interface PreferenciasCtx {
   alternarPrioridad: (prioridad: Prioridad) => void
   alternarCocina: (cocina: string) => void
   setHuecos: (hueco: Hueco, n: number) => void
+  setRacionesPorPlato: (n: number) => void
   setLimites: (limites: Partial<LimitesSemana>) => void
   aplicar: (preferencias: Preferencias) => void
   reiniciar: () => void
@@ -68,6 +71,10 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
     cambiar((prev) => ({ ...prev, [hueco]: Math.max(0, Math.min(7, Math.round(n))) }))
   }, [cambiar])
 
+  const setRacionesPorPlato = useCallback((n: number) => {
+    cambiar((prev) => ({ ...prev, racionesPorPlato: Math.max(MIN_RACIONES, Math.min(MAX_RACIONES, Math.round(n))) }))
+  }, [cambiar])
+
   const setLimites = useCallback((limites: Partial<LimitesSemana>) => {
     cambiar((prev) => ({ ...prev, limites: { ...prev.limites, ...limites } }))
   }, [cambiar])
@@ -76,8 +83,8 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
   const reiniciar = useCallback(() => cambiar(PREFERENCIAS_POR_DEFECTO), [cambiar])
 
   const valor = useMemo(
-    () => ({ preferencias, alternarPrioridad, alternarCocina, setHuecos, setLimites, aplicar, reiniciar }),
-    [preferencias, alternarPrioridad, alternarCocina, setHuecos, setLimites, aplicar, reiniciar]
+    () => ({ preferencias, alternarPrioridad, alternarCocina, setHuecos, setRacionesPorPlato, setLimites, aplicar, reiniciar }),
+    [preferencias, alternarPrioridad, alternarCocina, setHuecos, setRacionesPorPlato, setLimites, aplicar, reiniciar]
   )
 
   return <PreferenciasContext.Provider value={valor}>{children}</PreferenciasContext.Provider>

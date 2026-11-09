@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { usePreferencias } from '../../context'
-import { MAX_COCINAS, type Dieta } from '../../types/preferencias'
+import { MAX_COCINAS, MAX_RACIONES, MIN_RACIONES, type Dieta } from '../../types/preferencias'
 import { NOMBRE_PRIORIDAD, PRESETS, presetDe, type Preset } from '../../utils/presets'
 import Capa from '../shared/Capa'
 
@@ -87,8 +87,8 @@ interface Props {
 }
 
 export default function PanelSemana({ cocinas, onCerrar }: Props) {
-  const { preferencias, aplicar, alternarCocina, setHuecos, setLimites } = usePreferencias()
-  const { prioridades, cocinasFavoritas, desayunos, comidas, cenas, limites } = preferencias
+  const { preferencias, aplicar, alternarCocina, setHuecos, setRacionesPorPlato, setLimites } = usePreferencias()
+  const { prioridades, cocinasFavoritas, desayunos, comidas, cenas, racionesPorPlato, limites } = preferencias
   const [vetado, setVetado] = useState('')
 
   const preset = presetDe(prioridades)
@@ -154,6 +154,16 @@ export default function PanelSemana({ cocinas, onCerrar }: Props) {
               onCambiar={(n) => setHuecos('cenas', n)}
               vacio="ninguna"
             />
+          </div>
+        </Seccion>
+
+        <Seccion titulo="Para cuántos" nota="Raciones de cada plato. Lo comprado mantiene las suyas.">
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: MAX_RACIONES - MIN_RACIONES + 1 }, (_, i) => MIN_RACIONES + i).map((n) => (
+              <Chip key={n} activo={racionesPorPlato === n} onClick={() => setRacionesPorPlato(n)}>
+                {n}
+              </Chip>
+            ))}
           </div>
         </Seccion>
 

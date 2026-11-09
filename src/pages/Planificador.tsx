@@ -155,7 +155,7 @@ function Planificador() {
             onClick={() => {
               const anterior = plan
               const pendientesAntes = pendientes
-              setInforme(autollenar(recetas, 2, despensa))
+              setInforme(autollenar(recetas, preferencias.racionesPorPlato, despensa))
               registrar('Semana equilibrada', () => {
                 restaurarPlan(anterior)
                 restaurarPendientes(pendientesAntes)

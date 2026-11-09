@@ -195,6 +195,13 @@ describe('validación de las preferencias', () => {
       .toBe('preferencias.desayunos debe ser un entero entre 0 y 7')
   })
 
+  it('las raciones por plato van de 1 a 6', async () => {
+    expect(await errorDe('/preferencias', { racionesPorPlato: 7 }))
+      .toBe('preferencias.racionesPorPlato debe ser un entero entre 1 y 6')
+    expect(await errorDe('/preferencias', { racionesPorPlato: 0 }))
+      .toBe('preferencias.racionesPorPlato debe ser un entero entre 1 y 6')
+  })
+
   it('la dieta solo admite las que el catálogo sabe calcular', async () => {
     expect(await errorDe('/preferencias', { limites: { dieta: 'paleo' } }))
       .toBe('preferencias.limites.dieta debe ser una de: vegetariana, vegana')

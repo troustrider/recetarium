@@ -32,6 +32,8 @@ export interface Preferencias {
   comidas: number
   /** Cuántos días llevan cena. */
   cenas: number
+  /** Raciones que pone la auto-semana en cada plato. Lo comprado trae las suyas. */
+  racionesPorPlato: number
   limites: LimitesSemana
 }
 
@@ -42,6 +44,9 @@ export const MAX_PRIORIDADES = 3
 
 /** Cuatro cocinas favoritas dan de sobra para siete días sin repetir dos veces. */
 export const MAX_COCINAS = 4
+
+export const MIN_RACIONES = 1
+export const MAX_RACIONES = 6
 
 export const LIMITES_VACIOS: LimitesSemana = {
   tiempoMax: null,
@@ -57,5 +62,6 @@ export const PREFERENCIAS_POR_DEFECTO: Preferencias = {
   desayunos: 3,
   comidas: 0,
   cenas: 7,
+  racionesPorPlato: 2,
   limites: LIMITES_VACIOS,
 }

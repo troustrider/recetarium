@@ -80,6 +80,8 @@ const DIETAS = ['vegetariana', 'vegana']
 const MAX_PRIORIDADES = 3
 const MAX_COCINAS = 4
 const DIAS_SEMANA = 7
+const MIN_RACIONES = 1
+const MAX_RACIONES = 6
 
 function validarLista(valor, campo, { max, min = 0 }) {
   if (!Array.isArray(valor)) return `${campo} debe ser un array`
@@ -128,6 +130,13 @@ function validarPreferencias(p) {
     if (v == null) continue
     if (!Number.isInteger(v) || v < 0 || v > DIAS_SEMANA) {
       return `preferencias.${campo} debe ser un entero entre 0 y ${DIAS_SEMANA}`
+    }
+  }
+
+  if (p.racionesPorPlato != null) {
+    const v = p.racionesPorPlato
+    if (!Number.isInteger(v) || v < MIN_RACIONES || v > MAX_RACIONES) {
+      return `preferencias.racionesPorPlato debe ser un entero entre ${MIN_RACIONES} y ${MAX_RACIONES}`
     }
   }
 

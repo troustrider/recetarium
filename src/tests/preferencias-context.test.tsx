@@ -85,6 +85,23 @@ describe('preferencias del hogar', () => {
     expect(result.current.preferencias.desayunos).toBe(0)
   })
 
+  it('unas preferencias guardadas sin raciones cocinan para dos', async () => {
+    api.getPreferencias.mockResolvedValue({ prioridades: ['fibra'] })
+    const { result } = await montar()
+    await waitFor(() => expect(result.current.preferencias.prioridades).toEqual(['fibra']))
+    expect(result.current.preferencias.racionesPorPlato).toBe(2)
+  })
+
+  it('las raciones por plato se acotan entre 1 y 6', async () => {
+    const { result } = await montar()
+    act(() => result.current.setRacionesPorPlato(4))
+    expect(result.current.preferencias.racionesPorPlato).toBe(4)
+    act(() => result.current.setRacionesPorPlato(99))
+    expect(result.current.preferencias.racionesPorPlato).toBe(6)
+    act(() => result.current.setRacionesPorPlato(0))
+    expect(result.current.preferencias.racionesPorPlato).toBe(1)
+  })
+
   it('los límites se tocan de uno en uno sin borrar los demás', async () => {
     const { result } = await montar()
     act(() => result.current.setLimites({ sinGluten: true }))
